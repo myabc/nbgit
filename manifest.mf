@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: true
+OpenIDE-Module: org.netbeans.git
+OpenIDE-Module-Specification-Version: 1.6
+X-COMMENT: Main-Class will be added automatically by build
+

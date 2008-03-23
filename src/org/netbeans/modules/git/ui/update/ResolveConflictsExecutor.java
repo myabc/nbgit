@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
@@ -370,6 +371,7 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
         exec();
     }
 
+    @Override
     public void run() {
         throw new RuntimeException("Not implemented"); // NOI18N
     }

@@ -41,7 +41,12 @@
  */
 package org.netbeans.modules.git.ui.diff;
 
+import java.awt.BorderLayout;
+import java.util.Collection;
 import org.openide.awt.UndoRedo;
+import org.openide.util.HelpCtx;
+import org.openide.util.NbBundle;
+import org.openide.windows.TopComponent;
 
 /**
  * Diff TopComponent, synchronizing selected node and providing
@@ -62,27 +67,33 @@ public class DiffTopComponent extends TopComponent implements DiffSetupSource {
         getAccessibleContext().setAccessibleDescription(NbBundle.getMessage(DiffTopComponent.class, "ACSD_Diff_Top_Component")); // NOI18N
     }
 
+    @Override
     public UndoRedo getUndoRedo() {
         return panel.getUndoRedo();
     }
     
+    @Override
     public int getPersistenceType(){
         return TopComponent.PERSISTENCE_NEVER;
     }
 
+    @Override
     protected void componentClosed() {
         panel.componentClosed();
         super.componentClosed();
     }
 
+    @Override
     protected String preferredID(){
         return "PERSISTENCE_NEVER-DiffTopComponent";    // NOI18N       
     }
 
+    @Override
     public HelpCtx getHelpCtx() {
         return new HelpCtx(getClass());
     }
 
+    @Override
     protected void componentActivated() {
         super.componentActivated();
         panel.requestActive();

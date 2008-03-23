@@ -41,12 +41,18 @@
  */
 package org.netbeans.modules.git.options;
 
-final class MercurialPanel extends javax.swing.JPanel {
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import org.netbeans.modules.git.GitAnnotator;
+import org.netbeans.modules.git.GitModuleConfig;
+import org.netbeans.modules.git.util.GitUtils;
+
+final class GitPanel extends javax.swing.JPanel {
     
-    private final MercurialOptionsPanelController controller;
+    private final GitOptionsPanelController controller;
     private final DocumentListener listener;
     
-    MercurialPanel(MercurialOptionsPanelController controller) {
+    GitPanel(GitOptionsPanelController controller) {
         this.controller = controller;
         this.listener = new DocumentListener() {
             public void insertUpdate(DocumentEvent e) { nameChange(); }
@@ -88,21 +94,21 @@ final class MercurialPanel extends javax.swing.JPanel {
         backupOnRevertModifications = new javax.swing.JCheckBox();
 
         jLabel1.setLabelFor(userNameTextField);
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(MercurialPanel.class, "MercurialPanel.jLabel1.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.jLabel1.text")); // NOI18N
 
         jLabel2.setLabelFor(executablePathTextField);
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(MercurialPanel.class, "MercurialPanel.jLabel2.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.jLabel2.text")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(execPathBrowseButton, org.openide.util.NbBundle.getMessage(MercurialPanel.class, "MercurialPanel.browseButton.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(execPathBrowseButton, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.browseButton.text")); // NOI18N
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(MercurialPanel.class, "MercurialPanel.jPanel1.border.title"))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.jPanel1.border.title"))); // NOI18N
 
         jLabel3.setLabelFor(annotationTextField);
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(MercurialPanel.class, "MercurialPanel.jLabel3.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.jLabel3.text")); // NOI18N
 
-        annotationTextField.setText(org.openide.util.NbBundle.getMessage(MercurialPanel.class, "MercurialPanel.annotationTextField.text")); // NOI18N
+        annotationTextField.setText(org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.annotationTextField.text")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(addButton, org.openide.util.NbBundle.getMessage(MercurialPanel.class, "MercurialPanel.addButton.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(addButton, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.addButton.text")); // NOI18N
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -113,7 +119,7 @@ final class MercurialPanel extends javax.swing.JPanel {
                 .add(jLabel3)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(annotationTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 405, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 115, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 155, Short.MAX_VALUE)
                 .add(addButton)
                 .addContainerGap())
         );
@@ -128,13 +134,13 @@ final class MercurialPanel extends javax.swing.JPanel {
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
-        addButton.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(MercurialPanel.class, "ACSD_addButton")); // NOI18N
+        addButton.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(GitPanel.class, "ACSD_addButton")); // NOI18N
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(MercurialPanel.class, "MecurialPanel.jPanel2.border.title"))); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(GitPanel.class, "MecurialPanel.jPanel2.border.title"))); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel4, org.openide.util.NbBundle.getMessage(MercurialPanel.class, "MercurialPanel.jLabel4.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel4, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.jLabel4.text")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(manageButton, org.openide.util.NbBundle.getMessage(MercurialPanel.class, "MercurialPanel.manageButton.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(manageButton, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.manageButton.text")); // NOI18N
 
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -143,7 +149,7 @@ final class MercurialPanel extends javax.swing.JPanel {
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jLabel4)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 175, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 548, Short.MAX_VALUE)
                 .add(manageButton)
                 .addContainerGap())
         );
@@ -157,15 +163,15 @@ final class MercurialPanel extends javax.swing.JPanel {
                 .addContainerGap(24, Short.MAX_VALUE))
         );
 
-        manageButton.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(MercurialPanel.class, "ACSD_manageButton")); // NOI18N
+        manageButton.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(GitPanel.class, "ACSD_manageButton")); // NOI18N
 
         exportFilename.setLabelFor(exportFilenameTextField);
-        org.openide.awt.Mnemonics.setLocalizedText(exportFilename, org.openide.util.NbBundle.getMessage(MercurialPanel.class, "MercurialPanel.ExportFilename.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(exportFilename, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.ExportFilename.text")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(exportFilenameBrowseButton, org.openide.util.NbBundle.getMessage(MercurialPanel.class, "MercurialPanel.browseButton2.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(exportFilenameBrowseButton, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.browseButton2.text")); // NOI18N
 
         backupOnRevertModifications.setSelected(true);
-        org.openide.awt.Mnemonics.setLocalizedText(backupOnRevertModifications, org.openide.util.NbBundle.getMessage(MercurialPanel.class, "MercurialPanel.jCheckBox1.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(backupOnRevertModifications, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.jCheckBox1.text")); // NOI18N
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -184,15 +190,15 @@ final class MercurialPanel extends javax.swing.JPanel {
                             .add(exportFilename, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(userNameTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 558, Short.MAX_VALUE)
+                            .add(userNameTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 769, Short.MAX_VALUE)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(exportFilenameTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
-                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, executablePathTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE))
+                                    .add(exportFilenameTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
+                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, executablePathTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE))
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                                     .add(execPathBrowseButton)
-                                    .add(exportFilenameBrowseButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE))))))
+                                    .add(exportFilenameBrowseButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -221,12 +227,13 @@ final class MercurialPanel extends javax.swing.JPanel {
                 .addContainerGap(25, Short.MAX_VALUE))
         );
 
-        userNameTextField.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(MercurialPanel.class, "ACSD_userNameTextField")); // NOI18N
-        executablePathTextField.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(MercurialPanel.class, "ACSD_executablePathTextField")); // NOI18N
-        execPathBrowseButton.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(MercurialPanel.class, "ACSD_execPathBrowseButton")); // NOI18N
-        exportFilenameTextField.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(MercurialPanel.class, "ACSD_exportFileNameTextField")); // NOI18N
-        exportFilenameBrowseButton.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(MercurialPanel.class, "ACSD_exportFilenameBrowseButton")); // NOI18N
-        backupOnRevertModifications.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(MercurialPanel.class, "ACSD_backupOnRevertModifications")); // NOI18N
+        userNameTextField.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(GitPanel.class, "ACSD_userNameTextField")); // NOI18N
+        executablePathTextField.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(GitPanel.class, "ACSD_executablePathTextField")); // NOI18N
+        execPathBrowseButton.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(GitPanel.class, "ACSD_execPathBrowseButton")); // NOI18N
+        jPanel2.getAccessibleContext().setAccessibleName("<GitPanel.jPanel2.border.title>");
+        exportFilenameTextField.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(GitPanel.class, "ACSD_exportFileNameTextField")); // NOI18N
+        exportFilenameBrowseButton.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(GitPanel.class, "ACSD_exportFilenameBrowseButton")); // NOI18N
+        backupOnRevertModifications.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(GitPanel.class, "ACSD_backupOnRevertModifications")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
     
     private void nameChange() {
@@ -241,11 +248,11 @@ final class MercurialPanel extends javax.swing.JPanel {
         // someCheckBox.setSelected(NbPreferences.forModule(MercurialPanel.class).getBoolean("someFlag", false)); // NOI18N
         // or:
         // someTextField.setText(SomeSystemOption.getDefault().getSomeStringProperty());
-        userNameTextField.setText(HgModuleConfig.getDefault().getUserName());
-        executablePathTextField.setText(HgModuleConfig.getDefault().getExecutableBinaryPath());
-        exportFilenameTextField.setText(HgModuleConfig.getDefault().getExportFilename());
-        annotationTextField.setText(HgModuleConfig.getDefault().getAnnotationFormat());
-        backupOnRevertModifications.setSelected(HgModuleConfig.getDefault().getBackupOnRevertModifications());
+        userNameTextField.setText(GitModuleConfig.getDefault().getUserName());
+        executablePathTextField.setText(GitModuleConfig.getDefault().getExecutableBinaryPath());
+        exportFilenameTextField.setText(GitModuleConfig.getDefault().getExportFilename());
+        annotationTextField.setText(GitModuleConfig.getDefault().getAnnotationFormat());
+        backupOnRevertModifications.setSelected(GitModuleConfig.getDefault().getBackupOnRevertModifications());
     }
     
     void store() {
@@ -256,13 +263,13 @@ final class MercurialPanel extends javax.swing.JPanel {
         // NbPreferences.forModule(MercurialPanel.class).putBoolean("someFlag", someCheckBox.isSelected()); // NOI18N
         // or:
         // SomeSystemOption.getDefault().setSomeStringProperty(someTextField.getText());
-        HgModuleConfig.getDefault().setUserName(userNameTextField.getText());
-        HgModuleConfig.getDefault().setExecutableBinaryPath(executablePathTextField.getText());
-        HgModuleConfig.getDefault().setExportFilename(exportFilenameTextField.getText());
-        HgModuleConfig.getDefault().setAnnotationFormat(annotationTextField.getText());
-        HgModuleConfig.getDefault().setBackupOnRevertModifications(backupOnRevertModifications.isSelected());
-        if (MercurialAnnotator.isRevisionInAnnotationFormat(annotationTextField.getText())){
-            HgUtils.warningDialog(MercurialPanel.class, 
+        GitModuleConfig.getDefault().setUserName(userNameTextField.getText());
+        GitModuleConfig.getDefault().setExecutableBinaryPath(executablePathTextField.getText());
+        GitModuleConfig.getDefault().setExportFilename(exportFilenameTextField.getText());
+        GitModuleConfig.getDefault().setAnnotationFormat(annotationTextField.getText());
+        GitModuleConfig.getDefault().setBackupOnRevertModifications(backupOnRevertModifications.isSelected());
+        if (GitAnnotator.isRevisionInAnnotationFormat(annotationTextField.getText())){
+            GitUtils.warningDialog(GitPanel.class, 
                     "MSG_STATUS_LABEL_WITH_REVSION_TITLE", "MSG_STATUS_LABEL_WITH_REVSION_MSG");// NOI18N
         }
     }
@@ -272,10 +279,10 @@ final class MercurialPanel extends javax.swing.JPanel {
         //return true;
         String username = userNameTextField.getText();
         Boolean valid;
-        valid =  HgModuleConfig.getDefault().isUserNameValid(username);
+        valid =  GitModuleConfig.getDefault().isUserNameValid(username);
         if (!valid) return false;
         String execpath = executablePathTextField.getText();
-        valid = HgModuleConfig.getDefault().isExecPathValid(execpath);
+        valid = GitModuleConfig.getDefault().isExecPathValid(execpath);
         return valid;
     }
  

@@ -163,8 +163,24 @@ public class GitAnnotator extends VCSAnnotator {
         refresh();
     }
 
-    private void refresh() {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public void refresh() {
+        String string = GitModuleConfig.getDefault().getAnnotationFormat();
+        if (string != null && !string.trim().equals("")) { // NOI18N
+            needRevisionForFormat = isRevisionInAnnotationFormat(string);
+            string = string.replaceAll("\\{revision\\}",  "\\{0\\}");           // NOI18N
+            string = string.replaceAll("\\{status\\}",    "\\{1\\}");           // NOI18N
+            string = string.replaceAll("\\{folder\\}",    "\\{2\\}");           // NOI18N
+            format = new MessageFormat(string);
+            emptyFormat = format.format(new String[] {"", "", ""} , new StringBuffer(), null).toString().trim(); // NOI18N
+        }
+    }
+    
+    public static boolean isRevisionInAnnotationFormat(String str){
+        if (str.indexOf("{revision}") != -1) { // NOI18N
+            return true;
+        } else {
+            return false;
+        }        
     }
 
     private void initDefaultColor(String name) {
@@ -172,7 +188,6 @@ public class GitAnnotator extends VCSAnnotator {
         if (color == null) return;
         setAnnotationColor(name, color);
     }
-
 
     /**
      * Changes annotation color of files.

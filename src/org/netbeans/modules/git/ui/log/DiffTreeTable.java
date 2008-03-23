@@ -216,6 +216,7 @@ class DiffTreeTable extends TreeTableView {
         }
         
         @SuppressWarnings("unchecked")
+        @Override
         protected void removeNotify() {
             setKeys(Collections.EMPTY_SET);
         }

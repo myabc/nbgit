@@ -41,10 +41,16 @@
  */
 package org.netbeans.modules.git.ui.log;
 
+import java.awt.BorderLayout;
+import java.io.File;
+import java.util.Collection;
 import java.util.Date;
 import org.netbeans.modules.git.ui.diff.DiffSetupSource;
+import org.netbeans.modules.git.util.GitUtils;
 import org.netbeans.modules.versioning.spi.VCSContext;
+import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
+import org.openide.windows.TopComponent;
 
 /**
  * @author Maros Sandor
@@ -110,12 +116,12 @@ public class SearchHistoryTopComponent extends TopComponent implements DiffSetup
         if (from != null){ 
             scp.setFrom(SearchExecutor.simpleDateFormat.format(from));
         }else{
-            scp.setFrom(HgUtils.getLastWeeksDateStr());
+            scp.setFrom(GitUtils.getLastWeeksDateStr());
         }
         if (to != null){
             scp.setTo(SearchExecutor.simpleDateFormat.format(to));
         }else{
-            scp.setTo(HgUtils.getTodaysDateStr());
+            scp.setTo(GitUtils.getTodaysDateStr());
         }
         shp = new SearchHistoryPanel(roots, scp);
         add(shp);

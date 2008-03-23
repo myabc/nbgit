@@ -162,7 +162,6 @@ public class RepositoryRevision {
             text.append(getPath());
             return text.toString();
         }
-
         
     }
 }

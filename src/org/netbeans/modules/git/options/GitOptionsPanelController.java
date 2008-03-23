@@ -45,10 +45,13 @@ import java.awt.BorderLayout;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -78,7 +81,7 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
         panel.execPathBrowseButton.addActionListener(this);
         panel.exportFilenameBrowseButton.addActionListener(this);
 
-        String tooltip = NbBundle.getMessage(MercurialPanel.class, "MercurialPanel.annotationTextField.toolTipText", MercurialAnnotator.LABELS); // NOI18N
+        String tooltip = NbBundle.getMessage(GitPanel.class, "MercurialPanel.annotationTextField.toolTipText", GitAnnotator.LABELS); // NOI18N
 
         panel.annotationTextField.setToolTipText(tooltip);
         panel.addButton.addActionListener(this);
@@ -95,7 +98,7 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
 
         getPanel().store();
         // {folder} variable setting
-        Git.getInstance().getMercurialAnnotator().refresh();
+        Git.getInstance().getGitAnnotator().refresh();
         Git.getInstance().refreshAllAnnotations();
 
         changed = false;
@@ -155,8 +158,8 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
         String username = panel.userNameTextField.getText();
         if (!GitModuleConfig.getDefault().isUserNameValid(username)) {
             JOptionPane.showMessageDialog(null,
-                                          NbBundle.getMessage(MercurialPanel.class, "MSG_WARN_USER_NAME_TEXT"), // NOI18N
-                                          NbBundle.getMessage(MercurialPanel.class, "MSG_WARN_FIELD_TITLE"), // NOI18N
+                                          NbBundle.getMessage(GitPanel.class, "MSG_WARN_USER_NAME_TEXT"), // NOI18N
+                                          NbBundle.getMessage(GitPanel.class, "MSG_WARN_FIELD_TITLE"), // NOI18N
                                           JOptionPane.WARNING_MESSAGE);
             return false;
         }
@@ -238,6 +241,7 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
             this.variable = variable;
         }
 
+        @Override
         public String toString() {
             return description;
         }
@@ -257,7 +261,7 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
         for (int i = 0; i < GitAnnotator.LABELS.length; i++) {   
             LabelVariable variable = new LabelVariable(
                     GitAnnotator.LABELS[i], 
-                    "{" + GitAnnotator.LABELS[i] + "} - " + NbBundle.getMessage(GitPanel.class, "MercurialPanel.label." + MercurialAnnotator.LABELS[i]) // NOI18N
+                    "{" + GitAnnotator.LABELS[i] + "} - " + NbBundle.getMessage(GitPanel.class, "MercurialPanel.label." + GitAnnotator.LABELS[i]) // NOI18N
             );
             variables.add(variable);   
         }       
@@ -274,6 +278,7 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
         dialog.getAccessibleContext().setAccessibleDescription(acsd);
         
         labelsPanel.labelsList.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2) {
                     dialog.setVisible(false);
@@ -336,7 +341,7 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
         panel.putClientProperty("contentTitle", null);  // NOI18N
         panel.putClientProperty("DialogDescriptor", dd); // NOI18N
         Dialog dialog = DialogDisplayer.getDefault().createDialog(dd);
-        dialog.getAccessibleContext().setAccessibleDescription(NbBundle.getMessage(MercurialOptionsPanelController.class, "CTL_PropertiesDialog_Title")); // NOI18N
+        dialog.getAccessibleContext().setAccessibleDescription(NbBundle.getMessage(GitOptionsPanelController.class, "CTL_PropertiesDialog_Title")); // NOI18N
 
         dialog.pack();
         dialog.setVisible(true);

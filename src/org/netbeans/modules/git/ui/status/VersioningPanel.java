@@ -43,6 +43,7 @@ import org.netbeans.modules.git.GitProgressSupport;
 import org.netbeans.modules.git.ui.commit.CommitAction;
 import org.netbeans.modules.git.ui.diff.DiffAction;
 import org.netbeans.modules.git.ui.diff.Setup;
+import org.netbeans.modules.git.ui.update.UpdateAction;
 import org.netbeans.modules.git.util.GitCommand;
 import org.netbeans.modules.git.util.GitUtils;
 import org.netbeans.modules.versioning.spi.VCSContext;
@@ -611,11 +612,13 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
                 button.setMargin(new Insets(0, 3, 0, 3));
                 button.setBorderPainted(false);
                 button.addMouseListener(new MouseAdapter() {
+                    @Override
                     public void mouseEntered(MouseEvent e) {
                         button.setContentAreaFilled(true);
                         button.setBorderPainted(true);
                     }
                     
+                    @Override
                     public void mouseExited(MouseEvent e) {
                         button.setContentAreaFilled(false);
                         button.setBorderPainted(false);

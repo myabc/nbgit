@@ -289,6 +289,7 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
         splitPane.setDividerLocation(optimalLocation);
     }
     
+    @Override
     public void removeNotify() {
         Git.getInstance().getFileStatusCache().removePropertyChangeListener(this);
         super.removeNotify();

@@ -49,6 +49,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
@@ -62,7 +63,6 @@ import org.netbeans.modules.git.Git;
 import org.netbeans.modules.git.GitModuleConfig;
 import org.netbeans.modules.git.GitProgressSupport;
 import org.netbeans.modules.git.ui.properties.GitPropertiesNode;
-import org.netbeans.modules.git.ui.properties.PropertiesPanel;
 import org.openide.util.RequestProcessor;
 
 public class GitExtProperties implements ActionListener, DocumentListener {
@@ -146,20 +146,20 @@ public class GitExtProperties implements ActionListener, DocumentListener {
             support = new GitProgressSupport() {
                 protected void perform() {
                     Properties props = GitModuleConfig.getDefault().getProperties(root, "extensions"); // NOI18N
-                    GitPropertiesNode[] hgProps = new HgPropertiesNode[props.size()];
+                    GitPropertiesNode[] hgProps = new GitPropertiesNode[props.size()];
                     int i = 0;
 
                     for (Enumeration e = props.propertyNames(); e.hasMoreElements() ; ) {
                         String name = (String) e.nextElement();
                         String tmp = props.getProperty(name);
                         String value = tmp != null ? tmp : ""; // NOI18N
-                        hgProps[i] = new HgPropertiesNode(name, value);
+                        hgProps[i] = new GitPropertiesNode(name, value);
                         i++;
                      }
                      propTable.setNodes(hgProps);
                 }
             };
-            support.start(rp, null, org.openide.util.NbBundle.getMessage(HgExtProperties.class, "LBL_Properties_Progress")); // NOI18N
+            support.start(rp, null, org.openide.util.NbBundle.getMessage(GitExtProperties.class, "LBL_Properties_Progress")); // NOI18N
         } finally {
             support = null;
         }
@@ -175,7 +175,7 @@ public class GitExtProperties implements ActionListener, DocumentListener {
                 return true;
             } 
         }
-        GitPropertiesNode[] hgProps = new HgPropertiesNode[hgPropertiesNodes.length + 1];
+        GitPropertiesNode[] hgProps = new GitPropertiesNode[hgPropertiesNodes.length + 1];
         for (int i = 0; i < hgPropertiesNodes.length; i++) {
             hgProps[i] = hgPropertiesNodes[i];
         }
@@ -201,11 +201,11 @@ public class GitExtProperties implements ActionListener, DocumentListener {
                     for (int i = 0; i < hgPropertiesNodes.length; i++) {
                         String hgPropertyName = hgPropertiesNodes[propTable.getModelIndex(i)].getName();
                         String hgPropertyValue = hgPropertiesNodes[propTable.getModelIndex(i)].getValue();
-                        HgModuleConfig.getDefault().setProperty(root, "extensions", hgPropertyName, hgPropertyValue, true); // NOI18N
+                        GitModuleConfig.getDefault().setProperty(root, "extensions", hgPropertyName, hgPropertyValue, true); // NOI18N
                     }
                 }
             };
-            support.start(rp, null, org.openide.util.NbBundle.getMessage(HgExtProperties.class, "LBL_Properties_Progress")); // NOI18N
+            support.start(rp, null, org.openide.util.NbBundle.getMessage(GitExtProperties.class, "LBL_Properties_Progress")); // NOI18N
         } finally {
             support = null;
         }

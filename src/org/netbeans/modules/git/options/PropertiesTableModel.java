@@ -41,10 +41,12 @@
  */
 package org.netbeans.modules.git.options;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javax.swing.table.AbstractTableModel;
+import org.netbeans.modules.git.ui.properties.GitPropertiesNode;
 import org.openide.util.NbBundle;
 
 /**
@@ -72,7 +74,7 @@ public class PropertiesTableModel extends AbstractTableModel {
         if (Arrays.equals(columns, clms))
             return;
         setColumns(clms);
-        setNodes(new HgPropertiesNode[0]);
+        setNodes(new GitPropertiesNode[0]);
     }
     
     public void setColumns(String[] clms) {
@@ -80,16 +82,16 @@ public class PropertiesTableModel extends AbstractTableModel {
         fireTableStructureChanged();
     }
     
-    public void setNodes(HgPropertiesNode[] nodes) {
+    public void setNodes(GitPropertiesNode[] nodes) {
         this.nodes = nodes;
         fireTableDataChanged();
     }
     
-    public HgPropertiesNode[] getNodes() {
+    public GitPropertiesNode[] getNodes() {
         return nodes;
     }
     
-    public HgPropertiesNode getNode(int row) {
+    public GitPropertiesNode getNode(int row) {
         return nodes[row];
     }
     
@@ -97,6 +99,7 @@ public class PropertiesTableModel extends AbstractTableModel {
         return nodes.length;
     }
 
+    @Override
     public String getColumnName(int column) {
         return columnLabels.get(columns[column])[0];
     }

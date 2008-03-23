@@ -41,6 +41,24 @@
  */
 package org.netbeans.modules.git.options;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.util.Arrays;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
+import org.netbeans.modules.git.ui.properties.GitPropertiesNode;
+import org.netbeans.modules.versioning.util.TableSorter;
+import org.openide.util.NbBundle;
+
 /**
  *
  * @author Peter Pis
@@ -152,11 +170,11 @@ public class PropertiesTable implements AncestorListener, TableModelListener {
         return table.getSelectedRows();
     }
      
-    public HgPropertiesNode[] getNodes() {
+    public GitPropertiesNode[] getNodes() {
         return tableModel.getNodes();
     }
     
-    public void setNodes(HgPropertiesNode[] nodes) {
+    public void setNodes(GitPropertiesNode[] nodes) {
         tableModel.setNodes(nodes);
     }
     
@@ -180,6 +198,7 @@ public class PropertiesTable implements AncestorListener, TableModelListener {
 
     public class PropertiesTableCellRenderer extends DefaultTableCellRenderer {
            
+        @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int rowIndex, int columnIndex) {
             Component renderer =  super.getTableCellRendererComponent(table, value, hasFocus, hasFocus, rowIndex, columnIndex);
             if (renderer instanceof JComponent) {

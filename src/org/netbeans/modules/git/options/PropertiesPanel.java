@@ -41,6 +41,13 @@
  */
 package org.netbeans.modules.git.options;
 
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import org.netbeans.modules.git.GitModuleConfig;
+import org.netbeans.modules.versioning.util.ListenersSupport;
+
 /**
  *
  * @author  Peter Pis
@@ -76,22 +83,24 @@ public class PropertiesPanel extends javax.swing.JPanel implements PreferenceCha
         this.propertiesTable = propertiesTable;
     }
     
+    @Override
     public void addNotify() {
         super.addNotify();
-        HgModuleConfig.getDefault().getPreferences().addPreferenceChangeListener(this);        
+        GitModuleConfig.getDefault().getPreferences().addPreferenceChangeListener(this);        
         propertiesTable.getTableModel().addTableModelListener(this);
         listenerSupport.fireVersioningEvent(EVENT_SETTINGS_CHANGED);
         txtAreaValue.selectAll();
     }
 
+    @Override
     public void removeNotify() {
         propertiesTable.getTableModel().removeTableModelListener(this);
-        HgModuleConfig.getDefault().getPreferences().removePreferenceChangeListener(this);
+        GitModuleConfig.getDefault().getPreferences().removePreferenceChangeListener(this);
         super.removeNotify();
     }
     
     public void preferenceChange(PreferenceChangeEvent evt) {
-        if (evt.getKey().startsWith(HgModuleConfig.PROP_COMMIT_EXCLUSIONS)) {
+        if (evt.getKey().startsWith(GitModuleConfig.PROP_COMMIT_EXCLUSIONS)) {
             propertiesTable.dataChanged();
             listenerSupport.fireVersioningEvent(EVENT_SETTINGS_CHANGED);
         }
@@ -125,7 +134,7 @@ public class PropertiesPanel extends javax.swing.JPanel implements PreferenceCha
         propsPanel.setLayout(propsPanelLayout);
         propsPanelLayout.setHorizontalGroup(
             propsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 427, Short.MAX_VALUE)
+            .add(0, 566, Short.MAX_VALUE)
         );
         propsPanelLayout.setVerticalGroup(
             propsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)

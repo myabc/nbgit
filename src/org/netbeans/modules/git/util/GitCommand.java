@@ -347,6 +347,10 @@ public class GitCommand {
         return list;
     }
     
+    public static List<String> doUpdateAll(File repository, boolean bForce, String revision) throws GitException {
+        return doUpdateAll(repository, bForce, revision, true);
+    }
+    
     /**
      * Roll back the last transaction in this repository
      * Transactions are used to encapsulate the effects of all commands

@@ -458,7 +458,7 @@ class SearchHistoryPanel extends javax.swing.JPanel implements ExplorerManager.P
         gridBagConstraints.weightx = 1.0;
         add(searchCriteriaPanel, gridBagConstraints);
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/netbeans/modules/mercurial/ui/log/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/netbeans/modules/git/ui/log/Bundle"); // NOI18N
         bSearch.setToolTipText(bundle.getString("TT_Search")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;

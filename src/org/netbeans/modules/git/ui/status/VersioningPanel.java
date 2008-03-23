@@ -680,7 +680,7 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
         jPanel4.setOpaque(false);
         jPanel2.add(jPanel4);
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/netbeans/modules/mercurial/ui/status/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/netbeans/modules/git/ui/status/Bundle"); // NOI18N
         statusLabel.setText(bundle.getString("CTL_Versioning_Status_Table_Title")); // NOI18N
         statusLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         statusLabel.setMaximumSize(new java.awt.Dimension(120, 17));
@@ -696,7 +696,6 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
         jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
         jPanel2.add(jSeparator2);
 
-        btnRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/mercurial/resources/icons/refresh.png"))); // NOI18N
         btnRefresh.setToolTipText(org.openide.util.NbBundle.getMessage(VersioningPanel.class, "CTL_Synchronize_Action_Refresh_Tooltip")); // NOI18N
         btnRefresh.setMaximumSize(new java.awt.Dimension(28, 28));
         btnRefresh.setMinimumSize(new java.awt.Dimension(28, 28));
@@ -705,7 +704,6 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
         jPanel2.add(btnRefresh);
         btnRefresh.getAccessibleContext().setAccessibleName("Refresh Status");
 
-        btnDiff.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/mercurial/resources/icons/diff.png"))); // NOI18N
         btnDiff.setToolTipText(bundle.getString("CTL_Synchronize_Action_Diff_Tooltip")); // NOI18N
         btnDiff.setFocusable(false);
         btnDiff.setPreferredSize(new java.awt.Dimension(22, 25));
@@ -716,7 +714,6 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
         jPanel3.setOpaque(false);
         jPanel2.add(jPanel3);
 
-        btnUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/mercurial/resources/icons/update.png"))); // NOI18N
         btnUpdate.setToolTipText(bundle.getString("CTL_Synchronize_Action_Update_Tooltip")); // NOI18N
         btnUpdate.setFocusable(false);
         btnUpdate.setPreferredSize(new java.awt.Dimension(22, 25));
@@ -724,7 +721,6 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
         jPanel2.add(btnUpdate);
         btnUpdate.getAccessibleContext().setAccessibleName("Update");
 
-        btnCommit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/mercurial/resources/icons/commit.png"))); // NOI18N
         btnCommit.setToolTipText(bundle.getString("CTL_CommitForm_Action_Commit_Tooltip")); // NOI18N
         btnCommit.setFocusable(false);
         btnCommit.setPreferredSize(new java.awt.Dimension(22, 25));

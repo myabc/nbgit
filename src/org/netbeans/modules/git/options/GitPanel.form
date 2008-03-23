@@ -29,16 +29,16 @@
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="userNameTextField" alignment="0" pref="769" max="32767" attributes="0"/>
+                          <Component id="userNameTextField" alignment="0" pref="971" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="exportFilenameTextField" pref="458" max="32767" attributes="0"/>
-                                  <Component id="executablePathTextField" alignment="1" pref="458" max="32767" attributes="0"/>
+                                  <Component id="exportFilenameTextField" pref="559" max="32767" attributes="0"/>
+                                  <Component id="executablePathTextField" alignment="1" pref="559" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Component id="execPathBrowseButton" min="-2" max="-2" attributes="1"/>
-                                  <Component id="exportFilenameBrowseButton" alignment="1" pref="302" max="32767" attributes="1"/>
+                                  <Component id="exportFilenameBrowseButton" alignment="1" pref="403" max="32767" attributes="1"/>
                               </Group>
                           </Group>
                       </Group>
@@ -139,7 +139,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="&lt;GitPanel.jPanel1.border.title&gt;">
+            <TitledBorder title="Git Status Labels">
               <ResourceString PropertyName="titleX" bundle="org/netbeans/modules/git/options/Bundle.properties" key="GitPanel.jPanel1.border.title" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </TitledBorder>
           </Border>
@@ -154,7 +154,7 @@
                   <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="annotationTextField" min="-2" pref="405" max="-2" attributes="0"/>
-                  <EmptySpace pref="155" max="32767" attributes="0"/>
+                  <EmptySpace pref="494" max="32767" attributes="0"/>
                   <Component id="addButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
@@ -216,8 +216,8 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="&lt;MecurialPanel.jPanel2.border.title&gt;">
-              <ResourceString PropertyName="titleX" bundle="org/netbeans/modules/git/options/Bundle.properties" key="MecurialPanel.jPanel2.border.title" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+            <TitledBorder title="Git Extensions">
+              <ResourceString PropertyName="titleX" bundle="org/netbeans/modules/git/options/Bundle.properties" key="GitPanel.jPanel2.border.title" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </TitledBorder>
           </Border>
         </Property>

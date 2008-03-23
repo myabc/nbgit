@@ -708,7 +708,7 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(20, Short.MAX_VALUE)
                 .add(jPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -729,14 +729,14 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
 
         controlsToolBar.add(jPanel1);
 
-        nextButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/mercurial/resources/icons/diff-next.png"))); // NOI18N
+        nextButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/git/resources/icons/diff-next.png"))); // NOI18N
         nextButton.setToolTipText(org.openide.util.NbBundle.getMessage(MultiDiffPanel.class, "CTL_DiffPanel_Next_Tooltip")); // NOI18N
         nextButton.setFocusable(false);
         nextButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         nextButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         controlsToolBar.add(nextButton);
 
-        prevButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/mercurial/resources/icons/diff-prev.png"))); // NOI18N
+        prevButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/git/resources/icons/diff-prev.png"))); // NOI18N
         prevButton.setToolTipText(org.openide.util.NbBundle.getMessage(MultiDiffPanel.class, "CTL_DiffPanel_Prev_Tooltip")); // NOI18N
         prevButton.setFocusable(false);
         prevButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -758,7 +758,7 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
 
         controlsToolBar.add(jPanel2);
 
-        refreshButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/mercurial/resources/icons/refresh.png"))); // NOI18N
+        refreshButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/git/resources/icons/refresh.png"))); // NOI18N
         refreshButton.setToolTipText(org.openide.util.NbBundle.getMessage(MultiDiffPanel.class, "refreshButton.toolTipText")); // NOI18N
         refreshButton.setFocusable(false);
         refreshButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -770,7 +770,7 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
         });
         controlsToolBar.add(refreshButton);
 
-        updateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/mercurial/resources/icons/update.png"))); // NOI18N
+        updateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/git/resources/icons/update.png"))); // NOI18N
         updateButton.setFocusable(false);
         updateButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         updateButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -796,7 +796,7 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
 
         controlsToolBar.add(jPanel5);
 
-        commitButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/mercurial/resources/icons/commit.png"))); // NOI18N
+        commitButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/git/resources/icons/commit.png"))); // NOI18N
         commitButton.setToolTipText(org.openide.util.NbBundle.getMessage(MultiDiffPanel.class, "MSG_CommitDiff_Tooltip")); // NOI18N
         commitButton.setFocusable(false);
         commitButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);

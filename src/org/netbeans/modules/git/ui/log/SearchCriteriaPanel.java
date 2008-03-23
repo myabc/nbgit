@@ -186,7 +186,7 @@ class SearchCriteriaPanel extends javax.swing.JPanel {
         setLayout(new java.awt.GridBagLayout());
 
         commitMessageLabel.setLabelFor(tfCommitMessage);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/netbeans/modules/mercurial/ui/log/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/netbeans/modules/git/ui/log/Bundle"); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(commitMessageLabel, bundle.getString("CTL_UseCommitMessage")); // NOI18N
         commitMessageLabel.setToolTipText(bundle.getString("TT_CommitMessage")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();

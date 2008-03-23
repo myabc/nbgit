@@ -31,7 +31,7 @@
     <Container class="javax.swing.JPanel" name="pathsPanel">
       <Properties>
         <Property name="name" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/netbeans/modules/mercurial/ui/wizards/Bundle.properties" key="pathsPanel.Name" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/netbeans/modules/git/ui/wizards/Bundle.properties" key="pathsPanel.Name" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
 
@@ -47,8 +47,8 @@
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="defaultPullPathField" pref="505" max="32767" attributes="0"/>
-                              <Component id="defaultPushPathField" alignment="0" pref="505" max="32767" attributes="0"/>
+                              <Component id="defaultPullPathField" pref="557" max="32767" attributes="0"/>
+                              <Component id="defaultPushPathField" alignment="0" pref="557" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <Component id="jLabel1" alignment="0" pref="682" max="32767" attributes="0"/>
@@ -83,7 +83,7 @@
               <ComponentRef name="defaultPullPathField"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/netbeans/modules/mercurial/ui/wizards/Bundle.properties" key="defaultPullLabel.Name" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/netbeans/modules/git/ui/wizards/Bundle.properties" key="defaultPullLabel.Name" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
@@ -101,7 +101,7 @@
               <ComponentRef name="defaultPushPathField"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/netbeans/modules/mercurial/ui/wizards/Bundle.properties" key="defaultPushLabel.Name" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/netbeans/modules/git/ui/wizards/Bundle.properties" key="defaultPushLabel.Name" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
@@ -113,7 +113,7 @@
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/netbeans/modules/mercurial/ui/wizards/Bundle.properties" key="defaultLabel.Name" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/netbeans/modules/git/ui/wizards/Bundle.properties" key="defaultLabel.Name" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>

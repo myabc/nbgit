@@ -72,7 +72,7 @@ import org.openide.util.RequestProcessor;
  */
 public class Git {
     
-    public static final String GIT_OUTPUT_TAB_TITLE = org.openide.util.NbBundle.getMessage(Git.class, "CTL_Mercurial_DisplayName"); // NOI18N
+    public static final String GIT_OUTPUT_TAB_TITLE = org.openide.util.NbBundle.getMessage(Git.class, "CTL_Git_DisplayName"); // NOI18N
     public static final String CHANGESET_STR = "changeset:"; // NOI18N
     
     //public static final int GIT_FETCH_20_REVISIONS = 20;
@@ -243,7 +243,7 @@ public class Git {
     }
     
     public File getTopmostManagedParent(File file) {
-        if (GitUtils.isPartOfMercurialMetadata(file)) {
+        if (GitUtils.isPartOfGitMetadata(file)) {
             for (;file != null; file = file.getParentFile()) {
                 if (isAdministrative(file)) {
                     file = file.getParentFile();
@@ -374,7 +374,7 @@ public class Git {
 
         RequestProcessor rp = processorsToUrl.get(key);
         if(rp == null) {
-            rp = new RequestProcessor("Mercurial - " + key, 1, true); // NOI18N
+            rp = new RequestProcessor("Git - " + key, 1, true); // NOI18N
             processorsToUrl.put(key, rp);
         }
         return rp;
@@ -388,7 +388,7 @@ public class Git {
 
     /**
      *
-     * @param repositoryRoot String of Mercurial repository so that logger writes to correct output tab. Can be null
+     * @param repositoryRoot String of Git repository so that logger writes to correct output tab. Can be null
      * in which case the logger will not print anything
      * @return OutputLogger logger to write to
      */

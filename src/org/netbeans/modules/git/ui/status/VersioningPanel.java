@@ -65,7 +65,7 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
     
     private ExplorerManager             explorerManager;
     private final GitVersioningTopComponent parentTopComponent;
-    private final Git             mercurial;
+    private final Git             git;
     private VCSContext                  context;
     private int                         displayStatuses;
     private String                      branchInfo;
@@ -73,12 +73,12 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
     private RequestProcessor.Task       refreshViewTask;
     private Thread                      refreshViewThread;
     
-    private GitProgressSupport           hgProgressSupport;
-    private static final RequestProcessor   rp = new RequestProcessor("MercurialView", 1, true);  // NOI18N
+    private GitProgressSupport           gitProgressSupport;
+    private static final RequestProcessor   rp = new RequestProcessor("GitView", 1, true);  // NOI18N
     
     private final NoContentPanel noContentComponent = new NoContentPanel();
     
-    private static final int HG_UPDATE_TARGET_LIMIT = 100;
+    private static final int GIT_UPDATE_TARGET_LIMIT = 100;
     
     /**
      * Creates a new Synchronize Panel managed by the given versioning system.
@@ -87,7 +87,7 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
      */
     public VersioningPanel(GitVersioningTopComponent parent) {
         this.parentTopComponent = parent;
-        this.mercurial = Git.getInstance();
+        this.git = Git.getInstance();
         refreshViewTask = rp.create(new RefreshViewTask());
         explorerManager = new ExplorerManager();
         displayStatuses = FileInformation.STATUS_LOCAL_CHANGE;
@@ -158,8 +158,8 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
     public void addNotify() {
         super.addNotify();
         GitModuleConfig.getDefault().getPreferences().addPreferenceChangeListener(this);
-        mercurial.getFileStatusCache().addPropertyChangeListener(this);        
-        mercurial.addPropertyChangeListener(this);
+        git.getFileStatusCache().addPropertyChangeListener(this);        
+        git.addPropertyChangeListener(this);
         explorerManager.addPropertyChangeListener(this);
         reScheduleRefresh(0);   // the view does not listen for changes when it is not visible
     }
@@ -167,8 +167,8 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
     @Override
     public void removeNotify() {
         GitModuleConfig.getDefault().getPreferences().removePreferenceChangeListener(this);
-        mercurial.getFileStatusCache().removePropertyChangeListener(this);
-        mercurial.removePropertyChangeListener(this);
+        git.getFileStatusCache().removePropertyChangeListener(this);
+        git.removePropertyChangeListener(this);
         explorerManager.removePropertyChangeListener(this);
         super.removeNotify();
     }
@@ -235,7 +235,7 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
             if (files == null || files.length == 0) return;
 
             /* #126311: Optimize UI for Large repos
-            File root = mercurial.getTopmostManagedParent(files[0]);
+            File root = git.getTopmostManagedParent(files[0]);
             String[] info = getRepositoryBranchInfo(root);
             String branchName = info != null ? info[0] : null;
             String rev = info != null ? info[1] : null;
@@ -312,7 +312,7 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
     }
     
     private SyncFileNode [] getNodes(VCSContext context, int includeStatus) {
-        GitFileNode [] fnodes = mercurial.getNodes(context, includeStatus);
+        GitFileNode [] fnodes = git.getNodes(context, includeStatus);
         SyncFileNode [] nodes = new SyncFileNode[fnodes.length];
         for (int i = 0; i < fnodes.length; i++) {
             if (Thread.interrupted()) return null;
@@ -349,7 +349,7 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
     
     /**
      * Refreshes statuses of all files in the view. It does
-     * that by issuing the "hg status -marduiC" command, updating the cache
+     * that by issuing the "git status -marduiC" command, updating the cache
      * and refreshing file nodes.
      */
     private void onRefreshAction() {
@@ -370,16 +370,16 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
     
     /* Async Connects to repository and gets recent status. */
     private void refreshStatuses() {
-        if(hgProgressSupport!=null) {
-            hgProgressSupport.cancel();
-            hgProgressSupport = null;
+        if(gitProgressSupport!=null) {
+            gitProgressSupport.cancel();
+            gitProgressSupport = null;
         }
         
         final String repository  = GitUtils.getRootPath(context);
         if (repository == null) return;
 
         RequestProcessor rp = Git.getInstance().getRequestProcessor(repository);
-        hgProgressSupport = new GitProgressSupport() {
+        gitProgressSupport = new GitProgressSupport() {
             public void perform() {
                 StatusAction.executeStatus(context, this);
                 setupModels();
@@ -387,7 +387,7 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
         };
 
         parentTopComponent.contentRefreshed();
-        hgProgressSupport.start(rp, repository, org.openide.util.NbBundle.getMessage(VersioningPanel.class, "LBL_Refresh_Progress")); // NOI18N
+        gitProgressSupport.start(rp, repository, org.openide.util.NbBundle.getMessage(VersioningPanel.class, "LBL_Refresh_Progress")); // NOI18N
 
     }
     

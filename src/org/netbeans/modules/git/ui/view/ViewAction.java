@@ -66,7 +66,7 @@ import org.openide.util.RequestProcessor;
 public class ViewAction extends ContextAction {
     
     private final VCSContext context;
-    private static final String HG_SCRIPTS_DIR = "scripts";
+    private static final String GIT_SCRIPTS_DIR = "scripts";
 
     public ViewAction(String name, VCSContext context) {
         this.context = context;
@@ -91,12 +91,12 @@ public class ViewAction extends ContextAction {
             logger.outputInRed(NbBundle.getMessage(ViewAction.class, "MSG_VIEW_TITLE")); // NOI18N
             logger.outputInRed(NbBundle.getMessage(ViewAction.class, "MSG_VIEW_TITLE_SEP")); // NOI18N
 
-            String hgkCommand = GitCommand.GITK_COMMAND;
+            String gitkCommand = GitCommand.GITK_COMMAND;
 //            if(Utilities.isWindows()){ 
-//                hgkCommand = hgkCommand + GitCommand.GIT_WINDOWS_CMD;
+//                gitkCommand = gitkCommand + GitCommand.GIT_WINDOWS_CMD;
 //            }
-            boolean bHgkFound = false;
-//            if(GitUtils.isInUserPath(hgkCommand)){
+            boolean bGitkFound = false;
+//            if(GitUtils.isInUserPath(gitkCommand)){
 //                    bHgkFound = true;                
 //            } else if(GitUtils.isSolaris()){
 //                File f = new File(GitCommand.HG_HGK_PATH_SOLARIS10, hgkCommand);
@@ -105,32 +105,32 @@ public class ViewAction extends ContextAction {
 //            }else if(Utilities.isWindows()){
 //                bHgkFound = HgUtils.isInUserPath(HG_SCRIPTS_DIR + File.separator + hgkCommand);                    
 //            }
-            boolean bHgkPropExists = GitConfigFiles.getInstance().containsProperty(
-                            GitConfigFiles.HG_EXTENSIONS, GitConfigFiles.HG_EXTENSIONS_HGK);
+            boolean bGitkPropExists = GitConfigFiles.getInstance().containsProperty(
+                            GitConfigFiles.GIT_EXTENSIONS, GitConfigFiles.GIT_EXTENSIONS_GITK);
             
-            if(!bHgkFound){
+            if(!bGitkFound){
                 logger.outputInRed(
-                            NbBundle.getMessage(ViewAction.class, "MSG_VIEW_HGK_NOT_FOUND_INFO")); // NOI18N
+                            NbBundle.getMessage(ViewAction.class, "MSG_VIEW_GITK_NOT_FOUND_INFO")); // NOI18N
                 logger.output(""); // NOI18N
                 JOptionPane.showMessageDialog(null,
-                        NbBundle.getMessage(ViewAction.class, "MSG_VIEW_HGK_NOT_FOUND"),// NOI18N
-                        NbBundle.getMessage(ViewAction.class, "MSG_VIEW_HGK_NOT_FOUND_TITLE"),// NOI18N
+                        NbBundle.getMessage(ViewAction.class, "MSG_VIEW_GITK_NOT_FOUND"),// NOI18N
+                        NbBundle.getMessage(ViewAction.class, "MSG_VIEW_GITK_NOT_FOUND_TITLE"),// NOI18N
                         JOptionPane.INFORMATION_MESSAGE);
                 logger.closeLog();
                 return;
             }
-            if(!bHgkPropExists){
-                boolean bConfirmSetHgkProp = false;
-                bConfirmSetHgkProp = GitUtils.confirmDialog(
-                        ViewAction.class, "MSG_VIEW_SETHGK_PROP_CONFIRM_TITLE", // NOI18N
-                        "MSG_VIEW_SETHGK_PROP_CONFIRM_QUERY"); // NOI18N                
-                if (bConfirmSetHgkProp) {
+            if(!bGitkPropExists){
+                boolean bConfirmSetGitkProp = false;
+                bConfirmSetGitkProp = GitUtils.confirmDialog(
+                        ViewAction.class, "MSG_VIEW_SETGITK_PROP_CONFIRM_TITLE", // NOI18N
+                        "MSG_VIEW_SETGITK_PROP_CONFIRM_QUERY"); // NOI18N                
+                if (bConfirmSetGitkProp) {
                     logger.outputInRed(
-                            NbBundle.getMessage(ViewAction.class, "MSG_VIEW_SETHGK_PROP_DO_INFO")); // NOI18N
-                    GitConfigFiles.getInstance().setProperty(GitConfigFiles.HG_EXTENSIONS_HGK, ""); // NOI18N
+                            NbBundle.getMessage(ViewAction.class, "MSG_VIEW_SETGITK_PROP_DO_INFO")); // NOI18N
+                    GitConfigFiles.getInstance().setProperty(GitConfigFiles.GIT_EXTENSIONS_GITK, ""); // NOI18N
                 }else{
                     logger.outputInRed(
-                            NbBundle.getMessage(ViewAction.class, "MSG_VIEW_NOTSETHGK_PROP_INFO")); // NOI18N
+                            NbBundle.getMessage(ViewAction.class, "MSG_VIEW_NOTSETGITK_PROP_INFO")); // NOI18N
                     logger.output(""); // NOI18N
                     logger.closeLog();
                     return;

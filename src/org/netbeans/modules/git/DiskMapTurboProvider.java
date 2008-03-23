@@ -70,10 +70,10 @@ import org.openide.filesystems.Repository;
  */
 class DiskMapTurboProvider implements TurboProvider {
 
-    static final String ATTR_STATUS_MAP = "mercurial.STATUS_MAP";  // NOI18N
+    static final String ATTR_STATUS_MAP = "git.STATUS_MAP";  // NOI18N
 
     private static final int STATUS_VALUABLE = FileInformation.STATUS_MANAGED & ~FileInformation.STATUS_VERSIONED_UPTODATE;
-    private static final String CACHE_DIRECTORY = "mercurialcache"; // NOI18N
+    private static final String CACHE_DIRECTORY = "gitcache"; // NOI18N
     
     private File cacheStore;
     private int                             storeSerial;

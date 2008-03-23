@@ -129,8 +129,8 @@ public class SearchHistoryAction extends ContextAction {
     }
 
     /**
-     * Opens the Seach History panel to view Mercurial Incoming Changesets that will be sent on next Pull from remote repo
-     * using: hg incoming - to get the data
+     * Opens the Search History panel to view Git Changesets that will be sent on next Pull from remote repo
+     * using: git incoming - to get the data
      * 
      * @param title title of the search
      * @param commitMessage commit message to search for
@@ -151,8 +151,8 @@ public class SearchHistoryAction extends ContextAction {
         });
     }
     /**
-     * Opens the Seach History panel to view Mercurial Out Changesets that will be sent on next Push to remote repo
-     * using: hg out - to get the data
+     * Opens the Search History panel to view Git Out Changesets that will be sent on next Push to remote repo
+     * using: git out - to get the data
      * 
      * @param title title of the search
      * @param commitMessage commit message to search for
@@ -174,7 +174,7 @@ public class SearchHistoryAction extends ContextAction {
     }
 
     /**
-     * Opens the Seach History panel with given pre-filled values. The search is executed in default context
+     * Opens the Search History panel with given pre-filled values. The search is executed in default context
      * (all open projects). 
      * 
      * @param title title of the search

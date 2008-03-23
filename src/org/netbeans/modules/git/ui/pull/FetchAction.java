@@ -61,7 +61,7 @@ import org.openide.util.RequestProcessor;
 
 /**
  * Fetch action for Git: 
- * git fetch - launch hg view to view the dependency tree for the repository
+ * git fetch - launch git show (?? -- TODO verify this) to view the dependency tree for the repository
  * Pull changes from a remote repository, merge new changes if needed.
  * This finds all changes from the repository at the specified path
  * or URL and adds them to the local repository.

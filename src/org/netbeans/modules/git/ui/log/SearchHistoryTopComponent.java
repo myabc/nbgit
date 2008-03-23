@@ -127,24 +127,28 @@ public class SearchHistoryTopComponent extends TopComponent implements DiffSetup
         add(shp);
         }
 
+    @Override
     public int getPersistenceType(){
        return TopComponent.PERSISTENCE_NEVER;
     }
     
+    @Override
     protected void componentClosed() {
        //((DiffMainPanel) getComponent(0)).componentClosed();
        super.componentClosed();
     }
     
+    @Override
     protected String preferredID(){
         if (shp.isIncomingSearch()) {
-            return "Hg.IncomingSearchHistoryTopComponent";    // NOI18N
+            return "Git.IncomingSearchHistoryTopComponent";    // NOI18N
         } else if (shp.isOutSearch()) {
-            return "Hg.OutSearchHistoryTopComponent";    // NOI18N
+            return "Git.OutSearchHistoryTopComponent";    // NOI18N
         }
-        return "Hg.SearchHistoryTopComponent";    // NOI18N
+        return "Git.SearchHistoryTopComponent";    // NOI18N
     }
 
+    @Override
     public HelpCtx getHelpCtx() {
         return new HelpCtx(getClass());
     }

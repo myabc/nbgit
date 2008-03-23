@@ -192,8 +192,7 @@ public class GitModuleConfig {
     }
 
     /**
-     * This method returns the username specified in $HOME/.hgrc
-     * or /etc/mercurial/hgrc 
+     * This method returns the username specified in $HOME/.gitconfig
      * or a default username if none is found.
      */
     public String getUserName() {
@@ -211,8 +210,8 @@ public class GitModuleConfig {
         return userName;
     }
 
-    public void addHgkExtension() {
-        GitConfigFiles.getInstance().setProperty("hgext.hgk", "");
+    public void addGitkExtension() {
+        GitConfigFiles.getInstance().setProperty("XXXXX", "");
     }
     
     public void setUserName(String name) {

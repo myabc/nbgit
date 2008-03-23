@@ -81,7 +81,7 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
         panel.execPathBrowseButton.addActionListener(this);
         panel.exportFilenameBrowseButton.addActionListener(this);
 
-        String tooltip = NbBundle.getMessage(GitPanel.class, "MercurialPanel.annotationTextField.toolTipText", GitAnnotator.LABELS); // NOI18N
+        String tooltip = NbBundle.getMessage(GitPanel.class, "GitPanel.annotationTextField.toolTipText", GitAnnotator.LABELS); // NOI18N
 
         panel.annotationTextField.setToolTipText(tooltip);
         panel.addButton.addActionListener(this);
@@ -206,7 +206,7 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
                 return f.isDirectory();
             }
             public String getDescription() {
-                return NbBundle.getMessage(GitOptionsPanelController.class, "MercurialExec");// NOI18N
+                return NbBundle.getMessage(GitOptionsPanelController.class, "GitExec");// NOI18N
             }
         });
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -261,14 +261,14 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
         for (int i = 0; i < GitAnnotator.LABELS.length; i++) {   
             LabelVariable variable = new LabelVariable(
                     GitAnnotator.LABELS[i], 
-                    "{" + GitAnnotator.LABELS[i] + "} - " + NbBundle.getMessage(GitPanel.class, "MercurialPanel.label." + GitAnnotator.LABELS[i]) // NOI18N
+                    "{" + GitAnnotator.LABELS[i] + "} - " + NbBundle.getMessage(GitPanel.class, "GitPanel.label." + GitAnnotator.LABELS[i]) // NOI18N
             );
             variables.add(variable);   
         }       
         labelsPanel.labelsList.setListData(variables.toArray(new LabelVariable[variables.size()]));                
                 
-        String title = NbBundle.getMessage(GitPanel.class, "MercurialPanel.labelVariables.title"); // NOI18N
-        String acsd = NbBundle.getMessage(GitPanel.class, "MercurialPanel.labelVariables.acsd"); // NOI18N
+        String title = NbBundle.getMessage(GitPanel.class, "GitPanel.labelVariables.title"); // NOI18N
+        String acsd = NbBundle.getMessage(GitPanel.class, "GitPanel.labelVariables.acsd"); // NOI18N
 
         DialogDescriptor dialogDescriptor = new DialogDescriptor(labelsPanel, title);
         dialogDescriptor.setModal(true);
@@ -329,7 +329,7 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
 
         panel.propsPanel.add(component, BorderLayout.CENTER);
 
-        GitExtProperties hgProperties = new GitExtProperties(panel, propTable, null) ;
+        GitExtProperties gitProperties = new GitExtProperties(panel, propTable, null) ;
 
         DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(GitOptionsPanelController.class, "CTL_PropertiesDialog_Title", null), true, null); // NOI18N
         final JButton okButton =  new JButton(NbBundle.getMessage(GitOptionsPanelController.class, "CTL_Properties_Action_OK")); // NOI18N
@@ -346,7 +346,7 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
         dialog.pack();
         dialog.setVisible(true);
         if (dd.getValue() == okButton) {
-            hgProperties.setProperties();
+            gitProperties.setProperties();
         }
     }
 }

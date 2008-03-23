@@ -62,7 +62,7 @@ public class OutputLogger {
     private InputOutput log;
     private boolean ignoreCommand = false;
     private String repositoryRootString;
-    private static final RequestProcessor rp = new RequestProcessor("MercurialOutput", 1);
+    private static final RequestProcessor rp = new RequestProcessor("GitOutput", 1);
     public static final int MAX_LINES_TO_PRINT = 500;
 
     private static final String MSG_TOO_MANY_LINES = "The number of output lines is greater than 500; see message log for complete output";

@@ -285,7 +285,7 @@ public class Repository implements ActionListener, DocumentListener, FocusListen
                 } else if (e.getDocument() == (repositoryPanel.tunnelCommandTextField.getDocument())) {
                     onTunnelCommandChange();
                 }
-                validateHgUrl();
+                validateGitUrl();
             }
         };
         SwingUtilities.invokeLater(awt);
@@ -294,14 +294,14 @@ public class Repository implements ActionListener, DocumentListener, FocusListen
     /**
      * Fast url syntax check. It can invalidate the whole step
      */
-    private void validateHgUrl() {
+    private void validateGitUrl() {
         boolean valid = true;
 
         RepositoryConnection rc = null; 
         try {
             rc = getSelectedRC();            
             // check for a valid svnurl
-            rc.getHgUrl();                             
+            rc.getGitUrl();                             
             //if(!isSet(FLAG_ACCEPT_REVISION) && !rc.getSvnRevision().equals(SVNRevision.HEAD)) 
             //{
             //    message = NbBundle.getMessage(Repository.class, "MSG_Repository_OnlyHEADRevision"); // NOI18N
@@ -388,7 +388,7 @@ public class Repository implements ActionListener, DocumentListener, FocusListen
         }        
     }   
     
-    /** Shows proper fields depending on Mercurial connection method. */
+    /** Shows proper fields depending on Git connection method. */
     private void updateVisibility(String selectedUrlString) {
 
         boolean authFields = false;
@@ -468,11 +468,11 @@ public class Repository implements ActionListener, DocumentListener, FocusListen
             }
             return "";     // NOI18N
         } else {
-            final String[] hgUrl = new String[1];
+            final String[] gitUrl = new String[1];
             try {
                 Runnable awt = new Runnable() {
                     public void run() {
-                        hgUrl[0] = (String) repositoryPanel.urlComboBox.getEditor().getItem().toString().trim();
+                        gitUrl[0] = (String) repositoryPanel.urlComboBox.getEditor().getItem().toString().trim();
                     }
                 };
                 if (SwingUtilities.isEventDispatchThread()) {
@@ -480,7 +480,7 @@ public class Repository implements ActionListener, DocumentListener, FocusListen
                 } else {
                     SwingUtilities.invokeAndWait(awt);
                 }
-                return hgUrl[0].trim();
+                return gitUrl[0].trim();
             } catch (InvocationTargetException e) {
                 ErrorManager err = ErrorManager.getDefault();
                 err.notify(e);
@@ -550,7 +550,7 @@ public class Repository implements ActionListener, DocumentListener, FocusListen
                 if (rc != null) {
                     rc.setSavePassword(repositoryPanel.savePasswordCheckBox.isSelected());
                 }
-                validateHgUrl();
+                validateGitUrl();
             }
         };
         SwingUtilities.invokeLater(awt);
@@ -715,6 +715,7 @@ public class Repository implements ActionListener, DocumentListener, FocusListen
             super.addElement(obj);
         }
 
+        @Override
         public void insertElementAt(Object obj,int index) {
             if(obj instanceof String) {
                 String str = (String) obj;
@@ -732,6 +733,7 @@ public class Repository implements ActionListener, DocumentListener, FocusListen
             super.insertElementAt(obj, index);
         }         
 
+        @Override
         public void removeElement(Object obj) {
             int index = getIndexOf(obj);
             if ( index != -1 ) {

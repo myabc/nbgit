@@ -65,9 +65,9 @@ public class RevertModificationsPanel extends javax.swing.JPanel {
     private File[]                          revertFiles;
     private RequestProcessor.Task           refreshViewTask;
     private Thread                          refreshViewThread;
-    private static final RequestProcessor   rp = new RequestProcessor("MercurialRevert", 1);  // NOI18N
+    private static final RequestProcessor   rp = new RequestProcessor("GitRevert", 1);  // NOI18N
 
-    private static final int HG_REVERT_TARGET_LIMIT = 100;
+    private static final int GIT_REVERT_TARGET_LIMIT = 100;
 
     /** Creates new form ReverModificationsPanel */
      public RevertModificationsPanel(File repo, File[] files) {
@@ -213,7 +213,7 @@ public class RevertModificationsPanel extends javax.swing.JPanel {
     }
 
     private void refreshRevisions() {
-        java.util.List<String> targetRevsList = GitCommand.getRevisionsForFile(repository, revertFiles, HG_REVERT_TARGET_LIMIT); 
+        java.util.List<String> targetRevsList = GitCommand.getRevisionsForFile(repository, revertFiles, GIT_REVERT_TARGET_LIMIT); 
 
         Set<String>  targetRevsSet = new LinkedHashSet<String>();
 

@@ -44,7 +44,8 @@ package org.netbeans.modules.git;
 import java.io.File;
 
 /**
- * Holds detailed information about status of a mercurial-managed file, ie repository URL, remote path, branch, etc.
+ * Holds detailed information about status of a Git-managed file, 
+ * i.e. Repository URL, remote path, branch, etc.
  * 
  * @author Maros Sandor
  */

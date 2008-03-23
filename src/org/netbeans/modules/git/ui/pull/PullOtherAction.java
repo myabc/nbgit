@@ -103,7 +103,7 @@ public class PullOtherAction extends ContextAction implements PropertyChangeList
                                         new HelpCtx(PullOtherAction.class),
                                         new Object[] {pullButton, cancelButton},
                                         true,
-                                        "hg.pull.dialog");
+                                        "git.pull.dialog");
         if (option == pullButton) {
             final String pullPath = repository.getSelectedRC().getUrl();
             pull(context, root, pullPath);

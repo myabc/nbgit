@@ -90,7 +90,7 @@ public class PropertiesAction extends ContextAction {
 
         panel.propsPanel.add(component, BorderLayout.CENTER);
 
-        GitProperties hgProperties = new GitProperties(panel, propTable, root);        
+        GitProperties gitProperties = new GitProperties(panel, propTable, root);        
 
         DialogDescriptor dd = new DialogDescriptor(panel, org.openide.util.NbBundle.getMessage(PropertiesAction.class, "CTL_PropertiesDialog_Title", null), true, null); // NOI18N
         JButton okButton =  new JButton();
@@ -110,8 +110,8 @@ public class PropertiesAction extends ContextAction {
         dialog.pack();
         dialog.setVisible(true);
         if (dd.getValue() == okButton) {
-            hgProperties.updateLastSelection();
-            hgProperties.setProperties();
+            gitProperties.updateLastSelection();
+            gitProperties.setProperties();
         }
     }
 

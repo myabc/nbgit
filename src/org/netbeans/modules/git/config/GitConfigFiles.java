@@ -58,50 +58,50 @@ import org.openide.util.Utilities;
 
 /**
  *
- * Handles the Git <b>hgrc</b> configuration file.</br>
+ * Handles the <b>.gitconfig</b> configuration file.</br>
  *
  * @author Padraig O'Briain
  */
 public class GitConfigFiles {
    
-    public static final String HG_EXTENSIONS = "extensions";  // NOI18N
-    public static final String HG_EXTENSIONS_HGK = "hgext.hgk";  // NOI18N
-    public static final String HG_EXTENSIONS_FETCH = "fetch";  // NOI18N
-    public static final String HG_UI_SECTION = "ui";  // NOI18N
-    public static final String HG_USERNAME = "username";  // NOI18N
-    public static final String HG_PATHS_SECTION = "paths";  // NOI18N
-    public static final String HG_DEFAULT_PUSH = "default-push";  // NOI18N
-    public static final String HG_DEFAULT_PUSH_VALUE = "default-push";  // NOI18N
-    public static final String HG_DEFAULT_PULL = "default-pull";  // NOI18N
-    public static final String HG_DEFAULT_PULL_VALUE = "default";  // NOI18N
+    public static final String GIT_EXTENSIONS = "extensions";  // NOI18N
+    public static final String GIT_EXTENSIONS_GITK = "gitk";  // NOI18N
+    public static final String GIT_EXTENSIONS_FETCH = "fetch";  // NOI18N
+    public static final String GIT_UI_SECTION = "ui";  // NOI18N
+    public static final String GIT_USERNAME = "username";  // NOI18N
+    public static final String GIT_PATHS_SECTION = "paths";  // NOI18N
+    public static final String GIT_DEFAULT_PUSH = "default-push";  // NOI18N
+    public static final String GIT_DEFAULT_PUSH_VALUE = "default-push";  // NOI18N
+    public static final String GIT_DEFAULT_PULL = "default-pull";  // NOI18N
+    public static final String GIT_DEFAULT_PULL_VALUE = "default";  // NOI18N
 
-    /** The HgConfigFiles instance for user and system defaults */
+    /** The GitConfigFiles instance for user and system defaults */
     private static GitConfigFiles instance;
 
-    /** the Ini instance holding the configuration values stored in the <b>hgrc</b>
-     * file used by the Mercurial module */    
-    private Ini hgrc = null;
+    /** the Ini instance holding the configuration values stored in the <b>gitconfig</b>
+     * file used by the Git module */    
+    private Ini gitConfig = null;
     
     /** The repository directory if this instance is for a repository */
     private File dir;
     private static final String WINDOWS_USER_APPDATA = getAPPDATA();
-    private static final String WINDOWS_CONFIG_DIR = WINDOWS_USER_APPDATA + "\\Mercurial";                                      // NOI18N
-    private static final String WINDOWS_GLOBAL_CONFIG_DIR = getGlobalAPPDATA() + "\\Mercurial";                                 // NOI18N
-    public static final String HG_RC_FILE = "hgrc";                                                                       // NOI18N
-    public static final String HG_REPO_DIR = ".hg";                                                                       // NOI18N
+    private static final String WINDOWS_CONFIG_DIR = WINDOWS_USER_APPDATA + "\\Git";                                      // NOI18N
+    private static final String WINDOWS_GLOBAL_CONFIG_DIR = getGlobalAPPDATA() + "\\Git";                                 // NOI18N
+    public static final String GITCONFIG_FILE = "gitconfig";                                                                       // NOI18N
+    public static final String GIT_REPO_DIR = ".git";                                                                       // NOI18N
     
     /**
      * Creates a new instance
      */
     private GitConfigFiles() {      
-        // get the system hgrc file 
-        hgrc = loadFile(HG_RC_FILE);                                           
+        // get the system gitconfig file 
+        gitConfig = loadFile(GITCONFIG_FILE);                                           
     }
     
     /**
      * Returns a singleton instance
      *
-     * @return the HgConfiles instance
+     * @return the GitConfigFiles instance
      */
     public static GitConfigFiles getInstance() {
         if (instance == null) {
@@ -112,25 +112,25 @@ public class GitConfigFiles {
 
     public GitConfigFiles(File file) {
         dir = file;
-        hgrc = loadFile(file, HG_RC_FILE);
+        gitConfig = loadFile(file, GITCONFIG_FILE);
     }
  
     public void setProperty(String name, String value) {
-        if (name.equals(HG_USERNAME)) { 
-            setProperty(HG_UI_SECTION, HG_USERNAME, value); 
-        } else if (name.equals(HG_DEFAULT_PUSH)) { 
-            setProperty(HG_PATHS_SECTION, HG_DEFAULT_PUSH_VALUE, value); 
-        } else if (name.equals(HG_DEFAULT_PULL)) { 
-            setProperty(HG_PATHS_SECTION, HG_DEFAULT_PULL_VALUE, value); 
-        } else if (name.equals(HG_EXTENSIONS_HGK)) { 
-            // Allow hgext.hgk to be set to some other user defined value if required
-            if(getProperty(HG_EXTENSIONS, HG_EXTENSIONS_HGK).equals("")){
-                setProperty(HG_EXTENSIONS, HG_EXTENSIONS_HGK, value, true); 
+        if (name.equals(GIT_USERNAME)) { 
+            setProperty(GIT_UI_SECTION, GIT_USERNAME, value); 
+        } else if (name.equals(GIT_DEFAULT_PUSH)) { 
+            setProperty(GIT_PATHS_SECTION, GIT_DEFAULT_PUSH_VALUE, value); 
+        } else if (name.equals(GIT_DEFAULT_PULL)) { 
+            setProperty(GIT_PATHS_SECTION, GIT_DEFAULT_PULL_VALUE, value); 
+        } else if (name.equals(GIT_EXTENSIONS_GITK)) { 
+
+            if(getProperty(GIT_EXTENSIONS, GIT_EXTENSIONS_GITK).equals("")){
+                setProperty(GIT_EXTENSIONS, GIT_EXTENSIONS_GITK, value, true); 
             }
-        } else if (name.equals(HG_EXTENSIONS_FETCH)) { 
+        } else if (name.equals(GIT_EXTENSIONS_FETCH)) { 
             // Allow fetch to be set to some other user defined value if required
-            if(getProperty(HG_EXTENSIONS, HG_EXTENSIONS_FETCH).equals("")){ 
-                setProperty(HG_EXTENSIONS, HG_EXTENSIONS_FETCH, value, true);
+            if(getProperty(GIT_EXTENSIONS, GIT_EXTENSIONS_FETCH).equals("")){ 
+                setProperty(GIT_EXTENSIONS, GIT_EXTENSIONS_FETCH, value, true);
             }
         }
 
@@ -141,14 +141,14 @@ public class GitConfigFiles {
             if (value.length() == 0) {
                 removeProperty(section, name);
             } else {
-                Ini.Section inisection = getSection(hgrc, section, true);
+                Ini.Section inisection = getSection(gitConfig, section, true);
                 inisection.put(name, value);
             }
         } else {
-            Ini.Section inisection = getSection(hgrc, section, true);
+            Ini.Section inisection = getSection(gitConfig, section, true);
             inisection.put(name, value);
         }
-        storeIni(hgrc, HG_RC_FILE); 
+        storeIni(gitConfig, GITCONFIG_FILE); 
     }
 
     public void setProperty(String section, String name, String value) {
@@ -156,7 +156,7 @@ public class GitConfigFiles {
     }
 
     public void setUserName(String value) {
-        setProperty(HG_UI_SECTION, HG_USERNAME, value); 
+        setProperty(GIT_UI_SECTION, GIT_USERNAME, value); 
     }
 
     public String getUserName() {
@@ -164,7 +164,7 @@ public class GitConfigFiles {
     }
 
     public Properties getProperties(String section) {
-        Ini.Section inisection = getSection(hgrc, section, false);
+        Ini.Section inisection = getSection(gitConfig, section, false);
         Properties props = new Properties();
         if (inisection != null) {
             Set<String> keys = inisection.keySet();
@@ -176,18 +176,18 @@ public class GitConfigFiles {
     }
 
     public void clearProperties(String section) {
-        Ini.Section inisection = getSection(hgrc, section, false);
+        Ini.Section inisection = getSection(gitConfig, section, false);
         if (inisection != null) {
              inisection.clear();
-             storeIni(hgrc, HG_RC_FILE); 
+             storeIni(gitConfig, GITCONFIG_FILE); 
          }
     }
 
     public void removeProperty(String section, String name) {
-        Ini.Section inisection = getSection(hgrc, section, false);
+        Ini.Section inisection = getSection(gitConfig, section, false);
         if (inisection != null) {
              inisection.remove(name);
-             storeIni(hgrc, HG_RC_FILE); 
+             storeIni(gitConfig, GITCONFIG_FILE); 
          }
     }
 
@@ -195,16 +195,16 @@ public class GitConfigFiles {
         if (reload) {
             doReload();
         }
-        return getProperty(HG_PATHS_SECTION, HG_DEFAULT_PULL_VALUE); 
+        return getProperty(GIT_PATHS_SECTION, GIT_DEFAULT_PULL_VALUE); 
     }
 
     public String getDefaultPush(Boolean reload) {
         if (reload) {
             doReload();
         }
-        String value = getProperty(HG_PATHS_SECTION, HG_DEFAULT_PUSH); 
+        String value = getProperty(GIT_PATHS_SECTION, GIT_DEFAULT_PUSH); 
         if (value.length() == 0) {
-            value = getProperty(HG_PATHS_SECTION, HG_DEFAULT_PULL_VALUE); 
+            value = getProperty(GIT_PATHS_SECTION, GIT_DEFAULT_PULL_VALUE); 
         }
         return value;
     }
@@ -213,25 +213,25 @@ public class GitConfigFiles {
         if (reload) {
             doReload();
         }
-        return getProperty(HG_UI_SECTION, HG_USERNAME);                                              
+        return getProperty(GIT_UI_SECTION, GIT_USERNAME);                                              
     }
 
     public String getProperty(String section, String name) {
-        Ini.Section inisection = getSection(hgrc, section, true);
+        Ini.Section inisection = getSection(gitConfig, section, true);
         String value = inisection.get(name);
         return value != null ? value : "";        // NOI18N 
     }
     
     public boolean containsProperty(String section, String name) {
-        Ini.Section inisection = getSection(hgrc, section, true);
+        Ini.Section inisection = getSection(gitConfig, section, true);
         return inisection.containsKey(name);
     }
 
     private void doReload () {
         if (dir == null) {
-            hgrc = loadFile(HG_RC_FILE);                                            
+            gitConfig = loadFile(GITCONFIG_FILE);                                            
         } else {
-            hgrc = loadFile(dir, HG_RC_FILE);                                      
+            gitConfig = loadFile(dir, GITCONFIG_FILE);                                      
         }
     }
 
@@ -247,7 +247,7 @@ public class GitConfigFiles {
         try {
             String filePath;
             if (dir != null) {
-                filePath = dir.getAbsolutePath() + File.separator + HG_REPO_DIR + File.separator + iniFile; // NOI18N 
+                filePath = dir.getAbsolutePath() + File.separator + GIT_REPO_DIR + File.separator + iniFile; // NOI18N 
             } else {
                 filePath =  getUserConfigPath() + iniFile;
             }
@@ -260,7 +260,7 @@ public class GitConfigFiles {
     }    
 
     /**
-     * Returns the path for the Mercurial configuration directory
+     * Returns the path for the Git configuration directory
      *
      * @return the path
      *
@@ -276,7 +276,7 @@ public class GitConfigFiles {
     }
 
     private Ini loadFile(File dir, String fileName) {
-        String filePath = dir.getAbsolutePath() + File.separator + HG_REPO_DIR + File.separator + fileName; // NOI18N 
+        String filePath = dir.getAbsolutePath() + File.separator + GIT_REPO_DIR + File.separator + fileName; // NOI18N 
         File file = FileUtil.normalizeFile(new File(filePath));
         Ini system = null;
         try {            
@@ -289,7 +289,7 @@ public class GitConfigFiles {
 
         if(system == null) {
             system = new Ini();
-            Git.LOG.log(Level.WARNING, "Could not load the file " + filePath + ". Falling back on hg defaults."); // NOI18N
+            Git.LOG.log(Level.WARNING, "Could not load the file " + filePath + ". Falling back on git defaults."); // NOI18N
         }
         return system;
     }
@@ -297,8 +297,7 @@ public class GitConfigFiles {
      * Loads the configuration file  
      * The settings are loaded and merged together in the folowing order:
      * <ol>
-     *  <li> The per-user configuration file, i.e ~/.hgrc
-     *  <li> The system-wide file, i.e. /etc/mercurial/hgrc
+     *  <li> The per-user configuration file, i.e ~/.gitconfig
      * </ol> 
      *
      * @param fileName the file name
@@ -319,7 +318,7 @@ public class GitConfigFiles {
 
         if(system == null) {
             system = new Ini();
-            Git.LOG.log(Level.WARNING, "Could not load the file " + filePath + ". Falling back on hg defaults."); // NOI18N
+            Git.LOG.log(Level.WARNING, "Could not load the file " + filePath + ". Falling back on git defaults."); // NOI18N
         }
         
         Ini global = null;      
@@ -368,7 +367,7 @@ public class GitConfigFiles {
      */
     private static String getGlobalConfigPath () {
         if(Utilities.isUnix()) {
-            return "/etc/mercurial";               // NOI18N
+            return "/etc/gitconfig";               // NOI18N
         } else if (Utilities.isWindows()){
             return WINDOWS_GLOBAL_CONFIG_DIR;
         } 

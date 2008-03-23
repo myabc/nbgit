@@ -124,7 +124,7 @@ public class CommitTableModel extends AbstractTableModel {
     }
 
     /**
-     * @return Map&lt;HgFileNode, CommitOptions>
+     * @return Map&lt;GitFileNode, CommitOptions>
      */
     public Map<GitFileNode, CommitOptions> getCommitFiles() {
         Map<GitFileNode, CommitOptions> ret = new HashMap<GitFileNode, CommitOptions>(nodes.length);
@@ -169,7 +169,7 @@ public class CommitTableModel extends AbstractTableModel {
             return nodes[rowIndex].getName();
         // TODO deal with branch?
         //} else if (col.equals(COLUMN_NAME_BRANCH)) {
-        //    String branch = HgUtils.getCopy(nodes[rowIndex].getFile());
+        //    String branch = GitUtils.getCopy(nodes[rowIndex].getFile());
         //    return branch == null ? "" : branch; // NOI18N
         } else if (col.equals(COLUMN_NAME_STATUS)) {
             node = nodes[rowIndex];
@@ -209,7 +209,7 @@ public class CommitTableModel extends AbstractTableModel {
     }
 
     private void defaultCommitOptions() {
-        boolean excludeNew = System.getProperty("netbeans.mercurial.excludeNewFiles") != null; // NOI18N
+        boolean excludeNew = System.getProperty("netbeans.git.excludeNewFiles") != null; // NOI18N
         commitOptions = new CommitOptions[nodes.length];
         for (int i = 0; i < nodes.length; i++) {
             GitFileNode node = nodes[i];

@@ -96,24 +96,25 @@ import org.openide.windows.TopComponent;
 /**
  *
  * @author jrice
+ * @author alexbcoles
  */
 public class GitUtils {
 
     private static final Pattern httpPasswordPattern = Pattern.compile("(https*://)(\\w+\\b):(\\b\\S*)@"); //NOI18N
     private static final String httpPasswordReplacementStr = "$1$2:\\*\\*\\*\\*@"; //NOI18N
     
-    private static final Pattern metadataPattern = Pattern.compile(".*\\" + File.separatorChar + "(\\.)hg(\\" + File.separatorChar + ".*|$)"); // NOI18N
+    private static final Pattern metadataPattern = Pattern.compile(".*\\" + File.separatorChar + "(\\.)git(\\" + File.separatorChar + ".*|$)"); // NOI18N
     
-    // IGNORE SUPPORT HG: following file patterns are added to {Hg repos}/.hgignore and Hg will ignore any files
+    // IGNORE SUPPORT GIT: following file patterns are added to {Git repos}/.gitignore and Git will ignore any files
     // that match these patterns, reporting "I"status for them // NOI18N
-    private static final String [] HG_IGNORE_FILES = { "\\.orig$", "\\.orig\\..*$", "\\.chg\\..*$", "\\.rej$", "\\.conflict\\~$"}; // NOI18N
-    private static final String HG_IGNORE_ORIG_FILES = "\\.orig$"; // NOI18N
-    private static final String HG_IGNORE_ORIG_ANY_FILES = "\\.orig\\..*$"; // NOI18N
-    private static final String HG_IGNORE_CHG_ANY_FILES = "\\.chg\\..*$"; // NOI18N
-    private static final String HG_IGNORE_REJ_ANY_FILES = "\\.rej$"; // NOI18N
-    private static final String HG_IGNORE_CONFLICT_ANY_FILES = "\\.conflict\\~$"; // NOI18N
+    private static final String [] GIT_IGNORE_FILES = { "\\.orig$", "\\.orig\\..*$", "\\.chg\\..*$", "\\.rej$", "\\.conflict\\~$"}; // NOI18N
+    private static final String GIT_IGNORE_ORIG_FILES = "\\.orig$"; // NOI18N
+    private static final String GIT_IGNORE_ORIG_ANY_FILES = "\\.orig\\..*$"; // NOI18N
+    private static final String GIT_IGNORE_CHG_ANY_FILES = "\\.chg\\..*$"; // NOI18N
+    private static final String GIT_IGNORE_REJ_ANY_FILES = "\\.rej$"; // NOI18N
+    private static final String GIT_IGNORE_CONFLICT_ANY_FILES = "\\.conflict\\~$"; // NOI18N
     
-    private static final String FILENAME_HGIGNORE = ".hgignore"; // NOI18N
+    private static final String FILENAME_GITIGNORE = ".gitignore"; // NOI18N
 
     private static HashMap<String, Set<Pattern>> ignorePatterns;
 
@@ -128,7 +129,8 @@ public class GitUtils {
         c.setTime(date);
         c.add(Calendar.DATE, days);
         return c.getTime();
-    }   
+    }
+    
     /**
      * getTodaysDateStr - return todays date as a YYYY-MM-DD string
      *
@@ -137,7 +139,8 @@ public class GitUtils {
     public static String getTodaysDateStr() {
         Date todaysDate = new Date();
         return new SimpleDateFormat("yyyy-MM-dd").format(todaysDate); // NOI18N
-    }   
+    }
+    
     /**
      * getLastWeeksDateStr - return last weeks date as a YYYY-MM-DD string
      *
@@ -146,10 +149,6 @@ public class GitUtils {
     public static String getLastWeeksDateStr() {
         Date lastWeeksDate = GitUtils.addDaysToDate(new Date(), -7);
         return new SimpleDateFormat("yyyy-MM-dd").format(lastWeeksDate); // NOI18N
-    }
-
-    public static boolean isPartOfGitMetadata(File file) {
-        throw new UnsupportedOperationException("Not yet implemented");
     }
     
     /**
@@ -203,7 +202,7 @@ public class GitUtils {
         String[] paths = pathEnv.split(pathSeparator);
         for (String path : paths) {
             File f = new File(path, name);
-            // On Windows isFile will fail on hgk.cmd use !isDirectory
+            // On Windows isFile will fail on gitk.cmd use !isDirectory
             if (f.exists() && !f.isDirectory()) {
                 return true;
             }
@@ -257,16 +256,16 @@ public class GitUtils {
         return path;
     }
     /**
-     * isLocallyAdded - checks to see if this file has been Locally Added to Hg
+     * isLocallyAdded - checks to see if this file has been Locally Added to Git
      *
      * @param file to check
      * @return boolean true - ignore, false - not ignored
      */
     public static boolean isLocallyAdded(File file){
         if (file == null) return false;
-        Git hg = Git.getInstance();        
+        Git git = Git.getInstance();        
 
-        if ((hg.getFileStatusCache().getStatus(file).getStatus() & FileInformation.STATUS_VERSIONED_ADDEDLOCALLY) !=0)
+        if ((git.getFileStatusCache().getStatus(file).getStatus() & FileInformation.STATUS_VERSIONED_ADDEDLOCALLY) !=0)
             return true;
         else
             return false;
@@ -295,7 +294,7 @@ public class GitUtils {
     }
 
     /**
-     * isIgnored - checks to see if this is a file Hg should ignore
+     * isIgnored - checks to see if this is a file Git should ignore
      *
      * @param File file to check
      * @return boolean true - ignore, false - not ignored
@@ -332,7 +331,7 @@ public class GitUtils {
             }
         }
 
-        if (FILENAME_HGIGNORE.equals(name)) return false;
+        if (FILENAME_GITIGNORE.equals(name)) return false;
         if (checkSharability) {
             int sharability = SharabilityQuery.getSharability(file);
             if (sharability == SharabilityQuery.NOT_SHARABLE) return true;
@@ -341,25 +340,25 @@ public class GitUtils {
     }
 
     /**
-     * createIgnored - creates .hgignore file in the repository in which 
-     * the given file belongs. This .hgignore file ensures Hg will ignore 
-     * the files specified in HG_IGNORE_FILES list
+     * createIgnored - creates .gitignore file in the repository in which 
+     * the given file belongs. This .ignore file ensures Git will ignore 
+     * the files specified in GIT_IGNORE_FILES list
      *
-     * @param path to repository to place .hgignore file
+     * @param path to repository to place .gitignore file
      */
     public static void createIgnored(File path){
         if( path == null) return;
         BufferedWriter fileWriter = null;
-        Git hg = Git.getInstance();
-        File root = hg.getTopmostManagedParent(path);
+        Git git = Git.getInstance();
+        File root = git.getTopmostManagedParent(path);
         if( root == null) return;
-        File ignore = new File(root, FILENAME_HGIGNORE);
+        File ignore = new File(root, FILENAME_GITIGNORE);
         
         try     {
             if (!ignore.exists()) {
                 fileWriter = new BufferedWriter(
                         new OutputStreamWriter(new FileOutputStream(ignore)));
-                for (String name : HG_IGNORE_FILES) {
+                for (String name : GIT_IGNORE_FILES) {
                     fileWriter.write(name + "\n"); // NOI18N
                 }
             }else{
@@ -371,7 +370,7 @@ public class GitUtils {
         }finally {
             try {
                 if(fileWriter != null) fileWriter.close();
-                hg.getFileStatusCache().refresh(ignore, FileStatusCache.REPOSITORY_STATUS_UNKNOWN);
+                git.getFileStatusCache().refresh(ignore, FileStatusCache.REPOSITORY_STATUS_UNKNOWN);
             } catch (IOException ex) {
                 Git.LOG.log(Level.FINE, "createIgnored(): File {0} - {1}",  // NOI18N
                         new Object[] {ignore.getAbsolutePath(), ex.toString()});
@@ -379,9 +378,9 @@ public class GitUtils {
         }
     }
     
-    private static int HG_NUM_PATTERNS_TO_CHECK = 5;
-    private static void addToExistingIgnoredFile(File hgignoreFile) {
-        if(hgignoreFile == null || !hgignoreFile.exists() || !hgignoreFile.canWrite()) return;
+    private static int GIT_NUM_PATTERNS_TO_CHECK = 5;
+    private static void addToExistingIgnoredFile(File gitIgnoreFile) {
+        if(gitIgnoreFile == null || !gitIgnoreFile.exists() || !gitIgnoreFile.canWrite()) return;
         File tempFile = null;
         BufferedReader br = null;
         PrintWriter pw = null;
@@ -391,28 +390,28 @@ public class GitUtils {
         boolean bRejAnyPresent = false;
         boolean bConflictAnyPresent = false;
         
-        // If new patterns are added to HG_IGNORE_FILES, following code needs to
+        // If new patterns are added to GIT_IGNORE_FILES, following code needs to
         // check for these new patterns
-        assert( HG_IGNORE_FILES.length == HG_NUM_PATTERNS_TO_CHECK);
+        assert( GIT_IGNORE_FILES.length == GIT_NUM_PATTERNS_TO_CHECK);
         
         try {
-            tempFile = new File(hgignoreFile.getAbsolutePath() + ".tmp"); // NOI18N
+            tempFile = new File(gitIgnoreFile.getAbsolutePath() + ".tmp"); // NOI18N
             if (tempFile == null) return;
             
-            br = new BufferedReader(new FileReader(hgignoreFile));
+            br = new BufferedReader(new FileReader(gitIgnoreFile));
             pw = new PrintWriter(new FileWriter(tempFile));
 
             String line = null;            
             while ((line = br.readLine()) != null) {
-                if(!bOrigAnyPresent && line.equals(HG_IGNORE_ORIG_ANY_FILES)){
+                if(!bOrigAnyPresent && line.equals(GIT_IGNORE_ORIG_ANY_FILES)){
                     bOrigAnyPresent = true;
-                }else if (!bOrigPresent && line.equals(HG_IGNORE_ORIG_FILES)){
+                }else if (!bOrigPresent && line.equals(GIT_IGNORE_ORIG_FILES)){
                     bOrigPresent = true;
-                }else if (!bChgAnyPresent && line.equals(HG_IGNORE_CHG_ANY_FILES)){
+                }else if (!bChgAnyPresent && line.equals(GIT_IGNORE_CHG_ANY_FILES)){
                     bChgAnyPresent = true;
-                }else if (!bRejAnyPresent && line.equals(HG_IGNORE_REJ_ANY_FILES)){
+                }else if (!bRejAnyPresent && line.equals(GIT_IGNORE_REJ_ANY_FILES)){
                     bRejAnyPresent = true;
-                }else if (!bConflictAnyPresent && line.equals(HG_IGNORE_CONFLICT_ANY_FILES)){
+                }else if (!bConflictAnyPresent && line.equals(GIT_IGNORE_CONFLICT_ANY_FILES)){
                     bConflictAnyPresent = true;
                 }
                 pw.println(line);
@@ -420,23 +419,23 @@ public class GitUtils {
             }
             // If not found add as required
             if (!bOrigAnyPresent) {
-                pw.println(HG_IGNORE_ORIG_ANY_FILES );
+                pw.println(GIT_IGNORE_ORIG_ANY_FILES );
                 pw.flush();
             }
             if (!bOrigPresent) {
-                pw.println(HG_IGNORE_ORIG_FILES );
+                pw.println(GIT_IGNORE_ORIG_FILES );
                 pw.flush();
             }
             if (!bChgAnyPresent) {
-                pw.println(HG_IGNORE_CHG_ANY_FILES );
+                pw.println(GIT_IGNORE_CHG_ANY_FILES );
                 pw.flush();
             }
             if (!bRejAnyPresent) {
-                pw.println(HG_IGNORE_REJ_ANY_FILES );
+                pw.println(GIT_IGNORE_REJ_ANY_FILES );
                 pw.flush();
             }     
             if (!bConflictAnyPresent) {
-                pw.println(HG_IGNORE_CONFLICT_ANY_FILES );
+                pw.println(GIT_IGNORE_CONFLICT_ANY_FILES );
                 pw.flush();
             }     
             
@@ -454,9 +453,9 @@ public class GitUtils {
                         tempFile.delete();
                         return;
                     }
-                    if(tempFile != null && tempFile.isFile() && tempFile.canWrite() && hgignoreFile != null){ 
-                        hgignoreFile.delete();
-                        tempFile.renameTo(hgignoreFile);
+                    if(tempFile != null && tempFile.isFile() && tempFile.canWrite() && gitIgnoreFile != null){ 
+                        gitIgnoreFile.delete();
+                        tempFile.renameTo(gitIgnoreFile);
                     }
                 }else{
                     tempFile.delete();
@@ -490,15 +489,15 @@ public class GitUtils {
     }
 
     private static Boolean ignoreContainsSyntax(File directory) throws IOException {
-        File hgIgnore = new File(directory, FILENAME_HGIGNORE);
+        File gitIgnore = new File(directory, FILENAME_GITIGNORE);
         Boolean val = false;
 
-        if (!hgIgnore.canRead()) return val;
+        if (!gitIgnore.canRead()) return val;
 
         String s;
         BufferedReader r = null;
         try {
-            r = new BufferedReader(new FileReader(hgIgnore));
+            r = new BufferedReader(new FileReader(gitIgnore));
             while ((s = r.readLine()) != null) {
                 String line = s.trim();
                 int indexOfHash = line.indexOf("#");
@@ -520,15 +519,15 @@ public class GitUtils {
     }
 
     private static Set<String> readIgnoreEntries(File directory) throws IOException {
-        File hgIgnore = new File(directory, FILENAME_HGIGNORE);
+        File gitIgnore = new File(directory, FILENAME_GITIGNORE);
 
         Set<String> entries = new HashSet<String>(5);
-        if (!hgIgnore.canRead()) return entries;
+        if (!gitIgnore.canRead()) return entries;
 
         String s;
         BufferedReader r = null;
         try {
-            r = new BufferedReader(new FileReader(hgIgnore));
+            r = new BufferedReader(new FileReader(gitIgnore));
             while ((s = r.readLine()) != null) {
                 String line = s.trim();
                 if (line.length() == 0) continue;
@@ -554,8 +553,8 @@ public class GitUtils {
     }
 
     private static void writeIgnoreEntries(File directory, Set entries) throws IOException {
-        File hgIgnore = new File(directory, FILENAME_HGIGNORE);
-        FileObject fo = FileUtil.toFileObject(hgIgnore);
+        File gitIgnore = new File(directory, FILENAME_GITIGNORE);
+        FileObject fo = FileUtil.toFileObject(gitIgnore);
 
         if (entries.size() == 0) {
             if (fo != null) fo.delete();
@@ -564,7 +563,7 @@ public class GitUtils {
 
         if (fo == null || !fo.isValid()) {
             fo = FileUtil.toFileObject(directory);
-            fo = fo.createData(FILENAME_HGIGNORE);
+            fo = fo.createData(FILENAME_GITIGNORE);
         }
         FileLock lock = fo.lock();
         PrintWriter w = null;
@@ -581,10 +580,10 @@ public class GitUtils {
     }
 
     /**
-     * addIgnored - Add the specified files to the .hgignore file in the 
+     * addIgnored - Add the specified files to the .gitignore file in the 
      * specified repository.
      *
-     * @param directory for repository for .hgignore file
+     * @param directory for repository for .gitignore file
      * @param files an array of Files to be added
      */
     public static void addIgnored(File directory, File[] files) throws IOException {
@@ -601,10 +600,10 @@ public class GitUtils {
     }
 
     /**
-     * removeIgnored - Remove the specified files from the .hgignore file in 
+     * removeIgnored - Remove the specified files from the .gitignore file in 
      * the specified repository.
      *
-     * @param directory for repository for .hgignore file
+     * @param directory for repository for .gitignore file
      * @param files an array of Files to be removed
      */
     public static void removeIgnored(File directory, File[] files) throws IOException {
@@ -626,7 +625,7 @@ public class GitUtils {
      * @param Map of <File, FileInformation> interestingFiles to be processed and divided up into Files in Directory
      * @param Collection of <File> files to be processed against the interestingFiles
      * @return Map of Dirs containing Map of files and status for all files in each directory
-     * @throws org.netbeans.modules.mercurial.HgException
+     * @throws org.netbeans.modules.git.GitException;
      */
     public static Map<File, Map<File, FileInformation>> getInterestingDirs(Map<File, FileInformation> interestingFiles, Collection<File> files) {
         Map<File, Map<File, FileInformation>> interestingDirs = new HashMap<File, Map<File, FileInformation>>();
@@ -685,18 +684,17 @@ public class GitUtils {
 
     /**
      * Semantics is similar to {@link org.openide.windows.TopComponent#getActiva
-tedNodes()} except that this
+    tedNodes()} except that this
      * method returns File objects instead of Nodes. Every node is examined for
-Files it represents. File and Folder
+    Files it represents. File and Folder
      * nodes represent their underlying files or folders. Project nodes are repr
-esented by their source groups. Other
+    esented by their source groups. Other
      * logical nodes must provide FileObjects in their Lookup.
      *
      * @return File [] array of activated files
      * @param nodes or null (then taken from windowsystem, it may be wrong on ed
-itor tabs #66700).
+    itor tabs #66700).
      */
-
     public static VCSContext getCurrentContext(Node[] nodes) {
         if (nodes == null) {
             nodes = TopComponent.getRegistry().getActivatedNodes();
@@ -723,11 +721,11 @@ itor tabs #66700).
      */
     public static File getRootFile(VCSContext context){
         if (context == null) return null;
-        Git hg = Git.getInstance();
+        Git git = Git.getInstance();
         File [] files = context.getRootFiles().toArray(new File[context.getRootFiles().size()]);
         if (files == null || files.length == 0) return null;
         
-        File root = hg.getTopmostManagedParent(files[0]);
+        File root = git.getTopmostManagedParent(files[0]);
         return root;
     }
     
@@ -753,7 +751,7 @@ itor tabs #66700).
             if (p != null) {
                 return p;
             } else {
-                Git.LOG.log(Level.FINE, "HgUtils.getProjectFile(): No project for {0}",  // NOI18N
+                Git.LOG.log(Level.FINE, "GitUtils.getProjectFile(): No project for {0}",  // NOI18N
                     file);
             }
         }
@@ -783,15 +781,14 @@ itor tabs #66700).
     }
 
     /**
-     * Checks file location to see if it is part of mercurial metdata
+     * Checks file location to see if it is part of Git metdata
      *
      * @param file file to check
-     * @return true if the file or folder is a part of mercurial metadata, false otherwise
+     * @return true if the file or folder is a part of Git metadata, false otherwise
      */
-    public static boolean isPartOfMercurialMetadata(File file) {
+    public static boolean isPartOfGitMetadata(File file) {
         return metadataPattern.matcher(file.getAbsolutePath()).matches();
     }
-    
 
     /**
      * Forces refresh of Status for the given directory 
@@ -888,8 +885,8 @@ itor tabs #66700).
                 return NbBundle.getMessage(SyncFileNode.class, "LBL_Location_NotInRepository"); // NOI18N
             }
             
-            Git mercurial = Git.getInstance();
-            File rootManagedFolder = mercurial.getTopmostManagedParent(file);
+            Git git = Git.getInstance();
+            File rootManagedFolder = git.getTopmostManagedParent(file);
             if ( rootManagedFolder == null){
                 return NbBundle.getMessage(SyncFileNode.class, "LBL_Location_NotInRepository"); // NOI18N
             }
@@ -903,7 +900,7 @@ itor tabs #66700).
      }
 
     /**
-     * Normalize flat files, Mercurial treats folder as normal file
+     * Normalize flat files, Git treats folder as normal file
      * so it's necessary explicitly list direct descendants to
      * get classical flat behaviour.
      *

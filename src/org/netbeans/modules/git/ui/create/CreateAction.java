@@ -127,18 +127,18 @@ public class CreateAction extends ContextAction {
     }
 
     public void performAction(ActionEvent e) {
-        final Git hg = Git.getInstance();
+        final Git git = Git.getInstance();
 
         File [] files = context.getRootFiles().toArray(new File[context.getRootFiles().size()]);
         if(files == null || files.length == 0) return;
         
-        // If there is a .hg directory in an ancestor of any of the files in 
+        // If there is a .git directory in an ancestor of any of the files in 
         // the context we fail.
         
         for (File file : files) {
             if(!file.isDirectory()) file = file.getParentFile();
-            if (hg.getTopmostManagedParent(file) != null) {
-                Git.LOG.log(Level.SEVERE, "Found .hg directory in ancestor of {0} ", // NOI18N
+            if (git.getTopmostManagedParent(file) != null) {
+                Git.LOG.log(Level.SEVERE, "Found .git directory in ancestor of {0} ", // NOI18N
                         file);
                 return;
             }
@@ -171,7 +171,7 @@ public class CreateAction extends ContextAction {
         final File rootToManage = root;
         final String prjName = projName;
 
-        RequestProcessor rp = hg.getRequestProcessor(rootToManage.getAbsolutePath());
+        RequestProcessor rp = git.getRequestProcessor(rootToManage.getAbsolutePath());
         
         GitProgressSupport supportCreate = new GitProgressSupport() {
             public void perform() {
@@ -189,8 +189,8 @@ public class CreateAction extends ContextAction {
                             NbBundle.getMessage(CreateAction.class,
                             "MSG_CREATE_INIT", prjName, rootToManage)); // NOI18N
                     GitCommand.doCreate(rootToManage, logger);
-                    hg.versionedFilesChanged();
-                    hg.refreshAllAnnotations();      
+                    git.versionedFilesChanged();
+                    git.refreshAllAnnotations();      
                 } catch (GitException ex) {
                     NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
                     DialogDisplayer.getDefault().notifyLater(e);
@@ -206,7 +206,7 @@ public class CreateAction extends ContextAction {
                 OutputLogger logger = getLogger();
                 try {
                     File[] files = GitUtils.getProjectRootFiles(proj);
-                    FileStatusCache cache = hg.getFileStatusCache();
+                    FileStatusCache cache = git.getFileStatusCache();
                     FileInformation fi = new FileInformation(FileInformation.STATUS_NOTVERSIONED_NEWLOCALLY, null, false);
 
                     for (int j = 0; j < files.length; j++) {

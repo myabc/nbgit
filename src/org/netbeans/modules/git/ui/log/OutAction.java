@@ -50,8 +50,8 @@ import org.openide.util.NbBundle;
 
 
 /**
- * Log action for mercurial: 
- * hg log - show revision history of entire repository or files
+ * Log action for Git: 
+ * git log - show revision history of entire repository or files
  * 
  * @author John Rice
  */

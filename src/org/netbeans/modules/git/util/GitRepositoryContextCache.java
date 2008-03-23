@@ -45,6 +45,10 @@ import java.io.File;
 import java.util.Set;
 import org.netbeans.modules.versioning.spi.VCSContext;
 
+/**
+ * 
+ * @author alexbcoles
+ */
 public class GitRepositoryContextCache {
     
     private static boolean hasHistory;

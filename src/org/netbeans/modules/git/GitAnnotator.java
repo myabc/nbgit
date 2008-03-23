@@ -184,7 +184,7 @@ public class GitAnnotator extends VCSAnnotator {
     }
 
     private void initDefaultColor(String name) {
-        String color = System.getProperty("hg.color." + name);  // NOI18N
+        String color = System.getProperty("git.color." + name);  // NOI18N
         if (color == null) return;
         setAnnotationColor(name, color);
     }
@@ -302,7 +302,7 @@ public class GitAnnotator extends VCSAnnotator {
                         if (info.isDirectory()) continue;
                         int status = info.getStatus();
                         if (status == FileInformation.STATUS_VERSIONED_CONFLICT) {
-                            Image badge = Utilities.loadImage("org/netbeans/modules/mercurial/resources/icons/conflicts-badge.png", true);  // NOI18N
+                            Image badge = Utilities.loadImage("org/netbeans/modules/git/resources/icons/conflicts-badge.png", true);  // NOI18N
                             return Utilities.mergeImages(icon, badge, 16, 9);
                         }
                         modified = true;
@@ -319,7 +319,7 @@ public class GitAnnotator extends VCSAnnotator {
                             continue;
                         }
                         if (status == FileInformation.STATUS_VERSIONED_CONFLICT) {
-                            Image badge = Utilities.loadImage("org/netbeans/modules/mercurial/resources/icons/conflicts-badge.png", true); // NOI18N
+                            Image badge = Utilities.loadImage("org/netbeans/modules/git/resources/icons/conflicts-badge.png", true); // NOI18N
                             return Utilities.mergeImages(icon, badge, 16, 9);
                         }
                         modified = true;
@@ -330,7 +330,7 @@ public class GitAnnotator extends VCSAnnotator {
         }
         
         if (modified && !allExcluded) {
-            Image badge = Utilities.loadImage("org/netbeans/modules/mercurial/resources/icons/modified-badge.png", true); // NOI18N
+            Image badge = Utilities.loadImage("org/netbeans/modules/git/resources/icons/modified-badge.png", true); // NOI18N
             return Utilities.mergeImages(icon, badge, 16, 9);
         } else {
             return null;
@@ -506,7 +506,7 @@ public class GitAnnotator extends VCSAnnotator {
     }
 
     public String annotateNameHtml(String name, FileInformation mostImportantInfo, File mostImportantFile) {
-        // Hg: The codes used to show the status of files are:
+        // Git: The codes used to show the status of files are:
         // M = modified
         // A = added
         // R = removed

@@ -58,8 +58,8 @@ import org.netbeans.spi.queries.CollocationQueryImplementation;
 public class GitVCS extends VersioningSystem implements PropertyChangeListener, CollocationQueryImplementation {
     
     public GitVCS() {
-        putProperty(PROP_DISPLAY_NAME, org.openide.util.NbBundle.getMessage(GitVCS.class, "CTL_Mercurial_DisplayName")); // NOI18N
-        putProperty(PROP_MENU_LABEL, org.openide.util.NbBundle.getMessage(GitVCS.class, "CTL_Mercurial_MainMenu")); // NOI18N
+        putProperty(PROP_DISPLAY_NAME, org.openide.util.NbBundle.getMessage(GitVCS.class, "CTL_Git_DisplayName")); // NOI18N
+        putProperty(PROP_MENU_LABEL, org.openide.util.NbBundle.getMessage(GitVCS.class, "CTL_Git_MainMenu")); // NOI18N
 
         Git.getInstance().addPropertyChangeListener(this);
         Git.getInstance().getFileStatusCache().addPropertyChangeListener(this);

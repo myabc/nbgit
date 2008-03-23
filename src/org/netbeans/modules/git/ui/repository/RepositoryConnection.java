@@ -58,7 +58,7 @@ public class RepositoryConnection {
     private String externalCommand;
     private boolean savePassword;
     
-    private GitURL hgUrl;
+    private GitURL gitUrl;
     
     public RepositoryConnection(RepositoryConnection rc) {
         this(rc.url, rc.username, rc.password, rc.externalCommand, rc.savePassword);
@@ -96,13 +96,14 @@ public class RepositoryConnection {
         return savePassword;
     }
 
-    public GitURL getHgUrl() throws MalformedURLException {
-        if(hgUrl == null) {
+    public GitURL getGitUrl() throws MalformedURLException {
+        if(gitUrl == null) {
             parseUrlString(url);
         }
-        return hgUrl;
+        return gitUrl;
     }
     
+    @Override
     public boolean equals(Object o) {
         if (o == null) {
             return false;   
@@ -119,6 +120,7 @@ public class RepositoryConnection {
         return true;
     }
     
+    @Override
     public int hashCode() {
         int hash = 3;
         hash = 61 * hash + (this.url != null ? this.url.hashCode() : 0);        
@@ -127,7 +129,7 @@ public class RepositoryConnection {
 
     void setUrl(String url) {
         this.url = url;
-        hgUrl = null; 
+        gitUrl = null; 
     }
 
     void setUsername(String username) {
@@ -171,7 +173,7 @@ public class RepositoryConnection {
     //        urlString = urlString.substring(0, idx);
     //    }    
         //urlO = removeEmptyPathSegments(new URL(urlString));
-        hgUrl = new GitURL(urlString);
+        gitUrl = new GitURL(urlString);
     }
     
     //private URL removeEmptyPathSegments(URL url) throws MalformedURLException {
@@ -179,7 +181,7 @@ public class RepositoryConnection {
     //    StringBuffer urlString = new StringBuffer();
     //    urlString.append(url.getProtocol());
     //    urlString.append("://");                                                // NOI18N
-    //    urlString.append(HgUtils.ripUserFromHost(url.getHost()));
+    //    urlString.append(GitUtils.ripUserFromHost(url.getHost()));
     //    if(url.getPort() > 0) {
     //        urlString.append(":");                                              // NOI18N
     //        urlString.append(url.getPort());

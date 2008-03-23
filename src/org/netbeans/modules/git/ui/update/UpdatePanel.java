@@ -62,10 +62,10 @@ public class UpdatePanel extends javax.swing.JPanel {
 
     private File                            repository;
     private RequestProcessor.Task           refreshViewTask;
-    private static final RequestProcessor   rp = new RequestProcessor("MercurialUpdate", 1);  // NOI18N
+    private static final RequestProcessor   rp = new RequestProcessor("GitUpdate", 1);  // NOI18N
     private Thread                          refreshViewThread;
 
-    private static final int HG_REVERT_TARGET_LIMIT = 100;
+    private static final int GIT_REVERT_TARGET_LIMIT = 100;
 
     /** Creates new form ReverModificationsPanel */
      public UpdatePanel(File repo) {
@@ -197,7 +197,7 @@ public class UpdatePanel extends javax.swing.JPanel {
     }
 
     private void refreshRevisions() {
-        java.util.List<String> targetRevsList = GitCommand.getRevisions(repository, HG_REVERT_TARGET_LIMIT);
+        java.util.List<String> targetRevsList = GitCommand.getRevisions(repository, GIT_REVERT_TARGET_LIMIT);
 
         Set<String>  targetRevsSet = new LinkedHashSet<String>();
 

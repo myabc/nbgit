@@ -74,7 +74,7 @@ public class GitExtProperties implements ActionListener, DocumentListener {
     private File loadedValueFile;
     private Font fontTextArea;
     
-    /** Creates a new instance of HgExtProperties */
+    /** Creates a new instance of GitExtProperties */
     public GitExtProperties(PropertiesPanel panel, PropertiesTable propTable, File root) {
         this.panel = panel;
         this.propTable = propTable;
@@ -146,17 +146,17 @@ public class GitExtProperties implements ActionListener, DocumentListener {
             support = new GitProgressSupport() {
                 protected void perform() {
                     Properties props = GitModuleConfig.getDefault().getProperties(root, "extensions"); // NOI18N
-                    GitPropertiesNode[] hgProps = new GitPropertiesNode[props.size()];
+                    GitPropertiesNode[] gitProps = new GitPropertiesNode[props.size()];
                     int i = 0;
 
                     for (Enumeration e = props.propertyNames(); e.hasMoreElements() ; ) {
                         String name = (String) e.nextElement();
                         String tmp = props.getProperty(name);
                         String value = tmp != null ? tmp : ""; // NOI18N
-                        hgProps[i] = new GitPropertiesNode(name, value);
+                        gitProps[i] = new GitPropertiesNode(name, value);
                         i++;
                      }
-                     propTable.setNodes(hgProps);
+                     propTable.setNodes(gitProps);
                 }
             };
             support.start(rp, null, org.openide.util.NbBundle.getMessage(GitExtProperties.class, "LBL_Properties_Progress")); // NOI18N
@@ -166,21 +166,21 @@ public class GitExtProperties implements ActionListener, DocumentListener {
     }
     
     private boolean addProperty(String name, String value) {
-        GitPropertiesNode[] hgPropertiesNodes = propTable.getNodes();
-        for (int i = 0; i < hgPropertiesNodes.length; i++) {
-            String hgPropertyName = hgPropertiesNodes[propTable.getModelIndex(i)].getName(); 
-            if (hgPropertyName.equals(name)) {
-                hgPropertiesNodes[propTable.getModelIndex(i)].setValue(value); 
-                propTable.setNodes(hgPropertiesNodes);
+        GitPropertiesNode[] gitPropertiesNode = propTable.getNodes();
+        for (int i = 0; i < gitPropertiesNode.length; i++) {
+            String gitPropertyName = gitPropertiesNode[propTable.getModelIndex(i)].getName(); 
+            if (gitPropertyName.equals(name)) {
+                gitPropertiesNode[propTable.getModelIndex(i)].setValue(value); 
+                propTable.setNodes(gitPropertiesNode);
                 return true;
             } 
         }
-        GitPropertiesNode[] hgProps = new GitPropertiesNode[hgPropertiesNodes.length + 1];
-        for (int i = 0; i < hgPropertiesNodes.length; i++) {
-            hgProps[i] = hgPropertiesNodes[i];
+        GitPropertiesNode[] gitProps = new GitPropertiesNode[gitPropertiesNode.length + 1];
+        for (int i = 0; i < gitPropertiesNode.length; i++) {
+            gitProps[i] = gitPropertiesNode[i];
         }
-        hgProps[hgPropertiesNodes.length] = new GitPropertiesNode(name, value);
-        propTable.setNodes(hgProps); 
+        gitProps[gitPropertiesNode.length] = new GitPropertiesNode(name, value);
+        propTable.setNodes(gitProps); 
         return true;
     }
 
@@ -197,11 +197,11 @@ public class GitExtProperties implements ActionListener, DocumentListener {
             support = new GitProgressSupport() {
                 protected void perform() {
                     GitModuleConfig.getDefault().clearProperties(root, "extensions"); // NOI18N
-                    GitPropertiesNode[] hgPropertiesNodes = propTable.getNodes();
-                    for (int i = 0; i < hgPropertiesNodes.length; i++) {
-                        String hgPropertyName = hgPropertiesNodes[propTable.getModelIndex(i)].getName();
-                        String hgPropertyValue = hgPropertiesNodes[propTable.getModelIndex(i)].getValue();
-                        GitModuleConfig.getDefault().setProperty(root, "extensions", hgPropertyName, hgPropertyValue, true); // NOI18N
+                    GitPropertiesNode[] gitPropertiesNodes = propTable.getNodes();
+                    for (int i = 0; i < gitPropertiesNodes.length; i++) {
+                        String gitPropertyName = gitPropertiesNodes[propTable.getModelIndex(i)].getName();
+                        String gitPropertyValue = gitPropertiesNodes[propTable.getModelIndex(i)].getValue();
+                        GitModuleConfig.getDefault().setProperty(root, "extensions", gitPropertyName, gitPropertyValue, true); // NOI18N
                     }
                 }
             };
@@ -215,18 +215,18 @@ public class GitExtProperties implements ActionListener, DocumentListener {
         final int[] rows = propTable.getSelectedItems();
         // No rows selected
         if (rows.length == 0) return;
-        GitPropertiesNode[] hgPropertiesNodes = propTable.getNodes();
-        GitPropertiesNode[] hgProps = new GitPropertiesNode[hgPropertiesNodes.length - rows.length];
+        GitPropertiesNode[] gitPropertiesNodes = propTable.getNodes();
+        GitPropertiesNode[] gitProps = new GitPropertiesNode[gitPropertiesNodes.length - rows.length];
         int j = 0;
         int k = 0;
-        for (int i = 0; i < hgPropertiesNodes.length; i++) {
+        for (int i = 0; i < gitPropertiesNodes.length; i++) {
             if (i != rows[j]) {
-                hgProps[k++] = hgPropertiesNodes[i];
+                gitProps[k++] = gitPropertiesNodes[i];
             } else {
                 if (j < rows.length - 1) j++;
             }
         }
-        propTable.setNodes(hgProps);
+        propTable.setNodes(gitProps);
     }
     
     public void insertUpdate(DocumentEvent event) {
@@ -261,15 +261,15 @@ public class GitExtProperties implements ActionListener, DocumentListener {
             //super.mouseClicked(arg0);
             if (event.getClickCount() == 2) {
                 int[] rows = propTable.getSelectedItems();
-                GitPropertiesNode[] hgPropertiesNodes = propTable.getNodes();
-                if (hgPropertiesNodes == null)
+                GitPropertiesNode[] gitPropertiesNodes = propTable.getNodes();
+                if (gitPropertiesNodes == null)
                     return;
-                final String hgPropertyName = hgPropertiesNodes[propTable.getModelIndex(rows[0])].getName(); 
-                final String hgPropertyValue = hgPropertiesNodes[propTable.getModelIndex(rows[0])].getValue(); 
+                final String gitPropertyName = gitPropertiesNodes[propTable.getModelIndex(rows[0])].getName(); 
+                final String gitPropertyValue = gitPropertiesNodes[propTable.getModelIndex(rows[0])].getValue(); 
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
-                        panel.getComboName().getEditor().setItem(hgPropertyName);
-                        panel.getTxtAreaValue().setText(hgPropertyValue);
+                        panel.getComboName().getEditor().setItem(gitPropertyName);
+                        panel.getTxtAreaValue().setText(gitPropertyValue);
                     }
                 });
             }

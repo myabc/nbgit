@@ -162,7 +162,7 @@ final class ProjectUtilities {
                 // it happens for all apisupport projects unless
                 // checked out into directory that contains nbbuild and openide folders
                 // apisupport project is valid only if placed in defined directory structure
-                Throwable cause = new Throwable("HG.PU: ignoring suspicious project folder...");  // NOI18N
+                Throwable cause = new Throwable("GIT.PU: ignoring suspicious project folder...");  // NOI18N
                 e.initCause(cause);
                 Git.LOG.log(Level.INFO, null, e);
             }

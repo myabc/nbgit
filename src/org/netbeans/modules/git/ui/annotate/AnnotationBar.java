@@ -746,7 +746,7 @@ final class AnnotationBar extends JComponent implements Accessible, PropertyChan
                 try {
                     escapedAuthor = XMLUtil.toElementContent(al.getAuthor());
                 } catch (CharConversionException e1) {
-                    Git.LOG.log(Level.INFO, "HG.AB: can not HTML escape: ", al.getAuthor());  // NOI18N
+                    Git.LOG.log(Level.INFO, "GIT.AB: can not HTML escape: ", al.getAuthor());  // NOI18N
                 }
 
                 // always return unique string to avoid tooltip sharing on mouse move over same revisions -->
@@ -759,7 +759,7 @@ final class AnnotationBar extends JComponent implements Accessible, PropertyChan
                     try {
                         escaped = XMLUtil.toElementContent(al.getCommitMessage());
                     } catch (CharConversionException e1) {
-                        Git.LOG.log(Level.INFO, "HG.AB: can not HTML escape: ", al.getCommitMessage());  // NOI18N
+                        Git.LOG.log(Level.INFO, "GIT.AB: can not HTML escape: ", al.getCommitMessage());  // NOI18N
                     }
                     if (escaped != null) {
                         String lined = escaped.replaceAll(System.getProperty("line.separator"), "<br>");  // NOI18N
@@ -803,7 +803,7 @@ final class AnnotationBar extends JComponent implements Accessible, PropertyChan
                     return al;
                 }
             } catch (BadLocationException e) {
-                Git.LOG.log(Level.INFO, "HG.AB: can not locate line annotation.");  // NOI18N
+                Git.LOG.log(Level.INFO, "GIT.AB: can not locate line annotation.");  // NOI18N
             }
         }
 
@@ -815,6 +815,7 @@ final class AnnotationBar extends JComponent implements Accessible, PropertyChan
      * It invokes {@link #paintView} that contains
      * actual business logic.
      */
+    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 

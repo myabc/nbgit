@@ -71,7 +71,7 @@ import org.openide.util.RequestProcessor;
 public class StripAction extends ContextAction {
     
     private final VCSContext context;
-    private static String HG_STIP_SAVE_BUNDLE = "saving bundle to ";
+    private static String GIT_STRIP_SAVE_BUNDLE = "saving bundle to ";
             
     public StripAction(String name, VCSContext context) {
         this.context = context;
@@ -139,7 +139,7 @@ public class StripAction extends ContextAction {
                                 Git.getInstance().changesetChanged(root);
                             }
                             String savingTo = list.get(list.size()-1);
-                            savingTo = savingTo != null? savingTo.substring(HG_STIP_SAVE_BUNDLE.length()): null;
+                            savingTo = savingTo != null? savingTo.substring(GIT_STRIP_SAVE_BUNDLE.length()): null;
                             File savingFile = new File(savingTo);
                             if(savingFile != null && savingFile.exists() && savingFile.canRead()){
                                 logger.outputInRed(

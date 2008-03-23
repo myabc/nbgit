@@ -78,6 +78,7 @@ import org.openide.util.Utilities;
 
 /**
  * 
+ * 
  * @author alexbcoles
  */
 public class GitCommand {
@@ -85,7 +86,7 @@ public class GitCommand {
     public static final String GIT_COMMAND = "git";  // NOI18N
     public static final String GITK_COMMAND = "gitk"; 
     
-    private static final String GIT_STATUS_CMD = "status";  // NOI18N // need -A to see ignored files, specified in .hgignore, see man hgignore for details
+    private static final String GIT_STATUS_CMD = "status";  // NOI18N // need -A to see ignored files, specified in .gitignore, see man gitignore for details
     private static final String GIT_OPT_REPOSITORY = "--repository"; // NOI18N
     private static final String GIT_OPT_BUNDLE = "--bundle"; // NOI18N
     private static final String GIT_OPT_CWD_CMD = "--cwd"; // NOI18N
@@ -106,8 +107,8 @@ public class GitCommand {
     
     private static final String GIT_COMMIT_CMD = "commit"; // NOI18N
     private static final String GIT_COMMIT_OPT_LOGFILE_CMD = "--logfile"; // NOI18N
-    private static final String GIT_COMMIT_TEMPNAME = "hgcommit"; // NOI18N
-    private static final String GIT_COMMIT_TEMPNAME_SUFFIX = ".hgm"; // NOI18N
+    private static final String GIT_COMMIT_TEMPNAME = "gitcommit"; // NOI18N
+    private static final String GIT_COMMIT_TEMPNAME_SUFFIX = ".gitm"; // NOI18N
     private static final String GIT_COMMIT_DEFAULT_MESSAGE = "[no commit message]"; // NOI18N
     
     private static final String GIT_REVERT_CMD = "revert"; // NOI18N
@@ -134,13 +135,13 @@ public class GitCommand {
     private static final String GIT_OUT_CMD = "out"; // NOI18N
     private static final String GIT_LOG_LIMIT_ONE_CMD = "-l 1"; // NOI18N
     private static final String GIT_LOG_LIMIT_CMD = "-l"; // NOI18N
-    private static final String GIT_LOG_TEMPLATE_SHORT_CMD = "--template={rev}\\n{desc|firstline}\\n{date|hgdate}\\n{node|short}\\n"; // NOI18N
-    private static final String GIT_LOG_TEMPLATE_LONG_CMD = "--template={rev}\\n{desc}\\n{date|hgdate}\\n{node|short}\\n"; // NOI18N
+    private static final String GIT_LOG_TEMPLATE_SHORT_CMD = "--template={rev}\\n{desc|firstline}\\n{date|gitdate}\\n{node|short}\\n"; // NOI18N
+    private static final String GIT_LOG_TEMPLATE_LONG_CMD = "--template={rev}\\n{desc}\\n{date|gitdate}\\n{node|short}\\n"; // NOI18N
 
     private static final String GIT_LOG_NO_MERGES_CMD = "-M";
     private static final String GIT_LOG_DEBUG_CMD = "--debug";
     private static final String GIT_LOG_TEMPLATE_HISTORY_CMD = 
-            "--template=rev:{rev}\\nauth:{author}\\ndesc:{desc}\\ndate:{date|hgdate}\\nid:{node|short}\\n" + // NOI18N
+            "--template=rev:{rev}\\nauth:{author}\\ndesc:{desc}\\ndate:{date|gitdate}\\nid:{node|short}\\n" + // NOI18N
             "file_mods:{files}\\nfile_adds:{file_adds}\\nfile_dels:{file_dels}\\nfile_copies:\\nendCS:\\n"; // NOI18N
     private static final String GIT_LOG_REVISION_OUT = "rev:"; // NOI18N
     private static final String GIT_LOG_AUTHOR_OUT = "auth:"; // NOI18N
@@ -173,29 +174,19 @@ public class GitCommand {
     private static final String GIT_PATH_DEFAULT_OPT = "default"; // NOI18N
     private static final String GIT_PATH_DEFAULT_PUSH_OPT = "default-push"; // NOI18N
  
-    
-    // TODO: replace this hack 
-    // Causes /usr/bin/hgmerge script to return when a merge
-    // has conflicts with exit 0, instead of throwing up EDITOR. 
-    // Problem is after this Hg thinks the merge succeded and no longer
-    // marks repository with a merge needed flag. So Plugin needs to 
-    // track this merge required status by changing merge conflict file
-    // status. If the cache is removed this information would be lost.
-    //
-    // Really need Hg to give us back merge status information, 
-    // which it currently does not
     private static final String GIT_MERGE_CMD = "merge"; // NOI18N
     private static final String GIT_MERGE_FORCE_CMD = "-f"; // NOI18N
     private static final String GIT_MERGE_ENV = "EDITOR=success || $TEST -s"; // NOI18N
 
-    public static final String GIT_HGK_PATH_SOLARIS10 = "/usr/demo/mercurial"; // NOI18N
-    private static final String GIT_HGK_PATH_SOLARIS10_ENV = "PATH=/usr/bin/:/usr/sbin:/bin:"+ GIT_HGK_PATH_SOLARIS10; // NOI18N
+    public static final String GIT_GITK_PATH_SOLARIS10 = "/usr/demo/gitk"; // NOI18N
+    private static final String GIT_GITK_PATH_SOLARIS10_ENV = "PATH=/usr/bin/:/usr/sbin:/bin:"+ GIT_GITK_PATH_SOLARIS10; // NOI18N
     
     private static final String GIT_PULL_CMD = "pull"; // NOI18N
     private static final String GIT_UPDATE_CMD = "-u"; // NOI18N
     private static final String GIT_PUSH_CMD = "push"; // NOI18N
     private static final String GIT_UNBUNDLE_CMD = "unbundle"; // NOI18N
     private static final String GIT_ROLLBACK_CMD = "rollback"; // NOI18N
+    
     private static final String GIT_BACKOUT_CMD = "backout"; // NOI18N
     private static final String GIT_BACKOUT_MERGE_CMD = "--merge"; // NOI18N
     private static final String GIT_BACKOUT_COMMIT_MSG_CMD = "-m"; // NOI18N
@@ -216,7 +207,7 @@ public class GitCommand {
     private static final String GIT_FETCH_CMD = "fetch"; // NOI18N
     public static final String GIT_PROXY_ENV = "http_proxy="; // NOI18N
     
-    private static final String GIT_MERGE_NEEDED_ERR = "(run 'hg heads' to see heads, 'hg merge' to merge)"; // NOI18N
+    private static final String GIT_MERGE_NEEDED_ERR = "(run 'git heads' to see heads, 'git merge' to merge)"; // NOI18N
     public static final String GIT_MERGE_CONFLICT_ERR = "conflicts detected in "; // NOI18N
     public static final String GIT_MERGE_CONFLICT_WIN1_ERR = "merging"; // NOI18N
     public static final String GIT_MERGE_CONFLICT_WIN2_ERR = "failed!"; // NOI18N
@@ -228,14 +219,14 @@ public class GitCommand {
     private static final String GIT_NO_CHANGES_ERR = "no changes found"; // NOI18N
     private final static String GIT_CREATE_NEW_BRANCH_ERR = "abort: push creates new remote branches!"; // NOI18N
     private final static String GIT_HEADS_CREATED_ERR = "(+1 heads)"; // NOI18N
-    private final static String GIT_NO_GIT_CMD_FOUND_ERR = "hg: not found";
+    private final static String GIT_NO_GIT_CMD_FOUND_ERR = "git: not found";
     private final static String GIT_ARG_LIST_TOO_LONG_ERR = "Arg list too long";
             
     private final static String GIT_HEADS_CMD = "heads"; // NOI18N
     
-    private static final String GIT_NO_REPOSITORY_ERR = "There is no Mercurial repository here"; // NOI18N
-    private static final String GIT_NO_RESPONSE_ERR = "no suitable response from remote hg!"; // NOI18N
-    private static final String GIT_NOT_REPOSITORY_ERR = "does not appear to be an hg repository"; // NOI18N
+    private static final String GIT_NO_REPOSITORY_ERR = "There is no Git repository here"; // NOI18N
+    private static final String GIT_NO_RESPONSE_ERR = "no suitable response from remote git!"; // NOI18N
+    private static final String GIT_NOT_REPOSITORY_ERR = "does not appear to be an git repository"; // NOI18N
     private static final String GIT_REPOSITORY = "repository"; // NOI18N
     private static final String GIT_NOT_FOUND_ERR = "not found!"; // NOI18N
     private static final String GIT_UPDATE_SPAN_BRANCHES_ERR = "abort: update spans branches"; // NOI18N
@@ -256,8 +247,8 @@ public class GitCommand {
     private static final String GIT_NO_CHANGE_NEEDED_ERR = "no change needed"; // NOI18N
     private static final String GIT_NO_ROLLBACK_ERR = "no rollback information available"; // NOI18N
     private static final String GIT_NO_UPDATES_ERR = "0 files updated, 0 files merged, 0 files removed, 0 files unresolved"; // NOI18N
-    private static final String GIT_NO_VIEW_ERR = "hg: unknown command 'view'"; // NOI18N
-    private static final String GIT_HGK_NOT_FOUND_ERR = "sh: hgk: not found"; // NOI18N
+    private static final String GIT_NO_VIEW_ERR = "git: unknown command 'view'"; // NOI18N
+    private static final String GIT_GITK_NOT_FOUND_ERR = "sh: gitk: not found"; // NOI18N
     private static final String GIT_NO_SUCH_FILE_ERR = "No such file"; // NOI18N
 
     private static final String GIT_NO_REV_STRIP_ERR = "abort: unknown revision"; // NOI18N
@@ -266,12 +257,12 @@ public class GitCommand {
 
     private static final char GIT_STATUS_CODE_MODIFIED = 'M' + ' ';    // NOI18N // STATUS_VERSIONED_MODIFIEDLOCALLY
     private static final char GIT_STATUS_CODE_ADDED = 'A' + ' ';      // NOI18N // STATUS_VERSIONED_ADDEDLOCALLY
-    private static final char GIT_STATUS_CODE_REMOVED = 'R' + ' ';   // NOI18N  // STATUS_VERSIONED_REMOVEDLOCALLY - still tracked, hg update will recover, hg commit
+    private static final char GIT_STATUS_CODE_REMOVED = 'R' + ' ';   // NOI18N  // STATUS_VERSIONED_REMOVEDLOCALLY - still tracked, git update will recover, git commit
     private static final char GIT_STATUS_CODE_CLEAN = 'C' + ' ';     // NOI18N  // STATUS_VERSIONED_UPTODATE
-    private static final char GIT_STATUS_CODE_DELETED = '!' + ' ';    // NOI18N // STATUS_VERSIONED_DELETEDLOCALLY - still tracked, hg update will recover, hg commit no effect
+    private static final char GIT_STATUS_CODE_DELETED = '!' + ' ';    // NOI18N // STATUS_VERSIONED_DELETEDLOCALLY - still tracked, git update will recover, git commit no effect
     private static final char GIT_STATUS_CODE_NOTTRACKED = '?' + ' '; // NOI18N // STATUS_NOTVERSIONED_NEWLOCALLY - not tracked
     private static final char GIT_STATUS_CODE_IGNORED = 'I' + ' ';     // NOI18N // STATUS_NOTVERSIONED_EXCLUDE - not shown by default
-    private static final char GIT_STATUS_CODE_CONFLICT = 'X' + ' ';    // NOI18N // STATUS_VERSIONED_CONFLICT - TODO when Hg status supports conflict markers
+    private static final char GIT_STATUS_CODE_CONFLICT = 'X' + ' ';    // NOI18N // STATUS_VERSIONED_CONFLICT - TODO when Git status supports conflict markers
     
     private static final char GIT_STATUS_CODE_ABORT = 'a' + 'b';    // NOI18N
     public static final String GIT_STR_CONFLICT_EXT = ".conflict~"; // NOI18N
@@ -286,7 +277,7 @@ public class GitCommand {
      * marked as changed for the next commit and a commit must be
      * performed before any further updates are allowed.
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param Revision to merge with, if null will merge with default tip rev
      * @return git merge output
      * @throws GitException
@@ -314,12 +305,12 @@ public class GitCommand {
      * By default, update will refuse to run if doing so would require
      * merging or discarding local changes.
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param Boolean force an Update and overwrite any modified files in the  working directory
      * @param String revision to be updated to
      * @param Boolean throw exception on error
-     * @return hg update output
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @return git update output
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doUpdateAll(File repository, boolean bForce, String revision, boolean bThrowException) throws GitException {
         if (repository == null ) return null;
@@ -352,7 +343,8 @@ public class GitCommand {
     }
     
     /**
-     * Roll back the last transaction in this repository
+     * Roll back the last transaction in this repository.
+     * 
      * Transactions are used to encapsulate the effects of all commands
      * that create new changesets or propagate existing changesets into a
      * repository. For example, the following commands are transactional,
@@ -361,9 +353,9 @@ public class GitCommand {
      * unbundle
      * There is only one level of rollback, and there is no way to undo a rollback.
      *
-     * @param File repository of the mercurial repository's root directory
-     * @return hg update output
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @param File repository of the Git repository's root directory
+     * @return git update output
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doRollback(File repository, OutputLogger logger) throws GitException {
         if (repository == null ) return null;
@@ -471,29 +463,28 @@ public class GitCommand {
         return null;
     }
     
-        /**
+    /**
      * Pull changes from the default pull locarion and update working directory.
      * By default, update will refuse to run if doing so would require
      * merging or discarding local changes.
      *
-     * @param File repository of the mercurial repository's root directory
-     * @return hg pull output
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @param File repository of the Git repository's root directory
+     * @return git pull output
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doPull(File repository, OutputLogger logger) throws GitException {
         return doPull(repository, null, logger);
     }
     
-       /**
-     * Pull changes from the specified repository and
-     * update working directory.
+    /**
+     * Pull changes from the specified repository and update working directory.
      * By default, update will refuse to run if doing so would require
      * merging or discarding local changes.
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param String source repository to pull from
-     * @return hg pull output
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @return git pull output
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doPull(File repository, String from, OutputLogger logger) throws GitException {
         if (repository == null ) return null;
@@ -532,10 +523,10 @@ public class GitCommand {
      * By default, update will refuse to run if doing so would require
      * merging or discarding local changes.
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param File bundle identfies the compressed changegroup file to be applied
-     * @return hg unbundle output
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @return git unbundle output
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doUnbundle(File repository, File bundle, OutputLogger logger) throws GitException {
         if (repository == null ) return null;
@@ -562,9 +553,9 @@ public class GitCommand {
      * Show the changesets that would be pulled if a pull
      * was requested from the default pull location
      *
-     * @param File repository of the mercurial repository's root directory
-     * @return hg incoming output
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @param File repository of the Git repository's root directory
+     * @return git incoming output
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doIncoming(File repository, OutputLogger logger) throws GitException {
         return doIncoming(repository, null, null, logger);
@@ -574,11 +565,11 @@ public class GitCommand {
      * Show the changesets that would be pulled if a pull
      * was requested from the specified repository
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param String source repository to query
      * @param File bundle to store downloaded changesets.
-     * @return hg incoming output
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @return git incoming output
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doIncoming(File repository, String from, File bundle, OutputLogger logger) throws GitException {
         if (repository == null ) return null;
@@ -619,10 +610,10 @@ public class GitCommand {
      * Show the changesets that would be pushed if a push
      * was requested to the specified local source repository
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param String source repository to query
-     * @return hg outgoing output
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @return git outgoing output
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doOutgoing(File repository, String to, OutputLogger logger) throws GitException {
         if (repository == null ) return null;
@@ -656,10 +647,10 @@ public class GitCommand {
      * Push changes to the specified repository
      * By default, push will refuse to run if doing so would create multiple heads
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param String source repository to push to
-     * @return hg push output
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @return git push output
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doPush(File repository, String to, OutputLogger logger) throws GitException {
         if (repository == null || to == null ) return null;
@@ -692,10 +683,10 @@ public class GitCommand {
     }
 
     /**
-     * Run the command hg view for the specified repository
+     * Run the command git view for the specified repository
      *
-     * @param File repository of the mercurial repository's root directory
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @param File repository of the Git repository's root directory
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doView(File repository, OutputLogger logger) throws GitException {
         if (repository == null) return null;
@@ -710,7 +701,7 @@ public class GitCommand {
         List<String> list;
 
         if(GitUtils.isSolaris()){
-            env.add(GIT_HGK_PATH_SOLARIS10_ENV);
+            env.add(GIT_GITK_PATH_SOLARIS10_ENV);
             list = execEnv(command, env);
         }else{
             list = exec(command);
@@ -721,7 +712,7 @@ public class GitCommand {
                 throw new GitException(NbBundle.getMessage(GitCommand.class, "MSG_WARN_NO_VIEW_TEXT"));
              }
             else if (isErrorGitkNotFound(list.get(0))) {
-                throw new GitException(NbBundle.getMessage(GitCommand.class, "MSG_WARN_HGK_NOT_FOUND_TEXT"));
+                throw new GitException(NbBundle.getMessage(GitCommand.class, "MSG_WARN_GITK_NOT_FOUND_TEXT"));
             } else if (isErrorAbort(list.get(list.size() -1))) {
                 handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_COMMAND_ABORTED"), logger);
             }
@@ -763,10 +754,10 @@ public class GitCommand {
         return proxy;
     }
     /**
-     * Run the fetch extension for the specified repository
+     * Run the fetch extension for the specified repository.
      *
-     * @param File repository of the mercurial repository's root directory
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @param File repository of the Git repository's root directory
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doFetch(File repository, OutputLogger logger) throws GitException {
         if (repository == null) return null;
@@ -908,7 +899,7 @@ public class GitCommand {
     /**
      * Determines whether repository requires a merge - has more than 1 heads
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @return Boolean which is true if the repository needs a merge
      */
     public static Boolean isMergeRequired(File repository) {
@@ -932,7 +923,7 @@ public class GitCommand {
     /**
      * Determines whether anything has been committed to the repository
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @return Boolean which is true if the repository has revision history.
      */
     public static Boolean hasHistory(File repository) {
@@ -958,12 +949,13 @@ public class GitCommand {
     }
 
     /**
-     * Determines the previous name of the specified file 
+     * Determines the previous name of the specified file.
+     * 
      * We make the assumption that the previous file name is in the
-     * list of files returned by hg log command immediately befor
+     * list of files returned by git log command immediately befor
      * the file we started with.
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param File file of the file whose previous name is required
      * @param String revision which the revision to start from.
      * @return File for the previous name of the file
@@ -1006,10 +998,10 @@ public class GitCommand {
     /**
      * Retrives the log information with just first line of commit message for the specified file.
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param File of file which revision history is to be retrieved.
      * @return List<String> list of the log entries for the specified file.
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
      public static List<String> doLogShort(File repository, File file, OutputLogger logger) throws GitException {
         return doLog(repository, file, GIT_LOG_TEMPLATE_SHORT_CMD, false, logger);
@@ -1018,10 +1010,10 @@ public class GitCommand {
      /**
      * Retrives the log information with the full commit message for the specified file.
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param File of file which revision history is to be retrieved.
      * @return List<String> list of the log entries for the specified file.
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
      public static List<String> doLogLong(File repository, File file, OutputLogger logger) throws GitException {
         return doLog(repository, file, GIT_LOG_TEMPLATE_LONG_CMD, false, logger);
@@ -1030,12 +1022,12 @@ public class GitCommand {
      /**
      * Retrives the log information for the specified file, as defined by the LOG_TEMPLATE.
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param File of file which revision history is to be retrieved.
      * @param String Template specifying how output should be returned
      * @param boolean flag indicating if debug param should be used - required to get all file mod, add, del info
      * @return List<String> list of the log entries for the specified file.
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doLog(File repository, File file, String LOG_TEMPLATE, boolean bDebug, OutputLogger logger) throws GitException {
         if (repository == null ) return null;
@@ -1069,12 +1061,12 @@ public class GitCommand {
     /**
      * Retrives the log information for the specified files.
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param List<File> of files which revision history is to be retrieved.
      * @param String Template specifying how output should be returned
      * @param boolean flag indicating if debug param should be used - required to get all file mod, add, del info
      * @return List<String> list of the log entries for the specified file.
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doLog(File repository, List<File> files, String LOG_TEMPLATE, boolean bDebug, OutputLogger logger) throws GitException {
         if (repository == null ) return null;
@@ -1125,12 +1117,12 @@ public class GitCommand {
     /**
      * Retrives the log information for the specified files.
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param List<File> of files which revision history is to be retrieved.
      * @param String Template specifying how output should be returned
      * @param boolean flag indicating if debug param should be used - required to get all file mod, add, del info
      * @return List<String> list of the log entries for the specified file.
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doLogForHistory(File repository, List<File> files, 
             String from, String to, String headRev, boolean bShowMerges, OutputLogger logger) throws GitException {
@@ -1192,9 +1184,9 @@ public class GitCommand {
     /**
      * Retrives the Out information for the specified repository
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @return List<String> list of the out entries for the specified repo.
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doOut(File repository, boolean bShowMerges, OutputLogger logger) throws GitException {
         if (repository == null ) return null;
@@ -1237,9 +1229,9 @@ public class GitCommand {
         /**
      * Retrives the Incoming changeset information for the specified repository
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @return List<String> list of the out entries for the specified repo.
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doIncomingForSearch(File repository, String to, boolean bShowMerges, OutputLogger logger) throws GitException {
         if (repository == null ) return null;
@@ -1424,10 +1416,10 @@ public class GitCommand {
      * Retrieves the base revision of the specified file to the
      * specified output file.
      *
-     * @param File repository of the mercurial repository's root directory
-     * @param File file in the mercurial repository
+     * @param File repository of the Git repository's root directory
+     * @param File file in the Git repository
      * @param File outFile to contain the contents of the file
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static void doCat(File repository, File file, File outFile, OutputLogger logger) throws GitException {
         doCat(repository, file, outFile, "tip", false, logger); //NOI18N
@@ -1437,13 +1429,13 @@ public class GitCommand {
      * Retrieves the specified revision of the specified file to the
      * specified output file.
      *
-     * @param File repository of the mercurial repository's root directory
-     * @param File file in the mercurial repository
+     * @param File repository of the Git repository's root directory
+     * @param File file in the Git repository
      * @param File outFile to contain the contents of the file
      * @param String of revision for the revision of the file to be
      * printed to the output file.
      * @return List<String> list of all the log entries
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static void doCat(File repository, File file, File outFile, String revision, OutputLogger logger) throws GitException {
         doCat(repository, file, outFile, revision, true, logger); //NOI18N
@@ -1491,9 +1483,9 @@ public class GitCommand {
      * directory does not exist, it is created. Will throw a GitException
      * if the repository already exists.
      *
-     * @param root for the mercurial repository
+     * @param root for the Git repository
      * @return void
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static void doCreate(File root, OutputLogger logger) throws GitException {
         if (root == null ) return;
@@ -1511,10 +1503,10 @@ public class GitCommand {
     /**
      * Clone an exisiting repository to the specified target directory
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param target directory to clone to
      * @return clone output
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doClone(File repository, String target, OutputLogger logger) throws GitException {
         if (repository == null) return null;
@@ -1524,10 +1516,10 @@ public class GitCommand {
     /**
      * Clone a repository to the specified target directory
      *
-     * @param String repository of the mercurial repository
+     * @param String repository of the Git repository
      * @param target directory to clone to
      * @return clone output
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doClone(String repository, String target, OutputLogger logger) throws GitException {
         if (repository == null || target == null) return null;
@@ -1551,8 +1543,8 @@ public class GitCommand {
         command.add(getGitCommand());
         command.add(GIT_CLONE_CMD);
         command.add(GIT_VERBOSE_CMD);
-        // Workaround for http://www.selenic.com/mercurial/bts/issue776
-        // Strip off file:// from start of repository
+        
+        // TODO: Remove this for Git Port
         if (repository.startsWith("file://")) {
             command.add(repository.substring(7));
         } else {
@@ -1574,13 +1566,13 @@ public class GitCommand {
     }
     
     /**
-     * Commits the list of Locally Changed files to the mercurial Repository
+     * Commits the list of Locally Changed files to the Git Repository
      *
-     * @param File repository of the mercurial repository's root directory
-     * @param List<files> of files to be committed to hg
+     * @param File repository of the Git repository's root directory
+     * @param List<files> of files to be committed to Git
      * @param String for commitMessage
      * @return void
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static void doCommit(File repository, List<File> commitFiles, String commitMessage, OutputLogger logger)  throws GitException {
         List<String> command = new ArrayList<String>();
@@ -1641,14 +1633,14 @@ public class GitCommand {
     
     /**
      * Rename a source file to a destination file.
-     * mercurial hg rename 
+     * git mv 
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param File of sourceFile which was renamed
      * @param File of destFile to which sourceFile has been renaned
      * @param boolean whether to do a rename --after
      * @return void
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static void doRename(File repository, File sourceFile, File destFile, OutputLogger logger)  throws GitException {
         doRename(repository, sourceFile, destFile, false, logger);
@@ -1681,27 +1673,27 @@ public class GitCommand {
     
     /**
      * Mark a source file as having been renamed to a destination file.
-     * mercurial hg rename -A.
+     * git mv -A.
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param File of sourceFile which was renamed
      * @param File of destFile to which sourceFile has been renaned
      * @return void
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static void doRenameAfter(File repository, File sourceFile, File destFile, OutputLogger logger)  throws GitException {
        doRename(repository, sourceFile, destFile, true, logger);
     }
     
     /**
-     * Adds the list of Locally New files to the mercurial Repository
+     * Adds the list of Locally New files to the Git Repository.
      * Their status will change to added and they will be added on the next
-     * mercurial hg add.
+     * git add.
      *
-     * @param File repository of the mercurial repository's root directory
-     * @param List<Files> of files to be added to hg
+     * @param File repository of the Git repository's root directory
+     * @param List<Files> of files to be added to Git
      * @return void
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static void doAdd(File repository, List<File> addFiles, OutputLogger logger)  throws GitException {
         if (repository == null) return;
@@ -1726,13 +1718,13 @@ public class GitCommand {
     }
 
     /**
-     * Reverts the list of files in the mercurial Repository to the specified revision
+     * Reverts the list of files in the Git Repository to the specified revision
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param List<Files> of files to be reverted
      * @param String revision to be reverted to
      * @return void
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static void doRevert(File repository, List<File> revertFiles, 
             String revision, boolean doBackup, OutputLogger logger)  throws GitException {
@@ -1762,14 +1754,14 @@ public class GitCommand {
     }
 
     /**
-     * Adds a Locally New file to the mercurial Repository
+     * Adds a Locally New file to the Git Repository
      * The status will change to added and they will be added on the next
-     * mercurial hg commit.
+     * git commit.
      *
-     * @param File repository of the mercurial repository's root directory
-     * @param File of file to be added to hg
+     * @param File repository of the Git repository's root directory
+     * @param File of file to be added to Git
      * @return void
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static void doAdd(File repository, File file, OutputLogger logger)  throws GitException {
         if (repository == null) return;
@@ -1794,11 +1786,11 @@ public class GitCommand {
     /**
      * Get the annotations for the specified file
      *
-     * @param File repository of the mercurial repository
+     * @param File repository of the Git repository
      * @param File file to be annotated
      * @param String revision of the file to be annotated
      * @return List<String> list of the annotated lines of the file
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doAnnotate(File repository, File file, String revision, OutputLogger logger) throws GitException {
         if (repository == null) return null;
@@ -1823,7 +1815,7 @@ public class GitCommand {
                 handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_NO_REPOSITORY_ERR"), logger);
             } else if (isErrorNoSuchFile(list.get(0))) {
                 // This can happen if we have multiple heads and the wrong
-                // one was picked by default hg annotation 
+                // one was picked by default git annotation 
                 if (revision == null) {
                     String rev = getLastRevision(repository, file);
                     if (rev != null) {
@@ -1846,7 +1838,7 @@ public class GitCommand {
     /**
      * Get the revisions this file has been modified in.
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param files to query revisions for
      * @param Int limit on nunmber of revisions (-1 for no limit)
      * @return List<String> list of the revisions of the file - {<rev>:<short cset hash>}
@@ -1883,7 +1875,7 @@ public class GitCommand {
     /**
      * Get the revisions for a repository
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @return List<String> list of the revisions of the repository - {<rev>:<short cset hash>}
      *         or null if no commits made yet.
      */
@@ -1894,9 +1886,9 @@ public class GitCommand {
     
     /**
      * Get the pull default for the specified repository, i.e. the default
-     * destination for hg pull commmands.
+     * destination for git pull commmands.
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @return String for pull default
      */
     public static String getPullDefault(File repository) {
@@ -1905,9 +1897,9 @@ public class GitCommand {
 
     /**
      * Get the push default for the specified repository, i.e. the default
-     * destination for hg push commmands.
+     * destination for git push commmands.
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @return String for push default
      */
     public static String getPushDefault(File repository) {
@@ -1940,11 +1932,11 @@ public class GitCommand {
     }
     
     /**
-     * Returns the mercurial branch name if any for a repository
+     * Returns the Git branch name if any for a repository
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the git repository's root directory
      * @return String branch name or null if not named
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static String getBranchName(File repository) throws GitException {
         if (repository == null) return null;
@@ -1965,11 +1957,11 @@ public class GitCommand {
     }
     
     /**
-     * Returns the mercurial branch revision for a repository
+     * Returns the Git branch revision for a repository
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @return int value of revision for repository tip
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static int getBranchRev(File repository) throws GitException {
         if (repository == null) return -1;
@@ -1991,11 +1983,11 @@ public class GitCommand {
     }
     
     /**
-     * Returns the mercurial branch name if any for a repository
+     * Returns the Git branch name if any for a repository
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the git repository's root directory
      * @return String branch short change set hash
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static String getBranchShortChangesetHash(File repository) throws GitException {
         if (repository == null) return null;
@@ -2016,11 +2008,11 @@ public class GitCommand {
         }
     }
     /**
-     * Returns the mercurial branch info for a repository
+     * Returns the Git branch info for a repository
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the git repository's root directory
      * @return String of form :<branch>:<rev>:<shortchangeset>:
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static String getBranchInfo(File repository) throws GitException {
         if (repository == null) return null;
@@ -2044,9 +2036,9 @@ public class GitCommand {
     /**
      * Returns the revision number for the heads in a repository
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @return List<String> of revision numbers.
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> getHeadRevisions(File repository) throws GitException {
         return  getHeadInfo(repository, GIT_REV_TEMPLATE_CMD);
@@ -2055,9 +2047,9 @@ public class GitCommand {
     /**
      * Returns the revision number for the heads in a repository
      *
-     * @param String repository of the mercurial repository
+     * @param String repository of the Git repository
      * @return List<String> of revision numbers.
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> getHeadRevisions(String repository) throws GitException {
         return  getHeadInfo(repository, GIT_REV_TEMPLATE_CMD);
@@ -2066,10 +2058,10 @@ public class GitCommand {
     /**
      * Returns the changeset for the the heads in a repository
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param File file of the file whose last changeset is to be returned.
      * @return List<String> of changeset ids.
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> getHeadChangeSetIds(File repository) throws GitException {
         return  getHeadInfo(repository, GIT_CSET_TARGET_TEMPLATE_CMD);
@@ -2097,10 +2089,10 @@ public class GitCommand {
     /**
      * Returns the revision number for the last change to a file
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param File file of the file whose last revision number is to be returned, if null test for repo
      * @return String in the form of a revision number.
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static String getLastRevision(File repository, File file) throws GitException {
         return getLastChange(repository, file, GIT_REV_TEMPLATE_CMD);
@@ -2109,10 +2101,10 @@ public class GitCommand {
     /**
      * Returns the changeset for the last change to a file
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param File file of the file whose last changeset is to be returned.
      * @return String in the form of a changeset id.
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static String getLastChangeSetId(File repository, File file) throws GitException {
         return getLastChange(repository, file, GIT_CSET_TEMPLATE_CMD);
@@ -2143,13 +2135,13 @@ public class GitCommand {
     
     
     /**
-     * Returns the mercurial status for a given file
+     * Returns the Git status for a given file
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the git repository's root directory
      * @param cwd current working directory containing file to be checked
      * @param filename name of file whose status is to be checked
      * @return FileInformation for the given filename
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static FileInformation getSingleStatus(File repository, String cwd, String filename)  throws GitException{
         FileInformation info = null;
@@ -2191,86 +2183,86 @@ public class GitCommand {
     }
     
     /**
-     * Returns the mercurial status for all files in a given  subdirectory of
+     * Returns the Git status for all files in a given  subdirectory of
      * a repository
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the git repository's root directory
      * @param File dir of the subdirectoy of interest. 
      * @return Map of files and status for all files in the specified subdirectory
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static Map<File, FileInformation> getAllStatus(File repository, File dir)  throws GitException{
         return getDirStatusWithFlags(repository, dir, GIT_STATUS_FLAG_ALL_CMD, true);
     }
     
     /**
-     * Returns the mercurial status for all files in a given repository
+     * Returns the git status for all files in a given repository
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @return Map of files and status for all files under the repository root
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static Map<File, FileInformation> getAllStatus(File repository)  throws GitException{
         return getAllStatusWithFlags(repository, GIT_STATUS_FLAG_ALL_CMD, true);
     }
     
     /**
-     * Returns the mercurial status for only files of interest to us in a given repository
+     * Returns the git status for only files of interest to us in a given repository
      * that is modified, locally added, locally removed, locally deleted, locally new and ignored.
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @return Map of files and status for all files of interest under the repository root
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static Map<File, FileInformation> getAllInterestingStatus(File repository)  throws GitException{
         return getAllStatusWithFlags(repository, GIT_STATUS_FLAG_INTERESTING_CMD, true);
     }
     
     /**
-     * Returns the mercurial status for only files of interest to us in a given directory in a repository
+     * Returns the git status for only files of interest to us in a given directory in a repository
      * that is modified, locally added, locally removed, locally deleted, locally new and ignored.
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param File dir of the directory of interest
      * @return Map of files and status for all files of interest in the directory of interest
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static Map<File, FileInformation> getInterestingStatus(File repository, File dir)  throws GitException{
         return getDirStatusWithFlags(repository, dir, GIT_STATUS_FLAG_INTERESTING_CMD, true);
     }
     
     /**
-     * Returns the mercurial status for only files of interest to us in a given repository
+     * Returns the git status for only files of interest to us in a given repository
      * that is modified, locally added, locally removed, locally deleted, locally new and ignored.
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @return Map of files and status for all files of interest under the repository root
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static Map<File, FileInformation> getAllRemovedDeletedStatus(File repository)  throws GitException{
         return getAllStatusWithFlags(repository, GIT_STATUS_FLAG_REM_DEL_CMD, true);
     }
     
     /**
-     * Returns the mercurial status for only files of interest to us in a given directory in a repository
+     * Returns the git status for only files of interest to us in a given directory in a repository
      * that is modified, locally added, locally removed, locally deleted, locally new and ignored.
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param File dir of the directory of interest
      * @return Map of files and status for all files of interest in the specified directory
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static Map<File, FileInformation> getRemovedDeletedStatus(File repository, File dir)  throws GitException{
         return getDirStatusWithFlags(repository, dir, GIT_STATUS_FLAG_REM_DEL_CMD, true);
     }
     
     /**
-     * Returns the unknown files in a specified directory under a mercurial repository root
+     * Returns the unknown files in a specified directory under a Git repository root
      *
-     * @param File of the mercurial repository's root directory
+     * @param File of the Git repository's root directory
      * @param File of the directory whose files are required
      * @return Map of files and status for all files under the repository root
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static Map<File, FileInformation> getUnknownStatus(File repository, File dir)  throws GitException{
         Map<File, FileInformation> files = getDirStatusWithFlags(repository, dir, GIT_STATUS_FLAG_UNKNOWN_CMD, false);
@@ -2286,23 +2278,23 @@ public class GitCommand {
     }
 
     /**
-     * Returns the unknown files under a mercurial repository root
+     * Returns the unknown files under a Git repository root
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @return Map of files and status for all files under the repository root
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static Map<File, FileInformation> getAllUnknownStatus(File repository)  throws GitException{
         return getUnknownStatus(repository, null);
     }
     
     /**
-     * Remove the specified file from the mercurial Repository
+     * Remove the specified file from the Git Repository
      *
-     * @param File repository of the mercurial repository's root directory
-     * @param List<Files> of files to be added to hg
+     * @param File repository of the Git repository's root directory
+     * @param List<Files> of files to be added to Git
      * @param f path to be removed from the repository
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static void doRemove(File repository, List<File> removeFiles, OutputLogger logger)  throws GitException {
         List<String> command = new ArrayList<String>();
@@ -2322,11 +2314,11 @@ public class GitCommand {
     }
     
     /**
-     * Remove the specified files from the mercurial Repository
+     * Remove the specified files from the Git Repository
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the git repository's root directory
      * @param f path to be removed from the repository
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static void doRemove(File repository, File f, OutputLogger logger)  throws GitException {
         List<String> command = new ArrayList<String>();
@@ -2348,10 +2340,10 @@ public class GitCommand {
     /**
      * Export the diffs for the specified revision to the specified output file
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param revStr the revision whose diffs are to be exported
      * @param outputFileName path of the output file
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doExport(File repository, String revStr, String outputFileName, OutputLogger logger)  throws GitException {
         // Ensure that parent directory of target exists, creating if necessary
@@ -2390,9 +2382,9 @@ public class GitCommand {
     /**
      * Imports the diffs from the specified file
      *
-     * @param File repository of the mercurial repository's root directory
+     * @param File repository of the Git repository's root directory
      * @param File patchFile of the patch file
-     * @throws org.netbeans.modules.mercurial.GitException
+     * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doImport(File repository, File patchFile, OutputLogger logger)  throws GitException {
         List<String> command = new ArrayList<String>();
@@ -2416,7 +2408,7 @@ public class GitCommand {
     }
     
     /**
-     * Returns Map of mercurial file and status for files in a given repository as specified by the status flags
+     * Returns Map of Git file and status for files in a given repository as specified by the status flags
      */
     private static Map<File, FileInformation> getAllStatusWithFlags(File repository, String statusFlags, boolean bIgnoreUnversioned)  throws GitException{
         return getDirStatusWithFlags(repository, null, statusFlags, bIgnoreUnversioned);
@@ -2486,7 +2478,7 @@ public class GitCommand {
     }
     
     /**
-     * Gets file information for a given hg status output status line
+     * Gets file information for a given git status output status line
      */
     private static FileInformation getFileInformationFromStatusLine(String status){
         FileInformation info = null;
@@ -2532,7 +2524,7 @@ public class GitCommand {
     }
     
     /**
-     * Gets hg status command output line for a given file
+     * Gets git status command output line for a given file
      */
     private static List<String> doSingleStatusCmd(File repository, String cwd, String filename)  throws GitException{
         String statusLine = null;
@@ -2547,16 +2539,14 @@ public class GitCommand {
         command.add(GIT_OPT_CWD_CMD);
         command.add(repository.getAbsolutePath());
 
-        // In 0.9.3 hg status does not give back copy information unless we 
-        // use relative paths from repository. This is fixed in 0.9.4.
-        // See http://www.selenic.com/mercurial/bts/issue545.
+        
         command.add(new File(cwd, filename).getAbsolutePath().substring(repository.getAbsolutePath().length()+1));
         
         return exec(command);
     }
     
     /**
-     * Gets hg status command output list for the specified status flags for a given repository and directory
+     * Gets git status command output list for the specified status flags for a given repository and directory
      */
     private static List<String> doRepositoryDirStatusCmd(File repository, File dir, String statusFlags)  throws GitException{
         List<String> command = new ArrayList<String>();
@@ -2586,13 +2576,13 @@ public class GitCommand {
         }
         return list;
     }
+    
     /**
      * Returns the ouput from the given command
      *
      * @param command to execute
      * @return List of the command's output or an exception if one occured
      */
-
     private static List<String> execEnv(List<String> command, List<String> env) throws GitException{
         if( EventQueue.isDispatchThread()){
             Git.LOG.log(Level.FINE, "WARNING execEnv():  calling Git command in AWT Thread - could stall UI"); // NOI18N
@@ -2876,7 +2866,7 @@ public class GitCommand {
     }
 
     private static boolean isErrorGitkNotFound(String msg) {
-        return msg.indexOf(GIT_HGK_NOT_FOUND_ERR) > -1;                               // NOI18N
+        return msg.indexOf(GIT_GITK_NOT_FOUND_ERR) > -1;                               // NOI18N
     }
 
     private static boolean isErrorNoSuchFile(String msg) {

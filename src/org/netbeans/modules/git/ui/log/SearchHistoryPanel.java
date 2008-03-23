@@ -197,18 +197,18 @@ class SearchHistoryPanel extends javax.swing.JPanel implements ExplorerManager.P
             tbDiff.setPreferredSize(d1);
         }
         
-        nextAction = new AbstractAction(null, new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/mercurial/resources/icons/diff-next.png"))) { // NOI18N
+        nextAction = new AbstractAction(null, new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/git/resources/icons/diff-next.png"))) { // NOI18N
             {
-                putValue(Action.SHORT_DESCRIPTION, java.util.ResourceBundle.getBundle("org/netbeans/modules/mercurial/ui/diff/Bundle"). // NOI18N
+                putValue(Action.SHORT_DESCRIPTION, java.util.ResourceBundle.getBundle("org/netbeans/modules/git/ui/diff/Bundle"). // NOI18N
                                                    getString("CTL_DiffPanel_Next_Tooltip")); // NOI18N
             }
             public void actionPerformed(ActionEvent e) {
                 diffView.onNextButton();
             }
         };
-        prevAction = new AbstractAction(null, new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/mercurial/resources/icons/diff-prev.png"))) { // NOI18N
+        prevAction = new AbstractAction(null, new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/git/resources/icons/diff-prev.png"))) { // NOI18N
             {
-                putValue(Action.SHORT_DESCRIPTION, java.util.ResourceBundle.getBundle("org/netbeans/modules/mercurial/ui/diff/Bundle"). // NOI18N
+                putValue(Action.SHORT_DESCRIPTION, java.util.ResourceBundle.getBundle("org/netbeans/modules/git/ui/diff/Bundle"). // NOI18N
                                                    getString("CTL_DiffPanel_Prev_Tooltip")); // NOI18N
             }
             public void actionPerformed(ActionEvent e) {

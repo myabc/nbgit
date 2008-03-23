@@ -63,10 +63,10 @@ public class StripPanel extends javax.swing.JPanel {
 
     private File                            repository;
     private RequestProcessor.Task           refreshViewTask;
-    private static final RequestProcessor   rp = new RequestProcessor("MercurialStrip", 1);  // NOI18N
+    private static final RequestProcessor   rp = new RequestProcessor("GitStrip", 1);  // NOI18N
     private Thread                          refreshViewThread;
 
-    private static final int HG_STRIP_TARGET_LIMIT = 100;
+    private static final int GIT_STRIP_TARGET_LIMIT = 100;
 
     /** Creates new form ReverModificationsPanel */
      public StripPanel(File repo) {
@@ -237,7 +237,7 @@ public class StripPanel extends javax.swing.JPanel {
     }
 
     private void refreshRevisions() {
-        java.util.List<String> targetRevsList = GitCommand.getRevisions(repository, HG_STRIP_TARGET_LIMIT);
+        java.util.List<String> targetRevsList = GitCommand.getRevisions(repository, GIT_STRIP_TARGET_LIMIT);
 
         Set<String>  targetRevsSet = new LinkedHashSet<String>();
 

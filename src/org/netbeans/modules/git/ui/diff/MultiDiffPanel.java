@@ -220,18 +220,18 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
         updateButton.setToolTipText(NbBundle.getMessage(MultiDiffPanel.class, "MSG_UpdateDiff_Tooltip", contextName));
         ButtonGroup grp = new ButtonGroup();
         
-        nextAction = new AbstractAction(null, new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/mercurial/resources/icons/diff-next.png"))) {  // NOI18N
+        nextAction = new AbstractAction(null, new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/git/resources/icons/diff-next.png"))) {  // NOI18N
             {
-                putValue(Action.SHORT_DESCRIPTION, java.util.ResourceBundle.getBundle("org/netbeans/modules/mercurial/ui/diff/Bundle").
+                putValue(Action.SHORT_DESCRIPTION, java.util.ResourceBundle.getBundle("org/netbeans/modules/git/ui/diff/Bundle").
                                                    getString("CTL_DiffPanel_Next_Tooltip"));                
             }
             public void actionPerformed(ActionEvent e) {
                 onNextButton();
             }
         };
-        prevAction = new AbstractAction(null, new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/mercurial/resources/icons/diff-prev.png"))) { // NOI18N
+        prevAction = new AbstractAction(null, new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/modules/git/resources/icons/diff-prev.png"))) { // NOI18N
             {
-                putValue(Action.SHORT_DESCRIPTION, java.util.ResourceBundle.getBundle("org/netbeans/modules/mercurial/ui/diff/Bundle").
+                putValue(Action.SHORT_DESCRIPTION, java.util.ResourceBundle.getBundle("org/netbeans/modules/git/ui/diff/Bundle").
                                                    getString("CTL_DiffPanel_Prev_Tooltip"));                
             }
             public void actionPerformed(ActionEvent e) {

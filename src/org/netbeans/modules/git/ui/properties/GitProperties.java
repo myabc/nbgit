@@ -60,9 +60,9 @@ import org.openide.util.RequestProcessor;
  */
 public class GitProperties implements ListSelectionListener {
      
-    public static final String HGPROPNAME_USERNAME = "username"; // NOI18N
-    public static final String HGPROPNAME_DEFAULT_PULL = "default-pull"; // NOI18N
-    public static final String HGPROPNAME_DEFAULT_PUSH = "default-push"; // NOI18N
+    public static final String GITPROPNAME_USERNAME = "username"; // NOI18N
+    public static final String GITPROPNAME_DEFAULT_PULL = "default-pull"; // NOI18N
+    public static final String GITPROPNAME_DEFAULT_PUSH = "default-push"; // NOI18N
 
     private PropertiesPanel panel;
     private File root;
@@ -71,7 +71,7 @@ public class GitProperties implements ListSelectionListener {
     private File loadedValueFile;
     private Font fontTextArea;
     
-    /** Creates a new instance of HgProperties */
+    /** Creates a new instance of GitProperties */
     public GitProperties(PropertiesPanel panel, PropertiesTable propTable, File root) {
         this.panel = panel;
         this.propTable = propTable;
@@ -108,17 +108,17 @@ public class GitProperties implements ListSelectionListener {
             support = new GitProgressSupport() {
                 protected void perform() {
                     Properties props = GitModuleConfig.getDefault().getProperties(root);
-                    GitPropertiesNode[] hgProps = new GitPropertiesNode[props.size()];
+                    GitPropertiesNode[] gitProps = new GitPropertiesNode[props.size()];
                     int i = 0;
 
                     for (Enumeration e = props.propertyNames(); e.hasMoreElements() ; ) {
                         String name = (String) e.nextElement();
                         String tmp = props.getProperty(name);
                         String value = tmp != null ? tmp : ""; // NOI18N
-                        hgProps[i] = new GitPropertiesNode(name, value);
+                        gitProps[i] = new GitPropertiesNode(name, value);
                         i++;
                      }
-                     propTable.setNodes(hgProps);
+                     propTable.setNodes(gitProps);
                 }
             };
             support.start(rp, root.getAbsolutePath(), org.openide.util.NbBundle.getMessage(GitProperties.class, "LBL_Properties_Progress")); // NOI18N
@@ -133,13 +133,13 @@ public class GitProperties implements ListSelectionListener {
             support = new GitProgressSupport() {
                 protected void perform() {
                     GitModuleConfig.getDefault().clearProperties(root, "paths"); // NOI18N
-                    GitModuleConfig.getDefault().removeProperty(root, "ui", HGPROPNAME_USERNAME); // NOI18N
-                    GitPropertiesNode[] hgPropertiesNodes = propTable.getNodes();
-                    for (int i = 0; i < hgPropertiesNodes.length; i++) {
-                        String hgPropertyName = hgPropertiesNodes[i].getName();
-                        String hgPropertyValue = hgPropertiesNodes[i].getValue();
-                        if (hgPropertyValue.trim().length() > 0 ) {
-                            GitModuleConfig.getDefault().setProperty(root, hgPropertyName, hgPropertyValue);
+                    GitModuleConfig.getDefault().removeProperty(root, "ui", GITPROPNAME_USERNAME); // NOI18N
+                    GitPropertiesNode[] gitPropertiesNodes = propTable.getNodes();
+                    for (int i = 0; i < gitPropertiesNodes.length; i++) {
+                        String gitPropertyName = gitPropertiesNodes[i].getName();
+                        String gitPropertyValue = gitPropertiesNodes[i].getValue();
+                        if (gitPropertyValue.trim().length() > 0 ) {
+                            GitModuleConfig.getDefault().setProperty(root, gitPropertyName, gitPropertyValue);
                         }
                     }
                     GitRepositoryContextCache.resetPullDefault();
@@ -156,9 +156,9 @@ public class GitProperties implements ListSelectionListener {
     
     
     public void updateLastSelection () {
-        GitPropertiesNode[] hgPropertiesNodes = propTable.getNodes();
+        GitPropertiesNode[] gitPropertiesNodes = propTable.getNodes();
         if (lastIndex >= 0) {
-            hgPropertiesNodes[lastIndex].setValue(getPropertyValue());
+            gitPropertiesNodes[lastIndex].setValue(getPropertyValue());
         }
     }
 
@@ -168,11 +168,11 @@ public class GitProperties implements ListSelectionListener {
             lastIndex = -1;
             return;
         }
-        GitPropertiesNode[] hgPropertiesNodes = propTable.getNodes();
+        GitPropertiesNode[] gitPropertiesNodes = propTable.getNodes();
         if (lastIndex >= 0) {
-            hgPropertiesNodes[lastIndex].setValue(getPropertyValue());
+            gitPropertiesNodes[lastIndex].setValue(getPropertyValue());
         }
-        panel.txtAreaValue.setText(hgPropertiesNodes[index].getValue());
+        panel.txtAreaValue.setText(gitPropertiesNodes[index].getValue());
         lastIndex = index;
     }
     

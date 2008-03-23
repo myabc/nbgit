@@ -63,7 +63,11 @@ import org.openide.util.lookup.Lookups;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
-
+/**
+ * Class to handle various aspects of NetBeans Project management.
+ * 
+ * @author alexbcoles
+ */
 public class GitProjectUtils {
 
     private static final String ProjectTab_ID_LOGICAL = "projectTabLogical_tc"; // NOI18N    

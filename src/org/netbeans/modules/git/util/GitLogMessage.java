@@ -44,10 +44,9 @@ package org.netbeans.modules.git.util;
 import java.util.Date;
 
 /**
- * A class to encapsulate the parts of the hg log message we are interested in.
+ * Class to encapsulate the parts of the git log message we are interested in.
  *
  * @author Padraig O'Briain
- * @author alexbcoles
  */
 public class GitLogMessage {
 

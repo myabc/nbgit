@@ -263,7 +263,7 @@ public class CloneRepositoryWizardPanel implements WizardDescriptor.Asynchronous
                 invalid(null);
 
                 // This command validates the url
-                rc.getHgUrl();
+                rc.getGitUrl();
                 String urlStr = rc.getUrl();
                 URI uri = new URI(urlStr);
                 String uriSch = uri.getScheme();
@@ -278,7 +278,7 @@ public class CloneRepositoryWizardPanel implements WizardDescriptor.Asynchronous
                     URL url = new URL(urlStr);
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
                     // Note: valid repository returns con.getContentLength() = -1
-                    // so no way to reliably test if this url exists, without using hg
+                    // so no way to reliably test if this url exists, without using git
                     if (con != null){
                         String userInfo = uri.getUserInfo();
                         boolean bNoUserAndOrPasswordInURL = userInfo == null;

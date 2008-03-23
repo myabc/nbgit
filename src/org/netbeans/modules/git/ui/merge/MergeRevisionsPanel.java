@@ -60,9 +60,9 @@ public class MergeRevisionsPanel extends javax.swing.JPanel {
     private File                            repository;
     private RequestProcessor.Task           refreshViewTask;
     private Thread                          refreshViewThread;
-    private static final RequestProcessor   rp = new RequestProcessor("MercurialMerge", 1);  // NOI18N
+    private static final RequestProcessor   rp = new RequestProcessor("GitMerge", 1);  // NOI18N
 
-    private static final int HG_HEAD_TARGET_LIMIT = 100;
+    private static final int GIT_HEAD_TARGET_LIMIT = 100;
 
     /** Creates new form ReverModificationsPanel */
      public MergeRevisionsPanel(File repo) {
@@ -157,7 +157,7 @@ public class MergeRevisionsPanel extends javax.swing.JPanel {
             } else {
                 size = targetRevsList.size();
                 int i = 0;
-                while (i < size && i < HG_HEAD_TARGET_LIMIT) {
+                while (i < size && i < GIT_HEAD_TARGET_LIMIT) {
                     targetRevsSet.add(targetRevsList.get(i));
                     i++;
                 }

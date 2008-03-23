@@ -103,7 +103,7 @@ public class PushOtherAction extends ContextAction implements PropertyChangeList
                                         new HelpCtx(PushOtherAction.class),
                                         new Object[] {pushButton, cancelButton},
                                         true,
-                                        "hg.push.dialog");
+                                        "git.push.dialog");
 
         if (option == pushButton) {
             final String pushPath = repository.getSelectedRC().getUrl();

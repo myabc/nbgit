@@ -63,8 +63,8 @@ import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
 /**
- * ImportDiff action for mercurial: 
- * hg export
+ * ImportDiff action for Git: 
+ * git apply (?) TODO: verify this is git apply
  * 
  * @author Padraig O'Briain
  */

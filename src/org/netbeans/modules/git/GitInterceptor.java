@@ -72,7 +72,7 @@ public class GitInterceptor extends VCSInterceptor {
 
     private RequestProcessor.Task refreshTask;
 
-    private static final RequestProcessor rp = new RequestProcessor("MercurialRefresh", 1, true);
+    private static final RequestProcessor rp = new RequestProcessor("GitRefresh", 1, true);
 
     public GitInterceptor() {
         cache = Git.getInstance().getFileStatusCache();
@@ -82,7 +82,7 @@ public class GitInterceptor extends VCSInterceptor {
     @Override
     public boolean beforeDelete(File file) {
         if (file == null) return true;
-        if (GitUtils.isPartOfMercurialMetadata(file)) return false;
+        if (GitUtils.isPartOfGitMetadata(file)) return false;
         
         // We track the deletion of top level directories
         if (file.isDirectory()) {
@@ -114,11 +114,11 @@ public class GitInterceptor extends VCSInterceptor {
     
     private void fileDeletedImpl(final File file) {
         if (file == null) return;
-        Git hg = Git.getInstance();
-        final File root = hg.getTopmostManagedParent(file);
+        Git git = Git.getInstance();
+        final File root = git.getTopmostManagedParent(file);
         RequestProcessor rp = null;
         if (root != null) {
-            rp = hg.getRequestProcessor(root.getAbsolutePath());
+            rp = git.getRequestProcessor(root.getAbsolutePath());
         }
         if (file.exists()) {
             if (file.isDirectory()) {
@@ -159,7 +159,7 @@ public class GitInterceptor extends VCSInterceptor {
                         org.openide.util.NbBundle.getMessage(GitInterceptor.class, "MSG_Remove_Progress")); // NOI18N
             } else {
                 // If we are deleting a parent directory of this file
-                // skip the call to hg remove as we will do it for the directory
+                // skip the call to git remove as we will do it for the directory
                 file.delete();
                 if (root == null) return;
                 for (File dir : dirsToDelete.keySet()) {
@@ -189,9 +189,9 @@ public class GitInterceptor extends VCSInterceptor {
     public boolean beforeMove(File from, File to) {
         if (from == null || to == null || to.exists()) return true;
         
-        Git hg = Git.getInstance();
-        if (hg.isManaged(from)) {
-            return hg.isManaged(to);
+        Git git = Git.getInstance();
+        if (git.isManaged(from)) {
+            return git.isManaged(to);
         }
         return super.beforeMove(from, to);
     }
@@ -207,7 +207,7 @@ public class GitInterceptor extends VCSInterceptor {
             Runnable outOfAwt = new Runnable() {
                 public void run() {
                     try {
-                        hgMoveImplementation(from, to);
+                        gitMoveImplementation(from, to);
                     } catch (Throwable t) {
                         innerT[0] = t;
                     }
@@ -230,18 +230,18 @@ public class GitInterceptor extends VCSInterceptor {
             // end of hack
 
         } else {
-            hgMoveImplementation(from, to);
+            gitMoveImplementation(from, to);
         }
     }
 
-    private void hgMoveImplementation(final File srcFile, final File dstFile) throws IOException {
-        final Git hg = Git.getInstance();
-        final File root = hg.getTopmostManagedParent(srcFile);
+    private void gitMoveImplementation(final File srcFile, final File dstFile) throws IOException {
+        final Git git = Git.getInstance();
+        final File root = git.getTopmostManagedParent(srcFile);
         if (root == null) return;
 
-        RequestProcessor rp = hg.getRequestProcessor(root.getAbsolutePath());
+        RequestProcessor rp = git.getRequestProcessor(root.getAbsolutePath());
 
-        Git.LOG.log(Level.FINE, "hgMoveImplementation(): File: {0} {1}", new Object[] {srcFile, dstFile}); // NOI18N
+        Git.LOG.log(Level.FINE, "gitMoveImplementation(): File: {0} {1}", new Object[] {srcFile, dstFile}); // NOI18N
 
         srcFile.renameTo(dstFile);
         Runnable moveImpl = new Runnable() {
@@ -253,7 +253,7 @@ public class GitInterceptor extends VCSInterceptor {
                         return;
                     }
                     int status = GitCommand.getSingleStatus(root, srcFile.getParent(), srcFile.getName()).getStatus();
-                    Git.LOG.log(Level.FINE, "hgMoveImplementation(): Status: {0} {1}", new Object[] {srcFile, status}); // NOI18N
+                    Git.LOG.log(Level.FINE, "gitMoveImplementation(): Status: {0} {1}", new Object[] {srcFile, status}); // NOI18N
                     if (status == FileInformation.STATUS_NOTVERSIONED_NEWLOCALLY ||
                         status == FileInformation.STATUS_NOTVERSIONED_EXCLUDED) {
                     } else if (status == FileInformation.STATUS_VERSIONED_ADDEDLOCALLY) {
@@ -263,7 +263,7 @@ public class GitInterceptor extends VCSInterceptor {
                         GitCommand.doRenameAfter(root, srcFile, dstFile, logger);
                     }
                 } catch (GitException e) {
-                    Git.LOG.log(Level.FINE, "Mercurial failed to rename: File: {0} {1}", new Object[] {srcFile.getAbsolutePath(), dstFile.getAbsolutePath()}); // NOI18N
+                    Git.LOG.log(Level.FINE, "Git failed to rename: File: {0} {1}", new Object[] {srcFile.getAbsolutePath(), dstFile.getAbsolutePath()}); // NOI18N
                 } finally {
                     logger.closeLog();
                 }
@@ -285,11 +285,11 @@ public class GitInterceptor extends VCSInterceptor {
     private void fileMovedImpl(final File from, final File to) {
         if (from == null || to == null || !to.exists()) return;
         if (to.isDirectory()) return;
-        Git hg = Git.getInstance();        
-        final File root = hg.getTopmostManagedParent(from);
+        Git git = Git.getInstance();        
+        final File root = git.getTopmostManagedParent(from);
         if (root == null) return;
         
-        RequestProcessor rp = hg.getRequestProcessor(root.getAbsolutePath());
+        RequestProcessor rp = git.getRequestProcessor(root.getAbsolutePath());
 
         GitProgressSupport supportCreate = new GitProgressSupport() {
             public void perform() {
@@ -323,11 +323,11 @@ public class GitInterceptor extends VCSInterceptor {
 
     private void fileCreatedImpl(final File file) {
         if (file.isDirectory()) return;
-        Git hg = Git.getInstance();        
-        final File root = hg.getTopmostManagedParent(file);
+        Git git = Git.getInstance();        
+        final File root = git.getTopmostManagedParent(file);
         if (root == null) return;
         
-        RequestProcessor rp = hg.getRequestProcessor(root.getAbsolutePath());
+        RequestProcessor rp = git.getRequestProcessor(root.getAbsolutePath());
 
         GitProgressSupport supportCreate = new GitProgressSupport() {
             public void perform() {
@@ -353,11 +353,11 @@ public class GitInterceptor extends VCSInterceptor {
 
     private void fileChangedImpl(final File file) {
         if (file.isDirectory()) return;
-        Git hg = Git.getInstance();        
-        final File root = hg.getTopmostManagedParent(file);
+        Git git = Git.getInstance();        
+        final File root = git.getTopmostManagedParent(file);
         if (root == null) return;
         
-        RequestProcessor rp = hg.getRequestProcessor(root.getAbsolutePath());
+        RequestProcessor rp = git.getRequestProcessor(root.getAbsolutePath());
 
         GitProgressSupport supportCreate = new GitProgressSupport() {
             public void perform() {

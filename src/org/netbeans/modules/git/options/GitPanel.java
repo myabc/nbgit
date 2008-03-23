@@ -243,9 +243,9 @@ final class GitPanel extends javax.swing.JPanel {
     void load() {
         // TODO read settings and initialize GUI
         // Example:
-        // someCheckBox.setSelected(Preferences.userNodeForPackage(MercurialPanel.class).getBoolean("someFlag", false)); // NOI18N
+        // someCheckBox.setSelected(Preferences.userNodeForPackage(GitPanel.class).getBoolean("someFlag", false)); // NOI18N
         // or for org.openide.util with API spec. version >= 7.4:
-        // someCheckBox.setSelected(NbPreferences.forModule(MercurialPanel.class).getBoolean("someFlag", false)); // NOI18N
+        // someCheckBox.setSelected(NbPreferences.forModule(GitPanel.class).getBoolean("someFlag", false)); // NOI18N
         // or:
         // someTextField.setText(SomeSystemOption.getDefault().getSomeStringProperty());
         userNameTextField.setText(GitModuleConfig.getDefault().getUserName());
@@ -258,9 +258,9 @@ final class GitPanel extends javax.swing.JPanel {
     void store() {
         // TODO store modified settings
         // Example:
-        // Preferences.userNodeForPackage(MercurialPanel.class).putBoolean("someFlag", someCheckBox.isSelected()); // NOI18N
+        // Preferences.userNodeForPackage(GitPanel.class).putBoolean("someFlag", someCheckBox.isSelected()); // NOI18N
         // or for org.openide.util with API spec. version >= 7.4:
-        // NbPreferences.forModule(MercurialPanel.class).putBoolean("someFlag", someCheckBox.isSelected()); // NOI18N
+        // NbPreferences.forModule(GitPanel.class).putBoolean("someFlag", someCheckBox.isSelected()); // NOI18N
         // or:
         // SomeSystemOption.getDefault().setSomeStringProperty(someTextField.getText());
         GitModuleConfig.getDefault().setUserName(userNameTextField.getText());

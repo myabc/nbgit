@@ -61,8 +61,8 @@ import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
 /**
- * ExportDiff action for mercurial: 
- * hg export
+ * ExportDiff action for Git: 
+ * hg export = git diff (?) TODO: verify this is git diff
  * 
  * @author Padraig O'Briain
  */

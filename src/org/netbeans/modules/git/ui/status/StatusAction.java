@@ -1,6 +1,5 @@
 package org.netbeans.modules.git.ui.status;
 
-
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.Calendar;

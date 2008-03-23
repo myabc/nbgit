@@ -63,8 +63,8 @@ import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 
 /**
- * Merge action for mercurial:
- * hg merge - attempts to merge changes when the repository has 2 heads
+ * Merge action for Git:
+ * git merge - attempts to merge changes when the repository has 2 heads
  *
  * @author John Rice
  */

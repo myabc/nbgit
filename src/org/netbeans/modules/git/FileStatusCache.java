@@ -106,12 +106,12 @@ public class FileStatusCache {
     
     private DiskMapTurboProvider    cacheProvider;
     
-    private Git     hg;
+    private Git     git;
     
     private Set<FileSystem> filesystemsToRefresh;
     
     FileStatusCache() {
-        this.hg = Git.getInstance();
+        this.git = Git.getInstance();
         cacheProvider = new DiskMapTurboProvider();
         turbo = Turbo.createCustom(new CustomProviders() {
             private final Set providers = Collections.singleton(cacheProvider);
@@ -280,7 +280,7 @@ public class FileStatusCache {
      * @see FileInformation
      */
     public FileInformation getStatus(File file) {
-        if (file.isDirectory() && (hg.isAdministrative(file) || GitUtils.isIgnored(file)))
+        if (file.isDirectory() && (git.isAdministrative(file) || GitUtils.isIgnored(file)))
             return FileStatusCache.FILE_INFORMATION_EXCLUDED_DIRECTORY;
         File dir = file.getParentFile();
         if (dir == null) {
@@ -317,7 +317,7 @@ public class FileStatusCache {
         if( fi != null) return fi;
 
         if (file.isDirectory()) {
-            if (hg.isAdministrative(file) || GitUtils.isIgnored(file, bCheckSharability)) {
+            if (git.isAdministrative(file) || GitUtils.isIgnored(file, bCheckSharability)) {
                 return FileStatusCache.FILE_INFORMATION_EXCLUDED_DIRECTORY;
             } else {
                 return FileStatusCache.FILE_INFORMATION_UPTODATE_DIRECTORY;
@@ -383,10 +383,10 @@ public class FileStatusCache {
         Git.LOG.log(Level.FINE, "createFileInformation(): {0} {1}", new Object[] {file, callStatus}); // NOI18N
         if (file == null)
             return FILE_INFORMATION_UNKNOWN;
-        if (hg.isAdministrative(file))
+        if (git.isAdministrative(file))
             return FILE_INFORMATION_EXCLUDED_DIRECTORY; // Excluded
 
-        File rootManagedFolder = hg.getTopmostManagedParent(file);        
+        File rootManagedFolder = git.getTopmostManagedParent(file);        
         if (rootManagedFolder == null)
             return FILE_INFORMATION_UNKNOWN; // Avoiding returning NOT_MANAGED dir or file
         
@@ -704,17 +704,17 @@ public class FileStatusCache {
         Map<File, FileInformation> folderFiles = new HashMap<File, FileInformation>(files.length);
         
         Git.LOG.log(Level.FINE, "scanFolder(): {0}", dir); // NOI18N
-        if (hg.isAdministrative(dir)) {
+        if (git.isAdministrative(dir)) {
             folderFiles.put(dir, FILE_INFORMATION_EXCLUDED_DIRECTORY); // Excluded dir
             return folderFiles;
         }
         
-        File rootManagedFolder = hg.getTopmostManagedParent(dir);
+        File rootManagedFolder = git.getTopmostManagedParent(dir);
         if (rootManagedFolder == null){
-            // Only interested in looking for Hg managed dirs
+            // Only interested in looking for Git managed dirs
             for (File file : files) {
-                if (file.isDirectory() && hg.getTopmostManagedParent(file) != null){
-                    if (hg.isAdministrative(file) || GitUtils.isIgnored(file)){
+                if (file.isDirectory() && git.getTopmostManagedParent(file) != null){
+                    if (git.isAdministrative(file) || GitUtils.isIgnored(file)){
                         Git.LOG.log(Level.FINE, "scanFolder NotMng Ignored Dir {0}: exclude SubDir: {1}", // NOI18N
                             new Object[]{dir.getAbsolutePath(), file.getName()});
                         folderFiles.put(file, FILE_INFORMATION_EXCLUDED_DIRECTORY); // Excluded dir
@@ -733,7 +733,7 @@ public class FileStatusCache {
         boolean bInIgnoredDir = GitUtils.isIgnored(dir);
         if(bInIgnoredDir){
             for (File file : files) {
-                if (GitUtils.isPartOfMercurialMetadata(file)) continue;
+                if (GitUtils.isPartOfGitMetadata(file)) continue;
                 
                 if (file.isDirectory()) {
                     folderFiles.put(file, FILE_INFORMATION_EXCLUDED_DIRECTORY); // Excluded dir
@@ -763,10 +763,10 @@ public class FileStatusCache {
         if (interestingFiles == null) return folderFiles;
         
         for (File file : files) {
-            if (GitUtils.isPartOfMercurialMetadata(file)) continue;
+            if (GitUtils.isPartOfGitMetadata(file)) continue;
             
             if (file.isDirectory()) {
-                if (hg.isAdministrative(file) || GitUtils.isIgnored(file)) {
+                if (git.isAdministrative(file) || GitUtils.isIgnored(file)) {
                     Git.LOG.log(Level.FINE, "scanFolder Mng Dir {0}: exclude Dir: {1}", // NOI18N
                             new Object[]{dir.getAbsolutePath(), file.getName()});
                     folderFiles.put(file, FILE_INFORMATION_EXCLUDED_DIRECTORY); // Excluded dir
@@ -778,7 +778,7 @@ public class FileStatusCache {
             } else {
                 FileInformation fi = interestingFiles.get(file);
                 if (fi == null) {
-                    // We have removed -i from HgCommand.getInterestingFiles
+                    // We have removed -i from GitCommand.getInterestingFiles
                     // so we might have a file we should be ignoring
                     fi = createFileInformation(file, false);
                 }

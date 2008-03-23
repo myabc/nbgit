@@ -70,9 +70,9 @@ public class ExportDiffPanel extends javax.swing.JPanel implements ActionListene
     private File                            repository;
     private RequestProcessor.Task           refreshViewTask;
     private Thread                          refreshViewThread;
-    private static final RequestProcessor   rp = new RequestProcessor("MercurialExportDiff", 1);  // NOI18N
+    private static final RequestProcessor   rp = new RequestProcessor("GitExportDiff", 1);  // NOI18N
     private RepositoryRevision              repoRev;
-    private static final int HG_REVISION_TARGET_LIMIT = 100;
+    private static final int GIT_REVISION_TARGET_LIMIT = 100;
 
     /** Creates new form ExportDiffPanel */
     public ExportDiffPanel(File repo, RepositoryRevision repoRev) {
@@ -215,7 +215,7 @@ public class ExportDiffPanel extends javax.swing.JPanel implements ActionListene
     }
 
     private void refreshRevisions() {
-        java.util.List<String> targetRevsList = GitCommand.getRevisions(repository, HG_REVISION_TARGET_LIMIT); 
+        java.util.List<String> targetRevsList = GitCommand.getRevisions(repository, GIT_REVISION_TARGET_LIMIT); 
 
         Set<String>  targetRevsSet = new LinkedHashSet<String>();
 

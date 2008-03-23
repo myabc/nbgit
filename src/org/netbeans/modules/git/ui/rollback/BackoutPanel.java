@@ -63,10 +63,10 @@ public class BackoutPanel extends javax.swing.JPanel {
 
     private File                            repository;
     private RequestProcessor.Task           refreshViewTask;
-    private static final RequestProcessor   rp = new RequestProcessor("MercurialBackout", 1);  // NOI18N
+    private static final RequestProcessor   rp = new RequestProcessor("GitBackout", 1);  // NOI18N
     private Thread                          refreshViewThread;
 
-    private static final int HG_REVERT_TARGET_LIMIT = 100;
+    private static final int GIT_REVERT_TARGET_LIMIT = 100;
 
     /** Creates new form ReverModificationsPanel */
      public BackoutPanel(File repo) {
@@ -75,7 +75,7 @@ public class BackoutPanel extends javax.swing.JPanel {
         initComponents();
         commitMsgField.setText(
                 NbBundle.getMessage(BackoutPanel.class, "BackoutPanel.commitMsgField.text") + 
-                BackoutAction.HG_BACKOUT_REVISION); // NOI18N
+                BackoutAction.GIT_BACKOUT_REVISION); // NOI18N
         refreshViewTask.schedule(0);
     }
 
@@ -240,7 +240,7 @@ public class BackoutPanel extends javax.swing.JPanel {
     }
 
     private void refreshRevisions() {
-        java.util.List<String> targetRevsList = GitCommand.getRevisions(repository, HG_REVERT_TARGET_LIMIT);
+        java.util.List<String> targetRevsList = GitCommand.getRevisions(repository, GIT_REVERT_TARGET_LIMIT);
 
         Set<String>  targetRevsSet = new LinkedHashSet<String>();
 

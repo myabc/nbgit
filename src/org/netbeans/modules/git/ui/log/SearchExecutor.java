@@ -183,7 +183,6 @@ class SearchExecutor implements Runnable {
             for (RepositoryRevision.Event event : rev.getEvents()) {
                 if (event.getChangedPath().getAction() == 'A' && event.getChangedPath().getCopySrcPath() != null) {
                     // TBD: Need to handle Copy status
-                    // http://www.selenic.com/mercurial/bts/Issue931 - should get it in HgCommand.getLogMessages()
                     String existingMapping = historyPaths.get(event.getChangedPath().getPath());
                     if (existingMapping == null) {
                         existingMapping = event.getChangedPath().getPath();

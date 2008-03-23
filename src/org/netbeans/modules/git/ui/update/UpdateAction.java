@@ -61,8 +61,8 @@ import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
 /**
- * Update action for mercurial: 
- * hg update - update or merge working directory
+ * Update action for Git: 
+ * git update - update or merge working directory
  * 
  * @author John Rice
  */

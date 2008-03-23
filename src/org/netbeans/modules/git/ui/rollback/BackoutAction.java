@@ -64,16 +64,16 @@ import org.openide.util.RequestProcessor;
 
 
 /**
- * Pull action for mercurial: 
- * hg pull - pull changes from the specified source
+ * Pull action for Git: 
+ * git pull - pull changes from the specified source
  * 
  * @author John Rice
  */
 public class BackoutAction extends ContextAction {
     
     private final VCSContext context;
-    private static final String HG_BACKOUT_REVISION_REPLACE = "\\{revision}";
-    public static final String HG_BACKOUT_REVISION = " {revision}";
+    private static final String GIT_BACKOUT_REVISION_REPLACE = "\\{revision}";
+    public static final String GIT_BACKOUT_REVISION = " {revision}";
             
     public BackoutAction(String name, VCSContext context) {
         this.context = context;
@@ -100,7 +100,7 @@ public class BackoutAction extends ContextAction {
         commitMsg = backout.getCommitMessage();
         final boolean doMerge = false; // Now handling this using our own merge mechanism, not backout's
         final String revStr = rev;
-        commitMsg = commitMsg.replaceAll(HG_BACKOUT_REVISION_REPLACE, revStr); //NOI18N
+        commitMsg = commitMsg.replaceAll(GIT_BACKOUT_REVISION_REPLACE, revStr); //NOI18N
         final String commitMsgStr = commitMsg;
         
         RequestProcessor rp = Git.getInstance().getRequestProcessor(repository);

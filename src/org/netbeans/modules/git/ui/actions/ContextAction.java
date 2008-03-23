@@ -47,7 +47,7 @@ import org.netbeans.modules.git.Git;
 import org.openide.LifecycleManager;
 
 /**
- * Base for all context-sensitive Mercurial actions.
+ * Base for all context-sensitive Git actions.
  * 
  * @author Padraig O'Briain
  */

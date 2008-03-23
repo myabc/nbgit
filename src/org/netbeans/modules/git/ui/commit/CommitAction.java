@@ -84,10 +84,9 @@ import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
-
 /**
- * Commit action for mercurial: 
- * git commit -  commit the specified files or all outstanding changes
+ * Commit action for Git:
+ * git commit - commit the specified files or all outstanding changes
  * 
  * @author John Rice
  */
@@ -226,7 +225,7 @@ public class CommitAction extends ContextAction {
         panel.putClientProperty("DialogDescriptor", dd); // NOI18N
         final Dialog dialog = DialogDisplayer.getDefault().createDialog(dd);
         
-        dialog.addWindowListener(new DialogBoundsPreserver(GitModuleConfig.getDefault().getPreferences(), "hg.commit.dialog")); // NOI18N
+        dialog.addWindowListener(new DialogBoundsPreserver(GitModuleConfig.getDefault().getPreferences(), "git.commit.dialog")); // NOI18N
         dialog.pack();
         dialog.setVisible(true);
         
@@ -274,7 +273,7 @@ public class CommitAction extends ContextAction {
 
             CommitOptions options = files.get(fileNode);
             if (options == CommitOptions.EXCLUDE) continue;
-            //stickyTags.add(HgUtils.getCopy(fileNode.getFile()));
+            //stickyTags.add(GitUtils.getCopy(fileNode.getFile()));
             int status = fileNode.getInformation().getStatus();
             if ((status & FileInformation.STATUS_REMOTE_CHANGE) != 0 || status == FileInformation.STATUS_VERSIONED_CONFLICT) {
                 enabled = false;
@@ -284,7 +283,7 @@ public class CommitAction extends ContextAction {
                 panel.setErrorLabel("<html><font color=\"#002080\">" + msg + "</font></html>");  // NOI18N
                 conflicts = true;
             }
-            //stickyTags.add(HgUtils.getCopy(fileNode.getFile()));
+            //stickyTags.add(GitUtils.getCopy(fileNode.getFile()));
 
         }
 
@@ -374,13 +373,13 @@ public class CommitAction extends ContextAction {
             if (addCandidates.size() > 0 ) {
                 GitCommand.doAdd(repository, addCandidates, logger);
                 for (File f : addCandidates) {
-                    logger.output("hg add " + f.getName()); //NOI18N
+                    logger.output("git add " + f.getName()); //NOI18N
                 }
             }
             if (deleteCandidates.size() > 0 ) {
                 GitCommand.doRemove(repository, deleteCandidates, logger);
                 for (File f : deleteCandidates) {
-                    logger.output("hg delete " + f.getName()); //NOI18N
+                    logger.output("git delete " + f.getName()); //NOI18N
                 }
             }
             GitCommand.doCommit(repository, commitCandidates, message, logger);

@@ -221,9 +221,10 @@ public class CommitTable implements AncestorListener, TableModelListener {
     public void setNodes(GitFileNode[] nodes) {
         tableModel.setNodes(nodes);
     }
-
+    
     /**
-     * @return Map&lt;HgFileNode, CommitOptions>
+     * 
+     * @return Map&lt;GitFileNode, CommitOptions&gt;
      */
     public Map<GitFileNode, CommitOptions> getCommitFiles() {
         return tableModel.getCommitFiles();

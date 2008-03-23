@@ -62,7 +62,7 @@ import org.openide.util.RequestProcessor;
 
 
 /**
- * Adds/removes files to repository .hgignore.
+ * Adds/removes files to repository .gitignore.
  *
  * @author Maros Sandor
  */
@@ -92,7 +92,7 @@ public class IgnoreAction extends ContextAction {
         if (files.length == 0) return UNDEFINED; 
         FileStatusCache cache = Git.getInstance().getFileStatusCache();
         for (int i = 0; i < files.length; i++) {
-            if (files[i].getName().equals(".hg") || // NOI18N
+            if (files[i].getName().equals(".git") || // NOI18N
                     files[i].isDirectory() ||
                     SharabilityQuery.getSharability(files[i])== SharabilityQuery.NOT_SHARABLE) { 
                 actionStatus = UNDEFINED;

@@ -98,7 +98,7 @@ public class CloneAction extends ContextAction {
         String folderName = root.getName();
         Boolean projIsRepos = true;
         if (!root.equals(projFile))  {
-            // Mercurial Repository is not the same as project root
+            // Git Repository is not the same as project root
             projIsRepos = false;
         }
         for(int i = 0; i < 10000; i++){
@@ -121,7 +121,7 @@ public class CloneAction extends ContextAction {
 
     private static void performClone(final String source, final String target, 
             boolean projIsRepos, File projFile, final boolean isLocalClone, final String pullPath, final String pushPath) {
-        final Git hg = Git.getInstance();
+        final Git git = Git.getInstance();
         final ProjectManager projectManager = ProjectManager.getDefault();
         final File prjFile = projFile;
         final Boolean prjIsRepos = projIsRepos;
@@ -156,8 +156,8 @@ public class CloneAction extends ContextAction {
                             prj = projectManager.findProject(cloneProj);
                         if(prj != null){
                             GitProjectUtils.openProject(prj, this, GitModuleConfig.getDefault().getSetMainProject());
-                            hg.versionedFilesChanged();
-                            hg.refreshAllAnnotations();
+                            git.versionedFilesChanged();
+                            git.refreshAllAnnotations();
                         }else{
                             logger.outputInRed( NbBundle.getMessage(CloneAction.class,
                                     "MSG_EXTERNAL_CLONE_PRJ_NOT_FOUND_CANT_SETASMAIN")); // NOI18N
@@ -220,18 +220,18 @@ public class CloneAction extends ContextAction {
                     NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
                     DialogDisplayer.getDefault().notifyLater(e);
                 }finally {
-                    // #125835 - Push to default was not being set automatically by hg after Clone
-                    // but was after you opened the Mercurial -> Properties, inconsistent
-                    GitConfigFiles hg = new GitConfigFiles(cloneFolder);
-                    String defaultPull = hg.getDefaultPull(false);
-                    String defaultPush = hg.getDefaultPush(false);
+                    // #125835 - Push to default was not being set automatically by git after Clone
+                    // but was after you opened the Git -> Properties, inconsistent
+                    GitConfigFiles git = new GitConfigFiles(cloneFolder);
+                    String defaultPull = git.getDefaultPull(false);
+                    String defaultPush = git.getDefaultPush(false);
                     if(pullPath != null && !pullPath.equals("")) defaultPull = pullPath;
                     if(pushPath != null && !pushPath.equals("")) defaultPush = pushPath;
-                    hg.setProperty(GitProperties.HGPROPNAME_DEFAULT_PULL, defaultPull);
-                    hg.setProperty(GitProperties.HGPROPNAME_DEFAULT_PUSH, defaultPush);
+                    git.setProperty(GitProperties.GITPROPNAME_DEFAULT_PULL, defaultPull);
+                    git.setProperty(GitProperties.GITPROPNAME_DEFAULT_PUSH, defaultPush);
                         
                     //#121581: Work around for ini4j bug on Windows not handling single '\' correctly
-                    // hg clone creates the default hgrc, we just overwrite it's contents with 
+                    // git clone creates the default gitconfig, we just overwrite it's contents with 
                     // default path contianing '\\'
                     if(isLocalClone && Utilities.isWindows()){ 
                         fixLocalPullPushPathsOnWindows(cloneFolder.getAbsolutePath(), defaultPull, defaultPush);
@@ -246,28 +246,29 @@ public class CloneAction extends ContextAction {
         support.start(rp, source, org.openide.util.NbBundle.getMessage(CloneAction.class, "LBL_Clone_Progress", source)); // NOI18N
     }
 
+    @Override
     public boolean isEnabled() {
         return GitUtils.getRootFile(context) != null;
     }
    
-    private static final String HG_PATHS_SECTION_ENCLOSED = "[" + GitConfigFiles.HG_PATHS_SECTION + "]";// NOI18N
+    private static final String GIT_PATHS_SECTION_ENCLOSED = "[" + GitConfigFiles.GIT_PATHS_SECTION + "]";// NOI18N
     private static void fixLocalPullPushPathsOnWindows(String root, String defaultPull, String defaultPush) {
-        File hgrcFile = null;
+        File gitConfigFile = null;
         File tempFile = null;
         BufferedReader br = null;
         PrintWriter pw = null;
         
         try {
-            hgrcFile = new File(root + File.separator + GitConfigFiles.HG_REPO_DIR, GitConfigFiles.HG_RC_FILE);
-            if (!hgrcFile.isFile() || !hgrcFile.canWrite()) return;
+            gitConfigFile = new File(root + File.separator + GitConfigFiles.GIT_REPO_DIR, GitConfigFiles.GITCONFIG_FILE);
+            if (!gitConfigFile.isFile() || !gitConfigFile.canWrite()) return;
             
-            String defaultPullWinStr = GitConfigFiles.HG_DEFAULT_PULL_VALUE + " = " + defaultPull.replace("\\", "\\\\") + "\n"; // NOI18N
-            String defaultPushWinStr = GitConfigFiles.HG_DEFAULT_PUSH_VALUE + " = " + defaultPush.replace("\\", "\\\\") + "\n"; // NOI18N
+            String defaultPullWinStr = GitConfigFiles.GIT_DEFAULT_PULL_VALUE + " = " + defaultPull.replace("\\", "\\\\") + "\n"; // NOI18N
+            String defaultPushWinStr = GitConfigFiles.GIT_DEFAULT_PUSH_VALUE + " = " + defaultPush.replace("\\", "\\\\") + "\n"; // NOI18N
 
-            tempFile = new File(hgrcFile.getAbsolutePath() + ".tmp"); // NOI18N
+            tempFile = new File(gitConfigFile.getAbsolutePath() + ".tmp"); // NOI18N
             if (tempFile == null) return;
             
-            br = new BufferedReader(new FileReader(hgrcFile));
+            br = new BufferedReader(new FileReader(gitConfigFile));
             pw = new PrintWriter(new FileWriter(tempFile));
 
             String line = null;
@@ -276,20 +277,20 @@ public class CloneAction extends ContextAction {
             boolean bPullDone = false;
             boolean bPushDone = false;
             while ((line = br.readLine()) != null) {
-                if (line.startsWith(HG_PATHS_SECTION_ENCLOSED)) {
+                if (line.startsWith(GIT_PATHS_SECTION_ENCLOSED)) {
                     bInPaths = true;
                 }else if (line.startsWith("[")) { // NOI18N
                     bInPaths = false;
                 }
 
-                if (bInPaths && !bPullDone && line.startsWith(GitConfigFiles.HG_DEFAULT_PULL_VALUE) && 
-                        !line.startsWith(GitConfigFiles.HG_DEFAULT_PUSH_VALUE)) {
+                if (bInPaths && !bPullDone && line.startsWith(GitConfigFiles.GIT_DEFAULT_PULL_VALUE) && 
+                        !line.startsWith(GitConfigFiles.GIT_DEFAULT_PUSH_VALUE)) {
                     pw.println(defaultPullWinStr);
                     bPullDone = true;
-                } else if (bInPaths && !bPullDone && line.startsWith(GitConfigFiles.HG_DEFAULT_PULL)) {
+                } else if (bInPaths && !bPullDone && line.startsWith(GitConfigFiles.GIT_DEFAULT_PULL)) {
                     pw.println(defaultPullWinStr);
                     bPullDone = true;
-                } else if (bInPaths && !bPushDone && line.startsWith(GitConfigFiles.HG_DEFAULT_PUSH_VALUE)) {
+                } else if (bInPaths && !bPushDone && line.startsWith(GitConfigFiles.GIT_DEFAULT_PUSH_VALUE)) {
                     pw.println(defaultPushWinStr);
                     bPushDone = true;
                 } else {
@@ -303,9 +304,9 @@ public class CloneAction extends ContextAction {
             try {
                 if(pw != null) pw.close();
                 if(br != null) br.close();
-                if(tempFile != null && tempFile.isFile() && tempFile.canWrite() && hgrcFile != null){ 
-                    hgrcFile.delete();
-                    tempFile.renameTo(hgrcFile);
+                if(tempFile != null && tempFile.isFile() && tempFile.canWrite() && gitConfigFile != null){ 
+                    gitConfigFile.delete();
+                    tempFile.renameTo(gitConfigFile);
                 }
             } catch (IOException ex) {
             // Ignore

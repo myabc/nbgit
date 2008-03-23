@@ -42,14 +42,15 @@
 package org.netbeans.modules.git.ui.annotate;
 
 import java.awt.Color;
-import org.netbeans.modules.editor.errorstripe.privatespi.Mark;
-import org.netbeans.modules.editor.errorstripe.privatespi.Status;
+
+//import org.netbeans.modules.editor.errorstripe.privatespi.Mark;
+//import org.netbeans.modules.editor.errorstripe.privatespi.Status;
 
 /**
  *
  * @author Maros Sandor
  */
-final class AnnotationMark implements Mark {
+final class AnnotationMark { //implements Mark {
 
     private static final Color COLOR = new Color(0x58,0x90,0xBE);
 
@@ -73,15 +74,15 @@ final class AnnotationMark implements Mark {
         return COLOR;
     }
     
-    public int getPriority() {
-        return PRIORITY_DEFAULT;
-    }
+    //public int getPriority() {
+    //    return PRIORITY_DEFAULT;
+    //}
     
-    public Status getStatus() {
-        return Status.STATUS_OK;
-    }
+   // public Status getStatus() {
+   //     return Status.STATUS_OK;
+   // }
     
-    public int getType() {
-        return TYPE_ERROR_LIKE;
-    }
+    //public int getType() {
+    //    return TYPE_ERROR_LIKE;
+    //}
 }

@@ -43,7 +43,7 @@ package org.netbeans.modules.git.ui.annotate;
 
 import java.util.Collections;
 import java.util.List;
-import org.netbeans.modules.editor.errorstripe.privatespi.MarkProvider;
+//import org.netbeans.modules.editor.errorstripe.privatespi.MarkProvider;
 
 /**
  * ErrorStripe liason, real work is done in AnnotationBar.
@@ -51,14 +51,14 @@ import org.netbeans.modules.editor.errorstripe.privatespi.MarkProvider;
  * @author Petr Kuzel
  */
  @SuppressWarnings("unchecked") // Get name clashes with Mark and AnnotationMark
- final class AnnotationMarkProvider extends MarkProvider {
+ final class AnnotationMarkProvider { //extends MarkProvider {
 
     private List<AnnotationMark> marks = Collections.emptyList();
 
     public void setMarks(List<AnnotationMark> marks) {
         List old = this.marks;
         this.marks = marks;
-        firePropertyChange(PROP_MARKS, old, marks);
+      //  firePropertyChange(PROP_MARKS, old, marks);
     }
 
    public synchronized List/*Mark*/ getMarks() {

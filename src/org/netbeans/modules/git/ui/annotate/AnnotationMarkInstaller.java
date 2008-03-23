@@ -42,25 +42,29 @@
 package org.netbeans.modules.git.ui.annotate;
 
 import javax.swing.text.JTextComponent;
-import org.netbeans.modules.editor.errorstripe.privatespi.MarkProvider;
-import org.netbeans.modules.editor.errorstripe.privatespi.MarkProviderCreator;
+//import org.netbeans.modules.editor.errorstripe.privatespi.MarkProvider;
+//import org.netbeans.modules.editor.errorstripe.privatespi.MarkProviderCreator;
 
 /**
  * ErrorStripe SPI entry point registered at layer.
  *
  * @author Maros Sandor
  */
-public final class AnnotationMarkInstaller implements MarkProviderCreator {
+public final class AnnotationMarkInstaller { //implements MarkProviderCreator {
 
     private static final Object PROVIDER_KEY = new Object();
 
-    public MarkProvider createMarkProvider(JTextComponent pane) {
-        AnnotationMarkProvider amp = new AnnotationMarkProvider();
-        pane.putClientProperty(PROVIDER_KEY, amp);
-        return amp;
+    static AnnotationMarkProvider getMarkProvider(JTextComponent textComponent) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
+
+   // public MarkProvider createMarkProvider(JTextComponent pane) {
+   //     AnnotationMarkProvider amp = new AnnotationMarkProvider();
+   //     pane.putClientProperty(PROVIDER_KEY, amp);
+   //     return amp;
+   // }
     
-    public static AnnotationMarkProvider getMarkProvider(JTextComponent pane) {
-        return (AnnotationMarkProvider) pane.getClientProperty(PROVIDER_KEY);
-    }
+   // public static AnnotationMarkProvider getMarkProvider(JTextComponent pane) {
+   //     return (AnnotationMarkProvider) pane.getClientProperty(PROVIDER_KEY);
+    //}
 }

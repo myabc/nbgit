@@ -54,6 +54,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.netbeans.modules.git.util.GitCommand;
 import org.netbeans.modules.git.util.GitUtils;
+import org.netbeans.modules.turbo.CustomProviders;
+import org.netbeans.modules.turbo.Turbo;
 import org.netbeans.modules.versioning.Utils;
 import org.netbeans.modules.versioning.spi.VCSContext;
 import org.netbeans.modules.versioning.spi.VersioningSupport;
@@ -712,7 +714,7 @@ public class FileStatusCache {
             // Only interested in looking for Hg managed dirs
             for (File file : files) {
                 if (file.isDirectory() && hg.getTopmostManagedParent(file) != null){
-                    if (hg.isAdministrative(file) || HgUtils.isIgnored(file)){
+                    if (hg.isAdministrative(file) || GitUtils.isIgnored(file)){
                         Git.LOG.log(Level.FINE, "scanFolder NotMng Ignored Dir {0}: exclude SubDir: {1}", // NOI18N
                             new Object[]{dir.getAbsolutePath(), file.getName()});
                         folderFiles.put(file, FILE_INFORMATION_EXCLUDED_DIRECTORY); // Excluded dir

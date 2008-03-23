@@ -59,7 +59,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-
+import org.netbeans.modules.turbo.TurboProvider;
+import org.openide.filesystems.FileUtil;
+import org.openide.filesystems.Repository;
 
 /**
  * Storage of file attributes with shortcut to retrieve all stored values.

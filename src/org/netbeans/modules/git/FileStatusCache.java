@@ -56,9 +56,9 @@ import org.netbeans.modules.git.util.GitCommand;
 import org.netbeans.modules.git.util.GitUtils;
 import org.netbeans.modules.turbo.CustomProviders;
 import org.netbeans.modules.turbo.Turbo;
-import org.netbeans.modules.versioning.Utils;
 import org.netbeans.modules.versioning.spi.VCSContext;
 import org.netbeans.modules.versioning.spi.VersioningSupport;
+import org.netbeans.modules.versioning.util.Utils;
 import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
 

@@ -1,4 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="netbeans" name="git">
-     <description>Builds, tests, and runs the project org.netbeans.modules.mercurial</description>
-     <import file="../nbbuild/templates/projectized.xml"/>
+     <description>Builds, tests, and runs the project org.netbeans.modules.git</description>
+     <import file="nbproject/build-impl.xml"/>
 </project>

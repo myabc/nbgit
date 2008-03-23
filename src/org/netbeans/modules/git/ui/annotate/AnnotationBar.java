@@ -102,7 +102,7 @@ import org.netbeans.modules.git.ui.diff.DiffAction;
 import org.netbeans.modules.git.ui.update.RevertModifications;
 import org.netbeans.modules.git.ui.update.RevertModificationsAction;
 import org.netbeans.modules.git.util.GitLogMessage;
-import org.netbeans.modules.versioning.Utils;
+import org.netbeans.modules.versioning.util.Utils;
 import org.netbeans.spi.diff.DiffProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;

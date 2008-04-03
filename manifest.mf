@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 AutoUpdate-Show-In-Client: true
-OpenIDE-Module: org.netbeans.git
+OpenIDE-Module: org.netbeans.modules.git/1
+OpenIDE-Module-Layer: org/netbeans/modules/git/resources/git-layer.xml
+OpenIDE-Module-Localizing-Bundle: org/netbeans/modules/git/Bundle.properties
+OpenIDE-Module-Requires: org.netbeans.api.javahelp.Help
 OpenIDE-Module-Specification-Version: 1.6
-X-COMMENT: Main-Class will be added automatically by build
-

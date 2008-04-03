@@ -69,7 +69,7 @@ abstract class CommitOptions {
             super(bundleKey);
         }
     }
-
+    
     static class Commit extends CommitOptions {
         
         public Commit(String bundleKey) {

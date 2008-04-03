@@ -113,7 +113,7 @@ public class GitVCS extends VersioningSystem implements PropertyChangeListener, 
         Git.getInstance().getOriginalFile(workingCopy, originalFile);
     }
     
-    //@SuppressWarnings("unchecked") // Property Change event.getNewValue returning Object
+    @SuppressWarnings("unchecked") // Property Change event.getNewValue returning Object
     public void propertyChange(PropertyChangeEvent event) {
         if (event.getPropertyName().equals(FileStatusCache.PROP_FILE_STATUS_CHANGED)) {
             FileStatusCache.ChangedEvent changedEvent = (FileStatusCache.ChangedEvent) event.getNewValue();

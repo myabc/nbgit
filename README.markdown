@@ -9,12 +9,16 @@ This module targets NetBeans 6.1 Beta.
 The code is ported directly from the Mercurial Module (included as part of the 
 NetBeans core distribution, as of NetBeans 6.1 Beta).
 
-Source
-------
+Getting the Source
+------------------
+
+Performing a git clone on either of the following repositories will get you 
+the latest source:
 
     git clone git://github.com/myabc/nbgit.git
+    git clone git://gitorious.org/nbgit/mainline.git (on gitorious)
 
-The following mirrors are also available:
+The following additional mirrors are available:
 
     git://repo.or.cz/nbgit.git
     http://repo.or.cz/r/nbgit.git
@@ -28,4 +32,12 @@ LICENSE for licensing and copyright information.
 Support
 -------
 
-This Module is under heavy development. No support is currently provided.
+This Module is under heavy development. No official support is currently 
+provided.
+
+* **NetBeans Git mailing list**:
+   <http://groups.google.com/group/nbgit>
+* **NetBeans Git homepage**: _coming soon_
+* Contact the developers directly:
+   - <alex@alexcolesportfolio.com> | myabc on #datamapper, #merb IRC
+ 

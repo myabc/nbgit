@@ -65,12 +65,12 @@ final class GitPanel extends javax.swing.JPanel {
     @Override
     public void addNotify() {
         super.addNotify();
-        userNameTextField.getDocument().addDocumentListener(listener);
+        emailTextField.getDocument().addDocumentListener(listener);
     }
 
     @Override
     public void removeNotify() {
-        userNameTextField.getDocument().removeDocumentListener(listener);
+        emailTextField.getDocument().removeDocumentListener(listener);
         super.removeNotify();
     }
 
@@ -84,20 +84,22 @@ final class GitPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        emailLabel = new javax.swing.JLabel();
+        execPathLabel = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         exportFilename = new javax.swing.JLabel();
         backupOnRevertModifications = new javax.swing.JCheckBox();
+        userNameTextField = new javax.swing.JTextField();
+        userNameLabel = new javax.swing.JLabel();
 
-        jLabel1.setLabelFor(userNameTextField);
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.jLabel1.text")); // NOI18N
+        emailLabel.setLabelFor(emailTextField);
+        org.openide.awt.Mnemonics.setLocalizedText(emailLabel, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.jLabel1.text")); // NOI18N
 
-        jLabel2.setLabelFor(executablePathTextField);
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.jLabel2.text")); // NOI18N
+        execPathLabel.setLabelFor(executablePathTextField);
+        org.openide.awt.Mnemonics.setLocalizedText(execPathLabel, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.jLabel2.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(execPathBrowseButton, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.browseButton.text")); // NOI18N
 
@@ -119,7 +121,7 @@ final class GitPanel extends javax.swing.JPanel {
                 .add(jLabel3)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(annotationTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 405, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 494, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 13, Short.MAX_VALUE)
                 .add(addButton)
                 .addContainerGap())
         );
@@ -136,7 +138,7 @@ final class GitPanel extends javax.swing.JPanel {
 
         addButton.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(GitPanel.class, "ACSD_addButton")); // NOI18N
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.jPanel2.border.title"))); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel4, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.jLabel4.text")); // NOI18N
 
@@ -149,7 +151,7 @@ final class GitPanel extends javax.swing.JPanel {
             .add(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jLabel4)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 548, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 67, Short.MAX_VALUE)
                 .add(manageButton)
                 .addContainerGap())
         );
@@ -173,6 +175,9 @@ final class GitPanel extends javax.swing.JPanel {
         backupOnRevertModifications.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(backupOnRevertModifications, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.jCheckBox1.text")); // NOI18N
 
+        userNameLabel.setLabelFor(userNameTextField);
+        org.openide.awt.Mnemonics.setLocalizedText(userNameLabel, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.jLabel5.text")); // NOI18N
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -180,54 +185,66 @@ final class GitPanel extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(backupOnRevertModifications)
-                    .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                            .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
-                            .add(jLabel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(exportFilename, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(userNameTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 971, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(exportFilenameTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 559, Short.MAX_VALUE)
-                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, executablePathTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 559, Short.MAX_VALUE))
+                            .add(backupOnRevertModifications)
+                            .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(layout.createSequentialGroup()
+                                .add(emailLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 160, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                    .add(execPathBrowseButton)
-                                    .add(exportFilenameBrowseButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE))))))
-                .addContainerGap())
+                                .add(emailTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE))
+                            .add(layout.createSequentialGroup()
+                                .add(userNameLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                                .add(70, 70, 70)
+                                .add(userNameTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)))
+                        .addContainerGap())
+                    .add(layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(layout.createSequentialGroup()
+                                .add(exportFilename)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
+                            .add(execPathLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(exportFilenameTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
+                            .add(executablePathTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(execPathBrowseButton)
+                            .add(exportFilenameBrowseButton))
+                        .add(20, 20, 20))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(userNameTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel1))
-                .add(18, 18, 18)
+                    .add(emailLabel)
+                    .add(emailTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(userNameLabel)
+                    .add(userNameTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(execPathBrowseButton)
-                    .add(jLabel2)
-                    .add(executablePathTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(executablePathTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(execPathLabel))
                 .add(18, 18, 18)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(exportFilename)
                     .add(exportFilenameTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(exportFilenameBrowseButton))
-                .add(10, 10, 10)
+                    .add(exportFilenameBrowseButton)
+                    .add(exportFilename))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 26, Short.MAX_VALUE)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(18, 18, 18)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(18, 18, 18)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(backupOnRevertModifications)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .add(27, 27, 27))
         );
 
-        userNameTextField.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(GitPanel.class, "ACSD_userNameTextField")); // NOI18N
+        emailTextField.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(GitPanel.class, "ACSD_userNameTextField")); // NOI18N
         executablePathTextField.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(GitPanel.class, "ACSD_executablePathTextField")); // NOI18N
         execPathBrowseButton.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(GitPanel.class, "ACSD_execPathBrowseButton")); // NOI18N
         jPanel2.getAccessibleContext().setAccessibleName("<GitPanel.jPanel2.border.title>");
@@ -248,6 +265,7 @@ final class GitPanel extends javax.swing.JPanel {
         // someCheckBox.setSelected(NbPreferences.forModule(GitPanel.class).getBoolean("someFlag", false)); // NOI18N
         // or:
         // someTextField.setText(SomeSystemOption.getDefault().getSomeStringProperty());
+        emailTextField.setText(GitModuleConfig.getDefault().getEmail());
         userNameTextField.setText(GitModuleConfig.getDefault().getUserName());
         executablePathTextField.setText(GitModuleConfig.getDefault().getExecutableBinaryPath());
         exportFilenameTextField.setText(GitModuleConfig.getDefault().getExportFilename());
@@ -263,6 +281,7 @@ final class GitPanel extends javax.swing.JPanel {
         // NbPreferences.forModule(GitPanel.class).putBoolean("someFlag", someCheckBox.isSelected()); // NOI18N
         // or:
         // SomeSystemOption.getDefault().setSomeStringProperty(someTextField.getText());
+        GitModuleConfig.getDefault().setEmail(emailTextField.getText());
         GitModuleConfig.getDefault().setUserName(userNameTextField.getText());
         GitModuleConfig.getDefault().setExecutableBinaryPath(executablePathTextField.getText());
         GitModuleConfig.getDefault().setExportFilename(exportFilenameTextField.getText());
@@ -277,7 +296,7 @@ final class GitPanel extends javax.swing.JPanel {
     boolean valid() {
         // TODO check whether form is consistent and complete
         //return true;
-        String username = userNameTextField.getText();
+        String username = emailTextField.getText();
         Boolean valid;
         valid =  GitModuleConfig.getDefault().isUserNameValid(username);
         if (!valid) return false;
@@ -290,19 +309,21 @@ final class GitPanel extends javax.swing.JPanel {
     final javax.swing.JButton addButton = new javax.swing.JButton();
     final javax.swing.JTextField annotationTextField = new javax.swing.JTextField();
     private javax.swing.JCheckBox backupOnRevertModifications;
+    private javax.swing.JLabel emailLabel;
+    final javax.swing.JTextField emailTextField = new javax.swing.JTextField();
     final javax.swing.JButton execPathBrowseButton = new javax.swing.JButton();
+    private javax.swing.JLabel execPathLabel;
     final javax.swing.JTextField executablePathTextField = new javax.swing.JTextField();
     private javax.swing.JLabel exportFilename;
     final javax.swing.JButton exportFilenameBrowseButton = new javax.swing.JButton();
     final javax.swing.JTextField exportFilenameTextField = new javax.swing.JTextField();
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     final javax.swing.JButton manageButton = new javax.swing.JButton();
-    final javax.swing.JTextField userNameTextField = new javax.swing.JTextField();
+    private javax.swing.JLabel userNameLabel;
+    private javax.swing.JTextField userNameTextField;
     // End of variables declaration//GEN-END:variables
     
 }

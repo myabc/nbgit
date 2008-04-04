@@ -44,7 +44,7 @@ made subject to such option by the copyright holder.
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
 <filesystem>
     <folder name="Actions">
-        <folder name="Mercurial">
+        <folder name="Git">
             <file name="org-netbeans-modules-git-ui-status-OpenVersioningAction.instance">
                 <attr name="instanceClass" stringvalue="org.netbeans.modules.git.ui.status.OpenVersioningAction"/>
             </file>
@@ -53,7 +53,7 @@ made subject to such option by the copyright holder.
     <folder name="Editors">
         <folder name="SideBar">
             <file name="org-netbeans-modules-git-ui-annotate-AnnotationBarManager.instance">
-                <attr name="position" intvalue="2200"/>
+                <attr name="position" intvalue="2201"/>
             </file>
             <!-- place in between line numbers sidebar and folding sidebar #57544 -->
         </folder>
@@ -87,7 +87,7 @@ made subject to such option by the copyright holder.
         <folder name="Modes">
             <folder name="output">
                 <file name="gitversioning.wstcref" url="git_wstcref.xml">
-                    <attr name="position" intvalue="650"/>
+                    <attr name="position" intvalue="651"/>
                 </file>
             </folder>
         </folder>
@@ -96,8 +96,9 @@ made subject to such option by the copyright holder.
         <folder name="Window">
             <folder name="Versioning">
                 <file name="org-netbeans-modules-git-ui-status-OpenVersioningAction.shadow">
+                    <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/netbeans/modules/git/resources/icons/gitvcs-icon.png"/>
                     <attr name="originalFile" stringvalue="Actions/Git/org-netbeans-modules-git-ui-status-OpenVersioningAction.instance"/>
-                    <attr name="position" intvalue="400"/>
+                    <attr name="position" intvalue="401"/>
                 </file>
             </folder>
         </folder>

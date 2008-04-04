@@ -42,7 +42,6 @@
 package org.netbeans.modules.git;
 
 import java.io.File;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -92,6 +91,7 @@ public class GitModuleConfig {
     private static final String DEFAULT_EXPORT_FILENAME = "%b_%r_%h";                                  // NOI18N
     private static final GitModuleConfig INSTANCE = new GitModuleConfig();   
     
+    private static String email;
     private static String userName;
 
     public static GitModuleConfig getDefault() {
@@ -192,6 +192,20 @@ public class GitModuleConfig {
     }
 
     /**
+     * This method returns the email address specified in $HOME/.gitconfig
+     * or a default email address if none is found.
+     */
+    public String getEmail() {
+        email = GitConfigFiles.getInstance().getEmail();
+        if (email.length() == 0) {
+            // nothing
+            // TODO: does NetBeans provide this with product registration?
+            // if not, then get this information in setup wizard.
+        }
+        return email;
+    }
+    
+    /**
      * This method returns the username specified in $HOME/.gitconfig
      * or a default username if none is found.
      */
@@ -199,19 +213,16 @@ public class GitModuleConfig {
         userName = GitConfigFiles.getInstance().getUserName();
         if (userName.length() == 0) {
             String userId = System.getProperty("user.name"); // NOI18N
-            String hostName;
-            try {
-                hostName = InetAddress.getLocalHost().getHostName();
-            } catch (Exception ex) {
-                return userName;
-            }
-            userName = userId + " <" + userId + "@" + hostName + ">"; // NOI18N
         }
         return userName;
     }
 
     public void addGitkExtension() {
         GitConfigFiles.getInstance().setProperty("XXXXX", "");
+    }
+    
+    public void setEmail(String email) {
+        GitConfigFiles.getInstance().setEmail(email);
     }
     
     public void setUserName(String name) {
@@ -238,20 +249,27 @@ public class GitModuleConfig {
 
     public Properties getProperties(File file) {
         Properties props = new Properties();
-        GitConfigFiles hgconfig = new GitConfigFiles(file); 
-        String name = hgconfig.getUserName(false);
+        GitConfigFiles gitconfig = new GitConfigFiles(file); 
+        String email = gitconfig.getEmail(false);
+        String name = gitconfig.getUserName(false);
+        if (email.length() == 0)
+            email = getEmail();
+        if (email.length() > 0)
+            props.setProperty("email", email);
+        else
+            props.setProperty("email", "");
         if (name.length() == 0) 
             name = getUserName();
         if (name.length() > 0) 
-            props.setProperty("username", name); // NOI18N
+            props.setProperty("name", name); // NOI18N
         else
-            props.setProperty("username", ""); // NOI18N
-        name = hgconfig.getDefaultPull(false);
+            props.setProperty("name", ""); // NOI18N
+        name = gitconfig.getDefaultPull(false);
         if (name.length() > 0) 
             props.setProperty("default-pull", name); // NOI18N
         else
             props.setProperty("default-pull", ""); // NOI18N
-        name = hgconfig.getDefaultPush(false);
+        name = gitconfig.getDefaultPush(false);
         if (name.length() > 0) 
             props.setProperty("default-push", name); // NOI18N
         else
@@ -260,33 +278,33 @@ public class GitModuleConfig {
     }
 
     public void clearProperties(File file, String section) {
-        getHgConfigFiles(file).clearProperties(section);
+        getGitConfigFiles(file).clearProperties(section);
     }
 
     public void removeProperty(File file, String section, String name) {
-        getHgConfigFiles(file).removeProperty(section, name);
+        getGitConfigFiles(file).removeProperty(section, name);
     }
 
     public void setProperty(File file, String name, String value) {
-        getHgConfigFiles(file).setProperty(name, value);
+        getGitConfigFiles(file).setProperty(name, value);
     }
 
     public void setProperty(File file, String section, String name, String value, boolean allowEmpty) {
-        getHgConfigFiles(file).setProperty(section, name, value, allowEmpty);
+        getGitConfigFiles(file).setProperty(section, name, value, allowEmpty);
     }
 
     public void setProperty(File file, String section, String name, String value) {
-        getHgConfigFiles(file).setProperty(section, name, value);
+        getGitConfigFiles(file).setProperty(section, name, value);
     }
 
     /*
      * Get all properties for a particular section
      */
     public Properties getProperties(File file, String section) {
-        return getHgConfigFiles(file).getProperties(section);
+        return getGitConfigFiles(file).getProperties(section);
     }
 
-    private GitConfigFiles getHgConfigFiles(File file) {
+    private GitConfigFiles getGitConfigFiles(File file) {
         if (file == null) {
             return GitConfigFiles.getInstance();
         } else {

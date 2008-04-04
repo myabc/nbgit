@@ -84,6 +84,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnRefresh">
           <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/org/netbeans/modules/git/resources/icons/refresh.png"/>
+            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="org/netbeans/modules/git/ui/status/Bundle.properties" key="CTL_Synchronize_Action_Refresh_Tooltip" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
@@ -106,6 +109,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnDiff">
           <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/org/netbeans/modules/git/resources/icons/diff.png"/>
+            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="org/netbeans/modules/git/ui/status/Bundle.properties" key="CTL_Synchronize_Action_Diff_Tooltip" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
@@ -133,6 +139,9 @@
         </Container>
         <Component class="javax.swing.JButton" name="btnUpdate">
           <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/org/netbeans/modules/git/resources/icons/update.png"/>
+            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="org/netbeans/modules/git/ui/status/Bundle.properties" key="CTL_Synchronize_Action_Update_Tooltip" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
@@ -153,6 +162,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnCommit">
           <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/org/netbeans/modules/git/resources/icons/commit.png"/>
+            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="org/netbeans/modules/git/ui/status/Bundle.properties" key="CTL_CommitForm_Action_Commit_Tooltip" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>

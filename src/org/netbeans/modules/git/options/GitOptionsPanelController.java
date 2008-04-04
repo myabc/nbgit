@@ -155,7 +155,7 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
     }
 
     private Boolean validateFields() {
-        String username = panel.userNameTextField.getText();
+        String username = panel.emailTextField.getText();
         if (!GitModuleConfig.getDefault().isUserNameValid(username)) {
             JOptionPane.showMessageDialog(null,
                                           NbBundle.getMessage(GitPanel.class, "MSG_WARN_USER_NAME_TEXT"), // NOI18N

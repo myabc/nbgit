@@ -67,8 +67,9 @@ public class GitConfigFiles {
     public static final String GIT_EXTENSIONS = "extensions";  // NOI18N
     public static final String GIT_EXTENSIONS_GITK = "gitk";  // NOI18N
     public static final String GIT_EXTENSIONS_FETCH = "fetch";  // NOI18N
-    public static final String GIT_UI_SECTION = "ui";  // NOI18N
-    public static final String GIT_USERNAME = "username";  // NOI18N
+    public static final String GIT_USER_SECTION = "user";  // NOI18N
+    public static final String GIT_USER_NAME = "name";  // NOI18N
+    public static final String GIT_EMAIL = "email"; // NOI18N
     public static final String GIT_PATHS_SECTION = "paths";  // NOI18N
     public static final String GIT_DEFAULT_PUSH = "default-push";  // NOI18N
     public static final String GIT_DEFAULT_PUSH_VALUE = "default-push";  // NOI18N
@@ -116,8 +117,10 @@ public class GitConfigFiles {
     }
  
     public void setProperty(String name, String value) {
-        if (name.equals(GIT_USERNAME)) { 
-            setProperty(GIT_UI_SECTION, GIT_USERNAME, value); 
+        if (name.equals(GIT_USER_NAME)) { 
+            setProperty(GIT_USER_SECTION, GIT_USER_NAME, value); 
+        } else if (name.equals(GIT_EMAIL)) {
+            setProperty(GIT_USER_SECTION, GIT_EMAIL, value);
         } else if (name.equals(GIT_DEFAULT_PUSH)) { 
             setProperty(GIT_PATHS_SECTION, GIT_DEFAULT_PUSH_VALUE, value); 
         } else if (name.equals(GIT_DEFAULT_PULL)) { 
@@ -154,13 +157,21 @@ public class GitConfigFiles {
     public void setProperty(String section, String name, String value) {
         setProperty(section, name,value, false);
     }
+    
+    public void setEmail(String value) {
+        setProperty(GIT_USER_SECTION, GIT_EMAIL, value);
+    }
 
     public void setUserName(String value) {
-        setProperty(GIT_UI_SECTION, GIT_USERNAME, value); 
+        setProperty(GIT_USER_SECTION, GIT_USER_NAME, value); 
     }
 
     public String getUserName() {
         return getUserName(true);
+    }
+    
+    public String getEmail() {
+        return getEmail(true);
     }
 
     public Properties getProperties(String section) {
@@ -213,7 +224,14 @@ public class GitConfigFiles {
         if (reload) {
             doReload();
         }
-        return getProperty(GIT_UI_SECTION, GIT_USERNAME);                                              
+        return getProperty(GIT_USER_SECTION, GIT_USER_NAME);                                              
+    }
+    
+    public String getEmail(Boolean reload) {
+        if (reload) {
+            doReload();
+        }
+        return getProperty(GIT_USER_SECTION, GIT_EMAIL);
     }
 
     public String getProperty(String section, String name) {

@@ -44,6 +44,7 @@ made subject to such option by the copyright holder.
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
 <filesystem>
     <folder name="Actions">
+        <attr name="position" intvalue="0"/>
         <folder name="Git">
             <file name="org-netbeans-modules-git-ui-status-OpenVersioningAction.instance">
                 <attr name="instanceClass" stringvalue="org.netbeans.modules.git.ui.status.OpenVersioningAction"/>
@@ -53,12 +54,14 @@ made subject to such option by the copyright holder.
     <folder name="Editors">
         <folder name="SideBar">
             <file name="org-netbeans-modules-git-ui-annotate-AnnotationBarManager.instance">
-                <attr name="position" intvalue="2201"/>
+                <attr name="position" intvalue="2100"/>
             </file>
             <!-- place in between line numbers sidebar and folding sidebar #57544 -->
         </folder>
         <folder name="AnnotationTypes">
-            <file name="org-netbeans-modules-git-Annotation.xml" url="git_annotation.xml"/>
+            <file name="org-netbeans-modules-git-Annotation.xml" url="git_annotation.xml">
+                <attr name="position" intvalue="7500"/>
+            </file>
         </folder>
         <folder name="UpToDateStatusProvider">
             <file name="org-netbeans-modules-git-ui-annotate-AnnotationMarkInstaller.instance">
@@ -82,23 +85,26 @@ made subject to such option by the copyright holder.
 
     <folder name="Windows2">
         <folder name="Components">
-            <file name="gitversioning.settings" url="gitversioning.xml"/>
+            <file name="gitversioning.settings" url="gitversioning.xml">
+                <attr name="position" intvalue="1850"/>
+            </file>
         </folder>        
         <folder name="Modes">
             <folder name="output">
                 <file name="gitversioning.wstcref" url="git_wstcref.xml">
-                    <attr name="position" intvalue="651"/>
+                    <attr name="position" intvalue="625"/>
                 </file>
             </folder>
         </folder>
     </folder>
+    
     <folder name="Menu">
         <folder name="Window">
             <folder name="Versioning">
                 <file name="org-netbeans-modules-git-ui-status-OpenVersioningAction.shadow">
                     <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/netbeans/modules/git/resources/icons/gitvcs-icon.png"/>
                     <attr name="originalFile" stringvalue="Actions/Git/org-netbeans-modules-git-ui-status-OpenVersioningAction.instance"/>
-                    <attr name="position" intvalue="401"/>
+                    <attr name="position" intvalue="380"/>
                 </file>
             </folder>
         </folder>

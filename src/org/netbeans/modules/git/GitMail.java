@@ -52,22 +52,11 @@ public class GitMail {
     //now compile it:
     public static final Pattern VALID_PATTERN = Pattern.compile( addrSpec );
 
-    public static Boolean isUserNameValid(String name) {
+    public static Boolean isEmailValid(String email) {
         /*
-         * Names of the form username@domain
-         * and text <username@domain> are allowed
+         * Email in the form username@domain is allowed
          */
-        name = name.trim();
-        if (name.endsWith(">")) { // NOI18N
-
-            int startbr = name.lastIndexOf("<"); // NOI18N
-
-            if (startbr != -1) {
-                String newName = name.substring(startbr + 1, name.length() - 1);
-                return VALID_PATTERN.matcher(newName).matches();
-            }
-            return false;
-        }
-        return VALID_PATTERN.matcher(name).matches();
+        email = email.trim();
+        return VALID_PATTERN.matcher(email).matches();
     } 
 }

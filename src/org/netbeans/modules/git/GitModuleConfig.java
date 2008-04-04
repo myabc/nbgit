@@ -228,12 +228,19 @@ public class GitModuleConfig {
     public void setUserName(String name) {
         GitConfigFiles.getInstance().setUserName(name);
     }
+    
+    public Boolean isEmailValid(String email) {
+        if (this.email == null) getEmail();
+        if (email.equals(email)) return true;
+        if (email.length() == 0) return false; // cannot be blank
+        return GitMail.isEmailValid(email);
+    }
 
     public Boolean isUserNameValid(String name) {
         if (userName == null) getUserName();
         if (name.equals(userName)) return true;
         if (name.length() == 0) return true;
-        return GitMail.isUserNameValid(name);
+        return true;
     }
 
     public Boolean isExecPathValid(String name) {

@@ -41,6 +41,7 @@
  */
 package org.netbeans.modules.git.options;
 
+import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.netbeans.modules.git.GitAnnotator;
@@ -103,7 +104,7 @@ final class GitPanel extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(execPathBrowseButton, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.browseButton.text")); // NOI18N
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.jPanel1.border.title"))); // NOI18N
+        jPanel1.setBorder(UIManager.getBorder("TitledBorder.aquaVariant"));
 
         jLabel3.setLabelFor(annotationTextField);
         org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(GitPanel.class, "GitPanel.jLabel3.text")); // NOI18N
@@ -121,7 +122,7 @@ final class GitPanel extends javax.swing.JPanel {
                 .add(jLabel3)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(annotationTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 405, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 13, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 25, Short.MAX_VALUE)
                 .add(addButton)
                 .addContainerGap())
         );
@@ -235,7 +236,7 @@ final class GitPanel extends javax.swing.JPanel {
                     .add(exportFilenameTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(exportFilenameBrowseButton)
                     .add(exportFilename))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 26, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 54, Short.MAX_VALUE)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -244,6 +245,7 @@ final class GitPanel extends javax.swing.JPanel {
                 .add(27, 27, 27))
         );
 
+        emailTextField.getAccessibleContext().setAccessibleName("Email:");
         emailTextField.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(GitPanel.class, "ACSD_userNameTextField")); // NOI18N
         executablePathTextField.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(GitPanel.class, "ACSD_executablePathTextField")); // NOI18N
         execPathBrowseButton.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(GitPanel.class, "ACSD_execPathBrowseButton")); // NOI18N
@@ -296,11 +298,15 @@ final class GitPanel extends javax.swing.JPanel {
     boolean valid() {
         // TODO check whether form is consistent and complete
         //return true;
-        String username = emailTextField.getText();
+        String name  = userNameTextField.getText();
+        String email = emailTextField.getText();
+        String execpath = executablePathTextField.getText();        
         Boolean valid;
-        valid =  GitModuleConfig.getDefault().isUserNameValid(username);
+        
+        valid =  GitModuleConfig.getDefault().isUserNameValid(name);
         if (!valid) return false;
-        String execpath = executablePathTextField.getText();
+        valid = GitModuleConfig.getDefault().isEmailValid(email);
+        if (!valid) return false;
         valid = GitModuleConfig.getDefault().isExecPathValid(execpath);
         return valid;
     }

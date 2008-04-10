@@ -128,8 +128,8 @@ public class GitCommand {
     private static final String GIT_UPDATE_ALL_CMD = "update"; // NOI18N
     private static final String GIT_UPDATE_FORCE_ALL_CMD = "-C"; // NOI18N
     
-    private static final String GIT_REMOVE_CMD = "remove"; // NOI18N
-    private static final String GIT_REMOVE_FLAG_FORCE_CMD = "--force"; // NOI18N
+    private static final String GIT_REMOVE_CMD = "rm"; // NOI18N
+    private static final String GIT_REMOVE_FLAG_FORCE_CMD = "-f"; // NOI18N
     
     private static final String GIT_LOG_CMD = "log"; // NOI18N
     private static final String GIT_OUT_CMD = "out"; // NOI18N
@@ -168,7 +168,7 @@ public class GitCommand {
     private static final String GIT_EXPORT_CMD = "export"; // NOI18N
     private static final String GIT_IMPORT_CMD = "import"; // NOI18N
 
-    private static final String GIT_RENAME_CMD = "rename"; // NOI18N
+    private static final String GIT_RENAME_CMD = "mv"; // NOI18N
     private static final String GIT_RENAME_AFTER_CMD = "-A"; // NOI18N
     private static final String GIT_PATH_DEFAULT_CMD = "paths"; // NOI18N
     private static final String GIT_PATH_DEFAULT_OPT = "default"; // NOI18N

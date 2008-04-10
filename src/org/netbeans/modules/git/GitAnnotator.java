@@ -98,9 +98,11 @@ import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 
 /**
- * Responsible for coloring file labels and file icons in the IDE and providing IDE with menu items.
+ * Responsible for coloring file labels and file icons in the IDE and providing 
+ * IDE with menu items.
  *
  * @author Maros Sandor
+ * @author alexbcoles
  */
 public class GitAnnotator extends VCSAnnotator {
 

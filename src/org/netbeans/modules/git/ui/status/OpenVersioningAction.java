@@ -43,8 +43,10 @@ package org.netbeans.modules.git.ui.status;
 
 
 import java.awt.event.ActionEvent;
+import javax.swing.ImageIcon;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
+import org.openide.util.Utilities;
 
 /**
  * Open the Git view. It focuses recently opened view unless it's not 
@@ -56,7 +58,8 @@ import org.openide.util.NbBundle;
 public class OpenVersioningAction extends ShowAllChangesAction {
 
     public OpenVersioningAction() {
-        putValue("noIconInMenu", Boolean.TRUE); // NOI18N
+        putValue("noIconInMenu", Boolean.FALSE); // NOI18N
+        setIcon(new ImageIcon(Utilities.loadImage("org/netbeans/modules/git/resources/icons/versioning-view.png"))); // NOI18N
     }
 
     @Override

@@ -9,6 +9,16 @@ This module targets NetBeans 6.1 Beta.
 The code is ported directly from the Mercurial Module (included as part of the 
 NetBeans core distribution, as of NetBeans 6.1 Beta).
 
+Warning
+-------
+
+**PLEASE READ BEFORE DOWNLOADING**
+As of 15 April 2008, this Module is under **heavy development** and is not yet
+suitable for end-users who want Git functionality within NetBeans. If you've
+got NetBeans and Java experience, please feel clone, download, and experiment.
+*If you're looking for a working NetBeans module, this project is not there yet!
+Please consider joining the mailing list to stay in touch!*
+
 Getting the Source
 ------------------
 

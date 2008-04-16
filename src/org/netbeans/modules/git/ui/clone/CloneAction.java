@@ -259,7 +259,7 @@ public class CloneAction extends ContextAction {
         PrintWriter pw = null;
         
         try {
-            gitConfigFile = new File(root + File.separator + GitConfigFiles.GIT_REPO_DIR, GitConfigFiles.GITCONFIG_FILE);
+            gitConfigFile = new File(root + File.separator + GitConfigFiles.GIT_REPO_DIR, GitConfigFiles.GIT_REPO_CONFIG_FILE);
             if (!gitConfigFile.isFile() || !gitConfigFile.canWrite()) return;
             
             String defaultPullWinStr = GitConfigFiles.GIT_DEFAULT_PULL_VALUE + " = " + defaultPull.replace("\\", "\\\\") + "\n"; // NOI18N

@@ -67,14 +67,16 @@ public class GitConfigFiles {
     public static final String GIT_EXTENSIONS = "extensions";  // NOI18N
     public static final String GIT_EXTENSIONS_GITK = "gitk";  // NOI18N
     public static final String GIT_EXTENSIONS_FETCH = "fetch";  // NOI18N
+    
     public static final String GIT_USER_SECTION = "user";  // NOI18N
     public static final String GIT_USER_NAME = "name";  // NOI18N
     public static final String GIT_EMAIL = "email"; // NOI18N
-    public static final String GIT_PATHS_SECTION = "paths";  // NOI18N
-    public static final String GIT_DEFAULT_PUSH = "default-push";  // NOI18N
-    public static final String GIT_DEFAULT_PUSH_VALUE = "default-push";  // NOI18N
-    public static final String GIT_DEFAULT_PULL = "default-pull";  // NOI18N
-    public static final String GIT_DEFAULT_PULL_VALUE = "default";  // NOI18N
+    
+    public static final String GIT_PATHS_SECTION = "[remote \"origin\"]";  // NOI18N
+    //public static final String GIT_DEFAULT_PUSH = "url";  // NOI18N
+    //public static final String GIT_DEFAULT_PUSH_VALUE = "url";  // NOI18N
+    public static final String GIT_DEFAULT_PULL = "url";  // NOI18N
+    public static final String GIT_DEFAULT_PULL_VALUE = "url";  // NOI18N
 
     /** The GitConfigFiles instance for user and system defaults */
     private static GitConfigFiles instance;
@@ -88,14 +90,14 @@ public class GitConfigFiles {
     private static final String WINDOWS_USER_APPDATA = getAPPDATA();
     private static final String WINDOWS_CONFIG_DIR = WINDOWS_USER_APPDATA + "\\Git";                                      // NOI18N
     private static final String WINDOWS_GLOBAL_CONFIG_DIR = getGlobalAPPDATA() + "\\Git";                                 // NOI18N
-    public static final String GITCONFIG_FILE = "gitconfig";                                                                       // NOI18N
+    public static final String GITCONFIG_FILE = "gitconfig";                                                                   // NOI18N
     public static final String GIT_REPO_DIR = ".git";                                                                       // NOI18N
     
     /**
      * Creates a new instance
      */
     private GitConfigFiles() {      
-        // get the system gitconfig file 
+        // get the system .gitconfig file 
         gitConfig = loadFile(GITCONFIG_FILE);                                           
     }
     
@@ -121,10 +123,9 @@ public class GitConfigFiles {
             setProperty(GIT_USER_SECTION, GIT_USER_NAME, value); 
         } else if (name.equals(GIT_EMAIL)) {
             setProperty(GIT_USER_SECTION, GIT_EMAIL, value);
-        } else if (name.equals(GIT_DEFAULT_PUSH)) { 
-            setProperty(GIT_PATHS_SECTION, GIT_DEFAULT_PUSH_VALUE, value); 
         } else if (name.equals(GIT_DEFAULT_PULL)) { 
-            setProperty(GIT_PATHS_SECTION, GIT_DEFAULT_PULL_VALUE, value); 
+            setProperty(GIT_PATHS_SECTION, GIT_DEFAULT_PULL, value); 
+
         } else if (name.equals(GIT_EXTENSIONS_GITK)) { 
 
             if(getProperty(GIT_EXTENSIONS, GIT_EXTENSIONS_GITK).equals("")){
@@ -213,10 +214,11 @@ public class GitConfigFiles {
         if (reload) {
             doReload();
         }
-        String value = getProperty(GIT_PATHS_SECTION, GIT_DEFAULT_PUSH); 
-        if (value.length() == 0) {
+        String value = "";
+        //String value = getProperty(GIT_PATHS_SECTION, ""); 
+        //if (value.length() == 0) {
             value = getProperty(GIT_PATHS_SECTION, GIT_DEFAULT_PULL_VALUE); 
-        }
+        //}
         return value;
     }
 

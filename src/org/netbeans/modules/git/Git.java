@@ -133,19 +133,20 @@ public class Git {
     private void setDefaultPath() {
         // Set default executable location for Git on Mac OS X
         if (System.getProperty("os.name").equals("Mac OS X")) { // NOI18N
+
             String defaultPath = GitModuleConfig.getDefault().getExecutableBinaryPath();
             if (defaultPath == null || defaultPath.length() == 0) {
-                 String[] pathNames =   {"/Library/Frameworks/Python.framework/Versions/Current/bin", // NOI18N
-                                               "/usr/bin", "/usr/local/bin","/opt/local/bin/", "/sw/bin"}; // NOI18N
-               for (int i = 0; i < pathNames.length; i++) {
-                   if (GitModuleConfig.getDefault().isExecPathValid(pathNames[i])) {
-                       GitModuleConfig.getDefault().setExecutableBinaryPath(pathNames[i]); // NOI18N
-                       break;
-                   }
-               }
+                String[] pathNames = {"/usr/bin", "/usr/local/bin", "/opt/local/bin/", "/sw/bin"}; // NOI18N
+
+                for (int i = 0; i < pathNames.length; i++) {
+                    if (GitModuleConfig.getDefault().isExecPathValid(pathNames[i])) {
+                        GitModuleConfig.getDefault().setExecutableBinaryPath(pathNames[i]); // NOI18N
+
+                        break;
+                    }
+                }
             }
         }
-        
     }
     
     private void checkVersion() {

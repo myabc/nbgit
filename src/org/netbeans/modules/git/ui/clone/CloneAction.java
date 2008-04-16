@@ -263,7 +263,7 @@ public class CloneAction extends ContextAction {
             if (!gitConfigFile.isFile() || !gitConfigFile.canWrite()) return;
             
             String defaultPullWinStr = GitConfigFiles.GIT_DEFAULT_PULL_VALUE + " = " + defaultPull.replace("\\", "\\\\") + "\n"; // NOI18N
-            String defaultPushWinStr = GitConfigFiles.GIT_DEFAULT_PUSH_VALUE + " = " + defaultPush.replace("\\", "\\\\") + "\n"; // NOI18N
+            String defaultPushWinStr = GitConfigFiles.GIT_DEFAULT_PULL_VALUE + " = " + defaultPush.replace("\\", "\\\\") + "\n"; // NOI18N
 
             tempFile = new File(gitConfigFile.getAbsolutePath() + ".tmp"); // NOI18N
             if (tempFile == null) return;
@@ -283,16 +283,16 @@ public class CloneAction extends ContextAction {
                     bInPaths = false;
                 }
 
-                if (bInPaths && !bPullDone && line.startsWith(GitConfigFiles.GIT_DEFAULT_PULL_VALUE) && 
-                        !line.startsWith(GitConfigFiles.GIT_DEFAULT_PUSH_VALUE)) {
+                if (bInPaths && !bPullDone && line.startsWith(GitConfigFiles.GIT_DEFAULT_PULL_VALUE) 
+                        ) {
                     pw.println(defaultPullWinStr);
                     bPullDone = true;
                 } else if (bInPaths && !bPullDone && line.startsWith(GitConfigFiles.GIT_DEFAULT_PULL)) {
                     pw.println(defaultPullWinStr);
                     bPullDone = true;
-                } else if (bInPaths && !bPushDone && line.startsWith(GitConfigFiles.GIT_DEFAULT_PUSH_VALUE)) {
-                    pw.println(defaultPushWinStr);
-                    bPushDone = true;
+                //} else if (bInPaths && !bPushDone && line.startsWith(GitConfigFiles.GIT_DEFAULT_PUSH_VALUE)) {
+                //    pw.println(defaultPushWinStr);
+                //    bPushDone = true;
                 } else {
                     pw.println(line);
                     pw.flush();

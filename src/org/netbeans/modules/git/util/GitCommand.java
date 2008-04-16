@@ -74,6 +74,7 @@ import org.netbeans.modules.versioning.spi.VCSContext;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
+import org.openide.util.NotImplementedException;
 import org.openide.util.Utilities;
 
 /**
@@ -267,8 +268,9 @@ public class GitCommand {
     private static final char GIT_STATUS_CODE_ABORT = 'a' + 'b';    // NOI18N
     public static final String GIT_STR_CONFLICT_EXT = ".conflict~"; // NOI18N
 
-    private static final String GIT_EPOCH_PLUS_ONE_YEAR = "1971-01-01"; // NOI18N    
-    
+    private static final String GIT_EPOCH_PLUS_ONE_YEAR = "1971-01-01"; // NOI18N
+    private static final String GIT_HELP_CMD = "help";
+    private static final String GIT_ALL_FLAG_HELP_CMD = "-a";
 
     /**
      * Merge working directory with the head revision
@@ -454,17 +456,44 @@ public class GitCommand {
             return null;
         }
         if (!list.isEmpty()) {
-            int start = list.get(0).indexOf('(');
-            int end = list.get(0).indexOf(')');
-            if (start != -1 && end != -1) {
-                return list.get(0).substring(start + 9, end);
-            }
+            // git version 1.5.3.7
+            return list.get(0).substring(12);
         }
         return null;
     }
     
     /**
-     * Pull changes from the default pull locarion and update working directory.
+     * Return a list of all installed Git commands.
+     * 
+     * @return
+     * @throws org.netbeans.modules.git.GitException
+     */
+    public static List<String> getAllGitCommands() throws GitException {
+        List<String> command = new ArrayList<String>();
+
+        command.add(getGitCommand());
+        command.add(GIT_HELP_CMD);
+        command.add(GIT_ALL_FLAG_HELP_CMD);
+        
+        List<String> list = exec(command);
+        
+        return list;
+    }
+    
+    public static List<String> doFsck(File repository, OutputLogger logger) throws GitException {
+        throw new NotImplementedException("not implemented");
+    }
+ 
+    public static List<String> goGc(File repository, OutputLogger logger) throws GitException {
+        throw new NotImplementedException("not implemented");
+    }
+    
+    public static List<String> doPrune(File repository, OutputLogger logger) throws GitException {
+        throw new NotImplementedException("not implemented");        
+    }
+    
+    /**
+     * Pull changes from the default pull location and update working directory.
      * By default, update will refuse to run if doing so would require
      * merging or discarding local changes.
      *
@@ -1492,12 +1521,16 @@ public class GitCommand {
         List<String> command = new ArrayList<String>();
         
         command.add(getGitCommand());
+        command.add("--git-dir=" + root.getAbsolutePath() + "/.git");
         command.add(GIT_CREATE_CMD);
-        command.add(root.getAbsolutePath());
 
         List<String> list = exec(command);
-        if (!list.isEmpty())
+        if (list.isEmpty()) {
             handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_CREATE_FAILED"), logger);
+        } else if (list.get(0).indexOf("Initialized empty Git repository") == -1) {
+            handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_CREATE_FAILED"), logger);
+        }
+
     }
     
     /**
@@ -2379,6 +2412,8 @@ public class GitCommand {
         return list;
     }
     
+    
+    
     /**
      * Imports the diffs from the specified file
      *
@@ -2538,7 +2573,6 @@ public class GitCommand {
         command.add(repository.getAbsolutePath());
         command.add(GIT_OPT_CWD_CMD);
         command.add(repository.getAbsolutePath());
-
         
         command.add(new File(cwd, filename).getAbsolutePath().substring(repository.getAbsolutePath().length()+1));
         

@@ -55,8 +55,6 @@ import org.openide.WizardDescriptor;
 import org.openide.util.HelpCtx;
 import org.openide.util.actions.CallableSystemAction;
 
-// An example action demonstrating how the wizard could be called from within
-// your code. You can copy-paste the code below wherever you need.
 public final class CloneWizardAction extends CallableSystemAction implements ChangeListener {
     
     private WizardDescriptor.Panel<WizardDescriptor>[] panels;
@@ -95,10 +93,10 @@ public final class CloneWizardAction extends CallableSystemAction implements Cha
             final String password = (String) wizardDescriptor.getProperty("password"); // NOI18N
             final String directory = (String) wizardDescriptor.getProperty("directory"); // NOI18N
             final String cloneName = (String) wizardDescriptor.getProperty("cloneName"); // NOI18N
-            final String pullPath = (String) wizardDescriptor.getProperty("defaultPullPath"); // NOI18N
-            final String pushPath = (String) wizardDescriptor.getProperty("defaultPushPath"); // NOI18N
+            //final String pullPath = (String) wizardDescriptor.getProperty("defaultPullPath"); // NOI18N
+            //final String pushPath = (String) wizardDescriptor.getProperty("defaultPushPath"); // NOI18N
             File cloneFile = new File(directory, cloneName);
-            CloneAction.performClone(repository, cloneFile.getAbsolutePath(), true, null, pullPath, pushPath);
+            CloneAction.performClone(repository, cloneFile.getAbsolutePath(), true, null, null, null);
         }
     }
     
@@ -126,6 +124,7 @@ public final class CloneWizardAction extends CallableSystemAction implements Cha
         return "Start Sample Wizard"; // NOI18N
     }
     
+    @Override
     public String iconResource() {
         return null;
     }
@@ -134,6 +133,7 @@ public final class CloneWizardAction extends CallableSystemAction implements Cha
         return new HelpCtx(CloneWizardAction.class);
     }
     
+    @Override
     protected boolean asynchronous() {
         return false;
     }
@@ -151,12 +151,11 @@ public final class CloneWizardAction extends CallableSystemAction implements Cha
 
         @Override
         protected WizardDescriptor.Panel[] initializePanels() {
-            WizardDescriptor.Panel[] panels = new WizardDescriptor.Panel[2];
+            WizardDescriptor.Panel[] panels = new WizardDescriptor.Panel[1];
             cloneRepositoryWizardPanel = new CloneRepositoryWizardPanel();
-            clonePathsWizardPanel = new ClonePathsWizardPanel();
             cloneDestinationDirectoryWizardPanel = new CloneDestinationDirectoryWizardPanel();
             panels = new WizardDescriptor.Panel[] {                
-                cloneRepositoryWizardPanel, clonePathsWizardPanel, cloneDestinationDirectoryWizardPanel
+                cloneRepositoryWizardPanel, cloneDestinationDirectoryWizardPanel
             };
             panels[0].addChangeListener(CloneWizardAction.this);
             panels[1].addChangeListener(CloneWizardAction.this);

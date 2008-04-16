@@ -53,21 +53,21 @@ import org.openide.util.NbBundle;
  */
 class GitURL {
 
-  private static final char SEGMENT_SEPARATOR = '/';
+    private static final char SEGMENT_SEPARATOR = '/';
     
     private String protocol;
     private String host;
     private String password;
     private int port;
     
-    public GitURL(String gitUrl)  throws MalformedURLException {
+    public GitURL(String gitUrl) throws MalformedURLException {
         if (gitUrl == null) 
             throw new MalformedURLException(NbBundle.getMessage(GitURL.class, "MSG_URL_NULL")); // NOI18N
         parseUrl(gitUrl);
     }
 
     /**
-     * verifies that url is correct
+     * verifies that URL is correct
      * @throws malformedURLException
      */
     private void parseUrl(String gitUrl) throws MalformedURLException {
@@ -78,11 +78,12 @@ class GitURL {
             throw new MalformedURLException(NbBundle.getMessage(GitURL.class, "MSG_INVALID_URL", gitUrl)); // NOI18N
         protocol = parsed.substring(0, hostIdx).toLowerCase();
 
-        if ((!protocol.equalsIgnoreCase("http")) && // NOI18N
-            (!protocol.equalsIgnoreCase("https")) && // NOI18N
-            (!protocol.equalsIgnoreCase("file")) && // NOI18N
-            (!protocol.equalsIgnoreCase("static-http")) && // NOI18N
-            (!protocol.equalsIgnoreCase("ssh")) ) { // NOI18N
+        if ((!protocol.equalsIgnoreCase("git")) &&      // NOI18N
+            (!protocol.equalsIgnoreCase("http")) &&     // NOI18N
+            (!protocol.equalsIgnoreCase("https")) &&    // NOI18N
+            (!protocol.equalsIgnoreCase("file")) &&     // NOI18N
+            (!protocol.equalsIgnoreCase("ssh")) &&      // NOI18N
+            (!protocol.equalsIgnoreCase("rsync")) ) {   // NOI18N
                 throw new MalformedURLException(NbBundle.getMessage(GitURL.class, "MSG_INVALID_URL", gitUrl)); // NOI18N
         }
         parsed = parsed.substring(hostIdx + 3);
@@ -93,7 +94,7 @@ class GitURL {
 
     /**
      * get the protocol
-     * @return either http, https, file, static-http, ssh
+     * @return either git, http, https, file, ssh, or rsync
      */ 
     public String getProtocol() {
         return protocol;

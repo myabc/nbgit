@@ -46,7 +46,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
                   <Group type="103" alignment="0" groupAlignment="0" attributes="0">
-                      <Component id="tipLabel" alignment="0" pref="564" max="32767" attributes="1"/>
+                      <Component id="tipLabel" alignment="0" pref="630" max="32767" attributes="1"/>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="urlComboBox" pref="451" max="32767" attributes="2"/>
@@ -59,7 +59,7 @@
                               <Component id="userTextField" alignment="0" pref="145" max="32767" attributes="3"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="leaveBlankLabel" pref="389" max="32767" attributes="1"/>
+                          <Component id="leaveBlankLabel" pref="455" max="32767" attributes="1"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -67,11 +67,11 @@
           </Group>
           <Group type="102" alignment="1" attributes="0">
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="tunnelHelpLabel" alignment="0" pref="669" max="32767" attributes="0"/>
+                  <Component id="tunnelHelpLabel" alignment="0" pref="767" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="tunnelLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="tunnelCommandTextField" pref="592" max="32767" attributes="0"/>
+                      <Component id="tunnelCommandTextField" pref="642" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="tunnelCommandLabel" min="-2" max="-2" attributes="0"/>

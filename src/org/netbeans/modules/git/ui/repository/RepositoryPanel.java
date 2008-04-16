@@ -62,48 +62,49 @@ public class RepositoryPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         setMinimumSize(new java.awt.Dimension(480, 160));
-        setName("null");
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/netbeans/modules/git/ui/repository/Bundle"); // NOI18N
+        setName(bundle.getString("BK2018")); // NOI18N
         setVerifyInputWhenFocusTarget(false);
 
-        titleLabel.setText("null");
+        titleLabel.setText(bundle.getString("BK0001")); // NOI18N
 
         jLabel2.setLabelFor(urlComboBox);
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, "null");
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "BK0002")); // NOI18N
 
         urlComboBox.setEditable(true);
 
-        org.openide.awt.Mnemonics.setLocalizedText(proxySettingsButton, "null");
-        proxySettingsButton.setToolTipText("null");
+        org.openide.awt.Mnemonics.setLocalizedText(proxySettingsButton, org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "BK0006")); // NOI18N
+        proxySettingsButton.setToolTipText(org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "ACSD_ProxyDialog")); // NOI18N
 
         tipLabel.setText("-"); // NOI18N
         tipLabel.setMaximumSize(new java.awt.Dimension(32767, 32767));
 
-        removeButton.setText("null");
+        removeButton.setText(org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "BK0008")); // NOI18N
 
         userPasswordField.setMinimumSize(new java.awt.Dimension(11, 22));
         userPasswordField.setPreferredSize(new java.awt.Dimension(11, 22));
 
         passwordLabel.setLabelFor(userPasswordField);
-        org.openide.awt.Mnemonics.setLocalizedText(passwordLabel, "null");
-        passwordLabel.setToolTipText("null");
+        org.openide.awt.Mnemonics.setLocalizedText(passwordLabel, org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "BK0004")); // NOI18N
+        passwordLabel.setToolTipText(org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "TT_Password")); // NOI18N
 
         userLabel.setLabelFor(userTextField);
-        org.openide.awt.Mnemonics.setLocalizedText(userLabel, "null");
-        userLabel.setToolTipText("null");
+        org.openide.awt.Mnemonics.setLocalizedText(userLabel, org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "BK0003")); // NOI18N
+        userLabel.setToolTipText(org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "TT_UserName")); // NOI18N
 
         userTextField.setMinimumSize(new java.awt.Dimension(11, 22));
         userTextField.setPreferredSize(new java.awt.Dimension(11, 22));
 
-        leaveBlankLabel.setText("null");
+        leaveBlankLabel.setText(org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "BK0005")); // NOI18N
 
-        tunnelLabel.setText("null");
+        tunnelLabel.setText(org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "BK0010")); // NOI18N
 
-        tunnelCommandLabel.setText("null");
+        tunnelCommandLabel.setText(org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "BK0009")); // NOI18N
 
-        tunnelHelpLabel.setText("null");
+        tunnelHelpLabel.setText(org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "TT_svn_xxx")); // NOI18N
 
         savePasswordCheckBox.setMnemonic('v');
-        savePasswordCheckBox.setText("null");
+        savePasswordCheckBox.setText(org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "BK0007")); // NOI18N
         savePasswordCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -125,7 +126,7 @@ public class RepositoryPanel extends javax.swing.JPanel {
                         .add(savePasswordCheckBox)
                         .addContainerGap())
                     .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(tipLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE)
+                        .add(tipLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 630, Short.MAX_VALUE)
                         .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                             .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                             .add(urlComboBox, 0, 451, Short.MAX_VALUE)
@@ -136,15 +137,15 @@ public class RepositoryPanel extends javax.swing.JPanel {
                                 .add(org.jdesktop.layout.GroupLayout.LEADING, userPasswordField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .add(org.jdesktop.layout.GroupLayout.LEADING, userTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
                             .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                            .add(leaveBlankLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE)
+                            .add(leaveBlankLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
                             .addContainerGap()))))
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, tunnelHelpLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 669, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, tunnelHelpLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .add(tunnelLabel)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(tunnelCommandTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 592, Short.MAX_VALUE))
+                        .add(tunnelCommandTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 642, Short.MAX_VALUE))
                     .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .add(tunnelCommandLabel)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
@@ -188,24 +189,24 @@ public class RepositoryPanel extends javax.swing.JPanel {
                 .addContainerGap(48, Short.MAX_VALUE))
         );
 
-        titleLabel.getAccessibleContext().setAccessibleDescription("null");
+        titleLabel.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "ACSD_RepositoryPanel_Title")); // NOI18N
         titleLabel.getAccessibleContext().setAccessibleParent(this);
         jLabel2.getAccessibleContext().setAccessibleParent(this);
-        urlComboBox.getAccessibleContext().setAccessibleName("null");
-        urlComboBox.getAccessibleContext().setAccessibleDescription("null");
+        urlComboBox.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "ACSN_RepositoryURL")); // NOI18N
+        urlComboBox.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "ACSD_RepositoryURL")); // NOI18N
         urlComboBox.getAccessibleContext().setAccessibleParent(this);
         proxySettingsButton.getAccessibleContext().setAccessibleParent(this);
-        removeButton.getAccessibleContext().setAccessibleName("null");
-        removeButton.getAccessibleContext().setAccessibleDescription("null");
+        removeButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "ACSN_RemoveHistory")); // NOI18N
+        removeButton.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "ACSD_RemoveHistory")); // NOI18N
         userPasswordField.getAccessibleContext().setAccessibleParent(this);
         passwordLabel.getAccessibleContext().setAccessibleParent(this);
         userLabel.getAccessibleContext().setAccessibleParent(this);
         userTextField.getAccessibleContext().setAccessibleParent(this);
-        leaveBlankLabel.getAccessibleContext().setAccessibleDescription("null");
+        leaveBlankLabel.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "ACSD_InfoLabel")); // NOI18N
         leaveBlankLabel.getAccessibleContext().setAccessibleParent(this);
-        savePasswordCheckBox.getAccessibleContext().setAccessibleDescription("null");
+        savePasswordCheckBox.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "BK0011")); // NOI18N
 
-        getAccessibleContext().setAccessibleDescription("null");
+        getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(RepositoryPanel.class, "ACSD_RepositoryPanel")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
     
     

@@ -78,6 +78,7 @@ import org.netbeans.modules.git.ui.push.PushOtherAction;
 import org.netbeans.modules.git.ui.rollback.BackoutAction;
 import org.netbeans.modules.git.ui.rollback.RollbackAction;
 import org.netbeans.modules.git.ui.rollback.StripAction;
+import org.netbeans.modules.git.ui.stash.StashAction;
 import org.netbeans.modules.git.ui.status.StatusAction;
 import org.netbeans.modules.git.ui.update.ConflictResolvedAction;
 import org.netbeans.modules.git.ui.update.ResolveConflictsAction;
@@ -202,8 +203,8 @@ public class GitAnnotator extends VCSAnnotator {
     private void setAnnotationColor(String name, String colorString) {
         try {
             Field field = GitAnnotator.class.getDeclaredField(name + "Format");  // NOI18N
-            MessageFormat format = new MessageFormat("<font color=\"" + colorString + "\">{0}</font><font color=\"#999999\">{1}</font>");  // NOI18N
-            field.set(null, format);
+            MessageFormat msgFormat = new MessageFormat("<font color=\"" + colorString + "\">{0}</font><font color=\"#999999\">{1}</font>");  // NOI18N
+            field.set(null, msgFormat);
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid color name");  // NOI18N
         }
@@ -387,6 +388,7 @@ public class GitAnnotator extends VCSAnnotator {
             actions.add(new ViewAction(loc.getString("CTL_PopupMenuItem_View"), ctx)); // NOI18N
             actions.add(null);
             actions.add(new RevertModificationsAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Revert"), ctx)); // NOI18N
+            actions.add(new StashAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Stash"), ctx));
             actions.add(new StripAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Strip"), ctx)); // NOI18N
             actions.add(new BackoutAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Backout"), ctx)); // NOI18N
             actions.add(new RollbackAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Rollback"), ctx)); // NOI18N

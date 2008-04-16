@@ -60,7 +60,6 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
-import org.openide.util.Utilities;
 
 /**
  * Merge action for Git:
@@ -172,15 +171,16 @@ public class MergeAction extends ContextAction {
                 if (GitCommand.isMergeConflictMsg(line)) {
                     bConflicts = true;
                     String filepath = null;
-                    if(Utilities.isWindows()){
-                        filepath = line.substring(
-                            GitCommand.GIT_MERGE_CONFLICT_WIN1_ERR.length(),
-                            line.length() - GitCommand.GIT_MERGE_CONFLICT_WIN2_ERR.length()
-                            ).trim().replace("/", "\\"); // NOI18N
-                        filepath = root.getAbsolutePath() + File.separator + filepath;
-                    }else{
+                    // FIXME: Win32 Support
+                    //if(Utilities.isWindows()){
+                    //    filepath = line.substring(
+                    //        GitCommand.GIT_MERGE_CONFLICT_WIN1_ERR.length(),
+                    //        line.length() - GitCommand.GIT_MERGE_CONFLICT_WIN2_ERR.length()
+                    //        ).trim().replace("/", "\\"); // NOI18N
+                    //    filepath = root.getAbsolutePath() + File.separator + filepath;
+                    //}else{
                         filepath = line.substring(GitCommand.GIT_MERGE_CONFLICT_ERR.length());
-                    }
+                    //}
                     logger.outputInRed(NbBundle.getMessage(MergeAction.class, "MSG_MERGE_CONFLICT", filepath)); // NOI18N
                     GitCommand.createConflictFile(filepath);
                 }

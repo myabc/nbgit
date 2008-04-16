@@ -2775,12 +2775,13 @@ public class GitCommand {
     }
     
     public static boolean isMergeConflictMsg(String msg) {
-        if(Utilities.isWindows() ) {   
-            return (msg.indexOf(GIT_MERGE_CONFLICT_WIN1_ERR) > -1) &&        // NOI18N
-                    (msg.indexOf(GIT_MERGE_CONFLICT_WIN2_ERR) > -1);         // NOI18N
-        }else{
+    //    FIXME: Win32 Support
+    //    if(Utilities.isWindows() ) {   
+    //        return (msg.indexOf(GIT_MERGE_CONFLICT_WIN1_ERR) > -1) &&        // NOI18N
+    //                (msg.indexOf(GIT_MERGE_CONFLICT_WIN2_ERR) > -1);         // NOI18N
+    //    }else{
             return msg.indexOf(GIT_MERGE_CONFLICT_ERR) > -1;                 // NOI18N
-        }       
+    //    }       
     }
 
     public static boolean isMergeUnavailableMsg(String msg) {

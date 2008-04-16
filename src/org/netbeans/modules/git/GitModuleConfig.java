@@ -78,7 +78,7 @@ public class GitModuleConfig {
     public static final String KEY_BACKUP_ON_REVERTMODS = "backupOnRevert";                               // NOI18N
     public static final String KEY_SHOW_HITORY_MERGES = "showHistoryMerges";                               // NOI18N
 
-    private static final String RECENT_URL = "repository.recentURL";                                        // NOI18N
+    private static final String RECENT_URL =                "repository.recentURL";                                        // NOI18N
     private static final String SHOW_CLONE_COMPLETED = "cloneCompleted.showCloneCompleted";        // NOI18N  
 
     private static final String SET_MAIN_PROJECT = "cloneCompleted.setMainProject";        // NOI18N  

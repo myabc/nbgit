@@ -233,9 +233,10 @@ public class CloneAction extends ContextAction {
                     //#121581: Work around for ini4j bug on Windows not handling single '\' correctly
                     // git clone creates the default gitconfig, we just overwrite it's contents with 
                     // default path contianing '\\'
-                    if(isLocalClone && Utilities.isWindows()){ 
-                        fixLocalPullPushPathsOnWindows(cloneFolder.getAbsolutePath(), defaultPull, defaultPush);
-                    }
+                    // FIXME: Win32 Support
+                    //if(isLocalClone && Utilities.isWindows()){ 
+                    //    fixLocalPullPushPathsOnWindows(cloneFolder.getAbsolutePath(), defaultPull, defaultPush);
+                    //}
                     if(!isLocalClone){
                         logger.outputInRed(NbBundle.getMessage(CloneAction.class, "MSG_CLONE_DONE")); // NOI18N
                         logger.output(""); // NOI18N
@@ -252,65 +253,67 @@ public class CloneAction extends ContextAction {
     }
    
     private static final String GIT_PATHS_SECTION_ENCLOSED = "[" + GitConfigFiles.GIT_PATHS_SECTION + "]";// NOI18N
-    private static void fixLocalPullPushPathsOnWindows(String root, String defaultPull, String defaultPush) {
-        File gitConfigFile = null;
-        File tempFile = null;
-        BufferedReader br = null;
-        PrintWriter pw = null;
-        
-        try {
-            gitConfigFile = new File(root + File.separator + GitConfigFiles.GIT_REPO_DIR, GitConfigFiles.GIT_REPO_CONFIG_FILE);
-            if (!gitConfigFile.isFile() || !gitConfigFile.canWrite()) return;
-            
-            String defaultPullWinStr = GitConfigFiles.GIT_DEFAULT_PULL_VALUE + " = " + defaultPull.replace("\\", "\\\\") + "\n"; // NOI18N
-            String defaultPushWinStr = GitConfigFiles.GIT_DEFAULT_PULL_VALUE + " = " + defaultPush.replace("\\", "\\\\") + "\n"; // NOI18N
 
-            tempFile = new File(gitConfigFile.getAbsolutePath() + ".tmp"); // NOI18N
-            if (tempFile == null) return;
-            
-            br = new BufferedReader(new FileReader(gitConfigFile));
-            pw = new PrintWriter(new FileWriter(tempFile));
-
-            String line = null;
-            
-            boolean bInPaths = false;
-            boolean bPullDone = false;
-            boolean bPushDone = false;
-            while ((line = br.readLine()) != null) {
-                if (line.startsWith(GIT_PATHS_SECTION_ENCLOSED)) {
-                    bInPaths = true;
-                }else if (line.startsWith("[")) { // NOI18N
-                    bInPaths = false;
-                }
-
-                if (bInPaths && !bPullDone && line.startsWith(GitConfigFiles.GIT_DEFAULT_PULL_VALUE) 
-                        ) {
-                    pw.println(defaultPullWinStr);
-                    bPullDone = true;
-                } else if (bInPaths && !bPullDone && line.startsWith(GitConfigFiles.GIT_DEFAULT_PULL)) {
-                    pw.println(defaultPullWinStr);
-                    bPullDone = true;
-                //} else if (bInPaths && !bPushDone && line.startsWith(GitConfigFiles.GIT_DEFAULT_PUSH_VALUE)) {
-                //    pw.println(defaultPushWinStr);
-                //    bPushDone = true;
-                } else {
-                    pw.println(line);
-                    pw.flush();
-                }
-            }
-        } catch (IOException ex) {
-            // Ignore
-        } finally {
-            try {
-                if(pw != null) pw.close();
-                if(br != null) br.close();
-                if(tempFile != null && tempFile.isFile() && tempFile.canWrite() && gitConfigFile != null){ 
-                    gitConfigFile.delete();
-                    tempFile.renameTo(gitConfigFile);
-                }
-            } catch (IOException ex) {
-            // Ignore
-            }
-        }
-    }
+    // FIXME: Win32 Support
+//    private static void fixLocalPullPushPathsOnWindows(String root, String defaultPull, String defaultPush) {
+//        File gitConfigFile = null;
+//        File tempFile = null;
+//        BufferedReader br = null;
+//        PrintWriter pw = null;
+//        
+//        try {
+//            gitConfigFile = new File(root + File.separator + GitConfigFiles.GIT_REPO_DIR, GitConfigFiles.GIT_REPO_CONFIG_FILE);
+//            if (!gitConfigFile.isFile() || !gitConfigFile.canWrite()) return;
+//            
+//            String defaultPullWinStr = GitConfigFiles.GIT_DEFAULT_PULL_VALUE + " = " + defaultPull.replace("\\", "\\\\") + "\n"; // NOI18N
+//            String defaultPushWinStr = GitConfigFiles.GIT_DEFAULT_PULL_VALUE + " = " + defaultPush.replace("\\", "\\\\") + "\n"; // NOI18N
+//
+//            tempFile = new File(gitConfigFile.getAbsolutePath() + ".tmp"); // NOI18N
+//            if (tempFile == null) return;
+//            
+//            br = new BufferedReader(new FileReader(gitConfigFile));
+//            pw = new PrintWriter(new FileWriter(tempFile));
+//
+//            String line = null;
+//            
+//            boolean bInPaths = false;
+//            boolean bPullDone = false;
+//            boolean bPushDone = false;
+//            while ((line = br.readLine()) != null) {
+//                if (line.startsWith(GIT_PATHS_SECTION_ENCLOSED)) {
+//                    bInPaths = true;
+//                }else if (line.startsWith("[")) { // NOI18N
+//                    bInPaths = false;
+//                }
+//
+//                if (bInPaths && !bPullDone && line.startsWith(GitConfigFiles.GIT_DEFAULT_PULL_VALUE) 
+//                        ) {
+//                    pw.println(defaultPullWinStr);
+//                    bPullDone = true;
+//                } else if (bInPaths && !bPullDone && line.startsWith(GitConfigFiles.GIT_DEFAULT_PULL)) {
+//                    pw.println(defaultPullWinStr);
+//                    bPullDone = true;
+//                //} else if (bInPaths && !bPushDone && line.startsWith(GitConfigFiles.GIT_DEFAULT_PUSH_VALUE)) {
+//                //    pw.println(defaultPushWinStr);
+//                //    bPushDone = true;
+//                } else {
+//                    pw.println(line);
+//                    pw.flush();
+//                }
+//            }
+//        } catch (IOException ex) {
+//            // Ignore
+//        } finally {
+//            try {
+//                if(pw != null) pw.close();
+//                if(br != null) br.close();
+//                if(tempFile != null && tempFile.isFile() && tempFile.canWrite() && gitConfigFile != null){ 
+//                    gitConfigFile.delete();
+//                    tempFile.renameTo(gitConfigFile);
+//                }
+//            } catch (IOException ex) {
+//            // Ignore
+//            }
+//        }
+//    }
 }

@@ -76,9 +76,9 @@ import org.openide.ErrorManager;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 
-
 /**
  * @author Tomas Stupka
+ * @author alexbcoles
  */
 public class Repository implements ActionListener, DocumentListener, FocusListener, ItemListener {
     
@@ -89,12 +89,14 @@ public class Repository implements ActionListener, DocumentListener, FocusListen
     public final static int FLAG_SHOW_HINTS             = 32;    
     public final static int FLAG_SHOW_PROXY             = 64;    
     
-    private final static String LOCAL_URL_HELP          = "file:///repository_path";              // NOI18N
+    private final static String GIT_URL_HELP            = "git://hostname/repository_path";         // NOI18N 
+    private final static String SSH_URL_HELP            = "ssh://hostname/repository_path";         // NOI18N  
+    private final static String SSH_SCP_STYLE_URL_HELP  = "username@hostname.com:repository_path";  // NOI18N 
+    private final static String LOCAL_URL_HELP          = "file:///repository_path";                // NOI18N
     private final static String HTTP_URL_HELP           = "http://[username[:password]@]hostname/repository_path";      // NOI18N
     private final static String HTTPS_URL_HELP          = "https://[username[:password]@]hostname/repository_path";     // NOI18N
-    private final static String STATIC_HTTP_URL_HELP    = "static-http://hostname/repository_path";       // NOI18N
-    private final static String SSH_URL_HELP            = "ssh://hostname/repository_path";   // NOI18N   
-               
+    private final static String RSYNC_URL_HELP          = "sync://hostname/repository_path";        // NOI18N 
+    
     private RepositoryPanel repositoryPanel;
     private boolean valid = true;
     private List<PropertyChangeListener> listeners;
@@ -190,13 +192,15 @@ public class Repository implements ActionListener, DocumentListener, FocusListen
         recentRoots.addAll(recentUrls);                               
         
         if(repositoryPanel.urlComboBox.isEditable()) {
-            // templates for supported connection methods        
+            // templates for supported connection methods
+            recentRoots.add(new RepositoryConnection("git://"));        // NOI18N
+            recentRoots.add(new RepositoryConnection("ssh://"));        // NOI18N
+            recentRoots.add(new RepositoryConnection("@"));  //FIXME    // NOI18N
             recentRoots.add(new RepositoryConnection("file:///"));      // NOI18N
             recentRoots.add(new RepositoryConnection("http://"));       // NOI18N
             recentRoots.add(new RepositoryConnection("https://"));      // NOI18N
-            recentRoots.add(new RepositoryConnection("static-http://"));        // NOI18N
-            recentRoots.add(new RepositoryConnection("ssh://"));        // NOI18N
-        };
+            recentRoots.add(new RepositoryConnection("sync://"));       // NOI18N
+        }
         
         ComboBoxModel rootsModel = new RepositoryModel(new Vector<RepositoryConnection>(recentRoots));                        
         repositoryPanel.urlComboBox.setModel(rootsModel);
@@ -297,29 +301,20 @@ public class Repository implements ActionListener, DocumentListener, FocusListen
     private void validateGitUrl() {
         boolean valid = true;
 
-        RepositoryConnection rc = null; 
+        RepositoryConnection rc = null;
         try {
-            rc = getSelectedRC();            
-            // check for a valid svnurl
-            rc.getGitUrl();                             
-            //if(!isSet(FLAG_ACCEPT_REVISION) && !rc.getSvnRevision().equals(SVNRevision.HEAD)) 
-            //{
-            //    message = NbBundle.getMessage(Repository.class, "MSG_Repository_OnlyHEADRevision"); // NOI18N
-            //    valid = false;
-            //} else {
-            //      // check for a valid svnrevision
-            //    rc.getSvnRevision();
-            //}
-        } catch (Exception ex) {             
+            rc = getSelectedRC();
+            // check for a valid git URL
+            rc.getGitUrl();
+
+        } catch (Exception ex) {
             message = ex.getLocalizedMessage();
             valid = false;
-        }        
-        
-        if(valid) {            
+        }
+
+        if (valid) {
             valid = rc != null && !rc.getUrl().equals(""); // NOI18N
-            //if(rc.getUrl().startsWith("svn+") && repositoryPanel.tunnelCommandTextField.getText().trim().equals("")) { // NOI18N
-            //    valid = false;
-            //}
+
         }
         
         setValid(valid, message);
@@ -335,12 +330,14 @@ public class Repository implements ActionListener, DocumentListener, FocusListen
      * Always updates UI fields visibility.
      */
     private void onSelectedRepositoryChange() {
-        setValid(true, "");                                                                            // NOI18N     
-        String urlString = "";                                                                         // NOI18N         
+        setValid(true, "");                                            // NOI18N     
+        String urlString = "";                                         // NOI18N         
+
         try {
             urlString = getUrlString();
         } catch (InterruptedException ex) {
             return; // should not happen
+
         }
                 
         if(urlString != null) {
@@ -394,28 +391,35 @@ public class Repository implements ActionListener, DocumentListener, FocusListen
         boolean authFields = false;
         boolean proxyFields = false;
         boolean sshFields = false;
-        if(selectedUrlString.startsWith("http:")) {                             // NOI18N
-            repositoryPanel.tipLabel.setText(HTTP_URL_HELP);
+        if (selectedUrlString.startsWith("git:")) {                   // NOI18N
+            repositoryPanel.tipLabel.setText(GIT_URL_HELP);
+            proxyFields = true;
+        } else if (selectedUrlString.startsWith("ssh")) {             // NOI18N
+            repositoryPanel.tipLabel.setText(getSVNTunnelTip(selectedUrlString));
+            sshFields = true;
+        } else if (selectedUrlString.contains("@")) {                 // NOI18N
+            // TODO -- figure out a much better way of parsing scp-style ssh
+            // URLS. 
+            repositoryPanel.tipLabel.setText(SSH_SCP_STYLE_URL_HELP);
+        } else if (selectedUrlString.startsWith("file:")) {           // NOI18N
+            repositoryPanel.tipLabel.setText(LOCAL_URL_HELP);
+        } else if (selectedUrlString.startsWith("http:")) {                             
+            repositoryPanel.tipLabel.setText(HTTP_URL_HELP);          // NOI18N
             authFields = true;
             proxyFields = true;
-        } else if(selectedUrlString.startsWith("https:")) {                     // NOI18N
+        } else if (selectedUrlString.startsWith("https:")) {          // NOI18N
             repositoryPanel.tipLabel.setText(HTTPS_URL_HELP);
             //authFields = true;
             proxyFields = true;
-        } else if(selectedUrlString.startsWith("static-http:")) {                       // NOI18N
-            repositoryPanel.tipLabel.setText(STATIC_HTTP_URL_HELP);
+        } else if (selectedUrlString.startsWith("sync:")) {           // NOI18N
+            repositoryPanel.tipLabel.setText(RSYNC_URL_HELP);
             authFields = true;
             proxyFields = true;
-        } else if(selectedUrlString.startsWith("ssh")) {                        // NOI18N
-            repositoryPanel.tipLabel.setText(getSVNTunnelTip(selectedUrlString));
-            sshFields = true;
-        } else if(selectedUrlString.startsWith("file:")) {                      // NOI18N
-            repositoryPanel.tipLabel.setText(LOCAL_URL_HELP);
         } else {
-            repositoryPanel.tipLabel.setText(NbBundle.getMessage(Repository.class, "MSG_Repository_Url_Help", new Object [] { // NOI18N
-                LOCAL_URL_HELP, HTTP_URL_HELP, HTTPS_URL_HELP, STATIC_HTTP_URL_HELP, SSH_URL_HELP
-                //LOCAL_URL_HELP, HTTP_URL_HELP, STATIC_HTTP_URL_HELP, SSH_URL_HELP
-            }));
+            repositoryPanel.tipLabel.setText(NbBundle.getMessage(Repository.class, "MSG_Repository_Url_Help", new Object[]{ // NOI18N    
+                        GIT_URL_HELP, SSH_URL_HELP, SSH_SCP_STYLE_URL_HELP, LOCAL_URL_HELP,
+                        HTTP_URL_HELP, HTTPS_URL_HELP, RSYNC_URL_HELP
+                    }));
         }
 
         //repositoryPanel.userPasswordField.setVisible(authFields);
@@ -498,7 +502,7 @@ public class Repository implements ActionListener, DocumentListener, FocusListen
             // should not happen
             ErrorManager.getDefault().notify(ex);
             return null;
-        };
+        }
         
         DefaultComboBoxModel dcbm = (DefaultComboBoxModel) repositoryPanel.urlComboBox.getModel();                
         int idx = dcbm.getIndexOf(urlString);        
@@ -683,12 +687,13 @@ public class Repository implements ActionListener, DocumentListener, FocusListen
         return (modeMask & flag) != 0;
     }
     
-    public class RepositoryModel  extends DefaultComboBoxModel {
+    public class RepositoryModel extends DefaultComboBoxModel {
 
         public RepositoryModel(Vector v) {
             super(v);
         }
 
+        @Override
         public void setSelectedItem(Object obj) {
             if(obj instanceof String) {
                 int idx = getIndexOf(obj);
@@ -701,42 +706,44 @@ public class Repository implements ActionListener, DocumentListener, FocusListen
             super.setSelectedItem(obj);
         }
 
+        @Override
         public int getIndexOf(Object obj) {
-            if(obj instanceof String) {
-                obj = createNewRepositoryConnection((String)obj);                
+            if (obj instanceof String) {
+                obj = createNewRepositoryConnection((String) obj);
             }
             return super.getIndexOf(obj);
         }
 
+        @Override
         public void addElement(Object obj) {
-            if(obj instanceof String) {
-                obj = createNewRepositoryConnection((String)obj);                
+            if (obj instanceof String) {
+                obj = createNewRepositoryConnection((String) obj);
             }
             super.addElement(obj);
         }
 
         @Override
-        public void insertElementAt(Object obj,int index) {
-            if(obj instanceof String) {
+        public void insertElementAt(Object obj, int index) {
+            if (obj instanceof String) {
                 String str = (String) obj;
                 RepositoryConnection rc = null;
                 try {
-                    rc = (RepositoryConnection) getElementAt(index);                    
+                    rc = (RepositoryConnection) getElementAt(index);
                 } catch (ArrayIndexOutOfBoundsException e) {
                 }
-                if(rc != null) {
+                if (rc != null) {
                     rc.setUrl(str);
                     obj = rc;
-                }                
+                }
                 obj = createNewRepositoryConnection(str);
-            } 
+            }
             super.insertElementAt(obj, index);
-        }         
+        }       
 
         @Override
         public void removeElement(Object obj) {
             int index = getIndexOf(obj);
-            if ( index != -1 ) {
+            if (index != -1) {
                 removeElementAt(index);
             }
         }

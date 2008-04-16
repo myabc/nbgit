@@ -85,6 +85,7 @@ public final class CloneDestinationDirectoryPanel extends JPanel implements Acti
         return message;
     }
 
+    @Override
     public boolean isValid() {
         String dir = directoryField.getText();
         String name = nameField.getText();

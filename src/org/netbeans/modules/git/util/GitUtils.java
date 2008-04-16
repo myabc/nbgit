@@ -107,7 +107,8 @@ public class GitUtils {
     
     // IGNORE SUPPORT GIT: following file patterns are added to {Git repos}/.gitignore and Git will ignore any files
     // that match these patterns, reporting "I"status for them // NOI18N
-    private static final String [] GIT_IGNORE_FILES = { "\\.orig$", "\\.orig\\..*$", "\\.chg\\..*$", "\\.rej$", "\\.conflict\\~$"}; // NOI18N
+    //private static final String [] GIT_IGNORE_FILES = { ".orig", "\\.orig\\..*$", "\\.chg\\..*$", ".rej", "\\.conflict\\~$"}; // NOI18N
+    private static final String [] GIT_IGNORE_FILES = { ".orig" };
     private static final String GIT_IGNORE_ORIG_FILES = "\\.orig$"; // NOI18N
     private static final String GIT_IGNORE_ORIG_ANY_FILES = "\\.orig\\..*$"; // NOI18N
     private static final String GIT_IGNORE_CHG_ANY_FILES = "\\.chg\\..*$"; // NOI18N

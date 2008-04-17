@@ -228,7 +228,7 @@ public class CloneAction extends ContextAction {
                     if(pullPath != null && !pullPath.equals("")) defaultPull = pullPath;
                     if(pushPath != null && !pushPath.equals("")) defaultPush = pushPath;
                     git.setProperty(GitProperties.GITPROPNAME_DEFAULT_PULL, defaultPull);
-                    git.setProperty(GitProperties.GITPROPNAME_DEFAULT_PUSH, defaultPush);
+                    //git.setProperty(GitProperties.GITPROPNAME_DEFAULT_PUSH, defaultPush);
                         
                     //#121581: Work around for ini4j bug on Windows not handling single '\' correctly
                     // git clone creates the default gitconfig, we just overwrite it's contents with 

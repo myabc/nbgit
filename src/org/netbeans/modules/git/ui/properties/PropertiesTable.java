@@ -63,7 +63,7 @@ import org.openide.util.NbBundle;
  */
 public class PropertiesTable implements AncestorListener, TableModelListener {
     
-    static public final String[] PROPERTIES_COLUMNS = new String[] {PropertiesTableModel.COLUMN_NAME_NAME, PropertiesTableModel.COLUMN_NAME_VALUE};
+    public static final String[] PROPERTIES_COLUMNS = new String[]{PropertiesTableModel.COLUMN_NAME_NAME, PropertiesTableModel.COLUMN_NAME_VALUE};
             
     private PropertiesTableModel tableModel;
     private JTable table;
@@ -81,7 +81,6 @@ public class PropertiesTable implements AncestorListener, TableModelListener {
         table = new JTable(tableModel);
         table.getTableHeader().setReorderingAllowed(false);
         table.setDefaultRenderer(String.class, new PropertiesTableCellRenderer());
-        //table.setDefaultEditor(CommitOptions.class, new CommitOptionsCellEditor());
         table.setRowHeight(table.getRowHeight());
         table.addAncestorListener(this);
         component = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -162,21 +161,19 @@ public class PropertiesTable implements AncestorListener, TableModelListener {
     public void tableChanged(TableModelEvent event) {
         table.repaint();
     }
-    
 
     public class PropertiesTableCellRenderer extends DefaultTableCellRenderer {
            
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int rowIndex, int columnIndex) {
-            Component renderer =  super.getTableCellRendererComponent(table, value, hasFocus, hasFocus, rowIndex, columnIndex);
+            Component renderer = super.getTableCellRendererComponent(table, value, hasFocus, hasFocus, rowIndex, columnIndex);
             if (renderer instanceof JComponent) {
-                String strValue = tableModel.getNode(rowIndex).getValue(); 
+                String strValue = tableModel.getNode(rowIndex).getValue();
                 ((JComponent) renderer).setToolTipText(strValue);
             }
             setToolTipText(value.toString());
             return renderer;
         }
     }
-    
     
 }

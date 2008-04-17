@@ -75,14 +75,13 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 import org.openide.util.NotImplementedException;
-import org.openide.util.Utilities;
 
 /**
  * 
  * 
  * @author alexbcoles
  */
-public class GitCommand {
+public final class GitCommand {
 
     public static final String GIT_COMMAND = "git";  // NOI18N
     public static final String GITK_COMMAND = "gitk"; 
@@ -167,7 +166,7 @@ public class GitCommand {
     private static final String GIT_ANNOTATE_FLAGU_CMD = "--user"; // NOI18N
     
     private static final String GIT_EXPORT_CMD = "export"; // NOI18N
-    private static final String GIT_IMPORT_CMD = "import"; // NOI18N
+    private static final String GIT_APPLY_CMD = "apply"; // NOI18N
 
     private static final String GIT_RENAME_CMD = "mv"; // NOI18N
     private static final String GIT_RENAME_AFTER_CMD = "-A"; // NOI18N
@@ -2370,8 +2369,6 @@ public class GitCommand {
     
     /**
      * Export the diffs for the specified revision to the specified output file
-    /**
-     * Export the diffs for the specified revision to the specified output file
      *
      * @param File repository of the Git repository's root directory
      * @param revStr the revision whose diffs are to be exported
@@ -2412,20 +2409,18 @@ public class GitCommand {
         return list;
     }
     
-    
-    
     /**
-     * Imports the diffs from the specified file
+     * Applies diffs from a specified file
      *
      * @param File repository of the Git repository's root directory
      * @param File patchFile of the patch file
      * @throws org.netbeans.modules.git.GitException
      */
-    public static List<String> doImport(File repository, File patchFile, OutputLogger logger)  throws GitException {
+    public static List<String> doApply(File repository, File patchFile, OutputLogger logger)  throws GitException {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
-        command.add(GIT_IMPORT_CMD);
+        command.add(GIT_APPLY_CMD);
         command.add(GIT_VERBOSE_CMD);
         command.add(GIT_OPT_REPOSITORY);
         command.add(repository.getAbsolutePath());
@@ -2434,10 +2429,9 @@ public class GitCommand {
         command.add(patchFile.getAbsolutePath());
 
         List<String> list = exec(command);
-        if (!list.isEmpty() &&
-             isErrorAbort(list.get(list.size() -1))) {
-            logger.output(list); // need the failure info from import
-            handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_IMPORT_FAILED"), logger);
+        if (!list.isEmpty() && isErrorAbort(list.get(list.size() - 1))) {
+            logger.output(list); // need the failure info from apply
+            handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_APPLY_FAILED"), logger);
         }
         return list;
     }

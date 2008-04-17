@@ -41,7 +41,6 @@
  */
 package org.netbeans.modules.git.ui.properties;
 
-
 import java.awt.BorderLayout;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
@@ -77,34 +76,34 @@ public class PropertiesAction extends ContextAction {
             return;
         }
         final PropertiesPanel panel = new PropertiesPanel();
-
         final PropertiesTable propTable;
 
         propTable = new PropertiesTable(panel.labelForTable, PropertiesTable.PROPERTIES_COLUMNS);
-
         panel.setPropertiesTable(propTable);
 
         JComponent component = propTable.getComponent();
 
         panel.propsPanel.setLayout(new BorderLayout());
-
         panel.propsPanel.add(component, BorderLayout.CENTER);
 
         GitProperties gitProperties = new GitProperties(panel, propTable, root);        
 
         DialogDescriptor dd = new DialogDescriptor(panel, org.openide.util.NbBundle.getMessage(PropertiesAction.class, "CTL_PropertiesDialog_Title", null), true, null); // NOI18N
+        
         JButton okButton =  new JButton();
         org.openide.awt.Mnemonics.setLocalizedText(okButton, org.openide.util.NbBundle.getMessage(PropertiesAction.class, "CTL_Properties_Action_OK"));
         okButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(PropertiesAction.class, "ACSN_Properties_Action_OK")); // NOI18N
         okButton.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(PropertiesAction.class, "ACSD_Properties_Action_OK")); 
+        
         JButton cancelButton =  new JButton();
         org.openide.awt.Mnemonics.setLocalizedText(cancelButton, org.openide.util.NbBundle.getMessage(PropertiesAction.class, "CTL_Properties_Action_Cancel"));
         cancelButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(PropertiesAction.class, "ACSN_Properties_Action_Cancel")); // NOI18N
         cancelButton.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(PropertiesAction.class, "ACSD_Properties_Action_Cancel")); 
-        dd.setOptions(new Object[] {okButton, cancelButton});
+        dd.setOptions(new Object[]{okButton, cancelButton});
         dd.setHelpCtx(new HelpCtx(PropertiesAction.class));
         panel.putClientProperty("contentTitle", null);  // NOI18N
         panel.putClientProperty("DialogDescriptor", dd); // NOI18N
+        
         Dialog dialog = DialogDisplayer.getDefault().createDialog(dd);
         dialog.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(PropertiesAction.class, "ACSD_Properties_Dialog")); // NOI18N
         dialog.pack();

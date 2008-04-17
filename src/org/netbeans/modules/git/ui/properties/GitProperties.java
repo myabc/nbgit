@@ -59,11 +59,11 @@ import org.openide.util.RequestProcessor;
  * @author Padraig O'Briain
  */
 public class GitProperties implements ListSelectionListener {
-     
-    public static final String GITPROPNAME_USERNAME = "username"; // NOI18N
+    
+    public static final String GITPROPNAME_USER_EMAIL = "email"; // NOI18N
+    public static final String GITPROPNAME_USER_NAME =  "name"; // NOI18N
     public static final String GITPROPNAME_DEFAULT_PULL = "default-pull"; // NOI18N
-    public static final String GITPROPNAME_DEFAULT_PUSH = "default-push"; // NOI18N
-
+    
     private PropertiesPanel panel;
     private File root;
     private PropertiesTable propTable;
@@ -133,7 +133,9 @@ public class GitProperties implements ListSelectionListener {
             support = new GitProgressSupport() {
                 protected void perform() {
                     GitModuleConfig.getDefault().clearProperties(root, "paths"); // NOI18N
-                    GitModuleConfig.getDefault().removeProperty(root, "ui", GITPROPNAME_USERNAME); // NOI18N
+                    GitModuleConfig.getDefault().removeProperty(root, "user", GITPROPNAME_USER_EMAIL); // NOI18N
+                    GitModuleConfig.getDefault().removeProperty(root, "user", GITPROPNAME_USER_NAME); // NOI18N
+
                     GitPropertiesNode[] gitPropertiesNodes = propTable.getNodes();
                     for (int i = 0; i < gitPropertiesNodes.length; i++) {
                         String gitPropertyName = gitPropertiesNodes[i].getName();
@@ -153,7 +155,6 @@ public class GitProperties implements ListSelectionListener {
     }
 
     private int lastIndex = -1;
-    
     
     public void updateLastSelection () {
         GitPropertiesNode[] gitPropertiesNodes = propTable.getNodes();

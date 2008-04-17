@@ -63,7 +63,7 @@ import org.netbeans.modules.git.ui.commit.CommitAction;
 import org.netbeans.modules.git.ui.create.CreateAction;
 import org.netbeans.modules.git.ui.diff.DiffAction;
 import org.netbeans.modules.git.ui.diff.ExportDiffAction;
-import org.netbeans.modules.git.ui.diff.ImportDiffAction;
+import org.netbeans.modules.git.ui.diff.ApplyDiffAction;
 import org.netbeans.modules.git.ui.ignore.IgnoreAction;
 import org.netbeans.modules.git.ui.log.IncomingAction;
 import org.netbeans.modules.git.ui.log.LogAction;
@@ -361,7 +361,7 @@ public class GitAnnotator extends VCSAnnotator {
             actions.add(new CommitAction(loc.getString("CTL_PopupMenuItem_Commit"), ctx)); // NOI18N
             actions.add(null);
             actions.add(new ExportDiffAction(loc.getString("CTL_PopupMenuItem_ExportDiff"), ctx)); // NOI18N
-            actions.add(new ImportDiffAction(loc.getString("CTL_PopupMenuItem_ImportDiff"), ctx)); // NOI18N
+            actions.add(new ApplyDiffAction(loc.getString("CTL_PopupMenuItem_ImportDiff"), ctx)); // NOI18N
 
             actions.add(null);
             if (root != null) {

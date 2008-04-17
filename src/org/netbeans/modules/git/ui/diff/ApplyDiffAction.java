@@ -68,11 +68,11 @@ import org.openide.util.RequestProcessor;
  * 
  * @author Padraig O'Briain
  */
-public class ImportDiffAction extends ContextAction {
+public class ApplyDiffAction extends ContextAction {
     
     private final VCSContext context;
 
-    public ImportDiffAction(String name, VCSContext context) {
+    public ApplyDiffAction(String name, VCSContext context) {
         this.context = context;
         putValue(Action.NAME, name);
     }
@@ -88,8 +88,8 @@ public class ImportDiffAction extends ContextAction {
 
     private static void importDiff(VCSContext ctx) {
         final File root = GitUtils.getRootFile(ctx);
-        JFileChooser fileChooser = new AccessibleJFileChooser(NbBundle.getMessage(ImportDiffAction.class, "ACSD_ImportBrowseFolder"), null);   // NO I18N
-        fileChooser.setDialogTitle(NbBundle.getMessage(ImportDiffAction.class, "ImportBrowse_title"));                                            // NO I18N
+        JFileChooser fileChooser = new AccessibleJFileChooser(NbBundle.getMessage(ApplyDiffAction.class, "ACSD_ImportBrowseFolder"), null);   // NO I18N
+        fileChooser.setDialogTitle(NbBundle.getMessage(ApplyDiffAction.class, "ImportBrowse_title"));                                            // NO I18N
         fileChooser.setMultiSelectionEnabled(false);
         FileFilter[] old = fileChooser.getChoosableFileFilters();
         for (int i = 0; i < old.length; i++) {
@@ -99,7 +99,7 @@ public class ImportDiffAction extends ContextAction {
         }
        fileChooser.setCurrentDirectory(new File(GitModuleConfig.getDefault().getImportFolder()));
 
-        if (fileChooser.showDialog(null, NbBundle.getMessage(ImportDiffAction.class, "OK_Button")) == JFileChooser.APPROVE_OPTION) { // NO I18N
+        if (fileChooser.showDialog(null, NbBundle.getMessage(ApplyDiffAction.class, "OK_Button")) == JFileChooser.APPROVE_OPTION) { // NO I18N
             final File patchFile = fileChooser.getSelectedFile();
 
             GitModuleConfig.getDefault().setImportFolder(patchFile.getParent());
@@ -111,7 +111,7 @@ public class ImportDiffAction extends ContextAction {
                         performImport(root, patchFile, logger);
                     }
                 };
-                support.start(rp, root.getAbsolutePath(), org.openide.util.NbBundle.getMessage(ImportDiffAction.class, "LBL_ImportDiff_Progress")); // NOI18N
+                support.start(rp, root.getAbsolutePath(), org.openide.util.NbBundle.getMessage(ApplyDiffAction.class, "LBL_ImportDiff_Progress")); // NOI18N
             }
         }
     }
@@ -119,10 +119,10 @@ public class ImportDiffAction extends ContextAction {
     private static void performImport(File repository, File patchFile, OutputLogger logger) {
     try {
         logger.outputInRed(
-                NbBundle.getMessage(ImportDiffAction.class,
+                NbBundle.getMessage(ApplyDiffAction.class,
                 "MSG_IMPORT_TITLE")); // NOI18N
         logger.outputInRed(
-                NbBundle.getMessage(ImportDiffAction.class,
+                NbBundle.getMessage(ApplyDiffAction.class,
                 "MSG_IMPORT_TITLE_SEP")); // NOI18N
 
         List<String> list = GitCommand.doImport(repository, patchFile, logger);
@@ -133,7 +133,7 @@ public class ImportDiffAction extends ContextAction {
             NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
             DialogDisplayer.getDefault().notifyLater(e);
         } finally {
-            logger.outputInRed(NbBundle.getMessage(ImportDiffAction.class, "MSG_IMPORT_DONE")); // NOI18N
+            logger.outputInRed(NbBundle.getMessage(ApplyDiffAction.class, "MSG_IMPORT_DONE")); // NOI18N
             logger.output(""); // NOI18N
         }
     }

@@ -61,14 +61,8 @@ import org.openide.util.RequestProcessor;
 
 /**
  * Fetch action for Git: 
- * git fetch - launch git show (?? -- TODO verify this) to view the dependency tree for the repository
- * Pull changes from a remote repository, merge new changes if needed.
- * This finds all changes from the repository at the specified path
- * or URL and adds them to the local repository.
- * 
- * If the pulled changes add a new head, the head is automatically
- * merged, and the result of the merge is committed.  Otherwise, the
- * working directory is updated.
+ * git fetch - fetch changes from a specified repository, then execute the
+ * show command to view the dependency tree for the repository.
  * 
  * @author John Rice
  */
@@ -115,6 +109,7 @@ public class FetchAction extends ContextAction {
         }
     }
 
+    @Override
     public boolean isEnabled() {
         return GitUtils.getRootFile(context) != null;
     } 

@@ -69,7 +69,7 @@ import org.openide.util.RequestProcessor;
 
 /**
  * Push action for Git: 
- * git push - push changes to the specified destination
+ * git push - push changes to the default destination
  * 
  * @author John Rice
  */

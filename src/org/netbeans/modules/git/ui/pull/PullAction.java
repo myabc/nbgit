@@ -76,7 +76,8 @@ import org.openide.windows.OutputWriter;
 
 /**
  * Pull action for Git:
- * git pull - pull changes from the specified source
+ * git pull - fetch from, and merge changes with the specified repository and
+ * branch.
  *
  * @author John Rice
  */
@@ -84,10 +85,7 @@ public class PullAction extends ContextAction {
     private static final String CHANGESET_FILES_PREFIX = "files:"; //NOI18N
     
     public enum PullType {
-
         LOCAL, OTHER
-    }
-    {
     }
 
     private final VCSContext context;
@@ -96,7 +94,7 @@ public class PullAction extends ContextAction {
         this.context = context;
         putValue(Action.NAME, name);
     }
-
+    
     public void performAction(ActionEvent e) {
         final File root = GitUtils.getRootFile(context);
         if (root == null) {

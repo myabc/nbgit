@@ -64,15 +64,17 @@ final class CloneCompletedPanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.GridBagLayout());
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, "null");
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(CloneCompletedPanel.class, "BK3001")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(0, 3, 3, 0);
         add(jLabel1, gridBagConstraints);
+        jLabel1.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(CloneCompletedPanel.class, "BK3001")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(againCheckBox, "null");
+        againCheckBox.setLabel(org.openide.util.NbBundle.getMessage(CloneCompletedPanel.class, "BK3002")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -86,6 +88,8 @@ final class CloneCompletedPanel extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(openButton, "null");
         openButton.setToolTipText("null");
+        openButton.setActionCommand(org.openide.util.NbBundle.getMessage(CloneCompletedPanel.class, "BK3003")); // NOI18N
+        openButton.setLabel(org.openide.util.NbBundle.getMessage(CloneCompletedPanel.class, "BK3003")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.weightx = 1.0;
@@ -94,12 +98,14 @@ final class CloneCompletedPanel extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(createButton, "null");
         createButton.setToolTipText("null");
+        createButton.setLabel(org.openide.util.NbBundle.getMessage(CloneCompletedPanel.class, "BK3004")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 3);
         add(createButton, gridBagConstraints);
 
         org.openide.awt.Mnemonics.setLocalizedText(closeButton, "null");
         closeButton.setToolTipText("null");
+        closeButton.setLabel(org.openide.util.NbBundle.getMessage(CloneCompletedPanel.class, "BK3005")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);

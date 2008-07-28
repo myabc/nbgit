@@ -48,9 +48,10 @@ import org.netbeans.modules.git.ui.wizards.CloneWizardAction;
 import org.netbeans.modules.versioning.spi.VCSContext;
 
 /**
- * Clone action for Git: 
- * Clone an external repository. This invokes a wizard to determine the
- * location of the repository and the target location of the repository.
+ * Clone External action for Git
+ * 
+ * Cloning an external repository invokes a wizard to determine the location of
+ * the repository, and to set parameters such as the target location.
  * 
  * @author Padraig O'Briain
  */

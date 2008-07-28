@@ -61,7 +61,7 @@ import org.openide.util.RequestProcessor;
 
 /**
  * Pull Other action for Git: 
- * git pull - pull changes from the specified source
+ * git pull - fetch from, and merge changes from an other repository or branch.
  * 
  * @author John Rice
  */

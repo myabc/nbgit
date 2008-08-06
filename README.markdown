@@ -4,16 +4,16 @@ NetBeans Git Module README
 A NetBeans Module to provide first-class support for the Git version control
 system in the NetBeans IDE.
 
-This module targets NetBeans 6.1 Beta.
+This module currently targets NetBeans 6.1 and above.
 
 The code is ported directly from the Mercurial Module (included as part of the 
-NetBeans core distribution, as of NetBeans 6.1 Beta).
+NetBeans core distribution, as of NetBeans 6.1).
 
 Warning
 -------
 
 **PLEASE READ BEFORE DOWNLOADING**
-As of 15 April 2008, this Module is under **heavy development** and is not yet
+As of 7 August 2008, this Module is under **heavy development** and is not yet
 suitable for end-users who want Git functionality within NetBeans. If you've
 got NetBeans and Java experience, please feel clone, download, and experiment.
 *If you're looking for a working NetBeans module, this project is not there yet!
@@ -33,6 +33,11 @@ The following additional mirrors are available:
     git://repo.or.cz/nbgit.git
     http://repo.or.cz/r/nbgit.git
 
+Build Instructions
+------------------
+
+Please see here: <http://github.com/myabc/nbgit/wikis/buildinstructions>
+
 Licensing and Copyright
 -----------------------
 
@@ -45,9 +50,7 @@ Support
 This Module is under heavy development. No official support is currently 
 provided.
 
-* **NetBeans Git mailing list**:
-   <http://groups.google.com/group/nbgit>
-* **NetBeans Git homepage**: _coming soon_
-* Contact the developers directly:
+ * **NetBeans Git mailing list**: <http://groups.google.com/group/nbgit>
+ * **NetBeans Git homepage**: <http://trac.ikonoklastik.com/nbgit/>
+ * Contact the developers directly:
    - <alex@alexcolesportfolio.com> | myabc on #datamapper, #merb IRC
- 

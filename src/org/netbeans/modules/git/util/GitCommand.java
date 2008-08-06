@@ -77,21 +77,22 @@ import org.openide.util.NbBundle;
 import org.openide.util.NotImplementedException;
 
 /**
- * 
- * 
+ *
+ *
  * @author alexbcoles
  */
 public final class GitCommand {
 
     public static final String GIT_COMMAND = "git";  // NOI18N
-    public static final String GITK_COMMAND = "gitk"; 
-    
-    private static final String GIT_STATUS_CMD = "status";  // NOI18N // need -A to see ignored files, specified in .gitignore, see man gitignore for details
-    private static final String GIT_OPT_REPOSITORY = "--repository"; // NOI18N
-    private static final String GIT_OPT_BUNDLE = "--bundle"; // NOI18N
-    private static final String GIT_OPT_CWD_CMD = "--cwd"; // NOI18N
-    private static final String GIT_OPT_USERNAME = "--user"; // NOI18N
-    
+    public static final String GITK_COMMAND = "gitk"; // NOI18N
+    public static final String GIT_GUI_COMMAND = "git-gui"; // NOI8N
+
+    private static final String GIT_STATUS_CMD = "status";  // NOI18N
+
+    private static final String GIT_OPT_GIT_DIR = "--git-dir"; // NOI18N
+    private static final String GIT_OPT_AUTHOR = "--author"; // NOI18N
+    private static final String GIT_OPT_NO_PAGER = "--no-pager"; // NOI18N
+
     private static final String GIT_OPT_FOLLOW = "--follow"; // NOI18N
     private static final String GIT_STATUS_FLAG_ALL_CMD = "-marduicC"; // NOI18N
     private static final String GIT_FLAG_REV_CMD = "--rev"; // NOI18N
@@ -104,33 +105,33 @@ public final class GitCommand {
     private static final String GIT_STATUS_FLAG_UNKNOWN_CMD = "-u"; // NOI18N
     private static final String GIT_HEAD_STR = "HEAD"; // NOI18N
     private static final String GIT_FLAG_DATE_CMD = "--date"; // NOI18N
-    
+
     private static final String GIT_COMMIT_CMD = "commit"; // NOI18N
     private static final String GIT_COMMIT_OPT_LOGFILE_CMD = "--logfile"; // NOI18N
     private static final String GIT_COMMIT_TEMPNAME = "gitcommit"; // NOI18N
     private static final String GIT_COMMIT_TEMPNAME_SUFFIX = ".gitm"; // NOI18N
     private static final String GIT_COMMIT_DEFAULT_MESSAGE = "[no commit message]"; // NOI18N
-    
+
     private static final String GIT_REVERT_CMD = "revert"; // NOI18N
     private static final String GIT_REVERT_NOBACKUP_CMD = "--no-backup"; // NOI18N
     private static final String GIT_ADD_CMD = "add"; // NOI18N
-    
+
     private static final String GIT_BRANCH_CMD = "branch"; // NOI18N
     private static final String GIT_BRANCH_REV_CMD = "tip"; // NOI18N
     private static final String GIT_BRANCH_REV_TEMPLATE_CMD = "--template={rev}\\n"; // NOI18N
     private static final String GIT_BRANCH_SHORT_CS_TEMPLATE_CMD = "--template={node|short}\\n"; // NOI18N
     private static final String GIT_BRANCH_INFO_TEMPLATE_CMD = "--template={branches}:{rev}:{node|short}\\n"; // NOI18N
     private static final String GIT_GET_PREVIOUS_TEMPLATE_CMD = "--template={files}\\n"; // NOI18N
-    
+
     private static final String GIT_CREATE_CMD = "init"; // NOI18N
     private static final String GIT_CLONE_CMD = "clone"; // NOI18N
-    
+
     private static final String GIT_UPDATE_ALL_CMD = "update"; // NOI18N
     private static final String GIT_UPDATE_FORCE_ALL_CMD = "-C"; // NOI18N
-    
+
     private static final String GIT_REMOVE_CMD = "rm"; // NOI18N
     private static final String GIT_REMOVE_FLAG_FORCE_CMD = "-f"; // NOI18N
-    
+
     private static final String GIT_LOG_CMD = "log"; // NOI18N
     private static final String GIT_OUT_CMD = "out"; // NOI18N
     private static final String GIT_LOG_LIMIT_ONE_CMD = "-l 1"; // NOI18N
@@ -140,7 +141,7 @@ public final class GitCommand {
 
     private static final String GIT_LOG_NO_MERGES_CMD = "-M";
     private static final String GIT_LOG_DEBUG_CMD = "--debug";
-    private static final String GIT_LOG_TEMPLATE_HISTORY_CMD = 
+    private static final String GIT_LOG_TEMPLATE_HISTORY_CMD =
             "--template=rev:{rev}\\nauth:{author}\\ndesc:{desc}\\ndate:{date|gitdate}\\nid:{node|short}\\n" + // NOI18N
             "file_mods:{files}\\nfile_adds:{file_adds}\\nfile_dels:{file_dels}\\nfile_copies:\\nendCS:\\n"; // NOI18N
     private static final String GIT_LOG_REVISION_OUT = "rev:"; // NOI18N
@@ -157,14 +158,14 @@ public final class GitCommand {
     private static final String GIT_CSET_TEMPLATE_CMD = "--template={rev}:{node|short}\\n"; // NOI18N
     private static final String GIT_REV_TEMPLATE_CMD = "--template={rev}\\n"; // NOI18N
     private static final String GIT_CSET_TARGET_TEMPLATE_CMD = "--template={rev} ({node|short})\\n"; // NOI18N
-    
+
     private static final String GIT_CAT_CMD = "cat"; // NOI18N
     private static final String GIT_FLAG_OUTPUT_CMD = "--output"; // NOI18N
-    
+
     private static final String GIT_ANNOTATE_CMD = "annotate"; // NOI18N
     private static final String GIT_ANNOTATE_FLAGN_CMD = "--number"; // NOI18N
     private static final String GIT_ANNOTATE_FLAGU_CMD = "--user"; // NOI18N
-    
+
     private static final String GIT_EXPORT_CMD = "export"; // NOI18N
     private static final String GIT_APPLY_CMD = "apply"; // NOI18N
 
@@ -173,25 +174,25 @@ public final class GitCommand {
     private static final String GIT_PATH_DEFAULT_CMD = "paths"; // NOI18N
     private static final String GIT_PATH_DEFAULT_OPT = "default"; // NOI18N
     private static final String GIT_PATH_DEFAULT_PUSH_OPT = "default-push"; // NOI18N
- 
+
     private static final String GIT_MERGE_CMD = "merge"; // NOI18N
     private static final String GIT_MERGE_FORCE_CMD = "-f"; // NOI18N
     private static final String GIT_MERGE_ENV = "EDITOR=success || $TEST -s"; // NOI18N
 
     public static final String GIT_GITK_PATH_SOLARIS10 = "/usr/demo/gitk"; // NOI18N
     private static final String GIT_GITK_PATH_SOLARIS10_ENV = "PATH=/usr/bin/:/usr/sbin:/bin:"+ GIT_GITK_PATH_SOLARIS10; // NOI18N
-    
+
     private static final String GIT_PULL_CMD = "pull"; // NOI18N
     private static final String GIT_UPDATE_CMD = "-u"; // NOI18N
     private static final String GIT_PUSH_CMD = "push"; // NOI18N
     private static final String GIT_UNBUNDLE_CMD = "unbundle"; // NOI18N
     private static final String GIT_ROLLBACK_CMD = "rollback"; // NOI18N
-    
+
     private static final String GIT_BACKOUT_CMD = "backout"; // NOI18N
     private static final String GIT_BACKOUT_MERGE_CMD = "--merge"; // NOI18N
     private static final String GIT_BACKOUT_COMMIT_MSG_CMD = "-m"; // NOI18N
     private static final String GIT_BACKOUT_REV_CMD = "-r"; // NOI18N
- 
+
     private static final String GIT_STRIP_CMD = "strip"; // NOI18N
     private static final String GIT_STRIP_EXT_CMD = "extensions.mq="; // NOI18N
     private static final String GIT_STRIP_NOBACKUP_CMD = "-n"; // NOI18N
@@ -206,7 +207,7 @@ public final class GitCommand {
     private static final String GIT_FETCH_EXT_CMD = "extensions.fetch="; // NOI18N
     private static final String GIT_FETCH_CMD = "fetch"; // NOI18N
     public static final String GIT_PROXY_ENV = "http_proxy="; // NOI18N
-    
+
     private static final String GIT_MERGE_NEEDED_ERR = "(run 'git heads' to see heads, 'git merge' to merge)"; // NOI18N
     public static final String GIT_MERGE_CONFLICT_ERR = "conflicts detected in "; // NOI18N
     public static final String GIT_MERGE_CONFLICT_WIN1_ERR = "merging"; // NOI18N
@@ -221,9 +222,9 @@ public final class GitCommand {
     private final static String GIT_HEADS_CREATED_ERR = "(+1 heads)"; // NOI18N
     private final static String GIT_NO_GIT_CMD_FOUND_ERR = "git: not found";
     private final static String GIT_ARG_LIST_TOO_LONG_ERR = "Arg list too long";
-            
+
     private final static String GIT_HEADS_CMD = "heads"; // NOI18N
-    
+
     private static final String GIT_NO_REPOSITORY_ERR = "There is no Git repository here"; // NOI18N
     private static final String GIT_NO_RESPONSE_ERR = "no suitable response from remote git!"; // NOI18N
     private static final String GIT_NOT_REPOSITORY_ERR = "does not appear to be an git repository"; // NOI18N
@@ -241,9 +242,9 @@ public final class GitCommand {
     private static final String GIT_ABORT_NO_DEFAULT_ERR = "abort: repository default not found!"; // NOI18N
     private static final String GIT_ABORT_POSSIBLE_PROXY_ERR = "abort: error: node name or service name not known"; // NOI18N
     private static final String GIT_ABORT_UNCOMMITTED_CHANGES_ERR = "abort: outstanding uncommitted changes"; // NOI18N
-    private static final String GIT_BACKOUT_MERGE_NEEDED_ERR = "(use \"backout --merge\" if you want to auto-merge)";    
+    private static final String GIT_BACKOUT_MERGE_NEEDED_ERR = "(use \"backout --merge\" if you want to auto-merge)";
     private static final String GIT_ABORT_BACKOUT_MERGE_CSET_ERR = "abort: cannot back out a merge changeset without --parent"; // NOI18N"
-    
+
     private static final String GIT_NO_CHANGE_NEEDED_ERR = "no change needed"; // NOI18N
     private static final String GIT_NO_ROLLBACK_ERR = "no rollback information available"; // NOI18N
     private static final String GIT_NO_UPDATES_ERR = "0 files updated, 0 files merged, 0 files removed, 0 files unresolved"; // NOI18N
@@ -263,7 +264,7 @@ public final class GitCommand {
     private static final char GIT_STATUS_CODE_NOTTRACKED = '?' + ' '; // NOI18N // STATUS_NOTVERSIONED_NEWLOCALLY - not tracked
     private static final char GIT_STATUS_CODE_IGNORED = 'I' + ' ';     // NOI18N // STATUS_NOTVERSIONED_EXCLUDE - not shown by default
     private static final char GIT_STATUS_CODE_CONFLICT = 'X' + ' ';    // NOI18N // STATUS_VERSIONED_CONFLICT - TODO when Git status supports conflict markers
-    
+
     private static final char GIT_STATUS_CODE_ABORT = 'a' + 'b';    // NOI18N
     public static final String GIT_STR_CONFLICT_EXT = ".conflict~"; // NOI18N
 
@@ -289,18 +290,20 @@ public final class GitCommand {
         List<String> env = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
+
         command.add(GIT_MERGE_CMD);
         command.add(GIT_MERGE_FORCE_CMD);
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
+
         if(revStr != null)
              command.add(revStr);
         env.add(GIT_MERGE_ENV);
-        
+
         List<String> list = execEnv(command, env);
         return list;
     }
-    
+
     /**
      * Update the working directory to the tip revision.
      * By default, update will refuse to run if doing so would require
@@ -318,10 +321,11 @@ public final class GitCommand {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
         command.add(GIT_UPDATE_ALL_CMD);
         if (bForce) command.add(GIT_UPDATE_FORCE_ALL_CMD);
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
+
         if (revision != null){
             command.add(revision);
         }
@@ -338,14 +342,14 @@ public final class GitCommand {
         }
         return list;
     }
-    
+
     public static List<String> doUpdateAll(File repository, boolean bForce, String revision) throws GitException {
         return doUpdateAll(repository, bForce, revision, true);
     }
-    
+
     /**
      * Roll back the last transaction in this repository.
-     * 
+     *
      * Transactions are used to encapsulate the effects of all commands
      * that create new changesets or propagate existing changesets into a
      * repository. For example, the following commands are transactional,
@@ -363,23 +367,26 @@ public final class GitCommand {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
-        command.add(GIT_ROLLBACK_CMD);
-        command.add(GIT_OPT_REPOSITORY);
+        command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
+        command.add(GIT_ROLLBACK_CMD);
 
         List<String> list = exec(command);
         if (list.isEmpty())
             handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_ROLLBACK_FAILED"), logger);
-        
+
         return list;
     }
-    public static List<String> doBackout(File repository, String revision, 
+    public static List<String> doBackout(File repository, String revision,
             boolean doMerge, String commitMsg, OutputLogger logger) throws GitException {
         if (repository == null ) return null;
         List<String> env = new ArrayList<String>();
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
+
         command.add(GIT_BACKOUT_CMD);
         if(doMerge){
             command.add(GIT_BACKOUT_MERGE_CMD);
@@ -391,34 +398,35 @@ public final class GitCommand {
             command.add(commitMsg);
         } else {
             command.add(GIT_BACKOUT_COMMIT_MSG_CMD);
-            command.add(NbBundle.getMessage(GitCommand.class, "MSG_BACKOUT_MERGE_COMMIT_MSG", revision));  // NOI18N          
+            command.add(NbBundle.getMessage(GitCommand.class, "MSG_BACKOUT_MERGE_COMMIT_MSG", revision));  // NOI18N
         }
 
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
         if (revision != null){
-            command.add(GIT_BACKOUT_REV_CMD);            
+            command.add(GIT_BACKOUT_REV_CMD);
             command.add(revision);
         }
-        
+
         List<String> list;
         if(doMerge){
             list = execEnv(command, env);
         }else{
-            list = exec(command);            
+            list = exec(command);
         }
         if (list.isEmpty())
             handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_BACKOUT_FAILED"), logger);
-        
+
         return list;
     }
-    
-    public static List<String> doStrip(File repository, String revision, 
+
+    public static List<String> doStrip(File repository, String revision,
             boolean doForceMultiHead, boolean doBackup, OutputLogger logger) throws GitException {
         if (repository == null ) return null;
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
+
         command.add(GIT_CONFIG_OPTION_CMD);
         command.add(GIT_STRIP_EXT_CMD);
         command.add(GIT_STRIP_CMD);
@@ -428,8 +436,6 @@ public final class GitCommand {
         if(!doBackup){
             command.add(GIT_STRIP_NOBACKUP_CMD);
         }
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
         if (revision != null){
             command.add(revision);
         }
@@ -437,13 +443,13 @@ public final class GitCommand {
         List<String> list = exec(command);
         if (list.isEmpty())
             handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_STRIP_FAILED"), logger);
-        
+
         return list;
     }
 
     /**
      * Returns the version of Git, e.g. 1.5.3.7.
-     * 
+     *
      * @return String
      */
     public static String getGitVersion() {
@@ -460,10 +466,10 @@ public final class GitCommand {
         }
         return null;
     }
-    
+
     /**
      * Return a list of all installed Git commands.
-     * 
+     *
      * @return
      * @throws org.netbeans.modules.git.GitException
      */
@@ -473,24 +479,24 @@ public final class GitCommand {
         command.add(getGitCommand());
         command.add(GIT_HELP_CMD);
         command.add(GIT_ALL_FLAG_HELP_CMD);
-        
+
         List<String> list = exec(command);
-        
+
         return list;
     }
-    
+
     public static List<String> doFsck(File repository, OutputLogger logger) throws GitException {
         throw new NotImplementedException("not implemented");
     }
- 
+
     public static List<String> goGc(File repository, OutputLogger logger) throws GitException {
         throw new NotImplementedException("not implemented");
     }
-    
+
     public static List<String> doPrune(File repository, OutputLogger logger) throws GitException {
-        throw new NotImplementedException("not implemented");        
+        throw new NotImplementedException("not implemented");
     }
-    
+
     /**
      * Pull changes from the default pull location and update working directory.
      * By default, update will refuse to run if doing so would require
@@ -503,7 +509,7 @@ public final class GitCommand {
     public static List<String> doPull(File repository, OutputLogger logger) throws GitException {
         return doPull(repository, null, logger);
     }
-    
+
     /**
      * Pull changes from the specified repository and update working directory.
      * By default, update will refuse to run if doing so would require
@@ -519,10 +525,12 @@ public final class GitCommand {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
+
         command.add(GIT_PULL_CMD);
         command.add(GIT_UPDATE_CMD);
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
+
         if (from != null) {
             command.add(from);
         }
@@ -531,20 +539,20 @@ public final class GitCommand {
         String defaultPull = new GitConfigFiles(repository).getDefaultPull(false);
         String proxy = getGlobalProxyIfNeeded(defaultPull, true, logger);
         if(proxy != null){
-            List<String> env = new ArrayList<String>(); 
+            List<String> env = new ArrayList<String>();
             env.add(GIT_PROXY_ENV + proxy);
             list = execEnv(command, env);
         }else{
             list = exec(command);
         }
 
-        if (!list.isEmpty() && 
+        if (!list.isEmpty() &&
              isErrorAbort(list.get(list.size() -1))) {
             handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_COMMAND_ABORTED"), logger);
         }
         return list;
     }
-    
+
    /**
      * Unbundle changes from the specified local source repository and
      * update working directory.
@@ -561,22 +569,22 @@ public final class GitCommand {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
         command.add(GIT_UNBUNDLE_CMD);
         command.add(GIT_UPDATE_CMD);
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
         if (bundle != null) {
             command.add(bundle.getAbsolutePath());
         }
 
         List<String> list = exec(command);
-        if (!list.isEmpty() && 
+        if (!list.isEmpty() &&
              isErrorAbort(list.get(list.size() -1))) {
             handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_COMMAND_ABORTED"), logger);
         }
         return list;
     }
- 
+
     /**
      * Show the changesets that would be pulled if a pull
      * was requested from the default pull location
@@ -604,14 +612,13 @@ public final class GitCommand {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
+
         command.add(GIT_INCOMING_CMD);
         command.add(GIT_VERBOSE_CMD);
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
-        if (bundle != null) {
-            command.add(GIT_OPT_BUNDLE);
-            command.add(bundle.getAbsolutePath());
-        }
+
+
         if (from != null) {
             command.add(from);
         }
@@ -620,20 +627,20 @@ public final class GitCommand {
         String defaultPull = new GitConfigFiles(repository).getDefaultPull(false);
         String proxy = getGlobalProxyIfNeeded(defaultPull, false, null);
         if(proxy != null){
-            List<String> env = new ArrayList<String>(); 
+            List<String> env = new ArrayList<String>();
             env.add(GIT_PROXY_ENV + proxy);
             list = execEnv(command, env);
         }else{
             list = exec(command);
         }
 
-        if (!list.isEmpty() && 
+        if (!list.isEmpty() &&
              isErrorAbort(list.get(list.size() -1))) {
             handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_COMMAND_ABORTED"), logger);
         }
         return list;
     }
-    
+
     /**
      * Show the changesets that would be pushed if a push
      * was requested to the specified local source repository
@@ -648,23 +655,25 @@ public final class GitCommand {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
+
         command.add(GIT_OUTGOING_CMD);
         command.add(GIT_VERBOSE_CMD);
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
+
         command.add(to);
 
         List<String> list;
         String defaultPush = new GitConfigFiles(repository).getDefaultPush(false);
         String proxy = getGlobalProxyIfNeeded(defaultPush, false, null);
         if(proxy != null){
-            List<String> env = new ArrayList<String>(); 
+            List<String> env = new ArrayList<String>();
             env.add(GIT_PROXY_ENV + proxy);
             list = execEnv(command, env);
         }else{
             list = exec(command);
         }
-        if (!list.isEmpty() && 
+        if (!list.isEmpty() &&
              isErrorAbort(list.get(list.size() -1))) {
             handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_COMMAND_ABORTED"), logger);
         }
@@ -685,16 +694,16 @@ public final class GitCommand {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
-        command.add(GIT_PUSH_CMD);
-        command.add(GIT_OPT_REPOSITORY);
+        command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
+        command.add(GIT_PUSH_CMD);
         command.add(to);
 
         List<String> list;
         String defaultPush = new GitConfigFiles(repository).getDefaultPush(false);
         String proxy = getGlobalProxyIfNeeded(defaultPush, true, logger);
         if(proxy != null){
-            List<String> env = new ArrayList<String>(); 
+            List<String> env = new ArrayList<String>();
             env.add(GIT_PROXY_ENV + proxy);
             list = execEnv(command, env);
         }else{
@@ -702,7 +711,7 @@ public final class GitCommand {
         }
 
 
-        if (!list.isEmpty() && 
+        if (!list.isEmpty() &&
             !isErrorAbortPush(list.get(list.size() -1)) &&
             isErrorAbort(list.get(list.size() -1))) {
             handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_COMMAND_ABORTED"), logger);
@@ -722,10 +731,10 @@ public final class GitCommand {
         List<String> env = new ArrayList<String>();
 
         command.add(getGitCommand());
-        command.add(GIT_VIEW_CMD);
-        command.add(GIT_OPT_REPOSITORY);
+        command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
-        
+        command.add(GIT_VIEW_CMD);
+
         List<String> list;
 
         if(GitUtils.isSolaris()){
@@ -744,17 +753,17 @@ public final class GitCommand {
             } else if (isErrorAbort(list.get(list.size() -1))) {
                 handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_COMMAND_ABORTED"), logger);
             }
-        } 
+        }
         return list;
     }
 
     static File getRootFile(VCSContext ctx) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
-    
+
     private static String getGlobalProxyIfNeeded(String defaultPath, boolean bOutputDetails, OutputLogger logger){
         String proxy = null;
-        if(defaultPath != null && 
+        if(defaultPath != null &&
                 (defaultPath.startsWith("http:") || defaultPath.startsWith("https:"))){ // NOI18N
             GitProxySettings ps = new GitProxySettings();
             if (ps.isManualSetProxy()) {
@@ -765,7 +774,7 @@ public final class GitCommand {
                         proxy += ps.getHttpPort() > -1 ? ":" + Integer.toString(ps.getHttpPort()) : ""; // NOI18N
                     } else {
                         proxy = null;
-                    }                    
+                    }
                 } else if (defaultPath.startsWith("https:") && !ps.getHttpsHost().equals("")) { // NOI18N
                     proxy = ps.getHttpsHost();
                     if (proxy != null && !proxy.equals("")) {
@@ -790,19 +799,19 @@ public final class GitCommand {
     public static List<String> doFetch(File repository, OutputLogger logger) throws GitException {
         if (repository == null) return null;
         List<String> command = new ArrayList<String>();
-        
+
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
         command.add(GIT_CONFIG_OPTION_CMD);
         command.add(GIT_FETCH_EXT_CMD);
         command.add(GIT_FETCH_CMD);
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
-        
+
         List<String> list;
         String defaultPull = new GitConfigFiles(repository).getDefaultPull(false);
         String proxy = getGlobalProxyIfNeeded(defaultPull, true, logger);
         if(proxy != null){
-            List<String> env = new ArrayList<String>(); 
+            List<String> env = new ArrayList<String>();
             env.add(GIT_PROXY_ENV + proxy);
             list = execEnv(command, env);
         }else{
@@ -813,10 +822,10 @@ public final class GitCommand {
             if (isErrorAbort(list.get(list.size() -1))) {
                 handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_COMMAND_ABORTED"), logger);
             }
-        } 
+        }
         return list;
     }
-    
+
     private static List<GitLogMessage> processLogMessages(List<String> list, final List<GitLogMessage> messages) {
         String rev, author, desc, date, id, fm, fa, fd, fc;
         if (list != null && !list.isEmpty()) {
@@ -856,11 +865,11 @@ public final class GitCommand {
         }
         return messages;
     }
-    
+
     public static GitLogMessage[] getIncomingMessages(final String rootUrl, String toRevision, boolean bShowMerges,  OutputLogger logger) {
-        final List<GitLogMessage> messages = new ArrayList<GitLogMessage>(0);  
+        final List<GitLogMessage> messages = new ArrayList<GitLogMessage>(0);
         final File root = new File(rootUrl);
-        
+
         try {
 
             List<String> list = new LinkedList<String>();
@@ -873,14 +882,14 @@ public final class GitCommand {
         } finally {
             logger.closeLog();
         }
-        
+
         return messages.toArray(new GitLogMessage[0]);
-    }       
-   
+    }
+
     public static GitLogMessage[] getOutMessages(final String rootUrl, boolean bShowMerges, OutputLogger logger) {
-        final List<GitLogMessage> messages = new ArrayList<GitLogMessage>(0);  
+        final List<GitLogMessage> messages = new ArrayList<GitLogMessage>(0);
         final File root = new File(rootUrl);
-        
+
         try {
 
             List<String> list = new LinkedList<String>();
@@ -893,15 +902,15 @@ public final class GitCommand {
         } finally {
             logger.closeLog();
         }
-        
+
         return messages.toArray(new GitLogMessage[0]);
-    }       
-   
-    public static GitLogMessage[] getLogMessages(final String rootUrl, 
+    }
+
+    public static GitLogMessage[] getLogMessages(final String rootUrl,
             final Set<File> files, String fromRevision, String toRevision, boolean bShowMerges,  OutputLogger logger) {
-        final List<GitLogMessage> messages = new ArrayList<GitLogMessage>(0);  
+        final List<GitLogMessage> messages = new ArrayList<GitLogMessage>(0);
         final File root = new File(rootUrl);
-        
+
         try {
             String headRev = GitCommand.getLastRevision(root, null);
             if (headRev == null) {
@@ -909,21 +918,21 @@ public final class GitCommand {
             }
 
             List<String> list = new LinkedList<String>();
-            list = GitCommand.doLogForHistory(root, 
+            list = GitCommand.doLogForHistory(root,
                     files != null ? new ArrayList<File>(files) : null,
                     fromRevision, toRevision, headRev, bShowMerges, logger);
             processLogMessages(list, messages);
-            
+
         } catch (GitException ex) {
             NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
             DialogDisplayer.getDefault().notifyLater(e);
         } finally {
             logger.closeLog();
         }
-        
+
         return messages.toArray(new GitLogMessage[0]);
    }
-     
+
     /**
      * Determines whether repository requires a merge - has more than 1 heads
      *
@@ -932,7 +941,7 @@ public final class GitCommand {
      */
     public static Boolean isMergeRequired(File repository) {
         if (repository == null ) return false;
-        
+
         try {
             List<String> list = getHeadRevisions(repository);
 
@@ -947,7 +956,7 @@ public final class GitCommand {
             return false;
         }
     }
-  
+
     /**
      * Determines whether anything has been committed to the repository
      *
@@ -956,14 +965,14 @@ public final class GitCommand {
      */
     public static Boolean hasHistory(File repository) {
         if (repository == null ) return false;
-        
+
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
         command.add(GIT_LOG_CMD);
         command.add(GIT_LOG_LIMIT_ONE_CMD);
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
 
         try {
             List<String> list = exec(command);
@@ -978,7 +987,7 @@ public final class GitCommand {
 
     /**
      * Determines the previous name of the specified file.
-     * 
+     *
      * We make the assumption that the previous file name is in the
      * list of files returned by git log command immediately befor
      * the file we started with.
@@ -991,18 +1000,18 @@ public final class GitCommand {
     private static File getPreviousName(File repository, File file, String revision) throws GitException {
         if (repository == null ) return null;
         if (revision == null ) return null;
-        
+
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
         command.add(GIT_LOG_CMD);
         command.add(GIT_OPT_FOLLOW);
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
         command.add(GIT_FLAG_REV_CMD);
         command.add(revision);
         command.add(GIT_GET_PREVIOUS_TEMPLATE_CMD);
-       
+
         command.add(file.getAbsolutePath());
 
         List<String> list = exec(command);
@@ -1017,12 +1026,12 @@ public final class GitCommand {
         for (int j = fileNames.length -1 ; j > 0; j--) {
             File name = new File(repository, fileNames[j]);
             if (name.equals(file)) {
-               return new File(repository, fileNames[j-1]); 
+               return new File(repository, fileNames[j-1]);
             }
         }
         return null;
     }
-    
+
     /**
      * Retrives the log information with just first line of commit message for the specified file.
      *
@@ -1034,7 +1043,7 @@ public final class GitCommand {
      public static List<String> doLogShort(File repository, File file, OutputLogger logger) throws GitException {
         return doLog(repository, file, GIT_LOG_TEMPLATE_SHORT_CMD, false, logger);
      }
-     
+
      /**
      * Retrives the log information with the full commit message for the specified file.
      *
@@ -1059,7 +1068,7 @@ public final class GitCommand {
      */
     public static List<String> doLog(File repository, File file, String LOG_TEMPLATE, boolean bDebug, OutputLogger logger) throws GitException {
         if (repository == null ) return null;
-        
+
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
@@ -1067,12 +1076,12 @@ public final class GitCommand {
         if (!file.isDirectory()) {
             command.add(GIT_OPT_FOLLOW);
         }
-        command.add(GIT_OPT_REPOSITORY);
+        command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
         if(bDebug){
             command.add(GIT_LOG_DEBUG_CMD);
         }
-        command.add(LOG_TEMPLATE);            
+        command.add(LOG_TEMPLATE);
         command.add(file.getAbsolutePath());
 
         List<String> list = exec(command);
@@ -1085,7 +1094,7 @@ public final class GitCommand {
         }
         return list;
     }
-    
+
     /**
      * Retrives the log information for the specified files.
      *
@@ -1099,10 +1108,12 @@ public final class GitCommand {
     public static List<String> doLog(File repository, List<File> files, String LOG_TEMPLATE, boolean bDebug, OutputLogger logger) throws GitException {
         if (repository == null ) return null;
         if (files != null && files.isEmpty()) return null;
-        
+
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
         command.add(GIT_VERBOSE_CMD);
         command.add(GIT_LOG_CMD);
         boolean doFollow = true;
@@ -1117,8 +1128,6 @@ public final class GitCommand {
         if (doFollow) {
             command.add(GIT_OPT_FOLLOW);
         }
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
         if(bDebug){
             command.add(GIT_LOG_DEBUG_CMD);
         }
@@ -1130,7 +1139,7 @@ public final class GitCommand {
                 command.add(f.getAbsolutePath());
             }
         }
-        
+
         List<String> list = exec(command);
         if (!list.isEmpty()) {
             if (isErrorNoRepository(list.get(0))) {
@@ -1141,7 +1150,7 @@ public final class GitCommand {
         }
         return list;
     }
-    
+
     /**
      * Retrives the log information for the specified files.
      *
@@ -1152,14 +1161,16 @@ public final class GitCommand {
      * @return List<String> list of the log entries for the specified file.
      * @throws org.netbeans.modules.git.GitException
      */
-    public static List<String> doLogForHistory(File repository, List<File> files, 
+    public static List<String> doLogForHistory(File repository, List<File> files,
             String from, String to, String headRev, boolean bShowMerges, OutputLogger logger) throws GitException {
         if (repository == null ) return null;
         if (files != null && files.isEmpty()) return null;
-        
+
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
         command.add(GIT_VERBOSE_CMD);
         command.add(GIT_LOG_CMD);
         boolean doFollow = true;
@@ -1177,27 +1188,26 @@ public final class GitCommand {
         if(!bShowMerges){
             command.add(GIT_LOG_NO_MERGES_CMD);
         }
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
+
         command.add(GIT_LOG_DEBUG_CMD);
-        
+
         String dateStr = handleRevDates(from, to);
         if(dateStr != null){
             command.add(GIT_FLAG_DATE_CMD);
             command.add(dateStr);
-        }  
+        }
         String revStr = handleRevNumbers(from, to, headRev);
         if(dateStr == null && revStr != null){
             command.add(GIT_FLAG_REV_CMD);
             command.add(revStr);
-        }        
+        }
         command.add(GIT_LOG_TEMPLATE_HISTORY_CMD);
 
         if( files != null){
             for (File f : files) {
                 command.add(f.getAbsolutePath());
             }
-        }  
+        }
         List<String> list = exec(command);
         if (!list.isEmpty()) {
             if (isErrorNoRepository(list.get(0))) {
@@ -1208,7 +1218,7 @@ public final class GitCommand {
         }
         return list;
     }
-    
+
     /**
      * Retrives the Out information for the specified repository
      *
@@ -1218,25 +1228,26 @@ public final class GitCommand {
      */
     public static List<String> doOut(File repository, boolean bShowMerges, OutputLogger logger) throws GitException {
         if (repository == null ) return null;
-        
+
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
-        command.add(GIT_OUT_CMD);
-        command.add(GIT_OPT_REPOSITORY);
+        command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
+        command.add(GIT_OUT_CMD);
+
         if(!bShowMerges){
             command.add(GIT_LOG_NO_MERGES_CMD);
         }
         command.add(GIT_LOG_DEBUG_CMD);
-        
+
         command.add(GIT_LOG_TEMPLATE_HISTORY_CMD);
 
         List<String> list;
         String defaultPush = new GitConfigFiles(repository).getDefaultPush(false);
         String proxy = getGlobalProxyIfNeeded(defaultPush, false, null);
         if(proxy != null){
-            List<String> env = new ArrayList<String>(); 
+            List<String> env = new ArrayList<String>();
             env.add(GIT_PROXY_ENV + proxy);
             list = execEnv(command, env);
         }else{
@@ -1263,29 +1274,30 @@ public final class GitCommand {
      */
     public static List<String> doIncomingForSearch(File repository, String to, boolean bShowMerges, OutputLogger logger) throws GitException {
         if (repository == null ) return null;
-        
+
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
-        command.add(GIT_INCOMING_CMD);
-        command.add(GIT_OPT_REPOSITORY);
+        command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
+        command.add(GIT_INCOMING_CMD);
+
         if(!bShowMerges){
             command.add(GIT_LOG_NO_MERGES_CMD);
         }
-        command.add(GIT_LOG_DEBUG_CMD);        
+        command.add(GIT_LOG_DEBUG_CMD);
         String revStr = handleIncomingRevNumber(to);
         if(revStr != null){
             command.add(GIT_FLAG_REV_CMD);
             command.add(revStr);
-        }        
+        }
         command.add(GIT_LOG_TEMPLATE_HISTORY_CMD);
 
         List<String> list = exec(command);
         String defaultPull = new GitConfigFiles(repository).getDefaultPull(false);
         String proxy = getGlobalProxyIfNeeded(defaultPull, false, null);
         if(proxy != null){
-            List<String> env = new ArrayList<String>(); 
+            List<String> env = new ArrayList<String>();
             env.add(GIT_PROXY_ENV + proxy);
             list = execEnv(command, env);
         }else{
@@ -1308,9 +1320,9 @@ public final class GitCommand {
         // Check for Date range:
         Date fromDate = null;
         Date toDate = null;
-        Date currentDate = new Date(); // Current Date            
+        Date currentDate = new Date(); // Current Date
         Date epochPlusOneDate = null;
-        
+
         try {
             epochPlusOneDate = new SimpleDateFormat("yyyy-MM-dd").parse(GIT_EPOCH_PLUS_ONE_YEAR); // NOI18N
         } catch (ParseException ex) {
@@ -1319,7 +1331,7 @@ public final class GitCommand {
 
         // Set From date
         try {
-            if(from != null) 
+            if(from != null)
                 fromDate = new SimpleDateFormat("yyyy-MM-dd").parse(from); // NOI18N
         } catch (ParseException ex) {
             // Ignore invalid dates
@@ -1327,7 +1339,7 @@ public final class GitCommand {
 
         // Set To date
         try {
-            if(to != null) 
+            if(to != null)
                 toDate = new SimpleDateFormat("yyyy-MM-dd").parse(to); // NOI18N
         } catch (ParseException ex) {
             // Ignore invalid dates
@@ -1335,24 +1347,24 @@ public final class GitCommand {
 
         // If From date is set, but To date is not - default To date to current date
         if( fromDate != null && toDate == null && to == null){
-            toDate = currentDate;           
+            toDate = currentDate;
             to = new SimpleDateFormat("yyyy-MM-dd").format(toDate);
         }
         // If To date is set, but From date is not - default From date to 1971-01-01
         if (fromDate == null && from == null  && toDate != null) {
-            fromDate = epochPlusOneDate; 
+            fromDate = epochPlusOneDate;
             from = GIT_EPOCH_PLUS_ONE_YEAR; // NOI18N
         }
-        
+
         // If using dates make sure both From and To are set to dates
-        if( (fromDate != null && toDate == null && to != null) || 
+        if( (fromDate != null && toDate == null && to != null) ||
                 (fromDate == null && from != null && toDate != null)){
             GitUtils.warningDialog(GitCommand.class,"MSG_SEARCH_HISTORY_TITLE",// NOI18N
                     "MSG_SEARCH_HISTORY_WARN_BOTHDATES_NEEDED_TEXT");   // NOI18N
             return null;
         }
 
-        if(fromDate != null && toDate != null){            
+        if(fromDate != null && toDate != null){
             // Check From date - default to 1971-01-01 if From date is earlier than this
             if(epochPlusOneDate != null && fromDate.before(epochPlusOneDate)){
                 fromDate = epochPlusOneDate;
@@ -1363,7 +1375,7 @@ public final class GitCommand {
                 toDate = currentDate;
                 to = new SimpleDateFormat("yyyy-MM-dd").format(toDate);
             }
-        
+
             // Make sure the From date is before the To date
             if( fromDate.after(toDate)){
                 GitUtils.warningDialog(GitCommand.class,"MSG_SEARCH_HISTORY_TITLE",// NOI18N
@@ -1401,7 +1413,7 @@ public final class GitCommand {
             from = headRev;
         if(to != null && (to.equalsIgnoreCase(GIT_STATUS_FLAG_TIP_CMD) || to.equalsIgnoreCase(GIT_HEAD_STR)))
             to = headRev;
-        
+
         try{
             fromInt = Integer.parseInt(from);
         }catch (NumberFormatException e){
@@ -1417,7 +1429,7 @@ public final class GitCommand {
         }catch (NumberFormatException e){
             // ignore invalid numbers
         }
-        
+
         // Handle out of range revisions
         if (headRevInt > -1 && toInt > headRevInt) {
             to = headRev;
@@ -1427,7 +1439,7 @@ public final class GitCommand {
             from = headRev;
             fromInt = headRevInt;
         }
-        
+
         // Handle revision ranges
         String revStr = null;
         if (fromInt > -1 && toInt > -1){
@@ -1437,7 +1449,7 @@ public final class GitCommand {
         }else if (toInt > -1){
             revStr = "0:" + to;
         }
-        
+
         return revStr;
     }
     /**
@@ -1452,7 +1464,7 @@ public final class GitCommand {
     public static void doCat(File repository, File file, File outFile, OutputLogger logger) throws GitException {
         doCat(repository, file, outFile, "tip", false, logger); //NOI18N
     }
-    
+
     /**
      * Retrieves the specified revision of the specified file to the
      * specified output file.
@@ -1472,13 +1484,13 @@ public final class GitCommand {
     public static void doCat(File repository, File file, File outFile, String revision, boolean retry, OutputLogger logger) throws GitException {
         if (repository == null) return;
         if (file == null) return;
-        
+
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
-        command.add(GIT_CAT_CMD);
-        command.add(GIT_OPT_REPOSITORY);
+        command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
+        command.add(GIT_CAT_CMD);
         command.add(GIT_FLAG_OUTPUT_CMD);
         command.add(outFile.getAbsolutePath());
 
@@ -1488,7 +1500,7 @@ public final class GitCommand {
         }
         command.add(file.getAbsolutePath());
         List<String> list = exec(command);
-        
+
         if (!list.isEmpty()) {
             if (isErrorNoRepository(list.get(0))) {
                 handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_NO_REPOSITORY_ERR"), logger);
@@ -1499,13 +1511,13 @@ public final class GitCommand {
         if (outFile.length() == 0 && retry) {
             // Perhaps the file has changed its name
             String newRevision = Integer.toString(Integer.parseInt(revision)+1);
-            File prevFile = getPreviousName(repository, file, newRevision); 
+            File prevFile = getPreviousName(repository, file, newRevision);
             if (prevFile != null) {
                 doCat(repository, prevFile, outFile, revision, false, logger); //NOI18N
             }
         }
     }
-    
+
     /**
      * Initialize a new repository in the given directory.  If the given
      * directory does not exist, it is created. Will throw a GitException
@@ -1518,7 +1530,7 @@ public final class GitCommand {
     public static void doCreate(File root, OutputLogger logger) throws GitException {
         if (root == null ) return;
         List<String> command = new ArrayList<String>();
-        
+
         command.add(getGitCommand());
         command.add("--git-dir=" + root.getAbsolutePath() + "/.git");
         command.add(GIT_CREATE_CMD);
@@ -1531,7 +1543,7 @@ public final class GitCommand {
         }
 
     }
-    
+
     /**
      * Clone an exisiting repository to the specified target directory
      *
@@ -1544,7 +1556,7 @@ public final class GitCommand {
         if (repository == null) return null;
         return doClone(repository.getAbsolutePath(), target, logger);
     }
-    
+
     /**
      * Clone a repository to the specified target directory
      *
@@ -1555,7 +1567,7 @@ public final class GitCommand {
      */
     public static List<String> doClone(String repository, String target, OutputLogger logger) throws GitException {
         if (repository == null || target == null) return null;
-        
+
         // Ensure that parent directory of target exists, creating if necessary
         File fileTarget = new File (target);
         File parentTarget = fileTarget.getParentFile();
@@ -1575,7 +1587,7 @@ public final class GitCommand {
         command.add(getGitCommand());
         command.add(GIT_CLONE_CMD);
         command.add(GIT_VERBOSE_CMD);
-        
+
         // TODO: Remove this for Git Port
         if (repository.startsWith("file://")) {
             command.add(repository.substring(7));
@@ -1596,7 +1608,7 @@ public final class GitCommand {
         }
         return list;
     }
-    
+
     /**
      * Commits the list of Locally Changed files to the Git Repository
      *
@@ -1610,9 +1622,9 @@ public final class GitCommand {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
-        command.add(GIT_COMMIT_CMD);
-        command.add(GIT_OPT_REPOSITORY);
+        command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
+        command.add(GIT_COMMIT_CMD);
 
         String projectUserName = new GitConfigFiles(repository).getUserName(false);
         String globalUsername = GitConfigFiles.getInstance().getUserName();
@@ -1621,26 +1633,26 @@ public final class GitCommand {
             username = projectUserName;
         else if (globalUsername != null && globalUsername.length() > 0)
            username = globalUsername;
-    
+
         if(username != null ){
-            command.add(GIT_OPT_USERNAME);
+            command.add(GIT_OPT_AUTHOR);
             command.add(username);
         }
-        
+
         File tempfile = null;
-        
+
         try {
             if (commitMessage == null || commitMessage.length() == 0) {
                 commitMessage = GIT_COMMIT_DEFAULT_MESSAGE;
             }
             // Create temporary file.
             tempfile = File.createTempFile(GIT_COMMIT_TEMPNAME, GIT_COMMIT_TEMPNAME_SUFFIX);
-                
+
             // Write to temp file
             BufferedWriter out = new BufferedWriter(new FileWriter(tempfile));
             out.write(commitMessage);
             out.close();
-              
+
             command.add(GIT_COMMIT_OPT_LOGFILE_CMD);
             command.add(tempfile.getAbsolutePath());
 
@@ -1648,11 +1660,11 @@ public final class GitCommand {
                 command.add(f.getAbsolutePath());
             }
             List<String> list = exec(command);
-            
+
             if (!list.isEmpty()
                     && (isErrorNotTracked(list.get(0)) || isErrorCannotReadCommitMsg(list.get(0))))
                 handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_COMMIT_FAILED"), logger);
-            
+
         }catch (IOException ex){
             throw new GitException(NbBundle.getMessage(GitCommand.class, "MSG_FAILED_TO_READ_COMMIT_MESSAGE"));
         }finally{
@@ -1661,11 +1673,11 @@ public final class GitCommand {
             }
         }
     }
-    
-    
+
+
     /**
      * Rename a source file to a destination file.
-     * git mv 
+     * git mv
      *
      * @param File repository of the Git repository's root directory
      * @param File of sourceFile which was renamed
@@ -1680,20 +1692,18 @@ public final class GitCommand {
 
     private static void doRename(File repository, File sourceFile, File destFile, boolean bAfter, OutputLogger logger)  throws GitException {
         if (repository == null) return;
-        
+
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
         command.add(GIT_RENAME_CMD);
         if (bAfter) command.add(GIT_RENAME_AFTER_CMD);
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
-        command.add(GIT_OPT_CWD_CMD);
-        command.add(repository.getAbsolutePath());
 
-        command.add(sourceFile.getAbsolutePath().substring(repository.getAbsolutePath().length()+1));            
+        command.add(sourceFile.getAbsolutePath().substring(repository.getAbsolutePath().length()+1));
         command.add(destFile.getAbsolutePath().substring(repository.getAbsolutePath().length()+1));
-        
+
         List<String> list = exec(command);
         if (!list.isEmpty() &&
              isErrorAbort(list.get(list.size() -1))) {
@@ -1702,7 +1712,7 @@ public final class GitCommand {
             }
         }
     }
-    
+
     /**
      * Mark a source file as having been renamed to a destination file.
      * git mv -A.
@@ -1716,7 +1726,7 @@ public final class GitCommand {
     public static void doRenameAfter(File repository, File sourceFile, File destFile, OutputLogger logger)  throws GitException {
        doRename(repository, sourceFile, destFile, true, logger);
     }
-    
+
     /**
      * Adds the list of Locally New files to the Git Repository.
      * Their status will change to added and they will be added on the next
@@ -1733,9 +1743,9 @@ public final class GitCommand {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
-        command.add(GIT_ADD_CMD);
-        command.add(GIT_OPT_REPOSITORY);
+        command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
+        command.add(GIT_ADD_CMD);
 
         for(File f: addFiles){
             if(f.isDirectory())
@@ -1758,20 +1768,20 @@ public final class GitCommand {
      * @return void
      * @throws org.netbeans.modules.git.GitException
      */
-    public static void doRevert(File repository, List<File> revertFiles, 
+    public static void doRevert(File repository, List<File> revertFiles,
             String revision, boolean doBackup, OutputLogger logger)  throws GitException {
         if (repository == null) return;
         if (revertFiles.size() == 0) return;
-        
+
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
         command.add(GIT_REVERT_CMD);
         if(!doBackup){
             command.add(GIT_REVERT_NOBACKUP_CMD);
         }
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
         if (revision != null){
             command.add(GIT_FLAG_REV_CMD);
             command.add(revision);
@@ -1801,20 +1811,20 @@ public final class GitCommand {
         if (file.isDirectory()) return;
         // We do not look for file to ignore as we should not here
         // with a file to be ignored.
-        
+
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
-        command.add(GIT_ADD_CMD);
-        command.add(GIT_OPT_REPOSITORY);
+        command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
+        command.add(GIT_ADD_CMD);
 
         command.add(file.getAbsolutePath());
         List<String> list = exec(command);
         if (!list.isEmpty() && isErrorAlreadyTracked(list.get(0)))
             handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_ALREADY_TRACKED"), logger);
     }
-    
+
     /**
      * Get the annotations for the specified file
      *
@@ -1829,9 +1839,9 @@ public final class GitCommand {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
-        command.add(GIT_ANNOTATE_CMD);
-        command.add(GIT_OPT_REPOSITORY);
+        command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
+        command.add(GIT_ANNOTATE_CMD);
 
         if (revision != null) {
             command.add(GIT_FLAG_REV_CMD);
@@ -1847,7 +1857,7 @@ public final class GitCommand {
                 handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_NO_REPOSITORY_ERR"), logger);
             } else if (isErrorNoSuchFile(list.get(0))) {
                 // This can happen if we have multiple heads and the wrong
-                // one was picked by default git annotation 
+                // one was picked by default git annotation
                 if (revision == null) {
                     String rev = getLastRevision(repository, file);
                     if (rev != null) {
@@ -1862,7 +1872,7 @@ public final class GitCommand {
         }
         return list;
     }
-  
+
     public static List<String> doAnnotate(File repository, File file, OutputLogger logger) throws GitException {
         return doAnnotate(repository, file, null, logger);
     }
@@ -1881,13 +1891,14 @@ public final class GitCommand {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
         command.add(GIT_LOG_CMD);
         if (limit >= 0) {
                 command.add(GIT_LOG_LIMIT_CMD);
                 command.add(Integer.toString(limit));
         }
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
+
         command.add(GIT_CSET_TARGET_TEMPLATE_CMD);
         if(files != null) {
             for (File file : files) {
@@ -1915,7 +1926,7 @@ public final class GitCommand {
         if (repository == null) return null;
         return getRevisionsForFile(repository, null, limit);
     }
-    
+
     /**
      * Get the pull default for the specified repository, i.e. the default
      * destination for git pull commmands.
@@ -1943,13 +1954,13 @@ public final class GitCommand {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
-        command.add(GIT_PATH_DEFAULT_CMD);
-        command.add(GIT_OPT_REPOSITORY);
+        command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
+        command.add(GIT_PATH_DEFAULT_CMD);
         command.add(type);
 
         String res = null;
-        
+
         List<String> list = new LinkedList<String>();
         try {
             list = exec(command);
@@ -1962,7 +1973,7 @@ public final class GitCommand {
         }
         return res;
     }
-    
+
     /**
      * Returns the Git branch name if any for a repository
      *
@@ -1972,13 +1983,13 @@ public final class GitCommand {
      */
     public static String getBranchName(File repository) throws GitException {
         if (repository == null) return null;
-        
+
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
-        command.add(GIT_BRANCH_CMD);
-        command.add(GIT_OPT_REPOSITORY);
+        command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
+        command.add(GIT_BRANCH_CMD);
 
         List<String> list = exec(command);
         if (!list.isEmpty()){
@@ -1987,7 +1998,7 @@ public final class GitCommand {
             return null;
         }
     }
-    
+
     /**
      * Returns the Git branch revision for a repository
      *
@@ -1997,23 +2008,23 @@ public final class GitCommand {
      */
     public static int getBranchRev(File repository) throws GitException {
         if (repository == null) return -1;
-        
+
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
         command.add(GIT_BRANCH_REV_CMD);
         command.add(GIT_BRANCH_REV_TEMPLATE_CMD);
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
 
         List<String> list = exec(command);
         if (!list.isEmpty()){
-            return Integer.parseInt(list.get(0)); 
+            return Integer.parseInt(list.get(0));
         }else{
             return -1;
         }
     }
-    
+
     /**
      * Returns the Git branch name if any for a repository
      *
@@ -2023,14 +2034,14 @@ public final class GitCommand {
      */
     public static String getBranchShortChangesetHash(File repository) throws GitException {
         if (repository == null) return null;
-        
+
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
         command.add(GIT_BRANCH_REV_CMD);
         command.add(GIT_BRANCH_SHORT_CS_TEMPLATE_CMD);
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
 
         List<String> list = exec(command);
         if (!list.isEmpty()){
@@ -2048,14 +2059,14 @@ public final class GitCommand {
      */
     public static String getBranchInfo(File repository) throws GitException {
         if (repository == null) return null;
-        
+
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
         command.add(GIT_BRANCH_REV_CMD);
         command.add(GIT_BRANCH_INFO_TEMPLATE_CMD);
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
 
         List<String> list = exec(command);
         if (!list.isEmpty()){
@@ -2101,13 +2112,13 @@ public final class GitCommand {
 
     private static List<String> getHeadInfo(String repository, String template) throws GitException {
         if (repository == null) return null;
-        
+
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
-        command.add(GIT_HEADS_CMD);
-        command.add(GIT_OPT_REPOSITORY);
+        command.add(GIT_OPT_GIT_DIR);
         command.add(repository);
+        command.add(GIT_HEADS_CMD);
         command.add(template);
 
         return exec(command);
@@ -2145,14 +2156,14 @@ public final class GitCommand {
     private static String getLastChange(File repository, File file, String template) throws GitException {
 
         if (repository == null) return null;
-        
+
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
         command.add(GIT_LOG_CMD);
         command.add(GIT_LOG_LIMIT_ONE_CMD);
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
         command.add(template);
         if( file != null)
             command.add(file.getAbsolutePath());
@@ -2164,8 +2175,8 @@ public final class GitCommand {
             return null;
         }
     }
-    
-    
+
+
     /**
      * Returns the Git status for a given file
      *
@@ -2189,7 +2200,7 @@ public final class GitCommand {
         if(list.size() == 2) {
             if (list.get(1).length() > 0){
                 if (list.get(1).charAt(0) == ' '){
-                
+
                     info =  new FileInformation(FileInformation.STATUS_VERSIONED_ADDEDLOCALLY,
                             new FileStatus(new File(new File(cwd), filename), true), false);
                     Git.LOG.log(Level.FINE, "getSingleStatus() - Copied: Locally Added {0}, Copy Source {1}", // NOI18N
@@ -2199,7 +2210,7 @@ public final class GitCommand {
                 Git.LOG.log(Level.FINE, "getSingleStatus() - Second line empty: first line: {0}", list.get(0)); // NOI18N
             }
         }
-        
+
         // Handle Conflict Status
         // TODO: remove this if Git status supports Conflict marker
         if(existsConflictFile(cwd + File.separator + filename)){
@@ -2208,25 +2219,25 @@ public final class GitCommand {
                 new Object[] {list.get(0), info.getStatus(), filename, repository.getAbsolutePath(), cwd,
                 cwd + File.separator + filename + GitCommand.GIT_STR_CONFLICT_EXT} );
         }
-        
+
         Git.LOG.log(Level.FINE, "getSingleStatus(): StatusLine: {0} Status: {1}  {2} RepoPath:{3} cwd:{4}", // NOI18N
                 new Object[] {list.get(0), info.getStatus(), filename, repository.getAbsolutePath(), cwd} );
         return info;
     }
-    
+
     /**
      * Returns the Git status for all files in a given  subdirectory of
      * a repository
      *
      * @param File repository of the git repository's root directory
-     * @param File dir of the subdirectoy of interest. 
+     * @param File dir of the subdirectoy of interest.
      * @return Map of files and status for all files in the specified subdirectory
      * @throws org.netbeans.modules.git.GitException
      */
     public static Map<File, FileInformation> getAllStatus(File repository, File dir)  throws GitException{
         return getDirStatusWithFlags(repository, dir, GIT_STATUS_FLAG_ALL_CMD, true);
     }
-    
+
     /**
      * Returns the git status for all files in a given repository
      *
@@ -2237,7 +2248,7 @@ public final class GitCommand {
     public static Map<File, FileInformation> getAllStatus(File repository)  throws GitException{
         return getAllStatusWithFlags(repository, GIT_STATUS_FLAG_ALL_CMD, true);
     }
-    
+
     /**
      * Returns the git status for only files of interest to us in a given repository
      * that is modified, locally added, locally removed, locally deleted, locally new and ignored.
@@ -2249,7 +2260,7 @@ public final class GitCommand {
     public static Map<File, FileInformation> getAllInterestingStatus(File repository)  throws GitException{
         return getAllStatusWithFlags(repository, GIT_STATUS_FLAG_INTERESTING_CMD, true);
     }
-    
+
     /**
      * Returns the git status for only files of interest to us in a given directory in a repository
      * that is modified, locally added, locally removed, locally deleted, locally new and ignored.
@@ -2262,7 +2273,7 @@ public final class GitCommand {
     public static Map<File, FileInformation> getInterestingStatus(File repository, File dir)  throws GitException{
         return getDirStatusWithFlags(repository, dir, GIT_STATUS_FLAG_INTERESTING_CMD, true);
     }
-    
+
     /**
      * Returns the git status for only files of interest to us in a given repository
      * that is modified, locally added, locally removed, locally deleted, locally new and ignored.
@@ -2274,7 +2285,7 @@ public final class GitCommand {
     public static Map<File, FileInformation> getAllRemovedDeletedStatus(File repository)  throws GitException{
         return getAllStatusWithFlags(repository, GIT_STATUS_FLAG_REM_DEL_CMD, true);
     }
-    
+
     /**
      * Returns the git status for only files of interest to us in a given directory in a repository
      * that is modified, locally added, locally removed, locally deleted, locally new and ignored.
@@ -2287,7 +2298,7 @@ public final class GitCommand {
     public static Map<File, FileInformation> getRemovedDeletedStatus(File repository, File dir)  throws GitException{
         return getDirStatusWithFlags(repository, dir, GIT_STATUS_FLAG_REM_DEL_CMD, true);
     }
-    
+
     /**
      * Returns the unknown files in a specified directory under a Git repository root
      *
@@ -2319,7 +2330,7 @@ public final class GitCommand {
     public static Map<File, FileInformation> getAllUnknownStatus(File repository)  throws GitException{
         return getUnknownStatus(repository, null);
     }
-    
+
     /**
      * Remove the specified file from the Git Repository
      *
@@ -2332,9 +2343,9 @@ public final class GitCommand {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
-        command.add(GIT_REMOVE_CMD);
-        command.add(GIT_OPT_REPOSITORY);
+        command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
+        command.add(GIT_REMOVE_CMD);
         command.add(GIT_REMOVE_FLAG_FORCE_CMD);
         for(File f: removeFiles){
             command.add(f.getAbsolutePath());
@@ -2344,7 +2355,7 @@ public final class GitCommand {
         if (!list.isEmpty() && isErrorAlreadyTracked(list.get(0)))
             handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_ALREADY_TRACKED"), logger);
     }
-    
+
     /**
      * Remove the specified files from the Git Repository
      *
@@ -2356,9 +2367,9 @@ public final class GitCommand {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
-        command.add(GIT_REMOVE_CMD);
-        command.add(GIT_OPT_REPOSITORY);
+        command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
+        command.add(GIT_REMOVE_CMD);
         command.add(GIT_REMOVE_FLAG_FORCE_CMD);
         command.add(f.getAbsolutePath());
 
@@ -2366,7 +2377,7 @@ public final class GitCommand {
         if (!list.isEmpty() && isErrorAlreadyTracked(list.get(0)))
             handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_ALREADY_TRACKED"), logger);
     }
-    
+
     /**
      * Export the diffs for the specified revision to the specified output file
      *
@@ -2393,10 +2404,10 @@ public final class GitCommand {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
         command.add(GIT_EXPORT_CMD);
         command.add(GIT_VERBOSE_CMD);
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
         command.add(GIT_FLAG_OUTPUT_CMD);
         command.add(outputFileName);
         command.add(revStr);
@@ -2408,7 +2419,7 @@ public final class GitCommand {
         }
         return list;
     }
-    
+
     /**
      * Applies diffs from a specified file
      *
@@ -2420,12 +2431,10 @@ public final class GitCommand {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
         command.add(GIT_APPLY_CMD);
         command.add(GIT_VERBOSE_CMD);
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
-        command.add(GIT_OPT_CWD_CMD);
-        command.add(repository.getAbsolutePath());
         command.add(patchFile.getAbsolutePath());
 
         List<String> list = exec(command);
@@ -2435,23 +2444,23 @@ public final class GitCommand {
         }
         return list;
     }
-    
+
     /**
      * Returns Map of Git file and status for files in a given repository as specified by the status flags
      */
     private static Map<File, FileInformation> getAllStatusWithFlags(File repository, String statusFlags, boolean bIgnoreUnversioned)  throws GitException{
         return getDirStatusWithFlags(repository, null, statusFlags, bIgnoreUnversioned);
     }
-    
+
     private static Map<File, FileInformation> getDirStatusWithFlags(File repository, File dir, String statusFlags, boolean bIgnoreUnversioned)  throws GitException{
         if (repository == null) return null;
-        
+
         List<FileStatus> statusList = new ArrayList<FileStatus>();
         FileInformation prev_info = null;
         List<String> list = doRepositoryDirStatusCmd(repository, dir, statusFlags);
-        
+
         Map<File, FileInformation> repositoryFiles = new HashMap<File, FileInformation>(list.size());
-        
+
         StringBuffer filePath = null;
         for(String statusLine: list){
             FileInformation info = getFileInformationFromStatusLine(statusLine);
@@ -2483,7 +2492,7 @@ public final class GitCommand {
             StringBuffer sb = new StringBuffer(statusLine);
             sb.delete(0,2); // Strip status char and following 2 spaces: [MARC\?\!I][ ][ ]
             filePath.append(sb.toString());
-            
+
             // Handle Conflict Status
             // TODO: remove this if Git status supports Conflict marker
             if (existsConflictFile(filePath.toString())) {
@@ -2495,7 +2504,7 @@ public final class GitCommand {
         if (prev_info != null) {
             repositoryFiles.put(new File(filePath.toString()), prev_info);
         }
-        
+
         if (list.size() < 10) {
             Git.LOG.log(Level.FINE, "getDirStatusWithFlags(): repository path: {0} status flags: {1} status list {2}", // NOI18N
                     new Object[] {repository.getAbsolutePath(), statusFlags, list} );
@@ -2505,14 +2514,14 @@ public final class GitCommand {
         }
         return repositoryFiles;
     }
-    
+
     /**
      * Gets file information for a given git status output status line
      */
     private static FileInformation getFileInformationFromStatusLine(String status){
         FileInformation info = null;
         if (status == null || (status.length() == 0)) return new FileInformation(FileInformation.STATUS_VERSIONED_UPTODATE, null, false);
-        
+
         char c0 = status.charAt(0);
         char c1 = status.charAt(1);
         switch(c0 + c1) {
@@ -2548,31 +2557,29 @@ public final class GitCommand {
             info = new FileInformation(FileInformation.STATUS_UNKNOWN,null, false);
             break;
         }
-        
+
         return info;
     }
-    
+
     /**
      * Gets git status command output line for a given file
      */
     private static List<String> doSingleStatusCmd(File repository, String cwd, String filename)  throws GitException{
         String statusLine = null;
-        
+
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
         command.add(GIT_STATUS_CMD);
         command.add(GIT_STATUS_FLAG_ALL_CMD);
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
-        command.add(GIT_OPT_CWD_CMD);
-        command.add(repository.getAbsolutePath());
-        
+
         command.add(new File(cwd, filename).getAbsolutePath().substring(repository.getAbsolutePath().length()+1));
-        
+
         return exec(command);
     }
-    
+
     /**
      * Gets git status command output list for the specified status flags for a given repository and directory
      */
@@ -2580,19 +2587,18 @@ public final class GitCommand {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
         command.add(GIT_STATUS_CMD);
 
         command.add(statusFlags);
-        command.add(GIT_OPT_REPOSITORY);
-        command.add(repository.getAbsolutePath());
-        command.add(GIT_OPT_CWD_CMD);
-        command.add(repository.getAbsolutePath());
+
         if (dir != null) {
             command.add(dir.getAbsolutePath());
         } else {
             command.add(repository.getAbsolutePath());
         }
-        
+
         List<String> list =  exec(command);
         if (!list.isEmpty() && isErrorNoRepository(list.get(0))) {
             OutputLogger logger = OutputLogger.getLogger(repository.getAbsolutePath());
@@ -2604,7 +2610,7 @@ public final class GitCommand {
         }
         return list;
     }
-    
+
     /**
      * Returns the ouput from the given command
      *
@@ -2625,7 +2631,7 @@ public final class GitCommand {
                 for (Iterator i = command.iterator(); i.hasNext();) {
                     smallCommand.add((String)i.next());
                     if (count++ > 10) break;
-                } 
+                }
                 Git.LOG.log(Level.FINE, "execEnv(): " + smallCommand); // NOI18N
             } else {
                 Git.LOG.log(Level.FINE, "execEnv(): " + command); // NOI18N
@@ -2634,15 +2640,15 @@ public final class GitCommand {
                 ProcessBuilder pb = new ProcessBuilder(command);
                 Map<String, String> envOrig = pb.environment();
                 for(String s: env){
-                    envOrig.put(s.substring(0,s.indexOf('=')), s.substring(s.indexOf('=')+1)); 
+                    envOrig.put(s.substring(0,s.indexOf('=')), s.substring(s.indexOf('=')+1));
                 }
                 proc = pb.start();
-            }else{ 
+            }else{
                 proc = new ProcessBuilder(command).start();
             }
 
             input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-            
+
             String line;
             while ((line = input.readLine()) != null){
                 list.add(line);
@@ -2688,11 +2694,11 @@ public final class GitCommand {
             // the repository - we will have to examine the output in the context of the
             // calling func and raise exceptions there if needed
             Git.LOG.log(Level.SEVERE, "execEnv():  execEnv(): IOException " + e); // NOI18N
-             
+
             // Handle low level Git failures
             if (isErrorArgsTooLong(e.getMessage())){
                 assert(command.size()> 2);
-                throw new GitException(NbBundle.getMessage(GitCommand.class, "MSG_ARG_LIST_TOO_LONG_ERR", 
+                throw new GitException(NbBundle.getMessage(GitCommand.class, "MSG_ARG_LIST_TOO_LONG_ERR",
                             command.get(1), command.size() -2 ));
             }else if (isErrorNoGit(e.getMessage()) || isErrorCannotRun(e.getMessage())){
                 throw new GitException(NbBundle.getMessage(Git.class, "MSG_VERSION_NONE_MSG"));
@@ -2711,7 +2717,7 @@ public final class GitCommand {
         }
         return list;
     }
-    
+
     /**
      * Returns the ouput from the given command
      *
@@ -2731,10 +2737,10 @@ public final class GitCommand {
 
         return execEnv(command, null);
     }
-    
+
     private static String getGitCommand() {
         String defaultPath = GitModuleConfig.getDefault().getExecutableBinaryPath();
-        if (defaultPath == null || defaultPath.length() == 0) 
+        if (defaultPath == null || defaultPath.length() == 0)
             return GIT_COMMAND;
         else
             return defaultPath + File.separatorChar + GIT_COMMAND;
@@ -2742,7 +2748,7 @@ public final class GitCommand {
 
     private static void handleError(List<String> command, List<String> list, String message, OutputLogger logger) throws GitException{
         if (command != null && list != null && logger != null){
-            Git.LOG.log(Level.WARNING, "command: " + GitUtils.replaceHttpPassword(command)); // NOI18N        
+            Git.LOG.log(Level.WARNING, "command: " + GitUtils.replaceHttpPassword(command)); // NOI18N
             Git.LOG.log(Level.WARNING, "output: " + GitUtils.replaceHttpPassword(list)); // NOI18N
             logger.outputInRed(NbBundle.getMessage(GitCommand.class, "MSG_COMMAND_ERR")); // NOI18N
             logger.output(NbBundle.getMessage(GitCommand.class, "MSG_COMMAND_INFO_ERR",
@@ -2767,15 +2773,15 @@ public final class GitCommand {
     public static boolean isBackoutMergeNeededMsg(String msg) {
         return msg.indexOf(GIT_BACKOUT_MERGE_NEEDED_ERR) > -1;                       // NOI18N
     }
-    
+
     public static boolean isMergeConflictMsg(String msg) {
     //    FIXME: Win32 Support
-    //    if(Utilities.isWindows() ) {   
+    //    if(Utilities.isWindows() ) {
     //        return (msg.indexOf(GIT_MERGE_CONFLICT_WIN1_ERR) > -1) &&        // NOI18N
     //                (msg.indexOf(GIT_MERGE_CONFLICT_WIN2_ERR) > -1);         // NOI18N
     //    }else{
             return msg.indexOf(GIT_MERGE_CONFLICT_ERR) > -1;                 // NOI18N
-    //    }       
+    //    }
     }
 
     public static boolean isMergeUnavailableMsg(String msg) {
@@ -2788,41 +2794,41 @@ public final class GitCommand {
     public static boolean isMergeAbortUncommittedMsg(String msg) {
         return msg.indexOf(GIT_MERGE_UNCOMMITTED_ERR) > -1;                                   // NOI18N
     }
-     
+
     public static boolean isNoChanges(String msg) {
         return msg.indexOf(GIT_NO_CHANGES_ERR) > -1;                                   // NOI18N
     }
-    
+
     private static boolean isErrorNoDefaultPush(String msg) {
         return msg.indexOf(GIT_ABORT_NO_DEFAULT_PUSH_ERR) > -1; // NOI18N
     }
-    
+
     private static boolean isErrorNoDefaultPath(String msg) {
         return msg.indexOf(GIT_ABORT_NO_DEFAULT_ERR) > -1; // NOI18N
     }
-    
+
     private static boolean isErrorPossibleProxyIssue(String msg) {
         return msg.indexOf(GIT_ABORT_POSSIBLE_PROXY_ERR) > -1; // NOI18N
     }
-    
+
     private static boolean isErrorNoRepository(String msg) {
         return msg.indexOf(GIT_NO_REPOSITORY_ERR) > -1 ||
                  msg.indexOf(GIT_NOT_REPOSITORY_ERR) > -1 ||
                  (msg.indexOf(GIT_REPOSITORY) > -1 && msg.indexOf(GIT_NOT_FOUND_ERR) > -1); // NOI18N
     }
-    
+
     private static boolean isErrorNoGit(String msg) {
         return msg.indexOf(GIT_NO_GIT_CMD_FOUND_ERR) > -1; // NOI18N
     }
-    
+
     private static boolean isErrorArgsTooLong(String msg) {
         return msg.indexOf(GIT_ARG_LIST_TOO_LONG_ERR) > -1; // NOI18N
     }
-    
+
     private static boolean isErrorCannotRun(String msg) {
         return msg.indexOf(GIT_CANNOT_RUN_ERR) > -1; // NOI18N
     }
-    
+
     private static boolean isErrorUpdateSpansBranches(String msg) {
         return msg.indexOf(GIT_UPDATE_SPAN_BRANCHES_ERR) > -1; // NOI18N
     }
@@ -2830,7 +2836,7 @@ public final class GitCommand {
     private static boolean isErrorAlreadyTracked(String msg) {
         return msg.indexOf(GIT_ALREADY_TRACKED_ERR) > -1; // NOI18N
     }
-    
+
     private static boolean isErrorNotTracked(String msg) {
         return msg.indexOf(GIT_NOT_TRACKED_ERR) > -1; // NOI18N
     }
@@ -2838,11 +2844,11 @@ public final class GitCommand {
     private static boolean isErrorNotFound(String msg) {
         return msg.indexOf(GIT_NOT_FOUND_ERR) > -1; // NOI18N
     }
-    
+
     private static boolean isErrorCannotReadCommitMsg(String msg) {
         return msg.indexOf(GIT_CANNOT_READ_COMMIT_MESSAGE_ERR) > -1; // NOI18N
     }
-    
+
     private static boolean isErrorAbort(String msg) {
         return msg.indexOf(GIT_ABORT_ERR) > -1; // NOI18N
     }
@@ -2858,15 +2864,15 @@ public final class GitCommand {
     private static boolean isErrorNoChangeNeeded(String msg) {
         return msg.indexOf(GIT_NO_CHANGE_NEEDED_ERR) > -1;    // NOI18N
     }
-    
+
     public static boolean isCreateNewBranch(String msg) {
         return msg.indexOf(GIT_CREATE_NEW_BRANCH_ERR) > -1;                                   // NOI18N
     }
-    
+
     public static boolean isHeadsCreated(String msg) {
         return msg.indexOf(GIT_HEADS_CREATED_ERR) > -1;                                   // NOI18N
     }
-    
+
     public static boolean isNoRollbackPossible(String msg) {
         return msg.indexOf(GIT_NO_ROLLBACK_ERR) > -1;                                   // NOI18N
     }
@@ -2885,11 +2891,11 @@ public final class GitCommand {
     public static boolean isMergeChangesetBackout(String msg) {
         return msg.indexOf(GIT_ABORT_BACKOUT_MERGE_CSET_ERR) > -1;                                   // NOI18N
     }
-    
+
     public static boolean isNoUpdates(String msg) {
         return msg.indexOf(GIT_NO_UPDATES_ERR) > -1;                                   // NOI18N
     }
-    
+
     private static boolean isErrorNoView(String msg) {
         return msg.indexOf(GIT_NO_VIEW_ERR) > -1;                                     // NOI18N
     }
@@ -2916,7 +2922,7 @@ public final class GitCommand {
         } catch (IOException e) {
         }
     }
-    
+
     public static void deleteConflictFile(String path) {
         boolean success = (new File(path + GIT_STR_CONFLICT_EXT)).delete();
 
@@ -2924,10 +2930,10 @@ public final class GitCommand {
                 new Object[] {path + GIT_STR_CONFLICT_EXT, success? "Deleted": "Not Deleted"} ); // NOI18N
     }
 
-    public static boolean existsConflictFile(String path) {        
+    public static boolean existsConflictFile(String path) {
         File file = new File(path + GIT_STR_CONFLICT_EXT);
         boolean bExists = file.canWrite();
-        
+
         if (bExists) {
             Git.LOG.log(Level.FINE, "existsConflictFile(): File: {0} {1}", // NOI18N
                     new Object[] {path + GIT_STR_CONFLICT_EXT, "Exists"} ); // NOI18N
@@ -2940,5 +2946,5 @@ public final class GitCommand {
      */
     private GitCommand() {
     }
-    
+
 }

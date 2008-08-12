@@ -83,7 +83,7 @@ public class VersionsCache {
             try {
                 File tempFile = File.createTempFile("tmp", "-" + base.getName()); //NOI18N
 
-                GitCommand.doCat(repository, base, tempFile, null);
+                GitCommand.doCatFile(repository, base, tempFile, null);
                 if (tempFile.length() == 0) {
                     return null;
                 }
@@ -99,7 +99,7 @@ public class VersionsCache {
             try {
                 File tempFile = File.createTempFile("tmp", "-" + base.getName()); //NOI18N
 
-                GitCommand.doCat(repository, base, tempFile, revision, null);
+                GitCommand.doCatFile(repository, base, tempFile, revision, null);
                 if (tempFile.length() == 0) {
                     return null;
                 }

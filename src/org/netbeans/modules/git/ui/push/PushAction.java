@@ -152,7 +152,7 @@ public class PushAction extends ContextAction {
             logger.outputInRed(NbBundle.getMessage(PushAction.class, "MSG_PUSH_TITLE")); // NOI18N
             logger.outputInRed(NbBundle.getMessage(PushAction.class, "MSG_PUSH_TITLE_SEP")); // NOI18N
 
-            List<String> listOutgoing = GitCommand.doOutgoing(root, pushPath, logger);
+            List<String> listOutgoing = GitCommand.doPushDryRun(root, pushPath, logger);
             if ((listOutgoing == null) || listOutgoing.isEmpty()) {
                 return;
             }
@@ -231,8 +231,8 @@ public class PushAction extends ContextAction {
                         return;
                     }
                     if (bLocalPush) {
-                        list = GitCommand.doUpdateAll(pushFile, false, null, false);
-                        logger.output(list);
+                        //list = GitCommand.doUpdateAll(pushFile, false, null, false);
+                        //logger.output(list);
                         if (toPrjName != null) {
                             logger.outputInRed(
                                     NbBundle.getMessage(PushAction.class,
@@ -242,10 +242,10 @@ public class PushAction extends ContextAction {
                                     NbBundle.getMessage(PushAction.class,
                                     "MSG_PUSH_UPDATE_DONE_NONAME", GitUtils.stripDoubleSlash(pushPath))); // NOI18N
                         }
-                        boolean bOutStandingUncommittedMerges = GitCommand.isMergeAbortUncommittedMsg(list.get(list.size() - 1));
-                        if (bOutStandingUncommittedMerges) {
-                            bConfirmMerge = GitUtils.confirmDialog(PushAction.class, "MSG_PUSH_MERGE_CONFIRM_TITLE", "MSG_PUSH_MERGE_UNCOMMITTED_CONFIRM_QUERY"); // NOI18N 
-                        }
+                        //boolean bOutStandingUncommittedMerges = GitCommand.isMergeAbortUncommittedMsg(list.get(list.size() - 1));
+                        //if (bOutStandingUncommittedMerges) {
+                        //    bConfirmMerge = GitUtils.confirmDialog(PushAction.class, "MSG_PUSH_MERGE_CONFIRM_TITLE", "MSG_PUSH_MERGE_UNCOMMITTED_CONFIRM_QUERY"); // NOI18N 
+                        //}
                     }
                 } else {
                     bConfirmMerge = GitUtils.confirmDialog(PushAction.class, "MSG_PUSH_MERGE_CONFIRM_TITLE", "MSG_PUSH_MERGE_CONFIRM_QUERY"); // NOI18N 

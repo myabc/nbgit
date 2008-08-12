@@ -98,7 +98,7 @@ public class UpdateAction extends ContextAction {
             public void perform() {
                 boolean bNoUpdates = true;
                 OutputLogger logger = getLogger();
-                try {
+                //try {
                     logger.outputInRed(
                             NbBundle.getMessage(UpdateAction.class,
                             "MSG_UPDATE_TITLE")); // NOI18N
@@ -108,14 +108,14 @@ public class UpdateAction extends ContextAction {
                     logger.output(
                                 NbBundle.getMessage(UpdateAction.class,
                                 "MSG_UPDATE_INFO_SEP", revStr, root.getAbsolutePath())); // NOI18N
-                    List<String> list = GitCommand.doUpdateAll(root, doForcedUpdate, revStr);
+                    //List<String> list = GitCommand.doUpdateAll(root, doForcedUpdate, revStr);
                     
-                    if (list != null && !list.isEmpty()){
-                        bNoUpdates = GitCommand.isNoUpdates(list.get(0));
+                    //if (list != null && !list.isEmpty()){
+                      //  bNoUpdates = GitCommand.isNoUpdates(list.get(0));
                         //logger.clearOutput();
-                        logger.output(list);
-                        logger.output(""); // NOI18N
-                    }  
+                        //logger.output(list);
+                        //logger.output(""); // NOI18N
+                    //}  
                     // refresh filesystem to take account of changes
                     FileObject rootObj = FileUtil.toFileObject(root);
                     try {
@@ -123,10 +123,10 @@ public class UpdateAction extends ContextAction {
                     } catch (Exception ex) {
                     }
 
-                } catch (GitException ex) {
-                    NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
-                    DialogDisplayer.getDefault().notifyLater(e);
-                }
+                //} catch (GitException ex) {
+                    //NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
+                    //DialogDisplayer.getDefault().notifyLater(e);
+                //}
                 
                 // Force Status Refresh from this dir and below
                 if(!bNoUpdates)

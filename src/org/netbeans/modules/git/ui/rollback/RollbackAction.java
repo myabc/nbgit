@@ -136,7 +136,7 @@ public class RollbackAction extends ContextAction {
                                     logger.output(
                                             NbBundle.getMessage(RollbackAction.class,
                                             "MSG_ROLLBACK_FORCE_UPDATE", root.getAbsolutePath())); // NOI18N
-                                    list = GitCommand.doUpdateAll(root, true, null);
+                                    //list = GitCommand.doUpdateAll(root, true, null);
                                     
                                     FileStatusCache cache = Git.getInstance().getFileStatusCache();        
                                     if(cache.listFiles(ctx, FileInformation.STATUS_VERSIONED_CONFLICT).length != 0){
@@ -145,9 +145,9 @@ public class RollbackAction extends ContextAction {
                                     GitUtils.forceStatusRefreshProject(ctx);
                                     Git.getInstance().changesetChanged(root);
 
-                                    if (list != null && !list.isEmpty()){
-                                        logger.output(list);
-                                    }
+                                    //if (list != null && !list.isEmpty()){
+                                    //    logger.output(list);
+                                    //}
                                 } else {
                                     GitUtils.forceStatusRefreshProject(ctx);
                                     Git.getInstance().changesetChanged(root);

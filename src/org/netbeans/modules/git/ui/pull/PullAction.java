@@ -260,7 +260,8 @@ public class PullAction extends ContextAction {
                 if(type == PullType.LOCAL){
                     list = GitCommand.doPull(root, logger);
                 }else{
-                    list = GitCommand.doUnbundle(root, bundleFile, logger);
+                    //list = GitCommand.doUnbundle(root, bundleFile, logger);
+                    list = GitCommand.doPull(root, logger);
                 }
             }            
                        

@@ -153,7 +153,7 @@ public class RevertModificationsAction extends ContextAction {
             }
             logger.output(""); // NOI18N
 
-            GitCommand.doRevert(repository, revertFiles, revStr, doBackup, logger);
+            GitCommand.doCheckout(repository, revertFiles, revStr, doBackup, logger);
             FileStatusCache cache = Git.getInstance().getFileStatusCache();
             File[] conflictFiles = cache.listFiles(revertFiles.toArray(new File[0]), FileInformation.STATUS_VERSIONED_CONFLICT);
             if (conflictFiles.length != 0) {

@@ -118,7 +118,7 @@ public class BackoutAction extends ContextAction {
                     logger.output(
                                 NbBundle.getMessage(BackoutAction.class,
                                 "MSG_BACKOUT_INFO_SEP", revStr, root.getAbsolutePath())); // NOI18N
-                    List<String> list = GitCommand.doBackout(root, revStr, doMerge, commitMsgStr, logger);
+                    List<String> list = GitCommand.doRevert(root, revStr, doMerge, commitMsgStr, logger);
                     
                     if(list != null && !list.isEmpty()){ 
                         boolean bMergeNeededDueToBackout = GitCommand.isBackoutMergeNeededMsg(list.get(list.size() - 1));

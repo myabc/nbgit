@@ -74,7 +74,6 @@ import org.netbeans.modules.versioning.spi.VCSContext;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
-import org.openide.util.NotImplementedException;
 
 /**
  *
@@ -112,8 +111,8 @@ public final class GitCommand {
     private static final String GIT_COMMIT_TEMPNAME_SUFFIX = ".gitm"; // NOI18N
     private static final String GIT_COMMIT_DEFAULT_MESSAGE = "[no commit message]"; // NOI18N
 
-    private static final String GIT_REVERT_CMD = "revert"; // NOI18N
-    private static final String GIT_REVERT_NOBACKUP_CMD = "--no-backup"; // NOI18N
+    private static final String GIT_CHECKOUT_CMD = "checkout"; // NOI18N
+
     private static final String GIT_ADD_CMD = "add"; // NOI18N
 
     private static final String GIT_BRANCH_CMD = "branch"; // NOI18N
@@ -123,17 +122,13 @@ public final class GitCommand {
     private static final String GIT_BRANCH_INFO_TEMPLATE_CMD = "--template={branches}:{rev}:{node|short}\\n"; // NOI18N
     private static final String GIT_GET_PREVIOUS_TEMPLATE_CMD = "--template={files}\\n"; // NOI18N
 
-    private static final String GIT_CREATE_CMD = "init"; // NOI18N
+    private static final String GIT_INIT_CMD = "init"; // NOI18N
     private static final String GIT_CLONE_CMD = "clone"; // NOI18N
-
-    private static final String GIT_UPDATE_ALL_CMD = "update"; // NOI18N
-    private static final String GIT_UPDATE_FORCE_ALL_CMD = "-C"; // NOI18N
 
     private static final String GIT_REMOVE_CMD = "rm"; // NOI18N
     private static final String GIT_REMOVE_FLAG_FORCE_CMD = "-f"; // NOI18N
 
     private static final String GIT_LOG_CMD = "log"; // NOI18N
-    private static final String GIT_OUT_CMD = "out"; // NOI18N
     private static final String GIT_LOG_LIMIT_ONE_CMD = "-l 1"; // NOI18N
     private static final String GIT_LOG_LIMIT_CMD = "-l"; // NOI18N
     private static final String GIT_LOG_TEMPLATE_SHORT_CMD = "--template={rev}\\n{desc|firstline}\\n{date|gitdate}\\n{node|short}\\n"; // NOI18N
@@ -159,7 +154,7 @@ public final class GitCommand {
     private static final String GIT_REV_TEMPLATE_CMD = "--template={rev}\\n"; // NOI18N
     private static final String GIT_CSET_TARGET_TEMPLATE_CMD = "--template={rev} ({node|short})\\n"; // NOI18N
 
-    private static final String GIT_CAT_CMD = "cat"; // NOI18N
+    private static final String GIT_CAT_FILE_CMD = "cat-file"; // NOI18N
     private static final String GIT_FLAG_OUTPUT_CMD = "--output"; // NOI18N
 
     private static final String GIT_ANNOTATE_CMD = "annotate"; // NOI18N
@@ -182,16 +177,19 @@ public final class GitCommand {
     public static final String GIT_GITK_PATH_SOLARIS10 = "/usr/demo/gitk"; // NOI18N
     private static final String GIT_GITK_PATH_SOLARIS10_ENV = "PATH=/usr/bin/:/usr/sbin:/bin:"+ GIT_GITK_PATH_SOLARIS10; // NOI18N
 
+    private static final String GIT_GC_CMD = "gc"; // NOI18N
+    private static final String GIT_FSCK_CMD = "fsck"; // NOI18N
+    private static final String GIT_PRUNE_CMD = "prune"; // NOI18N
+
     private static final String GIT_PULL_CMD = "pull"; // NOI18N
     private static final String GIT_UPDATE_CMD = "-u"; // NOI18N
     private static final String GIT_PUSH_CMD = "push"; // NOI18N
-    private static final String GIT_UNBUNDLE_CMD = "unbundle"; // NOI18N
+    private static final String GIT_PUSH_DRY_RUN_OPT = "--dry-run"; // NOI18N
     private static final String GIT_ROLLBACK_CMD = "rollback"; // NOI18N
 
-    private static final String GIT_BACKOUT_CMD = "backout"; // NOI18N
-    private static final String GIT_BACKOUT_MERGE_CMD = "--merge"; // NOI18N
-    private static final String GIT_BACKOUT_COMMIT_MSG_CMD = "-m"; // NOI18N
-    private static final String GIT_BACKOUT_REV_CMD = "-r"; // NOI18N
+    private static final String GIT_REVERT_CMD = "revert"; // NOI18N
+    private static final String GIT_REVERT_COMMIT_MSG_CMD = "-m"; // NOI18N
+    private static final String GIT_REVERT_COMMITSHA_CMD = "-r"; // NOI18N
 
     private static final String GIT_STRIP_CMD = "strip"; // NOI18N
     private static final String GIT_STRIP_EXT_CMD = "extensions.mq="; // NOI18N
@@ -200,7 +198,7 @@ public final class GitCommand {
 
     private static final String GIT_VERSION_CMD = "version"; // NOI18N
     private static final String GIT_INCOMING_CMD = "incoming"; // NOI18N
-    private static final String GIT_OUTGOING_CMD = "outgoing"; // NOI18N
+
     private static final String GIT_VIEW_CMD = "view"; // NOI18N
     private static final String GIT_VERBOSE_CMD = "-v"; // NOI18N
     private static final String GIT_CONFIG_OPTION_CMD = "--config"; // NOI18N
@@ -305,49 +303,6 @@ public final class GitCommand {
     }
 
     /**
-     * Update the working directory to the tip revision.
-     * By default, update will refuse to run if doing so would require
-     * merging or discarding local changes.
-     *
-     * @param File repository of the Git repository's root directory
-     * @param Boolean force an Update and overwrite any modified files in the  working directory
-     * @param String revision to be updated to
-     * @param Boolean throw exception on error
-     * @return git update output
-     * @throws org.netbeans.modules.git.GitException
-     */
-    public static List<String> doUpdateAll(File repository, boolean bForce, String revision, boolean bThrowException) throws GitException {
-        if (repository == null ) return null;
-        List<String> command = new ArrayList<String>();
-
-        command.add(getGitCommand());
-        command.add(GIT_OPT_GIT_DIR);
-        command.add(repository.getAbsolutePath());
-        command.add(GIT_UPDATE_ALL_CMD);
-        if (bForce) command.add(GIT_UPDATE_FORCE_ALL_CMD);
-
-        if (revision != null){
-            command.add(revision);
-        }
-
-        List<String> list = exec(command);
-        if (bThrowException) {
-            if (!list.isEmpty()) {
-                if  (isErrorUpdateSpansBranches(list.get(0))) {
-                    throw new GitException(NbBundle.getMessage(GitCommand.class, "MSG_WARN_UPDATE_MERGE_TEXT"));
-                } else if (isMergeAbortUncommittedMsg(list.get(0))) {
-                    throw new GitException(NbBundle.getMessage(GitCommand.class, "MSG_WARN_UPDATE_COMMIT_TEXT"));
-                }
-            }
-        }
-        return list;
-    }
-
-    public static List<String> doUpdateAll(File repository, boolean bForce, String revision) throws GitException {
-        return doUpdateAll(repository, bForce, revision, true);
-    }
-
-    /**
      * Roll back the last transaction in this repository.
      *
      * Transactions are used to encapsulate the effects of all commands
@@ -377,7 +332,19 @@ public final class GitCommand {
 
         return list;
     }
-    public static List<String> doBackout(File repository, String revision,
+
+    /**
+     * Revert an existing commit.
+     *
+     * @param repository
+     * @param revision
+     * @param doMerge
+     * @param commitMsg
+     * @param logger
+     * @return
+     * @throws org.netbeans.modules.git.GitException
+     */
+    public static List<String> doRevert(File repository, String revision,
             boolean doMerge, String commitMsg, OutputLogger logger) throws GitException {
         if (repository == null ) return null;
         List<String> env = new ArrayList<String>();
@@ -387,22 +354,22 @@ public final class GitCommand {
         command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
 
-        command.add(GIT_BACKOUT_CMD);
-        if(doMerge){
-            command.add(GIT_BACKOUT_MERGE_CMD);
-            env.add(GIT_MERGE_ENV);
-        }
+        command.add(GIT_REVERT_CMD);
+//        if(doMerge){
+//            command.add(GIT_BACKOUT_MERGE_CMD);
+//            env.add(GIT_MERGE_ENV);
+//        }
 
         if (commitMsg != null && !commitMsg.equals("")) { // NOI18N
-            command.add(GIT_BACKOUT_COMMIT_MSG_CMD);
+            command.add(GIT_REVERT_COMMIT_MSG_CMD);
             command.add(commitMsg);
         } else {
-            command.add(GIT_BACKOUT_COMMIT_MSG_CMD);
+            command.add(GIT_REVERT_COMMIT_MSG_CMD);
             command.add(NbBundle.getMessage(GitCommand.class, "MSG_BACKOUT_MERGE_COMMIT_MSG", revision));  // NOI18N
         }
 
         if (revision != null){
-            command.add(GIT_BACKOUT_REV_CMD);
+            command.add(GIT_REVERT_COMMITSHA_CMD);
             command.add(revision);
         }
 
@@ -485,16 +452,76 @@ public final class GitCommand {
         return list;
     }
 
+    /**
+     * Verifies the connectivity and validity of the objects in the database.
+     *
+     * @param repository
+     * @param logger
+     * @return
+     * @throws org.netbeans.modules.git.GitException
+     */
     public static List<String> doFsck(File repository, OutputLogger logger) throws GitException {
-        throw new NotImplementedException("not implemented");
+        if (repository == null) return null;
+        List<String> command = new ArrayList<String>();
+
+        command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
+        command.add(GIT_FSCK_CMD);
+
+        List<String> list = exec(command);
+        if (list.isEmpty())
+            handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_FSCK_FAILED"), logger);
+
+        return list;
     }
 
+    /**
+     * Cleanup unnecessary files and optimize the local repository.
+     *
+     * @param repository
+     * @param logger
+     * @return
+     * @throws org.netbeans.modules.git.GitException
+     */
     public static List<String> goGc(File repository, OutputLogger logger) throws GitException {
-        throw new NotImplementedException("not implemented");
+        if (repository == null) return null;
+        List<String> command = new ArrayList<String>();
+
+        command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
+        command.add(GIT_GC_CMD);
+
+        List<String> list = exec(command);
+        if (list.isEmpty())
+            handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_GC_FAILED"), logger);
+
+        return list;
     }
 
+    /**
+     * Prune all unreachable objects from the object database.
+     *
+     * @param repository
+     * @param logger
+     * @return
+     * @throws org.netbeans.modules.git.GitException
+     */
     public static List<String> doPrune(File repository, OutputLogger logger) throws GitException {
-        throw new NotImplementedException("not implemented");
+        if (repository == null) return null;
+        List<String> command = new ArrayList<String>();
+
+        command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath());
+        command.add(GIT_PRUNE_CMD);
+
+        List<String> list = exec(command);
+        if (list.isEmpty())
+            handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_PRUNE_FAILED"), logger);
+
+        return list;
     }
 
     /**
@@ -553,44 +580,12 @@ public final class GitCommand {
         return list;
     }
 
-   /**
-     * Unbundle changes from the specified local source repository and
-     * update working directory.
-     * By default, update will refuse to run if doing so would require
-     * merging or discarding local changes.
-     *
-     * @param File repository of the Git repository's root directory
-     * @param File bundle identfies the compressed changegroup file to be applied
-     * @return git unbundle output
-     * @throws org.netbeans.modules.git.GitException
-     */
-    public static List<String> doUnbundle(File repository, File bundle, OutputLogger logger) throws GitException {
-        if (repository == null ) return null;
-        List<String> command = new ArrayList<String>();
-
-        command.add(getGitCommand());
-        command.add(GIT_OPT_GIT_DIR);
-        command.add(repository.getAbsolutePath());
-        command.add(GIT_UNBUNDLE_CMD);
-        command.add(GIT_UPDATE_CMD);
-        if (bundle != null) {
-            command.add(bundle.getAbsolutePath());
-        }
-
-        List<String> list = exec(command);
-        if (!list.isEmpty() &&
-             isErrorAbort(list.get(list.size() -1))) {
-            handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_COMMAND_ABORTED"), logger);
-        }
-        return list;
-    }
-
     /**
      * Show the changesets that would be pulled if a pull
      * was requested from the default pull location
      *
      * @param File repository of the Git repository's root directory
-     * @return git incoming output
+     * @return incoming output
      * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doIncoming(File repository, OutputLogger logger) throws GitException {
@@ -604,41 +599,55 @@ public final class GitCommand {
      * @param File repository of the Git repository's root directory
      * @param String source repository to query
      * @param File bundle to store downloaded changesets.
-     * @return git incoming output
+     * @return incoming output
      * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doIncoming(File repository, String from, File bundle, OutputLogger logger) throws GitException {
+        //
+        // doing a fetch and then `git log ..remote/branch` should provide us
+        // with an equivalent to `hg incoming` command.
+
         if (repository == null ) return null;
-        List<String> command = new ArrayList<String>();
+        List<String> command1 = new ArrayList<String>();
+        List<String> command2 = new ArrayList<String>();
 
-        command.add(getGitCommand());
-        command.add(GIT_OPT_GIT_DIR);
-        command.add(repository.getAbsolutePath());
-
-        command.add(GIT_INCOMING_CMD);
-        command.add(GIT_VERBOSE_CMD);
-
+        command1.add(getGitCommand());
+        command1.add(GIT_OPT_GIT_DIR);
+        command1.add(repository.getAbsolutePath());
+        command1.add(GIT_FETCH_CMD);
 
         if (from != null) {
-            command.add(from);
+            command1.add(from);
         }
 
-        List<String> list;
+        List<String> list1;
+        List<String> list2;
+
         String defaultPull = new GitConfigFiles(repository).getDefaultPull(false);
         String proxy = getGlobalProxyIfNeeded(defaultPull, false, null);
         if(proxy != null){
             List<String> env = new ArrayList<String>();
             env.add(GIT_PROXY_ENV + proxy);
-            list = execEnv(command, env);
+            list1 = execEnv(command1, env);
         }else{
-            list = exec(command);
+            list1 = exec(command1);
         }
 
-        if (!list.isEmpty() &&
-             isErrorAbort(list.get(list.size() -1))) {
-            handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_COMMAND_ABORTED"), logger);
-        }
-        return list;
+        if (!list1.isEmpty() &&
+             isErrorAbort(list1.get(list1.size() -1))) {
+            handleError(command1, list1, NbBundle.getMessage(GitCommand.class, "MSG_COMMAND_ABORTED"), logger);
+        }//
+
+        // then run a log
+        command2.add(getGitCommand());
+        command2.add(GIT_OPT_GIT_DIR);
+        command2.add(repository.getAbsolutePath());
+
+        command2.add(GIT_FETCH_CMD);
+        command2.add("HEAD..remote/branch");    // TODO: specify this properly
+
+        list2 = exec(command2);
+        return list2;
     }
 
     /**
@@ -650,7 +659,7 @@ public final class GitCommand {
      * @return git outgoing output
      * @throws org.netbeans.modules.git.GitException
      */
-    public static List<String> doOutgoing(File repository, String to, OutputLogger logger) throws GitException {
+    public static List<String> doPushDryRun(File repository, String to, OutputLogger logger) throws GitException {
         if (repository == null ) return null;
         List<String> command = new ArrayList<String>();
 
@@ -658,7 +667,8 @@ public final class GitCommand {
         command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
 
-        command.add(GIT_OUTGOING_CMD);
+        command.add(GIT_PUSH_CMD);
+        command.add(GIT_PUSH_DRY_RUN_OPT);
         command.add(GIT_VERBOSE_CMD);
 
         command.add(to);
@@ -890,18 +900,17 @@ public final class GitCommand {
         final List<GitLogMessage> messages = new ArrayList<GitLogMessage>(0);
         final File root = new File(rootUrl);
 
-        try {
-
+        //try {
             List<String> list = new LinkedList<String>();
-            list = GitCommand.doOut(root, bShowMerges, logger);
+            //list; //GitCommand.doOut(root, bShowMerges, logger);
             processLogMessages(list, messages);
 
-        } catch (GitException ex) {
-            NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
-            DialogDisplayer.getDefault().notifyLater(e);
-        } finally {
-            logger.closeLog();
-        }
+        //} catch (GitException ex) {
+        //    NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
+        //    DialogDisplayer.getDefault().notifyLater(e);
+        //} finally {
+        //    logger.closeLog();
+        //}
 
         return messages.toArray(new GitLogMessage[0]);
     }
@@ -1220,52 +1229,6 @@ public final class GitCommand {
     }
 
     /**
-     * Retrives the Out information for the specified repository
-     *
-     * @param File repository of the Git repository's root directory
-     * @return List<String> list of the out entries for the specified repo.
-     * @throws org.netbeans.modules.git.GitException
-     */
-    public static List<String> doOut(File repository, boolean bShowMerges, OutputLogger logger) throws GitException {
-        if (repository == null ) return null;
-
-        List<String> command = new ArrayList<String>();
-
-        command.add(getGitCommand());
-        command.add(GIT_OPT_GIT_DIR);
-        command.add(repository.getAbsolutePath());
-        command.add(GIT_OUT_CMD);
-
-        if(!bShowMerges){
-            command.add(GIT_LOG_NO_MERGES_CMD);
-        }
-        command.add(GIT_LOG_DEBUG_CMD);
-
-        command.add(GIT_LOG_TEMPLATE_HISTORY_CMD);
-
-        List<String> list;
-        String defaultPush = new GitConfigFiles(repository).getDefaultPush(false);
-        String proxy = getGlobalProxyIfNeeded(defaultPush, false, null);
-        if(proxy != null){
-            List<String> env = new ArrayList<String>();
-            env.add(GIT_PROXY_ENV + proxy);
-            list = execEnv(command, env);
-        }else{
-            list = exec(command);
-        }
-        if (!list.isEmpty()) {
-            if(isErrorNoDefaultPush(list.get(0))){
-                // Ignore
-            }else if (isErrorNoRepository(list.get(0))) {
-                handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_NO_REPOSITORY_ERR"), logger);
-             } else if (isErrorAbort(list.get(0))) {
-                handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_COMMAND_ABORTED"), logger);
-             }
-        }
-        return list;
-    }
-
-        /**
      * Retrives the Incoming changeset information for the specified repository
      *
      * @param File repository of the Git repository's root directory
@@ -1273,6 +1236,8 @@ public final class GitCommand {
      * @throws org.netbeans.modules.git.GitException
      */
     public static List<String> doIncomingForSearch(File repository, String to, boolean bShowMerges, OutputLogger logger) throws GitException {
+        // TODO: Can't find equivalent for this hg command.
+
         if (repository == null ) return null;
 
         List<String> command = new ArrayList<String>();
@@ -1452,6 +1417,7 @@ public final class GitCommand {
 
         return revStr;
     }
+
     /**
      * Retrieves the base revision of the specified file to the
      * specified output file.
@@ -1461,8 +1427,8 @@ public final class GitCommand {
      * @param File outFile to contain the contents of the file
      * @throws org.netbeans.modules.git.GitException
      */
-    public static void doCat(File repository, File file, File outFile, OutputLogger logger) throws GitException {
-        doCat(repository, file, outFile, "tip", false, logger); //NOI18N
+    public static void doCatFile(File repository, File file, File outFile, OutputLogger logger) throws GitException {
+        doCatFile(repository, file, outFile, "tip", false, logger); //NOI18N
     }
 
     /**
@@ -1477,11 +1443,11 @@ public final class GitCommand {
      * @return List<String> list of all the log entries
      * @throws org.netbeans.modules.git.GitException
      */
-    public static void doCat(File repository, File file, File outFile, String revision, OutputLogger logger) throws GitException {
-        doCat(repository, file, outFile, revision, true, logger); //NOI18N
+    public static void doCatFile(File repository, File file, File outFile, String revision, OutputLogger logger) throws GitException {
+        doCatFile(repository, file, outFile, revision, true, logger); //NOI18N
     }
 
-    public static void doCat(File repository, File file, File outFile, String revision, boolean retry, OutputLogger logger) throws GitException {
+    public static void doCatFile(File repository, File file, File outFile, String revision, boolean retry, OutputLogger logger) throws GitException {
         if (repository == null) return;
         if (file == null) return;
 
@@ -1490,7 +1456,7 @@ public final class GitCommand {
         command.add(getGitCommand());
         command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
-        command.add(GIT_CAT_CMD);
+        command.add(GIT_CAT_FILE_CMD);
         command.add(GIT_FLAG_OUTPUT_CMD);
         command.add(outFile.getAbsolutePath());
 
@@ -1513,7 +1479,7 @@ public final class GitCommand {
             String newRevision = Integer.toString(Integer.parseInt(revision)+1);
             File prevFile = getPreviousName(repository, file, newRevision);
             if (prevFile != null) {
-                doCat(repository, prevFile, outFile, revision, false, logger); //NOI18N
+                doCatFile(repository, prevFile, outFile, revision, false, logger); //NOI18N
             }
         }
     }
@@ -1533,7 +1499,7 @@ public final class GitCommand {
 
         command.add(getGitCommand());
         command.add("--git-dir=" + root.getAbsolutePath() + "/.git");
-        command.add(GIT_CREATE_CMD);
+        command.add(GIT_INIT_CMD);
 
         List<String> list = exec(command);
         if (list.isEmpty()) {
@@ -1728,16 +1694,16 @@ public final class GitCommand {
     }
 
     /**
-     * Adds the list of Locally New files to the Git Repository.
-     * Their status will change to added and they will be added on the next
-     * git add.
+     * Adds a list of locally new files to be tracked the Git Repository.
+     * Their status will change to added and their content will be included at
+     * the next git commit.
      *
      * @param File repository of the Git repository's root directory
      * @param List<Files> of files to be added to Git
      * @return void
      * @throws org.netbeans.modules.git.GitException
      */
-    public static void doAdd(File repository, List<File> addFiles, OutputLogger logger)  throws GitException {
+    public static void doAdd(File repository, List<File> addFiles, OutputLogger logger) throws GitException {
         if (repository == null) return;
         if (addFiles.size() == 0) return;
         List<String> command = new ArrayList<String>();
@@ -1760,15 +1726,15 @@ public final class GitCommand {
     }
 
     /**
-     * Reverts the list of files in the Git Repository to the specified revision
+     * Checks outs the list of files in the Git Repository to the specified revision
      *
      * @param File repository of the Git repository's root directory
-     * @param List<Files> of files to be reverted
-     * @param String revision to be reverted to
+     * @param List<Files> of files to be checked out
+     * @param String revision to be checked out to
      * @return void
      * @throws org.netbeans.modules.git.GitException
      */
-    public static void doRevert(File repository, List<File> revertFiles,
+    public static void doCheckout(File repository, List<File> revertFiles,
             String revision, boolean doBackup, OutputLogger logger)  throws GitException {
         if (repository == null) return;
         if (revertFiles.size() == 0) return;
@@ -1778,9 +1744,9 @@ public final class GitCommand {
         command.add(getGitCommand());
         command.add(GIT_OPT_GIT_DIR);
         command.add(repository.getAbsolutePath());
-        command.add(GIT_REVERT_CMD);
+        command.add(GIT_CHECKOUT_CMD);
         if(!doBackup){
-            command.add(GIT_REVERT_NOBACKUP_CMD);
+            //
         }
         if (revision != null){
             command.add(GIT_FLAG_REV_CMD);
@@ -1796,16 +1762,16 @@ public final class GitCommand {
     }
 
     /**
-     * Adds a Locally New file to the Git Repository
-     * The status will change to added and they will be added on the next
-     * git commit.
+     * Adds a locally new file to the Git Repository.
+     * The status will change to added and its content will be included at the
+     * next git commit.
      *
      * @param File repository of the Git repository's root directory
      * @param File of file to be added to Git
      * @return void
      * @throws org.netbeans.modules.git.GitException
      */
-    public static void doAdd(File repository, File file, OutputLogger logger)  throws GitException {
+    public static void doAdd(File repository, File file, OutputLogger logger) throws GitException {
         if (repository == null) return;
         if (file == null) return;
         if (file.isDirectory()) return;
@@ -2427,7 +2393,7 @@ public final class GitCommand {
      * @param File patchFile of the patch file
      * @throws org.netbeans.modules.git.GitException
      */
-    public static List<String> doApply(File repository, File patchFile, OutputLogger logger)  throws GitException {
+    public static List<String> doApply(File repository, File patchFile, OutputLogger logger) throws GitException {
         List<String> command = new ArrayList<String>();
 
         command.add(getGitCommand());
@@ -2564,7 +2530,7 @@ public final class GitCommand {
     /**
      * Gets git status command output line for a given file
      */
-    private static List<String> doSingleStatusCmd(File repository, String cwd, String filename)  throws GitException{
+    private static List<String> doSingleStatusCmd(File repository, String cwd, String filename) throws GitException{
         String statusLine = null;
 
         List<String> command = new ArrayList<String>();
@@ -2574,7 +2540,6 @@ public final class GitCommand {
         command.add(repository.getAbsolutePath());
         command.add(GIT_STATUS_CMD);
         command.add(GIT_STATUS_FLAG_ALL_CMD);
-
         command.add(new File(cwd, filename).getAbsolutePath().substring(repository.getAbsolutePath().length()+1));
 
         return exec(command);

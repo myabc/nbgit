@@ -9,11 +9,18 @@ This module currently targets NetBeans 6.1 and above.
 The code is ported directly from the Mercurial Module (included as part of the 
 NetBeans core distribution, as of NetBeans 6.1).
 
+Pre-Requisites
+--------------
+
+ * Install Git (version 1.5.6 or 1.6.0):
+  * on OS X / Linux / Solaris, install from Source:  http://git.or.cz/
+  * on Windows, install the binaries using MSys Git: http://code.google.com/p/msysgit/
+
 Warning
 -------
 
 **PLEASE READ BEFORE DOWNLOADING**
-As of 7 August 2008, this Module is under **heavy development** and is not yet
+As of 19 August 2008, this Module is under **heavy development** and is not yet
 suitable for end-users who want Git functionality within NetBeans. If you've
 got NetBeans and Java experience, please feel clone, download, and experiment.
 *If you're looking for a working NetBeans module, this project is not there yet!

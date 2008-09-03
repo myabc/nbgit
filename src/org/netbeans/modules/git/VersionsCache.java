@@ -85,7 +85,8 @@ public class VersionsCache {
 
                 GitCommand.doCatFile(repository, base, tempFile, null);
                 if (tempFile.length() == 0) {
-                    return null;
+                    /* File may be just be empty*/
+                    //return null;
                 }
                 return tempFile;
             } catch (GitException e) {

@@ -86,11 +86,23 @@ public final class GitCommand {
     public static final String GITK_COMMAND = "gitk"; // NOI18N
     public static final String GIT_GUI_COMMAND = "git-gui"; // NOI8N
 
+    private static final String GIT_HEAD = "HEAD"; // NOI18N
+
+    private static final String GIT_REPO_DIR = ".git"; // NOI8N
+
+    private static final String GIT_LS_TREE_CMD = "ls-tree";  // NOI18N
+
     private static final String GIT_STATUS_CMD = "status";  // NOI18N
+    private static final String GIT_DIFF_INDEX_CMD = "diff-index"; // NOI18N
+    private static final String GIT_DIFF_CMD = "diff"; // NOI18N
 
     private static final String GIT_OPT_GIT_DIR = "--git-dir"; // NOI18N
+    private static final String GIT_OPT_WORK_TREE = "--work-tree"; // NOI18N
     private static final String GIT_OPT_AUTHOR = "--author"; // NOI18N
     private static final String GIT_OPT_NO_PAGER = "--no-pager"; // NOI18N
+    private static final String GIT_OPT_CACHED = "--cached"; // NOI18N
+
+    private static final String GIT_OPT_NAME_STATUS= "--name-status"; // NOI18N
 
     private static final String GIT_OPT_FOLLOW = "--follow"; // NOI18N
     private static final String GIT_STATUS_FLAG_ALL_CMD = "-marduicC"; // NOI18N
@@ -129,8 +141,8 @@ public final class GitCommand {
     private static final String GIT_REMOVE_FLAG_FORCE_CMD = "-f"; // NOI18N
 
     private static final String GIT_LOG_CMD = "log"; // NOI18N
-    private static final String GIT_LOG_LIMIT_ONE_CMD = "-l 1"; // NOI18N
-    private static final String GIT_LOG_LIMIT_CMD = "-l"; // NOI18N
+    private static final String GIT_LOG_LIMIT_ONE_CMD = "-1"; // NOI18N
+    private static final String GIT_LOG_LIMIT_CMD = "-"; // NOI18N
     private static final String GIT_LOG_TEMPLATE_SHORT_CMD = "--template={rev}\\n{desc|firstline}\\n{date|gitdate}\\n{node|short}\\n"; // NOI18N
     private static final String GIT_LOG_TEMPLATE_LONG_CMD = "--template={rev}\\n{desc}\\n{date|gitdate}\\n{node|short}\\n"; // NOI18N
 
@@ -152,9 +164,12 @@ public final class GitCommand {
 
     private static final String GIT_CSET_TEMPLATE_CMD = "--template={rev}:{node|short}\\n"; // NOI18N
     private static final String GIT_REV_TEMPLATE_CMD = "--template={rev}\\n"; // NOI18N
-    private static final String GIT_CSET_TARGET_TEMPLATE_CMD = "--template={rev} ({node|short})\\n"; // NOI18N
+
+    /* FIXME: Not ready. Need to learn this stuff! */
+    private static final String GIT_CSET_TARGET_TEMPLATE_CMD = "--pretty=format:%H (%s)"; // NOI18N
 
     private static final String GIT_CAT_FILE_CMD = "cat-file"; // NOI18N
+    private static final String GIT_BLOB_TYPE = "blob"; // NOI18N
     private static final String GIT_FLAG_OUTPUT_CMD = "--output"; // NOI18N
 
     private static final String GIT_ANNOTATE_CMD = "annotate"; // NOI18N
@@ -254,14 +269,14 @@ public final class GitCommand {
     private static final String GIT_LOCAL_CHANGES_STRIP_ERR = "abort: local changes found"; // NOI18N
     private static final String GIT_MULTIPLE_HEADS_STRIP_ERR = "no rollback information available"; // NOI18N
 
-    private static final char GIT_STATUS_CODE_MODIFIED = 'M' + ' ';    // NOI18N // STATUS_VERSIONED_MODIFIEDLOCALLY
-    private static final char GIT_STATUS_CODE_ADDED = 'A' + ' ';      // NOI18N // STATUS_VERSIONED_ADDEDLOCALLY
-    private static final char GIT_STATUS_CODE_REMOVED = 'R' + ' ';   // NOI18N  // STATUS_VERSIONED_REMOVEDLOCALLY - still tracked, git update will recover, git commit
-    private static final char GIT_STATUS_CODE_CLEAN = 'C' + ' ';     // NOI18N  // STATUS_VERSIONED_UPTODATE
-    private static final char GIT_STATUS_CODE_DELETED = '!' + ' ';    // NOI18N // STATUS_VERSIONED_DELETEDLOCALLY - still tracked, git update will recover, git commit no effect
-    private static final char GIT_STATUS_CODE_NOTTRACKED = '?' + ' '; // NOI18N // STATUS_NOTVERSIONED_NEWLOCALLY - not tracked
-    private static final char GIT_STATUS_CODE_IGNORED = 'I' + ' ';     // NOI18N // STATUS_NOTVERSIONED_EXCLUDE - not shown by default
-    private static final char GIT_STATUS_CODE_CONFLICT = 'X' + ' ';    // NOI18N // STATUS_VERSIONED_CONFLICT - TODO when Git status supports conflict markers
+    private static final char GIT_STATUS_CODE_MODIFIED = 'M';    // NOI18N // STATUS_VERSIONED_MODIFIEDLOCALLY
+    private static final char GIT_STATUS_CODE_ADDED = 'A';      // NOI18N // STATUS_VERSIONED_ADDEDLOCALLY
+    private static final char GIT_STATUS_CODE_REMOVED = 'R';   // NOI18N  // STATUS_VERSIONED_REMOVEDLOCALLY - still tracked, git update will recover, git commit
+    private static final char GIT_STATUS_CODE_CLEAN = 'C';     // NOI18N  // STATUS_VERSIONED_UPTODATE
+    private static final char GIT_STATUS_CODE_DELETED = 'D';    // NOI18N // STATUS_VERSIONED_DELETEDLOCALLY - still tracked, git update will recover, git commit no effect
+    private static final char GIT_STATUS_CODE_NOTTRACKED = '?'; // NOI18N // STATUS_NOTVERSIONED_NEWLOCALLY - not tracked
+    private static final char GIT_STATUS_CODE_IGNORED = 'I';     // NOI18N // STATUS_NOTVERSIONED_EXCLUDE - not shown by default
+    private static final char GIT_STATUS_CODE_CONFLICT = 'X';    // NOI18N // STATUS_VERSIONED_CONFLICT - TODO when Git status supports conflict markers
 
     private static final char GIT_STATUS_CODE_ABORT = 'a' + 'b';    // NOI18N
     public static final String GIT_STR_CONFLICT_EXT = ".conflict~"; // NOI18N
@@ -1418,6 +1433,42 @@ public final class GitCommand {
         return revStr;
     }
 
+    public static String getHashByPath (File repository, String treeIsh, String path, OutputLogger logger) throws GitException
+    {
+        if (repository == null) return null;
+        if (path == null) return null;
+
+        List<String> command = new ArrayList<String>();
+
+        command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath() + File.separator + GIT_REPO_DIR);
+        command.add(GIT_OPT_WORK_TREE);
+        command.add(repository.getAbsolutePath());
+        command.add(GIT_LS_TREE_CMD);
+
+        if (treeIsh == null)
+            command.add (GIT_HEAD); else
+            command.add (treeIsh);
+      
+        command.add(path);
+
+        List<String> list = exec(command);
+        if (!list.isEmpty()) {
+            if (isErrorNoRepository(list.get(0))) {
+                handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_NO_REPOSITORY_ERR"), logger);
+             } else if (isErrorAbort(list.get(0))) {
+                handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_COMMAND_ABORTED"), logger);
+             }
+        }
+
+        String s = list.get (0);
+
+        /* 100644 blob dae170850363671dfe0039b2440e1bed519bed7d    .gitignore */
+        String[] strings = s.split ("\\s+");
+        return strings[2];
+    }
+
     /**
      * Retrieves the base revision of the specified file to the
      * specified output file.
@@ -1455,16 +1506,29 @@ public final class GitCommand {
 
         command.add(getGitCommand());
         command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath() + File.separator + GIT_REPO_DIR);
+        command.add(GIT_OPT_WORK_TREE);
         command.add(repository.getAbsolutePath());
         command.add(GIT_CAT_FILE_CMD);
-        command.add(GIT_FLAG_OUTPUT_CMD);
-        command.add(outFile.getAbsolutePath());
 
         if (revision != null) {
-            command.add(GIT_FLAG_REV_CMD);
-            command.add(revision);
+            /* FIXME: Not implemented yet! */
+            /* command.add(GIT_FLAG_REV_CMD);
+            command.add(revision); */
         }
-        command.add(file.getAbsolutePath());
+
+        command.add(GIT_BLOB_TYPE);
+
+        try
+        {
+          String hash = getHashByPath (repository, null, file.getCanonicalFile ().getAbsolutePath (), logger);
+          command.add (hash);
+        }
+        catch (Exception e)
+        {
+          return;
+        }
+
         List<String> list = exec(command);
 
         if (!list.isEmpty()) {
@@ -1474,6 +1538,18 @@ public final class GitCommand {
                 handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_COMMAND_ABORTED"), logger);
              }
         }
+
+        /* Save content of buffer to temporary file */
+         try
+         {
+            java.io.PrintWriter out = new java.io.PrintWriter(new java.io.FileWriter(outFile.getAbsoluteFile ()));
+            for (int i = 0; i < list.size (); ++i)
+              out.println (list.get (i));
+            out.close();
+         }
+         catch (IOException e) {
+         }
+
         if (outFile.length() == 0 && retry) {
             // Perhaps the file has changed its name
             String newRevision = Integer.toString(Integer.parseInt(revision)+1);
@@ -1858,11 +1934,12 @@ public final class GitCommand {
 
         command.add(getGitCommand());
         command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath() + File.separator + GIT_REPO_DIR);
+        command.add(GIT_OPT_WORK_TREE);
         command.add(repository.getAbsolutePath());
         command.add(GIT_LOG_CMD);
         if (limit >= 0) {
-                command.add(GIT_LOG_LIMIT_CMD);
-                command.add(Integer.toString(limit));
+                command.add(GIT_LOG_LIMIT_CMD + Integer.toString(limit));
         }
 
         command.add(GIT_CSET_TARGET_TEMPLATE_CMD);
@@ -2488,9 +2565,12 @@ public final class GitCommand {
         FileInformation info = null;
         if (status == null || (status.length() == 0)) return new FileInformation(FileInformation.STATUS_VERSIONED_UPTODATE, null, false);
 
-        char c0 = status.charAt(0);
-        char c1 = status.charAt(1);
-        switch(c0 + c1) {
+        /* Not perfect */
+        /* Only GIT_STATUS_CODE_MODIFIED will be work properly */
+        /*
+         * TODO: Need to fix this
+         */
+        switch(status.charAt(0)) {
         case GIT_STATUS_CODE_MODIFIED:
             info = new FileInformation(FileInformation.STATUS_VERSIONED_MODIFIEDLOCALLY,null, false);
             break;
@@ -2549,35 +2629,61 @@ public final class GitCommand {
      * Gets git status command output list for the specified status flags for a given repository and directory
      */
     private static List<String> doRepositoryDirStatusCmd(File repository, File dir, String statusFlags)  throws GitException{
-        List<String> command = new ArrayList<String>();
+        List<String> status =  new ArrayList<String> ();
+        for (int i = 0; i < 2; i++)
+        {
+            List<String> command = new ArrayList<String>();
 
-        command.add(getGitCommand());
-        command.add(GIT_OPT_GIT_DIR);
-        command.add(repository.getAbsolutePath());
-        command.add(GIT_STATUS_CMD);
-
-        command.add(statusFlags);
-
-        if (dir != null) {
-            command.add(dir.getAbsolutePath());
-        } else {
+            command.add(getGitCommand());
+            command.add(GIT_OPT_GIT_DIR);
+            command.add(repository.getAbsolutePath() + File.separator + GIT_REPO_DIR);
+            command.add(GIT_OPT_WORK_TREE);
             command.add(repository.getAbsolutePath());
-        }
+            command.add(GIT_DIFF_CMD);
+            command.add(GIT_OPT_NAME_STATUS);
+            command.add(GIT_HEAD);
 
-        List<String> list =  exec(command);
-        if (!list.isEmpty() && isErrorNoRepository(list.get(0))) {
-            OutputLogger logger = OutputLogger.getLogger(repository.getAbsolutePath());
-            try {
-                handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_NO_REPOSITORY_ERR"), logger);
-            } finally {
-                logger.closeLog();
+            if (i == 1)
+              command.add(GIT_OPT_CACHED);
+
+            List<String> list =  exec(command);
+            if (!list.isEmpty() && isErrorNoRepository(list.get(0))) {
+                OutputLogger logger = OutputLogger.getLogger(repository.getAbsolutePath());
+                try {
+                    handleError(command, list, NbBundle.getMessage(GitCommand.class, "MSG_NO_REPOSITORY_ERR"), logger);
+                } finally {
+                    logger.closeLog();
+                }
             }
+
+            for (int j = 0; j < list.size (); ++j)
+              status.add (list.get (j));
         }
-        return list;
+        return status;
     }
 
     /**
-     * Returns the ouput from the given command
+     * Returns GIT working tree directory
+     *
+     * @param command to parse
+     * @return git working tree directory
+     */
+    private static String GetWorkTreeDir(List<String> command)
+    {
+      for (Iterator i = command.iterator (); i.hasNext ();)
+      {
+        String arg = (String)i.next ();
+        /* But maybe it is too stupid? */
+        if (arg.equals (GIT_OPT_WORK_TREE))
+          {
+            return (String)i.next ();
+          }
+      }
+      return null;
+    }
+
+    /**
+     * Returns the output from the given command
      *
      * @param command to execute
      * @return List of the command's output or an exception if one occured
@@ -2601,16 +2707,27 @@ public final class GitCommand {
             } else {
                 Git.LOG.log(Level.FINE, "execEnv(): " + command); // NOI18N
             }
+
+            ProcessBuilder pb = new ProcessBuilder(command);
+
+            /*
+             * --work-tree is broken at the most of GIT commands
+             * so, we should set CWD instead of usig this argument
+             */
+            String workTree;
+            workTree = GetWorkTreeDir (command);
+            if (workTree != null)
+            {
+              pb.directory (new File (workTree));
+            }
+
             if(env != null && env.size() > 0){
-                ProcessBuilder pb = new ProcessBuilder(command);
                 Map<String, String> envOrig = pb.environment();
                 for(String s: env){
                     envOrig.put(s.substring(0,s.indexOf('=')), s.substring(s.indexOf('=')+1));
                 }
-                proc = pb.start();
-            }else{
-                proc = new ProcessBuilder(command).start();
             }
+            proc = pb.start();
 
             input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 

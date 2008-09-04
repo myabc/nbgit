@@ -51,10 +51,12 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
+import java.util.List;
 import org.ini4j.Ini;
 import org.netbeans.modules.git.Git;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Utilities;
+import org.netbeans.modules.git.util.GitCommand;
 
 /**
  * Handles the Git configuration files:
@@ -77,11 +79,13 @@ public class GitConfigFiles {
     public static final String GIT_USER_NAME = "name";  // NOI18N
     public static final String GIT_EMAIL = "email"; // NOI18N
 
-    public static final String GIT_PATHS_SECTION = "[remote \"origin\"]";  // NOI18N
+    public static final String GIT_PATHS_SECTION = "remote \"origin\"";  // NOI18N
     //public static final String GIT_DEFAULT_PUSH = "url";  // NOI18N
     //public static final String GIT_DEFAULT_PUSH_VALUE = "url";  // NOI18N
     public static final String GIT_DEFAULT_PULL = "url";  // NOI18N
     public static final String GIT_DEFAULT_PULL_VALUE = "url";  // NOI18N
+
+    public static final String GIT_DEFAULT_REMOTE_BRANCH = "origin";  // NOI18N
 
     /** The GitConfigFiles instance for user and system defaults */
     private static GitConfigFiles instance;
@@ -217,6 +221,40 @@ public class GitConfigFiles {
             doReload();
         }
         return getProperty(GIT_PATHS_SECTION, GIT_DEFAULT_PULL_VALUE);
+    }
+
+    /**
+     * Get remote branch used for pull'ing
+     *
+     * @param reload
+     * @return default pull branch
+     */
+    public String getDefaultPullBranch(Boolean reload) {
+        if (reload) {
+            doReload();
+        }
+        try {
+          List<String> branches = GitCommand.getBranchList (dir);
+          if (!branches.isEmpty ())
+          {
+            String remote;
+            for (String s : branches)
+            {
+              /*
+               * TODO: Need to make this values constant'ly defined
+               */
+              remote = getProperty("branch \""+s+"\"", "remote");
+              if (remote.equals (GIT_DEFAULT_REMOTE_BRANCH))
+              {
+                return s;
+              }
+            }
+          }
+        } catch (Exception e)
+        {
+
+        }
+        return null;
     }
 
     public String getDefaultPush(Boolean reload) {

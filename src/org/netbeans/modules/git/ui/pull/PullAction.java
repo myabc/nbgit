@@ -58,10 +58,11 @@ import org.netbeans.modules.git.GitException;
 import org.netbeans.modules.git.GitProgressSupport;
 import org.netbeans.modules.git.OutputLogger;
 import org.netbeans.modules.git.ui.actions.ContextAction;
-import org.netbeans.modules.git.ui.merge.MergeAction;
+import org.netbeans.modules.git.config.GitConfigFiles;
 import org.netbeans.modules.git.util.GitCommand;
 import org.netbeans.modules.git.util.GitProjectUtils;
 import org.netbeans.modules.git.util.GitUtils;
+import org.netbeans.modules.git.ui.merge.MergeAction;
 import org.netbeans.modules.versioning.spi.VCSContext;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -198,7 +199,8 @@ public class PullAction extends ContextAction {
     }
 
     static void getDefaultAndPerformPull(VCSContext ctx, File root, OutputLogger logger) {
-        final String pullPath = GitCommand.getPullDefault(root);
+        //final String pullPath = GitCommand.getPullDefault(root);
+        final String pullPath = new GitConfigFiles(root).getDefaultPull(false);
         // If the repository has no default pull path then inform user
         if(pullPath == null) {
             logger.outputInRed( NbBundle.getMessage(PullAction.class,"MSG_PULL_TITLE")); // NOI18N

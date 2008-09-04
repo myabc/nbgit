@@ -568,6 +568,8 @@ public final class GitCommand {
 
         command.add(getGitCommand());
         command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath() + File.separator + GIT_REPO_DIR);
+        command.add(GIT_OPT_WORK_TREE);
         command.add(repository.getAbsolutePath());
 
         command.add(GIT_PULL_CMD);
@@ -619,7 +621,7 @@ public final class GitCommand {
      */
     public static List<String> doIncoming(File repository, String from, File bundle, OutputLogger logger) throws GitException {
         //
-        // doing a fetch and then `git log ..remote/branch` should provide us
+        // doing a fetch and then `git log ..FETCH_HEAD` should provide us
         // with an equivalent to `hg incoming` command.
 
         if (repository == null ) return null;
@@ -628,12 +630,20 @@ public final class GitCommand {
 
         command1.add(getGitCommand());
         command1.add(GIT_OPT_GIT_DIR);
+        command1.add(repository.getAbsolutePath() + File.separator + GIT_REPO_DIR);
+        command1.add(GIT_OPT_WORK_TREE);
         command1.add(repository.getAbsolutePath());
         command1.add(GIT_FETCH_CMD);
 
         if (from != null) {
             command1.add(from);
         }
+
+        /*
+         *  TODO: Maybe we shouldn't always use default pull branch
+         */
+        String defaultPullBranch = new GitConfigFiles(repository).getDefaultPullBranch (false);
+        command1.add(defaultPullBranch);
 
         List<String> list1;
         List<String> list2;
@@ -656,10 +666,12 @@ public final class GitCommand {
         // then run a log
         command2.add(getGitCommand());
         command2.add(GIT_OPT_GIT_DIR);
+        command2.add(repository.getAbsolutePath() + File.separator + GIT_REPO_DIR);
+        command2.add(GIT_OPT_WORK_TREE);
         command2.add(repository.getAbsolutePath());
 
-        command2.add(GIT_FETCH_CMD);
-        command2.add("HEAD..remote/branch");    // TODO: specify this properly
+        command2.add(GIT_LOG_CMD);
+        command2.add("HEAD..FETCH_HEAD");    // TODO: specify this properly
 
         list2 = exec(command2);
         return list2;
@@ -2015,6 +2027,43 @@ public final class GitCommand {
             res = list.get(0);
         }
         return res;
+    }
+
+    /**
+     * Returns the Git branch name list if any for a repository
+     *
+     * @param File repository of the git repository's root directory
+     * @return List branch name
+     * @throws org.netbeans.modules.git.GitException
+     */
+    public static List<String> getBranchList(File repository) throws GitException {
+        if (repository == null) return null;
+
+        List<String> command = new ArrayList<String>();
+
+        command.add(getGitCommand());
+        command.add(GIT_OPT_GIT_DIR);
+        command.add(repository.getAbsolutePath() + File.separator + GIT_REPO_DIR);
+        command.add(GIT_OPT_WORK_TREE);
+        command.add(repository.getAbsolutePath());
+        command.add(GIT_BRANCH_CMD);
+
+        List<String> list = exec(command);
+        if (!list.isEmpty()){
+          List<String> branches = new ArrayList<String> ();
+          for (String s : list)
+          {
+            if (s.charAt (0) == '*')
+            {
+              /* Current branch */
+              s = s.substring (1);
+            }
+            branches.add (s.trim ());
+          }
+          return branches;
+        }else{
+            return null;
+        }
     }
 
     /**

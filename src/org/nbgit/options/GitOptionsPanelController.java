@@ -85,7 +85,6 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
 
 		panel.annotationTextField.setToolTipText(tooltip);
 		panel.addButton.addActionListener(this);
-		panel.manageButton.addActionListener(this);
 	}
 
 	public void update()
@@ -148,8 +147,6 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
 			onExportFilenameBrowseClick();
 		else if (evt.getSource() == panel.addButton)
 			onAddClick();
-		else if (evt.getSource() == panel.manageButton)
-			onManageClick();
 	}
 
 	private File getExportFile()

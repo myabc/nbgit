@@ -5,14 +5,6 @@
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
             <code-name-base>org.nbgit</code-name-base>
             <standalone/>
-            <class-path-extension>
-                <runtime-relative-path>ext/org-spearce-jgit.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/org-spearce-jgit.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/com-jcraft-jsch.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/com-jcraft-jsch.jar</binary-origin>
-            </class-path-extension>
             <module-dependencies>
                 <dependency>
                     <code-name-base>org.jdesktop.layout</code-name-base>
@@ -212,6 +204,14 @@
                 </dependency>
             </module-dependencies>
             <public-packages/>
+            <class-path-extension>
+                <runtime-relative-path>ext/org-spearce-jgit.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/org-spearce-jgit.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/com-jcraft-jsch.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/com-jcraft-jsch.jar</binary-origin>
+            </class-path-extension>
         </data>
     </configuration>
 </project>

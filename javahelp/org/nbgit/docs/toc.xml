@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
 <toc version="2.0">
-	<tocitem text="Git">
-		<tocitem text="About Git" target="org.nbgit.docs.about"/>
-		<tocitem text="Release Notes" target="org.nbgit.docs.news"/>
-		<tocitem text="Issues and Bug Reporting" target="org.nbgit.docs.issues"/>
-		<tocitem text="Credits and Legal Notes" target="org.nbgit.docs.credits"/>
-	</tocitem>
+ <tocitem text="Git">
+  <tocitem text="About Git" target="org.nbgit.docs.about"/>
+  <tocitem text="Release Notes" target="org.nbgit.docs.news"/>
+  <tocitem text="Issues and Bug Reporting" target="org.nbgit.docs.issues"/>
+  <tocitem text="Credits and Legal Notes" target="org.nbgit.docs.credits"/>
+ </tocitem>
 </toc>

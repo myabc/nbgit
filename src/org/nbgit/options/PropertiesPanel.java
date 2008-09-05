@@ -57,12 +57,12 @@ public class PropertiesPanel extends javax.swing.JPanel implements PreferenceCha
     private static final Object EVENT_SETTINGS_CHANGED = new Object();
     private PropertiesTable propertiesTable;
     private ListenersSupport listenerSupport = new ListenersSupport(this);
-    
+
     /** Creates new form PropertiesPanel */
     public PropertiesPanel() {
         initComponents();
     }
-    
+
     public javax.swing.JTextArea getTxtAreaValue() {
         return txtAreaValue;
     }
@@ -82,11 +82,11 @@ public class PropertiesPanel extends javax.swing.JPanel implements PreferenceCha
     public void setPropertiesTable(PropertiesTable propertiesTable){
         this.propertiesTable = propertiesTable;
     }
-    
+
     @Override
     public void addNotify() {
         super.addNotify();
-        GitModuleConfig.getDefault().getPreferences().addPreferenceChangeListener(this);        
+        GitModuleConfig.getDefault().getPreferences().addPreferenceChangeListener(this);
         propertiesTable.getTableModel().addTableModelListener(this);
         listenerSupport.fireVersioningEvent(EVENT_SETTINGS_CHANGED);
         txtAreaValue.selectAll();
@@ -98,7 +98,7 @@ public class PropertiesPanel extends javax.swing.JPanel implements PreferenceCha
         GitModuleConfig.getDefault().getPreferences().removePreferenceChangeListener(this);
         super.removeNotify();
     }
-    
+
     public void preferenceChange(PreferenceChangeEvent evt) {
         if (evt.getKey().startsWith(GitModuleConfig.PROP_COMMIT_EXCLUSIONS)) {
             propertiesTable.dataChanged();
@@ -109,7 +109,7 @@ public class PropertiesPanel extends javax.swing.JPanel implements PreferenceCha
     public void tableChanged(TableModelEvent e) {
         listenerSupport.fireVersioningEvent(EVENT_SETTINGS_CHANGED);
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -205,8 +205,8 @@ public class PropertiesPanel extends javax.swing.JPanel implements PreferenceCha
         btnRemove.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(PropertiesPanel.class, "ACSD_btnRemove")); // NOI18N
         btnAdd.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(PropertiesPanel.class, "ACSD_btnAdd")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
-    
-    
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     final javax.swing.JButton btnAdd = new javax.swing.JButton();
     final javax.swing.JButton btnRemove = new javax.swing.JButton();
@@ -218,6 +218,6 @@ public class PropertiesPanel extends javax.swing.JPanel implements PreferenceCha
     public javax.swing.JPanel propsPanel;
     final javax.swing.JTextArea txtAreaValue = new javax.swing.JTextArea();
     // End of variables declaration//GEN-END:variables
-    
+
 }
 

@@ -78,15 +78,15 @@ import org.openide.windows.TopComponent;
  * @author  Martin Entlicher
  */
 public class ResolveConflictsExecutor extends GitProgressSupport {
-    
+
     private static final String TMP_PREFIX = "merge"; // NOI18N
-    private static final String ORIG_SUFFIX = ".orig."; // NOI18N  
-    
+    private static final String ORIG_SUFFIX = ".orig."; // NOI18N
+
     static final String CHANGE_LEFT = "<<<<<<< "; // NOI18N
     static final String CHANGE_RIGHT = ">>>>>>> "; // NOI18N
     static final String CHANGE_DELIMETER = "======="; // NOI18N
     static final String CHANGE_BASE_DELIMETER = "|||||||"; // NOI18N
-    
+
     private String leftFileRevision = null;
     private String rightFileRevision = null;
 
@@ -103,7 +103,7 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
         if (merge == null) {
             throw new IllegalStateException("No Merge engine found."); // NOI18N
         }
-        
+
         try {
             FileObject fo = FileUtil.toFileObject(file);
             handleMergeFor(file, fo, fo.lock(), merge);
@@ -119,7 +119,7 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
             org.openide.ErrorManager.getDefault().notify(ioex);
         }
     }
-    
+
     private void handleMergeFor(final File file, FileObject fo, FileLock lock,
                                 final MergeVisualizer merge) throws IOException {
         String mimeType = (fo == null) ? "text/plain" : fo.getMIMEType(); // NOI18N
@@ -130,7 +130,7 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
         f1.deleteOnExit();
         f2.deleteOnExit();
         f3.deleteOnExit();
-        
+
         final Difference[] diffs = copyParts(true, file, f1, true);
         if (diffs.length == 0) {
             ConflictResolvedAction.resolved(file);  // remove conflict status
@@ -153,7 +153,7 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
         } else {
             rightFileRevision = org.openide.util.NbBundle.getMessage(ResolveConflictsExecutor.class, "Diff.titleRevision", rightFileRevision); // NOI18N
         }
-        
+
         final StreamSource s1;
         final StreamSource s2;
         Charset encoding = FileEncodingQuery.getEncoding(fo);
@@ -189,13 +189,13 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
             String line;
             boolean isChangeLeft = false;
             boolean isChangeRight = false;
-            boolean isChangeBase = false; 
+            boolean isChangeBase = false;
             int f1l1 = 0, f1l2 = 0, f2l1 = 0, f2l2 = 0;
             StringBuffer text1 = new StringBuffer();
             StringBuffer text2 = new StringBuffer();
             int i = 1, j = 1;
             while ((line = r.readLine()) != null) {
-                // As the Graphical Merge Visualizer does not support 3 way diff, 
+                // As the Graphical Merge Visualizer does not support 3 way diff,
                 // remove the base diff itself.
                 // Only show the diffs of the two heads against the base
                 if (line.startsWith(CHANGE_BASE_DELIMETER)) {
@@ -375,10 +375,10 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
     public void run() {
         throw new RuntimeException("Not implemented"); // NOI18N
     }
-    
-    
+
+
     private static class MergeResultWriterInfo extends StreamSource {
-        
+
         private File tempf1, tempf2, tempf3, outputFile;
         private File fileToRepairEntriesOf;
         private String mimeType;
@@ -387,7 +387,7 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
         private FileObject fo;
         private FileLock lock;
         private Charset encoding;
-        
+
         public MergeResultWriterInfo(File tempf1, File tempf2, File tempf3,
                                      File outputFile, String mimeType,
                                      String leftFileRevision, String rightFileRevision,
@@ -406,23 +406,23 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
             }
             this.encoding = encoding;
         }
-        
+
         public String getName() {
             return outputFile.getName();
         }
-        
+
         public String getTitle() {
             return org.openide.util.NbBundle.getMessage(ResolveConflictsExecutor.class, "Merge.titleResult"); // NOI18N
         }
-        
+
         public String getMIMEType() {
             return mimeType;
         }
-        
+
         public Reader createReader() throws IOException {
             throw new IOException("No reader of merge result"); // NOI18N
         }
-        
+
         /**
          * Create a writer, that writes to the source.
          * @param conflicts The list of conflicts remaining in the source.
@@ -444,7 +444,7 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
                                                    leftFileRevision, rightFileRevision);
             }
         }
-        
+
         /**
          * This method is called when the visual merging process is finished.
          * All possible writting processes are finished before this method is called.
@@ -469,16 +469,16 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
             ConflictResolvedAction.resolved(file);  // remove conflict status
         }
     }
-    
+
     private static class MergeConflictFileWriter extends FilterWriter {
-        
+
         private Difference[] conflicts;
         private int lineNumber;
         private int currentConflict;
         private String leftName;
         private String rightName;
         private FileObject fo;
-        
+
         public MergeConflictFileWriter(Writer delegate, FileObject fo,
                                        Difference[] conflicts, String leftName,
                                        String rightName) throws IOException {
@@ -494,7 +494,7 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
             }
             this.fo = fo;
         }
-        
+
         @Override
         public void write(String str) throws IOException {
             super.write(str);
@@ -504,7 +504,7 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
                 currentConflict++;
             }
         }
-        
+
         private void writeConflict(Difference conflict) throws IOException {
             super.write(CHANGE_LEFT + leftName + "\n"); // NOI18N
             super.write(conflict.getFirstText());
@@ -512,7 +512,7 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
             super.write(conflict.getSecondText());
             super.write(CHANGE_RIGHT + rightName + "\n"); // NOI18N
         }
-        
+
         private static int numChars(char c, String str) {
             int n = 0;
             for (int pos = str.indexOf(c); pos >= 0 && pos < str.length(); pos = str.indexOf(c, pos + 1)) {
@@ -520,7 +520,7 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
             }
             return n;
         }
-        
+
         @Override
         public void close() throws IOException {
             super.close();

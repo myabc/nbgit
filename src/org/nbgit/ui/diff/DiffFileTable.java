@@ -81,42 +81,42 @@ import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
 /**
- * 
+ *
  * @author Maros Sandor
  */
 class DiffFileTable implements MouseListener, ListSelectionListener, AncestorListener {
-    
+
     private NodeTableModel tableModel;
     private JTable table;
     private JScrollPane     component;
     private Node [] nodes = new Node[0];
-    
-    private String []   tableColumns; 
+
+    private String []   tableColumns;
     private TableSorter sorter;
 
     /**
      * Defines labels for Diff view table columns.
-     */ 
+     */
     private static final Map<String, String[]> columnLabels = new HashMap<String, String[]>(4);
 
     {
         ResourceBundle loc = NbBundle.getBundle(DiffFileTable.class);
         columnLabels.put(DiffNode.COLUMN_NAME_NAME, new String [] {
-                loc.getString("CTL_DiffTable_Column_Name_Title"), 
+                loc.getString("CTL_DiffTable_Column_Name_Title"),
                 loc.getString("CTL_DiffTable_Column_Name_Desc")});
         columnLabels.put(DiffNode.COLUMN_NAME_PROPERTY, new String [] {
-                loc.getString("CTL_DiffTable_Column_Property_Title"), 
+                loc.getString("CTL_DiffTable_Column_Property_Title"),
                 loc.getString("CTL_DiffTable_Column_Property_Desc")});
-        columnLabels.put(DiffNode.COLUMN_NAME_STATUS, new String [] { 
-                loc.getString("CTL_DiffTable_Column_Status_Title"), 
+        columnLabels.put(DiffNode.COLUMN_NAME_STATUS, new String [] {
+                loc.getString("CTL_DiffTable_Column_Status_Title"),
                 loc.getString("CTL_DiffTable_Column_Status_Desc")});
-        columnLabels.put(DiffNode.COLUMN_NAME_LOCATION, new String [] { 
-                loc.getString("CTL_DiffTable_Column_Location_Title"), 
+        columnLabels.put(DiffNode.COLUMN_NAME_LOCATION, new String [] {
+                loc.getString("CTL_DiffTable_Column_Location_Title"),
                 loc.getString("CTL_DiffTable_Column_Location_Desc")});
     }
 
-    
-    
+
+
     private static final Comparator NodeComparator = new Comparator() {
         public int compare(Object o1, Object o2) {
             Node.Property p1 = (Node.Property) o1;
@@ -213,12 +213,12 @@ class DiffFileTable implements MouseListener, ListSelectionListener, AncestorLis
     public JComponent getComponent() {
         return component;
     }
-    
+
     /**
      * Sets visible columns in the Versioning table.
-     * 
-     * @param columns array of column names, they must be one of SyncFileNode.COLUMN_NAME_XXXXX constants.  
-     */ 
+     *
+     * @param columns array of column names, they must be one of SyncFileNode.COLUMN_NAME_XXXXX constants.
+     */
     final void setColumns(String [] columns) {
         if (Arrays.equals(columns, tableColumns)) return;
         setModelProperties(columns);
@@ -231,15 +231,15 @@ class DiffFileTable implements MouseListener, ListSelectionListener, AncestorLis
                 break;
             }
         }
-        setDefaultColumnSizes();        
+        setDefaultColumnSizes();
     }
-        
+
     private void setModelProperties(String [] columns) {
         Node.Property [] properties = new Node.Property[columns.length];
         for (int i = 0; i < columns.length; i++) {
             String column = columns[i];
             String [] labels = columnLabels.get(column);
-            properties[i] = new ColumnDescriptor(column, String.class, labels[0], labels[1]);  
+            properties[i] = new ColumnDescriptor(column, String.class, labels[0], labels[1]);
         }
         tableModel.setProperties(properties);
     }
@@ -276,7 +276,7 @@ class DiffFileTable implements MouseListener, ListSelectionListener, AncestorLis
     }
 
     private static class ColumnDescriptor extends PropertySupport.ReadOnly {
-        
+
         @SuppressWarnings("unchecked")
         public ColumnDescriptor(String name, Class type, String displayName, String shortDescription) {
             super(name, type, displayName, shortDescription);
@@ -361,11 +361,11 @@ class DiffFileTable implements MouseListener, ListSelectionListener, AncestorLis
         if (tc == null) return; // table is no longer in component hierarchy
         master.setSelectedIndex(table.getSelectedRow());
     }
-    
+
     private class DiffTableCellRenderer extends DefaultTableCellRenderer {
-        
+
         private FilePathCellRenderer pathRenderer = new FilePathCellRenderer();
-        
+
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component renderer;
@@ -382,8 +382,8 @@ class DiffFileTable implements MouseListener, ListSelectionListener, AncestorLis
                 renderer = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             }
             if (renderer instanceof JComponent) {
-                File file = nodes[sorter.modelIndex(row)].getLookup().lookup(File.class); 
-                String path = file != null ? file.getAbsolutePath() : null; 
+                File file = nodes[sorter.modelIndex(row)].getLookup().lookup(File.class);
+                String path = file != null ? file.getAbsolutePath() : null;
                 ((JComponent) renderer).setToolTipText(path);
             }
             return renderer;

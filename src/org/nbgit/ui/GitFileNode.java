@@ -56,55 +56,55 @@ import org.openide.filesystems.FileUtil;
  */
 public class GitFileNode {
 
-	private final File file;
+    private final File file;
 
-	public GitFileNode(File file)
-	{
-		this.file = file;
-	}
+    public GitFileNode(File file)
+    {
+        this.file = file;
+    }
 
-	public String getName()
-	{
-		return file.getName();
-	}
+    public String getName()
+    {
+        return file.getName();
+    }
 
-	public StatusInfo getInformation()
-	{
-		return Git.getInstance().getStatusCache().getStatus(file);
-	}
+    public StatusInfo getInformation()
+    {
+        return Git.getInstance().getStatusCache().getStatus(file);
+    }
 
-	public File getFile()
-	{
-		return file;
-	}
+    public File getFile()
+    {
+        return file;
+    }
 
-	@Override
-	public boolean equals(Object o)
-	{
-		if (this == o)
-			return true;
-		return o instanceof GitFileNode && file.equals(((GitFileNode) o).file);
-	}
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o)
+            return true;
+        return o instanceof GitFileNode && file.equals(((GitFileNode) o).file);
+    }
 
-	@Override
-	public int hashCode()
-	{
-		return file.hashCode();
-	}
+    @Override
+    public int hashCode()
+    {
+        return file.hashCode();
+    }
 
-	public FileObject getFileObject()
-	{
-		return FileUtil.toFileObject(file);
-	}
+    public FileObject getFileObject()
+    {
+        return FileUtil.toFileObject(file);
+    }
 
-	public Object[] getLookupObjects()
-	{
-		List<Object> list = new ArrayList<Object>(2);
-		list.add(file);
-		FileObject fo = getFileObject();
-		if (fo != null)
-			list.add(fo);
-		return list.toArray(new Object[list.size()]);
-	}
+    public Object[] getLookupObjects()
+    {
+        List<Object> list = new ArrayList<Object>(2);
+        list.add(file);
+        FileObject fo = getFileObject();
+        if (fo != null)
+            list.add(fo);
+        return list.toArray(new Object[list.size()]);
+    }
 
 }

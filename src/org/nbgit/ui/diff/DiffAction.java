@@ -56,69 +56,69 @@ import org.netbeans.modules.versioning.util.Utils;
 import org.openide.util.NbBundle;
 
 /**
- * Diff action for Git: 
+ * Diff action for Git:
  * git diff - diff repository (or selected files)
- * 
+ *
  * @author alexbcoles
  * @author John Rice
  */
 public class DiffAction extends ContextAction {
 
-	public DiffAction(String name, VCSContext context)
-	{
-		super(name, context);
-	}
+    public DiffAction(String name, VCSContext context)
+    {
+        super(name, context);
+    }
 
-	public void performAction(ActionEvent e)
-	{
-		String contextName = Utils.getContextDisplayName(context);
+    public void performAction(ActionEvent e)
+    {
+        String contextName = Utils.getContextDisplayName(context);
 
-		File root = GitUtils.getRootFile(context);
-		File[] files = context.getRootFiles().toArray(new File[context.getRootFiles().size()]);
-		boolean bNotManaged = (root == null) || (files == null || files.length == 0);
+        File root = GitUtils.getRootFile(context);
+        File[] files = context.getRootFiles().toArray(new File[context.getRootFiles().size()]);
+        boolean bNotManaged = (root == null) || (files == null || files.length == 0);
 
-		if (bNotManaged) {
-			OutputLogger logger = OutputLogger.getLogger(Git.GIT_OUTPUT_TAB_TITLE);
-			logger.outputInRed(NbBundle.getMessage(DiffAction.class, "MSG_DIFF_TITLE")); // NOI18N
-			logger.outputInRed(NbBundle.getMessage(DiffAction.class, "MSG_DIFF_TITLE_SEP")); // NOI18N
-			logger.outputInRed(
-				NbBundle.getMessage(DiffAction.class, "MSG_DIFF_NOT_SUPPORTED_INVIEW_INFO")); // NOI18N
-			logger.output(""); // NOI18N
-			logger.closeLog();
-			JOptionPane.showMessageDialog(null,
-				NbBundle.getMessage(DiffAction.class, "MSG_DIFF_NOT_SUPPORTED_INVIEW"),// NOI18N
-				NbBundle.getMessage(DiffAction.class, "MSG_DIFF_NOT_SUPPORTED_INVIEW_TITLE"),// NOI18N
-				JOptionPane.INFORMATION_MESSAGE);
-			return;
-		}
+        if (bNotManaged) {
+            OutputLogger logger = OutputLogger.getLogger(Git.GIT_OUTPUT_TAB_TITLE);
+            logger.outputInRed(NbBundle.getMessage(DiffAction.class, "MSG_DIFF_TITLE")); // NOI18N
+            logger.outputInRed(NbBundle.getMessage(DiffAction.class, "MSG_DIFF_TITLE_SEP")); // NOI18N
+            logger.outputInRed(
+                NbBundle.getMessage(DiffAction.class, "MSG_DIFF_NOT_SUPPORTED_INVIEW_INFO")); // NOI18N
+            logger.output(""); // NOI18N
+            logger.closeLog();
+            JOptionPane.showMessageDialog(null,
+                NbBundle.getMessage(DiffAction.class, "MSG_DIFF_NOT_SUPPORTED_INVIEW"),// NOI18N
+                NbBundle.getMessage(DiffAction.class, "MSG_DIFF_NOT_SUPPORTED_INVIEW_TITLE"),// NOI18N
+                JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
 
-		diff(context, Setup.DIFFTYPE_LOCAL, contextName);
-	}
+        diff(context, Setup.DIFFTYPE_LOCAL, contextName);
+    }
 
-	@Override
-	public boolean isEnabled()
-	{
-		StatusCache cache = Git.getInstance().getStatusCache();
-		return cache.containsFileOfStatus(context, StatusInfo.STATUS_LOCAL_CHANGE);
-	}
+    @Override
+    public boolean isEnabled()
+    {
+        StatusCache cache = Git.getInstance().getStatusCache();
+        return cache.containsFileOfStatus(context, StatusInfo.STATUS_LOCAL_CHANGE);
+    }
 
-	public static void diff(VCSContext ctx, int type, String contextName)
-	{
+    public static void diff(VCSContext ctx, int type, String contextName)
+    {
 
-		MultiDiffPanel panel = new MultiDiffPanel(ctx, type, contextName); // spawns background DiffPrepareTask
-		DiffTopComponent tc = new DiffTopComponent(panel);
-		tc.setName(NbBundle.getMessage(DiffAction.class, "CTL_DiffPanel_Title", contextName)); // NOI18N
-		tc.open();
-		tc.requestActive();
-	}
+        MultiDiffPanel panel = new MultiDiffPanel(ctx, type, contextName); // spawns background DiffPrepareTask
+        DiffTopComponent tc = new DiffTopComponent(panel);
+        tc.setName(NbBundle.getMessage(DiffAction.class, "CTL_DiffPanel_Title", contextName)); // NOI18N
+        tc.open();
+        tc.requestActive();
+    }
 
-	public static void diff(File file, String rev1, String rev2)
-	{
-		MultiDiffPanel panel = new MultiDiffPanel(file, rev1, rev2); // spawns background DiffPrepareTask
-		DiffTopComponent tc = new DiffTopComponent(panel);
-		tc.setName(NbBundle.getMessage(DiffAction.class, "CTL_DiffPanel_Title", file.getName())); // NOI18N
-		tc.open();
-		tc.requestActive();
-	}
+    public static void diff(File file, String rev1, String rev2)
+    {
+        MultiDiffPanel panel = new MultiDiffPanel(file, rev1, rev2); // spawns background DiffPrepareTask
+        DiffTopComponent tc = new DiffTopComponent(panel);
+        tc.setName(NbBundle.getMessage(DiffAction.class, "CTL_DiffPanel_Title", file.getName())); // NOI18N
+        tc.open();
+        tc.requestActive();
+    }
 
 }

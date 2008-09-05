@@ -50,7 +50,7 @@ made subject to such option by the copyright holder.
             </file>
         </folder>
     </folder>
-    
+
     <folder name="Menu">
         <folder name="Window">
             <folder name="Versioning">
@@ -69,11 +69,11 @@ made subject to such option by the copyright holder.
             </file>
         </folder>
     </folder>
-    
+
     <folder name="Windows2">
         <folder name="Components">
             <file name="gitversioning.settings" url="settings.xml"/>
-        </folder>        
+        </folder>
         <folder name="Modes">
             <folder name="output">
                 <file name="gitversioning.wstcref" url="wstcref.xml">
@@ -82,15 +82,15 @@ made subject to such option by the copyright holder.
             </folder>
         </folder>
     </folder>
-    
+
     <folder name="Editors">
-	    <!--
+     <!--
         <folder name="SideBar">
             <file name="org-nbgit-ui-annotate-AnnotationBarManager.instance">
                 <attr name="position" intvalue="2100"/>
             </file>
         </folder>
-	-->
+ -->
             <!-- place in between line numbers sidebar and folding sidebar #57544 -->
         <folder name="AnnotationTypes">
             <file name="org-nbgit-Annotation.xml" url="annotation.xml"/>
@@ -107,7 +107,7 @@ made subject to such option by the copyright holder.
             <attr name="instanceClass" stringvalue="org.nbgit.options.GitAdvancedOption"/>
         </file>
     </folder>
-    
+
     <!--
        <folder name="OptionsDialog">
         <folder name="Actions">
@@ -145,7 +145,7 @@ made subject to such option by the copyright holder.
                 <file name="ConflictResolvedAction.shadow">
                     <attr name="originalFile" stringvalue="Actions/Subversion/org-netbeans-modules-subversion-ui-commit-ConflictResolvedAction.instance"/>
                 </file>
-            
+
                 <file name="CreateCopyAction.shadow">
                     <attr name="originalFile" stringvalue="Actions/Subversion/org-netbeans-modules-subversion-ui-copy-CreateCopyAction.instance"/>
                 </file>
@@ -171,8 +171,8 @@ made subject to such option by the copyright holder.
                     <attr name="originalFile" stringvalue="Actions/Subversion/org-netbeans-modules-subversion-ui-ignore-IgnoreAction.instance"/>
                 </file>
                 <file name="SvnPropertiesAction.shadow">
-                    <attr name="originalFile" stringvalue="Actions/Subversion/org-netbeans-modules-subversion-ui-properties-SvnPropertiesAction.instance"/>                    
-                </file>                 
+                    <attr name="originalFile" stringvalue="Actions/Subversion/org-netbeans-modules-subversion-ui-properties-SvnPropertiesAction.instance"/>
+                </file>
             </folder>
         </folder>
     </folder>

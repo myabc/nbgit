@@ -56,80 +56,80 @@ import org.openide.util.NbBundle;
  */
 public class GitVCS extends VersioningSystem implements PropertyChangeListener, CollocationQueryImplementation {
 
-	final private GitInterceptor gitInterceptor = new GitInterceptor();
-	final private GitAnnotator gitAnnotator = new GitAnnotator();
+    final private GitInterceptor gitInterceptor = new GitInterceptor();
+    final private GitAnnotator gitAnnotator = new GitAnnotator();
 
-	public GitVCS()
-	{
-		putProperty(PROP_DISPLAY_NAME, NbBundle.getMessage(GitVCS.class, "CTL_Git_DisplayName")); // NOI18N
-		putProperty(PROP_MENU_LABEL, NbBundle.getMessage(GitVCS.class, "CTL_Git_MainMenu")); // NOI18N
+    public GitVCS()
+    {
+        putProperty(PROP_DISPLAY_NAME, NbBundle.getMessage(GitVCS.class, "CTL_Git_DisplayName")); // NOI18N
+        putProperty(PROP_MENU_LABEL, NbBundle.getMessage(GitVCS.class, "CTL_Git_MainMenu")); // NOI18N
 
-		Git.getInstance().addPropertyChangeListener(this);
-		Git.getInstance().getStatusCache().addPropertyChangeListener(this);
-	}
+        Git.getInstance().addPropertyChangeListener(this);
+        Git.getInstance().getStatusCache().addPropertyChangeListener(this);
+    }
 
-	public boolean areCollocated(File a, File b)
-	{
-		File fra = getTopmostManagedAncestor(a);
-		File frb = getTopmostManagedAncestor(b);
+    public boolean areCollocated(File a, File b)
+    {
+        File fra = getTopmostManagedAncestor(a);
+        File frb = getTopmostManagedAncestor(b);
 
-		return fra != null && fra.equals(frb);
-	}
+        return fra != null && fra.equals(frb);
+    }
 
-	public File findRoot(File file)
-	{
-		return getTopmostManagedAncestor(file);
-	}
+    public File findRoot(File file)
+    {
+        return getTopmostManagedAncestor(file);
+    }
 
-	/**
-	 * Tests whether the file is managed by this versioning system. If it is, 
-	 * the method should return the topmost 
-	 * ancestor of the file that is still versioned.
-	 *  
-	 * @param file a file
-	 * @return File the file itself or one of its ancestors or null if the 
-	 *  supplied file is NOT managed by this versioning system
-	 */
-	@Override
-	public File getTopmostManagedAncestor(File file)
-	{
-		return Git.getInstance().getTopmostManagedParent(file);
-	}
+    /**
+     * Tests whether the file is managed by this versioning system. If it is,
+     * the method should return the topmost
+     * ancestor of the file that is still versioned.
+     *
+     * @param file a file
+     * @return File the file itself or one of its ancestors or null if the
+     *  supplied file is NOT managed by this versioning system
+     */
+    @Override
+    public File getTopmostManagedAncestor(File file)
+    {
+        return Git.getInstance().getTopmostManagedParent(file);
+    }
 
-	/**
-	 * Coloring label, modifying icons, providing action on file
-	 */
-	@Override
-	public VCSAnnotator getVCSAnnotator()
-	{
-		return gitAnnotator;
-	}
+    /**
+     * Coloring label, modifying icons, providing action on file
+     */
+    @Override
+    public VCSAnnotator getVCSAnnotator()
+    {
+        return gitAnnotator;
+    }
 
-	/**
-	 * Handle file system events such as delete, create, remove etc.
-	 */
-	@Override
-	public VCSInterceptor getVCSInterceptor()
-	{
-		return gitInterceptor;
-	}
+    /**
+     * Handle file system events such as delete, create, remove etc.
+     */
+    @Override
+    public VCSInterceptor getVCSInterceptor()
+    {
+        return gitInterceptor;
+    }
 
-	@Override
-	public void getOriginalFile(File workingCopy, File originalFile)
-	{
-		Git.getInstance().getOriginalFile(workingCopy, originalFile);
-	}
+    @Override
+    public void getOriginalFile(File workingCopy, File originalFile)
+    {
+        Git.getInstance().getOriginalFile(workingCopy, originalFile);
+    }
 
-	@SuppressWarnings("unchecked") // Property Change event.getNewValue returning Object
-	public void propertyChange(PropertyChangeEvent event)
-	{
-		if (event.getPropertyName().equals(StatusCache.PROP_FILE_STATUS_CHANGED)) {
-			StatusCache.ChangedEvent changedEvent = (StatusCache.ChangedEvent) event.getNewValue();
-			fireStatusChanged(changedEvent.getFile());
-		} else if (event.getPropertyName().equals(Git.PROP_ANNOTATIONS_CHANGED))
-			fireAnnotationsChanged((Set<File>) event.getNewValue());
-		else if (event.getPropertyName().equals(Git.PROP_VERSIONED_FILES_CHANGED))
-			fireVersionedFilesChanged();
-	}
+    @SuppressWarnings("unchecked") // Property Change event.getNewValue returning Object
+    public void propertyChange(PropertyChangeEvent event)
+    {
+        if (event.getPropertyName().equals(StatusCache.PROP_FILE_STATUS_CHANGED)) {
+            StatusCache.ChangedEvent changedEvent = (StatusCache.ChangedEvent) event.getNewValue();
+            fireStatusChanged(changedEvent.getFile());
+        } else if (event.getPropertyName().equals(Git.PROP_ANNOTATIONS_CHANGED))
+            fireAnnotationsChanged((Set<File>) event.getNewValue());
+        else if (event.getPropertyName().equals(Git.PROP_VERSIONED_FILES_CHANGED))
+            fireVersionedFilesChanged();
+    }
 
 }

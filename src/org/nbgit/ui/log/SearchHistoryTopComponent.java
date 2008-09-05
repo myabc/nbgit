@@ -56,119 +56,119 @@ import org.spearce.jgit.lib.Constants;
  */
 public class SearchHistoryTopComponent extends TopComponent implements DiffSetupSource {
 
-	private SearchHistoryPanel shp;
-	private SearchCriteriaPanel scp;
+    private SearchHistoryPanel shp;
+    private SearchCriteriaPanel scp;
 
-	public SearchHistoryTopComponent()
-	{
-	        setIcon(org.openide.util.Utilities.loadImage("org/nbgit/resources/icons/gitvcs-icon.png"));  // NOI18N
-		getAccessibleContext().setAccessibleName(NbBundle.getMessage(SearchHistoryTopComponent.class, "ACSN_SearchHistoryT_Top_Component")); // NOI18N
-		getAccessibleContext().setAccessibleDescription(NbBundle.getMessage(SearchHistoryTopComponent.class, "ACSD_SearchHistoryT_Top_Component")); // NOI18N
-	}
+    public SearchHistoryTopComponent()
+    {
+            setIcon(org.openide.util.Utilities.loadImage("org/nbgit/resources/icons/gitvcs-icon.png"));  // NOI18N
+        getAccessibleContext().setAccessibleName(NbBundle.getMessage(SearchHistoryTopComponent.class, "ACSN_SearchHistoryT_Top_Component")); // NOI18N
+        getAccessibleContext().setAccessibleDescription(NbBundle.getMessage(SearchHistoryTopComponent.class, "ACSD_SearchHistoryT_Top_Component")); // NOI18N
+    }
 
-	public SearchHistoryTopComponent(VCSContext context)
-	{
-		this(context, null, null, null, null);
-	}
+    public SearchHistoryTopComponent(VCSContext context)
+    {
+        this(context, null, null, null, null);
+    }
 
-	public SearchHistoryTopComponent(VCSContext context, String commitMessage, String username, String from, String to)
-	{
-		this();
-		File[] roots = context.getRootFiles().toArray(new File[0]);
-		initComponents(roots, commitMessage, username, from, to);
-	}
+    public SearchHistoryTopComponent(VCSContext context, String commitMessage, String username, String from, String to)
+    {
+        this();
+        File[] roots = context.getRootFiles().toArray(new File[0]);
+        initComponents(roots, commitMessage, username, from, to);
+    }
 
-	public SearchHistoryTopComponent(String repositoryUrl, File localRoot, String revision)
-	{
-		this();
-		initComponents(repositoryUrl, localRoot, revision);
-	}
+    public SearchHistoryTopComponent(String repositoryUrl, File localRoot, String revision)
+    {
+        this();
+        initComponents(repositoryUrl, localRoot, revision);
+    }
 
-	public void search(boolean showSearchCriteria)
-	{
-		shp.executeSearch();
-		shp.setSearchCriteria(showSearchCriteria);
-	}
+    public void search(boolean showSearchCriteria)
+    {
+        shp.executeSearch();
+        shp.setSearchCriteria(showSearchCriteria);
+    }
 
-	public void searchOut()
-	{
-		shp.setOutSearch();
-		shp.executeSearch();
-		shp.setSearchCriteria(false);
-		scp.setFrom("");
-		scp.setTo("");
-	}
+    public void searchOut()
+    {
+        shp.setOutSearch();
+        shp.executeSearch();
+        shp.setSearchCriteria(false);
+        scp.setFrom("");
+        scp.setTo("");
+    }
 
-	public void searchIncoming()
-	{
-		shp.setIncomingSearch();
-		scp.setFrom("");
-		scp.setTo("");
-	}
+    public void searchIncoming()
+    {
+        shp.setIncomingSearch();
+        scp.setFrom("");
+        scp.setTo("");
+    }
 
-	private void initComponents(String repositoryUrl, File localRoot, String revision)
-	{
-		setLayout(new BorderLayout());
-		scp = new SearchCriteriaPanel(repositoryUrl);
-		scp.setFrom(revision);
-		scp.setTo(revision);
-		shp = new SearchHistoryPanel(repositoryUrl, localRoot, scp);
-		add(shp);
-	}
+    private void initComponents(String repositoryUrl, File localRoot, String revision)
+    {
+        setLayout(new BorderLayout());
+        scp = new SearchCriteriaPanel(repositoryUrl);
+        scp.setFrom(revision);
+        scp.setTo(revision);
+        shp = new SearchHistoryPanel(repositoryUrl, localRoot, scp);
+        add(shp);
+    }
 
-	private void initComponents(File[] roots, String commitMessage, String username, String from, String to)
-	{
-		setLayout(new BorderLayout());
-		scp = new SearchCriteriaPanel(roots);
-		scp.setCommitMessage(commitMessage);
-		scp.setUsername(username);
-		if (from == null)
-			from = Constants.HEAD;
-		scp.setFrom(from);
-		if (to == null)
-			to = "";
-		scp.setTo(to);
-		shp = new SearchHistoryPanel(roots, scp);
-		add(shp);
-	}
+    private void initComponents(File[] roots, String commitMessage, String username, String from, String to)
+    {
+        setLayout(new BorderLayout());
+        scp = new SearchCriteriaPanel(roots);
+        scp.setCommitMessage(commitMessage);
+        scp.setUsername(username);
+        if (from == null)
+            from = Constants.HEAD;
+        scp.setFrom(from);
+        if (to == null)
+            to = "";
+        scp.setTo(to);
+        shp = new SearchHistoryPanel(roots, scp);
+        add(shp);
+    }
 
-	@Override
-	public int getPersistenceType()
-	{
-		return TopComponent.PERSISTENCE_NEVER;
-	}
+    @Override
+    public int getPersistenceType()
+    {
+        return TopComponent.PERSISTENCE_NEVER;
+    }
 
-	@Override
-	protected void componentClosed()
-	{
-		//((DiffMainPanel) getComponent(0)).componentClosed();
-		super.componentClosed();
-	}
+    @Override
+    protected void componentClosed()
+    {
+        //((DiffMainPanel) getComponent(0)).componentClosed();
+        super.componentClosed();
+    }
 
-	@Override
-	protected String preferredID()
-	{
-		if (shp.isIncomingSearch())
-			return "Git.IncomingSearchHistoryTopComponent";
-		else if (shp.isOutSearch())
-			return "Git.OutSearchHistoryTopComponent";
-		return "Git.SearchHistoryTopComponent";    // NOI18N
-	}
+    @Override
+    protected String preferredID()
+    {
+        if (shp.isIncomingSearch())
+            return "Git.IncomingSearchHistoryTopComponent";
+        else if (shp.isOutSearch())
+            return "Git.OutSearchHistoryTopComponent";
+        return "Git.SearchHistoryTopComponent";    // NOI18N
+    }
 
-	@Override
-	public HelpCtx getHelpCtx()
-	{
-		return new HelpCtx(getClass());
-	}
+    @Override
+    public HelpCtx getHelpCtx()
+    {
+        return new HelpCtx(getClass());
+    }
 
-	public Collection getSetups()
-	{
-		return shp.getSetups();
-	}
+    public Collection getSetups()
+    {
+        return shp.getSetups();
+    }
 
-	public String getSetupDisplayName()
-	{
-		return getDisplayName();
-	}
+    public String getSetupDisplayName()
+    {
+        return getDisplayName();
+    }
 
 }

@@ -65,7 +65,7 @@ public class CommitPanel extends javax.swing.JPanel implements PreferenceChangeL
     static final Object EVENT_SETTINGS_CHANGED = new Object();
 
     private CommitTable commitTable;
-    
+
     /** Creates new form CommitPanel */
     public CommitPanel() {
         initComponents();
@@ -74,10 +74,10 @@ public class CommitPanel extends javax.swing.JPanel implements PreferenceChangeL
     void setCommitTable(CommitTable commitTable) {
         this.commitTable = commitTable;
     }
-    
+
     void setErrorLabel(String htmlErrorLabel) {
         jLabel2.setText(htmlErrorLabel);
-    }    
+    }
 
     @Override
     public void addNotify() {
@@ -93,7 +93,7 @@ public class CommitPanel extends javax.swing.JPanel implements PreferenceChangeL
                 onBrowseRecentMessages();
             }
         });
-        
+
         List<String> messages = Utils.getStringList(GitModuleConfig.getDefault().getPreferences(), CommitAction.RECENT_COMMIT_MESSAGES);
         if (messages.size() > 0) {
             messageTextArea.setText(messages.get(0));
@@ -107,7 +107,7 @@ public class CommitPanel extends javax.swing.JPanel implements PreferenceChangeL
         GitModuleConfig.getDefault().getPreferences().removePreferenceChangeListener(this);
         super.removeNotify();
     }
-    
+
     private void onBrowseRecentMessages() {
         String message = StringSelector.select(NbBundle.getMessage(CommitPanel.class, "CTL_CommitForm_RecentTitle"),  // NOI18N
                                                NbBundle.getMessage(CommitPanel.class, "CTL_CommitForm_RecentPrompt"),  // NOI18N
@@ -116,7 +116,7 @@ public class CommitPanel extends javax.swing.JPanel implements PreferenceChangeL
             messageTextArea.replaceSelection(message);
         }
     }
-    
+
     public void preferenceChange(PreferenceChangeEvent evt) {
         if (evt.getKey().startsWith(GitModuleConfig.PROP_COMMIT_EXCLUSIONS)) {
             commitTable.dataChanged();
@@ -127,7 +127,7 @@ public class CommitPanel extends javax.swing.JPanel implements PreferenceChangeL
     public void tableChanged(TableModelEvent e) {
         listenerSupport.fireVersioningEvent(EVENT_SETTINGS_CHANGED);
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -208,7 +208,7 @@ public class CommitPanel extends javax.swing.JPanel implements PreferenceChangeL
         getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(CommitPanel.class, "ACSN_CommitDialog")); // NOI18N
         getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(CommitPanel.class, "ACSD_CommitDialog")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
-    
+
     ListenersSupport listenerSupport = new ListenersSupport(this);
     public void addVersioningListener(VersioningListener listener) {
         listenerSupport.addListener(listener);
@@ -216,8 +216,8 @@ public class CommitPanel extends javax.swing.JPanel implements PreferenceChangeL
 
     public void removeVersioningListener(VersioningListener listener) {
         listenerSupport.removeListener(listener);
-    }    
-    
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     final javax.swing.JLabel filesLabel = new javax.swing.JLabel();
     final javax.swing.JPanel filesPanel = new javax.swing.JPanel();
@@ -227,5 +227,5 @@ public class CommitPanel extends javax.swing.JPanel implements PreferenceChangeL
     final javax.swing.JTextArea messageTextArea = new javax.swing.JTextArea();
     final javax.swing.JLabel recentLink = new javax.swing.JLabel();
     // End of variables declaration//GEN-END:variables
-    
+
 }

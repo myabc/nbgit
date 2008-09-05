@@ -49,25 +49,25 @@ public class GitPropertiesNode {
 
     private String name;
     private String value;
-    
+
     /** Creates a new instance of GitPropertiesNode */
     public GitPropertiesNode(String name, String value) {
         this.name = name;
         this.value = value;
     }
-    
+
     public String getName() {
         return name;
-    }    
-    
+    }
+
     public String getValue() {
         return value;
     }
-    
+
     public void setValue(String value) {
         this.value = value;
-    }    
-    
+    }
+
     @Override
     public int hashCode() {
         return name.hashCode();

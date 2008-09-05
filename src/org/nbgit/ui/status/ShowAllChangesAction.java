@@ -92,5 +92,5 @@ public class ShowAllChangesAction extends SystemAction {
     protected boolean shouldPostRefresh() {
         return true;
     }
-    
+
 }

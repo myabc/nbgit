@@ -63,65 +63,65 @@ import org.openide.util.NbBundle;
  */
 public class OpenInEditorAction extends AbstractAction {
 
-	public OpenInEditorAction()
-	{
-		super(NbBundle.getBundle(OpenInEditorAction.class).getString("CTL_Synchronize_Popup_OpenInEditor")); // NOI18N
-		setEnabled(isActionEnabled());
-	}
+    public OpenInEditorAction()
+    {
+        super(NbBundle.getBundle(OpenInEditorAction.class).getString("CTL_Synchronize_Popup_OpenInEditor")); // NOI18N
+        setEnabled(isActionEnabled());
+    }
 
-	private boolean isActionEnabled()
-	{
-		for (File file : GitUtils.getCurrentContext(null).getRootFiles()) {
-			if (file.canRead())
-				return true;
-		}
-		return false;
-	}
+    private boolean isActionEnabled()
+    {
+        for (File file : GitUtils.getCurrentContext(null).getRootFiles()) {
+            if (file.canRead())
+                return true;
+        }
+        return false;
+    }
 
-	public void actionPerformed(ActionEvent e)
-	{
-		for (File file : GitUtils.getCurrentContext(null).getRootFiles()) {
-			FileObject fo = FileUtil.toFileObject(file);
-			if (fo != null)
-				try {
-					openDataObjectByCookie(DataObject.find(fo));
-				} catch (DataObjectNotFoundException ex) {
-					// ignore this error and try to open other files too
-				}
-		}
-	}
+    public void actionPerformed(ActionEvent e)
+    {
+        for (File file : GitUtils.getCurrentContext(null).getRootFiles()) {
+            FileObject fo = FileUtil.toFileObject(file);
+            if (fo != null)
+                try {
+                    openDataObjectByCookie(DataObject.find(fo));
+                } catch (DataObjectNotFoundException ex) {
+                    // ignore this error and try to open other files too
+                }
+        }
+    }
 
-	private final boolean openDataObjectByCookie(DataObject dataObject)
-	{
-		Node.Cookie cookie;
+    private final boolean openDataObjectByCookie(DataObject dataObject)
+    {
+        Node.Cookie cookie;
 
-		if ((cookie = dataObject.getCookie(EditorCookie.Observable.class)) != null)
-			return openByCookie(cookie, EditorCookie.Observable.class);
-		if ((cookie = dataObject.getCookie(EditorCookie.class)) != null)
-			return openByCookie(cookie, EditorCookie.class);
-		if ((cookie = dataObject.getCookie(OpenCookie.class)) != null)
-			return openByCookie(cookie, OpenCookie.class);
-		if ((cookie = dataObject.getCookie(EditCookie.class)) != null)
-			return openByCookie(cookie, EditCookie.class);
-		if ((cookie = dataObject.getCookie(ViewCookie.class)) != null)
-			return openByCookie(cookie, ViewCookie.class);
+        if ((cookie = dataObject.getCookie(EditorCookie.Observable.class)) != null)
+            return openByCookie(cookie, EditorCookie.Observable.class);
+        if ((cookie = dataObject.getCookie(EditorCookie.class)) != null)
+            return openByCookie(cookie, EditorCookie.class);
+        if ((cookie = dataObject.getCookie(OpenCookie.class)) != null)
+            return openByCookie(cookie, OpenCookie.class);
+        if ((cookie = dataObject.getCookie(EditCookie.class)) != null)
+            return openByCookie(cookie, EditCookie.class);
+        if ((cookie = dataObject.getCookie(ViewCookie.class)) != null)
+            return openByCookie(cookie, ViewCookie.class);
 
-		return false;
-	}
+        return false;
+    }
 
-	private boolean openByCookie(Node.Cookie cookie, Class cookieClass)
-	{
-		if ((cookieClass == EditorCookie.class) || (cookieClass == EditorCookie.Observable.class))
-			((EditorCookie) cookie).open();
-		else if (cookieClass == OpenCookie.class)
-			((OpenCookie) cookie).open();
-		else if (cookieClass == EditCookie.class)
-			((EditCookie) cookie).edit();
-		else if (cookieClass == ViewCookie.class)
-			((ViewCookie) cookie).view();
-		else
-			throw new IllegalArgumentException("Reopen #58766: " + cookieClass);
-		return true;
-	}
+    private boolean openByCookie(Node.Cookie cookie, Class cookieClass)
+    {
+        if ((cookieClass == EditorCookie.class) || (cookieClass == EditorCookie.Observable.class))
+            ((EditorCookie) cookie).open();
+        else if (cookieClass == OpenCookie.class)
+            ((OpenCookie) cookie).open();
+        else if (cookieClass == EditCookie.class)
+            ((EditCookie) cookie).edit();
+        else if (cookieClass == ViewCookie.class)
+            ((ViewCookie) cookie).view();
+        else
+            throw new IllegalArgumentException("Reopen #58766: " + cookieClass);
+        return true;
+    }
 
 }

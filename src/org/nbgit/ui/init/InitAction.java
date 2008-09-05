@@ -69,213 +69,213 @@ import org.spearce.jgit.treewalk.FileTreeIterator;
 import org.spearce.jgit.treewalk.TreeWalk;
 
 /**
- * Create action for Git: 
+ * Create action for Git:
  * git init - create a new repository in the given directory
- * 
+ *
  * @author John Rice
  */
 public class InitAction extends ContextAction {
 
-	public InitAction(String name, VCSContext context)
-	{
-		super(name, context);
-	}
+    public InitAction(String name, VCSContext context)
+    {
+        super(name, context);
+    }
 
-	@Override
-	public boolean isEnabled()
-	{
-		// If it is not a Git managed repository enable action
-		File root = GitUtils.getRootFile(context);
-		File[] files = context.getRootFiles().toArray(new File[context.getRootFiles().size()]);
-		if (files == null || files.length == 0) {
-			return false;
-		}
-		if (root == null) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+    @Override
+    public boolean isEnabled()
+    {
+        // If it is not a Git managed repository enable action
+        File root = GitUtils.getRootFile(context);
+        File[] files = context.getRootFiles().toArray(new File[context.getRootFiles().size()]);
+        if (files == null || files.length == 0) {
+            return false;
+        }
+        if (root == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	private File getCommonAncestor(File firstFile, File secondFile)
-	{
-		if (firstFile.equals(secondFile)) {
-			return firstFile;
-		}
-		File tempFirstFile = firstFile;
-		while (tempFirstFile != null) {
-			File tempSecondFile = secondFile;
-			while (tempSecondFile != null) {
-				if (tempFirstFile.equals(tempSecondFile)) {
-					return tempSecondFile;
-				}
-				tempSecondFile = tempSecondFile.getParentFile();
-			}
-			tempFirstFile = tempFirstFile.getParentFile();
-		}
-		return null;
-	}
+    private File getCommonAncestor(File firstFile, File secondFile)
+    {
+        if (firstFile.equals(secondFile)) {
+            return firstFile;
+        }
+        File tempFirstFile = firstFile;
+        while (tempFirstFile != null) {
+            File tempSecondFile = secondFile;
+            while (tempSecondFile != null) {
+                if (tempFirstFile.equals(tempSecondFile)) {
+                    return tempSecondFile;
+                }
+                tempSecondFile = tempSecondFile.getParentFile();
+            }
+            tempFirstFile = tempFirstFile.getParentFile();
+        }
+        return null;
+    }
 
-	private File getCommonAncestor(File[] files)
-	{
-		File f1 = files[0];
+    private File getCommonAncestor(File[] files)
+    {
+        File f1 = files[0];
 
-		for (int i = 1; i < files.length; i++) {
-			f1 = getCommonAncestor(f1, files[i]);
-			if (f1 == null) {
-				Git.LOG.log(Level.SEVERE, "Unable to get common parent of {0} and {1} ", // NOI18N
-					new Object[]{f1.getAbsolutePath(), files[i].getAbsolutePath()});
-			}
-		}
-		return f1;
-	}
+        for (int i = 1; i < files.length; i++) {
+            f1 = getCommonAncestor(f1, files[i]);
+            if (f1 == null) {
+                Git.LOG.log(Level.SEVERE, "Unable to get common parent of {0} and {1} ", // NOI18N
+                    new Object[]{f1.getAbsolutePath(), files[i].getAbsolutePath()});
+            }
+        }
+        return f1;
+    }
 
-	public void performAction(ActionEvent e)
-	{
-		final Git git = Git.getInstance();
+    public void performAction(ActionEvent e)
+    {
+        final Git git = Git.getInstance();
 
-		File[] files = context.getRootFiles().toArray(new File[context.getRootFiles().size()]);
-		if (files == null || files.length == 0) {
-			return;		// If there is a .git directory in an ancestor of any of the files in 
-		// the context we fail.
-		}
-		for (File file : files) {
-			if (!file.isDirectory()) {
-				file = file.getParentFile();
-			}
-			if (git.getTopmostManagedParent(file) != null) {
-				Git.LOG.log(Level.SEVERE, "Found .git directory in ancestor of {0} ", // NOI18N
-					file);
-				return;
-			}
-		}
+        File[] files = context.getRootFiles().toArray(new File[context.getRootFiles().size()]);
+        if (files == null || files.length == 0) {
+            return;     // If there is a .git directory in an ancestor of any of the files in
+        // the context we fail.
+        }
+        for (File file : files) {
+            if (!file.isDirectory()) {
+                file = file.getParentFile();
+            }
+            if (git.getTopmostManagedParent(file) != null) {
+                Git.LOG.log(Level.SEVERE, "Found .git directory in ancestor of {0} ", // NOI18N
+                    file);
+                return;
+            }
+        }
 
-		final Project proj = GitUtils.getProject(context);
-		File projFile = GitUtils.getProjectFile(proj);
+        final Project proj = GitUtils.getProject(context);
+        File projFile = GitUtils.getProjectFile(proj);
 
-		if (projFile == null) {
-			OutputLogger logger = OutputLogger.getLogger(Git.GIT_OUTPUT_TAB_TITLE);
-			logger.outputInRed(NbBundle.getMessage(InitAction.class, "MSG_CREATE_TITLE")); // NOI18N
-			logger.outputInRed(NbBundle.getMessage(InitAction.class, "MSG_CREATE_TITLE_SEP")); // NOI18N
-			logger.outputInRed(
-				NbBundle.getMessage(InitAction.class, "MSG_CREATE_NOT_SUPPORTED_INVIEW_INFO")); // NOI18N
-			logger.output(""); // NOI18N
-			JOptionPane.showMessageDialog(null,
-				NbBundle.getMessage(InitAction.class, "MSG_CREATE_NOT_SUPPORTED_INVIEW"),// NOI18N
-				NbBundle.getMessage(InitAction.class, "MSG_CREATE_NOT_SUPPORTED_INVIEW_TITLE"),// NOI18N
-				JOptionPane.INFORMATION_MESSAGE);
-			logger.closeLog();
-			return;
-		}
-		String projName = GitProjectUtils.getProjectName(projFile);
+        if (projFile == null) {
+            OutputLogger logger = OutputLogger.getLogger(Git.GIT_OUTPUT_TAB_TITLE);
+            logger.outputInRed(NbBundle.getMessage(InitAction.class, "MSG_CREATE_TITLE")); // NOI18N
+            logger.outputInRed(NbBundle.getMessage(InitAction.class, "MSG_CREATE_TITLE_SEP")); // NOI18N
+            logger.outputInRed(
+                NbBundle.getMessage(InitAction.class, "MSG_CREATE_NOT_SUPPORTED_INVIEW_INFO")); // NOI18N
+            logger.output(""); // NOI18N
+            JOptionPane.showMessageDialog(null,
+                NbBundle.getMessage(InitAction.class, "MSG_CREATE_NOT_SUPPORTED_INVIEW"),// NOI18N
+                NbBundle.getMessage(InitAction.class, "MSG_CREATE_NOT_SUPPORTED_INVIEW_TITLE"),// NOI18N
+                JOptionPane.INFORMATION_MESSAGE);
+            logger.closeLog();
+            return;
+        }
+        String projName = GitProjectUtils.getProjectName(projFile);
 
-		File rootDir = getCommonAncestor(files);
-		final File root = getCommonAncestor(rootDir, projFile);
-		if (root == null) {
-			return;
-		}
-		final String prjName = projName;
-		final Repository repo = git.getRepository(root);
+        File rootDir = getCommonAncestor(files);
+        final File root = getCommonAncestor(rootDir, projFile);
+        if (root == null) {
+            return;
+        }
+        final String prjName = projName;
+        final Repository repo = git.getRepository(root);
 
-		RequestProcessor rp = git.getRequestProcessor(root.getAbsolutePath());
+        RequestProcessor rp = git.getRequestProcessor(root.getAbsolutePath());
 
-		GitProgressSupport supportCreate = new GitProgressSupport() {
+        GitProgressSupport supportCreate = new GitProgressSupport() {
 
-			public void perform()
-			{
-				try {
-					OutputLogger logger = getLogger();
-					logger.outputInRed(
-						NbBundle.getMessage(InitAction.class,
-						"MSG_CREATE_TITLE")); // NOI18N
-					logger.outputInRed(
-						NbBundle.getMessage(InitAction.class,
-						"MSG_CREATE_TITLE_SEP")); // NOI18N
-					logger.output(
-						NbBundle.getMessage(InitAction.class,
-						"MSG_CREATE_INIT", prjName, root)); // NOI18N
+            public void perform()
+            {
+                try {
+                    OutputLogger logger = getLogger();
+                    logger.outputInRed(
+                        NbBundle.getMessage(InitAction.class,
+                        "MSG_CREATE_TITLE")); // NOI18N
+                    logger.outputInRed(
+                        NbBundle.getMessage(InitAction.class,
+                        "MSG_CREATE_TITLE_SEP")); // NOI18N
+                    logger.output(
+                        NbBundle.getMessage(InitAction.class,
+                        "MSG_CREATE_INIT", prjName, root)); // NOI18N
 
-					repo.create();
-					git.versionedFilesChanged();
-					git.refreshAllAnnotations();
-				} catch (IOException ex) {
-					NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
-					DialogDisplayer.getDefault().notifyLater(e);
-				}
-			}
-		};
-		supportCreate.start(rp, root.getAbsolutePath(),
-			org.openide.util.NbBundle.getMessage(InitAction.class, "MSG_Create_Progress")); // NOI18N
+                    repo.create();
+                    git.versionedFilesChanged();
+                    git.refreshAllAnnotations();
+                } catch (IOException ex) {
+                    NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
+                    DialogDisplayer.getDefault().notifyLater(e);
+                }
+            }
+        };
+        supportCreate.start(rp, root.getAbsolutePath(),
+            org.openide.util.NbBundle.getMessage(InitAction.class, "MSG_Create_Progress")); // NOI18N
 
-		GitProgressSupport supportAdd = new GitProgressSupport() {
+        GitProgressSupport supportAdd = new GitProgressSupport() {
 
-			public void perform()
-			{
-				OutputLogger logger = getLogger();
-				try {
-					GitIndex index = repo.getIndex();
-					int newFiles = 0;
+            public void perform()
+            {
+                OutputLogger logger = getLogger();
+                try {
+                    GitIndex index = repo.getIndex();
+                    int newFiles = 0;
 
-					for (File file : getFileList(repo, root)) {
-						Entry entry = index.add(root, file);
+                    for (File file : getFileList(repo, root)) {
+                        Entry entry = index.add(root, file);
 
-						entry.setAssumeValid(false);
-						newFiles++;
+                        entry.setAssumeValid(false);
+                        newFiles++;
 
-						if (newFiles < OutputLogger.MAX_LINES_TO_PRINT) {
-							logger.output("\t" + file.getAbsolutePath()); // NOI18N
-						}
-					}
+                        if (newFiles < OutputLogger.MAX_LINES_TO_PRINT) {
+                            logger.output("\t" + file.getAbsolutePath()); // NOI18N
+                        }
+                    }
 
-					logger.output(
-						NbBundle.getMessage(InitAction.class,
-						"MSG_CREATE_ADD", newFiles, root.getAbsolutePath())); // NOI18N
+                    logger.output(
+                        NbBundle.getMessage(InitAction.class,
+                        "MSG_CREATE_ADD", newFiles, root.getAbsolutePath())); // NOI18N
 
-					if (newFiles > 0) {
-						index.write();
-					}
-					logger.output(""); // NOI18N
-					logger.outputInRed(NbBundle.getMessage(InitAction.class, "MSG_CREATE_DONE_WARNING")); // NOI18N
-				} catch (IOException ex) {
-					NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
-					DialogDisplayer.getDefault().notifyLater(e);
-				} finally {
-					logger.outputInRed(NbBundle.getMessage(InitAction.class, "MSG_CREATE_DONE")); // NOI18N
-					logger.output(""); // NOI18N
-				}
-			}
-		};
+                    if (newFiles > 0) {
+                        index.write();
+                    }
+                    logger.output(""); // NOI18N
+                    logger.outputInRed(NbBundle.getMessage(InitAction.class, "MSG_CREATE_DONE_WARNING")); // NOI18N
+                } catch (IOException ex) {
+                    NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
+                    DialogDisplayer.getDefault().notifyLater(e);
+                } finally {
+                    logger.outputInRed(NbBundle.getMessage(InitAction.class, "MSG_CREATE_DONE")); // NOI18N
+                    logger.output(""); // NOI18N
+                }
+            }
+        };
 
-		supportAdd.start(rp, root.getAbsolutePath(),
-			org.openide.util.NbBundle.getMessage(InitAction.class, "MSG_Create_Add_Progress")); // NOI18N
-	}
+        supportAdd.start(rp, root.getAbsolutePath(),
+            org.openide.util.NbBundle.getMessage(InitAction.class, "MSG_Create_Add_Progress")); // NOI18N
+    }
 
-	private List<File> getFileList(Repository repo, File rootFile) throws IOException
-	{
-		final FileTreeIterator workTree = new FileTreeIterator(rootFile);
-		final TreeWalk walk = new TreeWalk(repo);
-		final List<File> files = new ArrayList<File>();
-		int share = SharabilityQuery.getSharability(rootFile);
+    private List<File> getFileList(Repository repo, File rootFile) throws IOException
+    {
+        final FileTreeIterator workTree = new FileTreeIterator(rootFile);
+        final TreeWalk walk = new TreeWalk(repo);
+        final List<File> files = new ArrayList<File>();
+        int share = SharabilityQuery.getSharability(rootFile);
 
-		if (share == SharabilityQuery.NOT_SHARABLE)
-			return files;
+        if (share == SharabilityQuery.NOT_SHARABLE)
+            return files;
 
-		walk.reset(); // drop the first empty tree, which we do not need here
-		walk.setRecursive(true);
-		walk.addTree(workTree);
+        walk.reset(); // drop the first empty tree, which we do not need here
+        walk.setRecursive(true);
+        walk.addTree(workTree);
 
-		while (walk.next()) {
-			String path = walk.getPathString();
-			File file = new File(rootFile, path);
+        while (walk.next()) {
+            String path = walk.getPathString();
+            File file = new File(rootFile, path);
 
-			if (share == SharabilityQuery.MIXED &&
-				!GitIgnore.isSharable(file))
-				continue;
+            if (share == SharabilityQuery.MIXED &&
+                !GitIgnore.isSharable(file))
+                continue;
 
-			files.add(file);
-		}
+            files.add(file);
+        }
 
-		return files;
-	}
+        return files;
+    }
 
 }

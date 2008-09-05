@@ -50,39 +50,39 @@ import org.openide.LifecycleManager;
 
 /**
  * Base for all context-sensitive Git actions.
- * 
+ *
  * @author Padraig O'Briain
  */
 public abstract class ContextAction extends AbstractAction {
-	
-	protected final VCSContext context;
 
-	public ContextAction(String name, VCSContext context)
-	{
-		this.context = context;
-		putValue(Action.NAME, name);
-	}
-	
-	@Override
-	public boolean isEnabled()
-	{
-		return GitUtils.getRootFile(context) != null;
-	}
+    protected final VCSContext context;
 
-	/**
-	 * Synchronizes memory modificatios with disk and calls
-	 * {@link  #performContextAction}.
-	 */
-	public void actionPerformed(final ActionEvent event)
-	{
-		// TODO try to save files in invocation context only
-		// list somehow modified file in the context and save
-		// just them.
-		// The same (global save) logic is in CVS, no complaint
-		LifecycleManager.getDefault().saveAll();
-		performAction(event);
-	}
+    public ContextAction(String name, VCSContext context)
+    {
+        this.context = context;
+        putValue(Action.NAME, name);
+    }
 
-	protected abstract void performAction(ActionEvent event);
+    @Override
+    public boolean isEnabled()
+    {
+        return GitUtils.getRootFile(context) != null;
+    }
+
+    /**
+     * Synchronizes memory modificatios with disk and calls
+     * {@link  #performContextAction}.
+     */
+    public void actionPerformed(final ActionEvent event)
+    {
+        // TODO try to save files in invocation context only
+        // list somehow modified file in the context and save
+        // just them.
+        // The same (global save) logic is in CVS, no complaint
+        LifecycleManager.getDefault().saveAll();
+        performAction(event);
+    }
+
+    protected abstract void performAction(ActionEvent event);
 
 }

@@ -47,22 +47,22 @@ import org.netbeans.modules.versioning.spi.VCSContext;
 import org.openide.util.NbBundle;
 
 /**
- * Log action for Git: 
+ * Log action for Git:
  * git log - show revision history of entire repository or files
- * 
+ *
  * @author John Rice
  */
 public class LogAction extends ContextAction {
 
-	public LogAction(String name, VCSContext context)
-	{
-		super(name, context);
-	}
+    public LogAction(String name, VCSContext context)
+    {
+        super(name, context);
+    }
 
-	public void performAction(ActionEvent e)
-	{
-		SearchHistoryAction.openHistory(context,
-			NbBundle.getMessage(LogAction.class, "MSG_Log_TabTitle", org.netbeans.modules.versioning.util.Utils.getContextDisplayName(context)));
-	}
+    public void performAction(ActionEvent e)
+    {
+        SearchHistoryAction.openHistory(context,
+            NbBundle.getMessage(LogAction.class, "MSG_Log_TabTitle", org.netbeans.modules.versioning.util.Utils.getContextDisplayName(context)));
+    }
 
 }

@@ -99,14 +99,14 @@ import org.openide.windows.WindowManager;
  * @author Maros Sandor
  */
 class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffSetupSource, PropertyChangeListener {
-    
+
     /**
      * Array of DIFF setups that we show in the DIFF view. Contents of this array is changed if
      * the user switches DIFF types.
      */
     private Setup[] setups;
-    
-    private final DelegatingUndoRedo delegatingUndoRedo = new DelegatingUndoRedo(); 
+
+    private final DelegatingUndoRedo delegatingUndoRedo = new DelegatingUndoRedo();
 
     /**
      * Context in which to DIFF.
@@ -117,19 +117,19 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
 
     /**
      * Display name of the context of this diff.
-     */ 
+     */
     private final String contextName;
-    
+
     private int currentType;
     private int currentIndex = -1;
     private int currentModelIndex = -1;
-    
+
     private RequestProcessor.Task prepareTask;
     private DiffPrepareTask dpt;
 
     private AbstractAction nextAction;
     private AbstractAction          prevAction;
-    
+
     /**
      * null for view that are not
      */
@@ -140,7 +140,7 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
     private boolean                 dividerSet;
 
     private GitProgressSupport executeStatusSupport;
-    
+
     /**
      * Creates diff panel and immediatelly starts loading...
      */
@@ -182,7 +182,7 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
         if (fileTableSetSelectedIndexContext) return;
         setDiffIndex(viewIndex, 0);
     }
-    
+
     UndoRedo getUndoRedo() {
         return delegatingUndoRedo;
     }
@@ -201,7 +201,7 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
      */
     void componentClosed() {
         setups = null;
-        cancelBackgroundTasks(); 
+        cancelBackgroundTasks();
     }
 
     void requestActive() {
@@ -215,15 +215,15 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
         splitPane.setTopComponent(fileTable.getComponent());
         splitPane.setBottomComponent(new NoContentPanel(NbBundle.getMessage(MultiDiffPanel.class, "MSG_DiffPanel_NoContent")));
         commitButton.addActionListener(this);
-        
+
         commitButton.setToolTipText(NbBundle.getMessage(MultiDiffPanel.class, "MSG_CommitDiff_Tooltip", contextName));
         updateButton.setToolTipText(NbBundle.getMessage(MultiDiffPanel.class, "MSG_UpdateDiff_Tooltip", contextName));
         ButtonGroup grp = new ButtonGroup();
-        
+
         nextAction = new AbstractAction(null, new javax.swing.ImageIcon(getClass().getResource("/org/nbgit/resources/icons/diff-next.png"))) {  // NOI18N
             {
                 putValue(Action.SHORT_DESCRIPTION, java.util.ResourceBundle.getBundle("org/nbgit/ui/diff/Bundle").
-                                                   getString("CTL_DiffPanel_Next_Tooltip"));                
+                                                   getString("CTL_DiffPanel_Next_Tooltip"));
             }
             public void actionPerformed(ActionEvent e) {
                 onNextButton();
@@ -232,7 +232,7 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
         prevAction = new AbstractAction(null, new javax.swing.ImageIcon(getClass().getResource("/org/nbgit/resources/icons/diff-prev.png"))) { // NOI18N
             {
                 putValue(Action.SHORT_DESCRIPTION, java.util.ResourceBundle.getBundle("org/nbgit/ui/diff/Bundle").
-                                                   getString("CTL_DiffPanel_Prev_Tooltip"));                
+                                                   getString("CTL_DiffPanel_Prev_Tooltip"));
             }
             public void actionPerformed(ActionEvent e) {
                 onPrevButton();
@@ -241,7 +241,7 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
         nextButton.setAction(nextAction);
         prevButton.setAction(prevAction);
     }
-    
+
     private void refreshComponents() {
         DiffController view = setups != null && currentModelIndex != -1 ? setups[currentModelIndex].getView() : null;
         int currentDifferenceIndex = view != null ? view.getDifferenceIndex() : -1;
@@ -254,7 +254,7 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
         dividerSet = false;
         updateSplitLocation();
     }
-    
+
     @Override
     public void addNotify() {
         super.addNotify();
@@ -288,13 +288,13 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
         }
         splitPane.setDividerLocation(optimalLocation);
     }
-    
+
     @Override
     public void removeNotify() {
         Git.getInstance().getStatusCache().removePropertyChangeListener(this);
         super.removeNotify();
     }
-    
+
     private boolean affectsView(PropertyChangeEvent event) {
         StatusCache.ChangedEvent changedEvent = (StatusCache.ChangedEvent) event.getNewValue();
         File file = changedEvent.getFile();
@@ -307,11 +307,11 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
         }
         return context == null? false: context.contains(file);
     }
-    
+
     private void setDiffIndex(int idx, int location) {
         currentIndex = idx;
         DiffController view = null;
-        
+
         if (currentIndex != -1) {
             currentModelIndex = showingFileTable() ? fileTable.getModelIndex(currentIndex) : 0;
             view = setups[currentModelIndex].getView();
@@ -329,7 +329,7 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
                 }
                 tc.setActivatedNodes(new Node[] {node});
             }
-            
+
             diffView = null;
             boolean focus = false;
             if (view != null) {
@@ -354,7 +354,7 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
                 }
             } else {
                 diffView = new NoContentPanel(NbBundle.getMessage(MultiDiffPanel.class, "MSG_DiffPanel_NoContent"));
-            }            
+            }
         } else {
             currentModelIndex = -1;
             diffView = new NoContentPanel(NbBundle.getMessage(MultiDiffPanel.class, "MSG_DiffPanel_NoFileSelected"));
@@ -393,28 +393,28 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
             executeStatusSupport.cancel();
             executeStatusSupport = null;
         }
-        
+
         LifecycleManager.getDefault().saveAll();
         RequestProcessor rp = Git.getInstance().getRequestProcessor();
         executeStatusSupport = new GitProgressSupport() {
-            public void perform() {                                                
+            public void perform() {
                 StatusAction.executeStatus(context, this);
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         refreshSetups();
                     }
-                    
+
                 });
             }
         };
         String repository = GitUtils.getRootPath(context);
         executeStatusSupport.start(rp, repository, NbBundle.getMessage(MultiDiffPanel.class, "MSG_Refresh_Progress"));
-    }                    
+    }
 
     private void onUpdateButton() {
         UpdateAction.update(context);
     }
-    
+
     private void onCommitButton() {
         LifecycleManager.getDefault().saveAll();
         CommitAction.commit(contextName, context);
@@ -497,16 +497,16 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
             displayStatuses = StatusInfo.STATUS_LOCAL_CHANGE;
             break;
         case Setup.DIFFTYPE_REMOTE:
-            displayStatuses = StatusInfo.STATUS_REMOTE_CHANGE; 
+            displayStatuses = StatusInfo.STATUS_REMOTE_CHANGE;
             break;
         case Setup.DIFFTYPE_ALL:
-            displayStatuses = StatusInfo.STATUS_LOCAL_CHANGE | StatusInfo.STATUS_REMOTE_CHANGE; 
+            displayStatuses = StatusInfo.STATUS_LOCAL_CHANGE | StatusInfo.STATUS_REMOTE_CHANGE;
             break;
         default:
             throw new IllegalStateException("Unknown DIFF type:" + currentType); // NOI18N
         }
         files = GitUtils.getModifiedFiles(context, displayStatuses);
-        
+
         setups = computeSetups(files);
         boolean propertyColumnVisible = false;
         for (Setup setup : setups) {
@@ -515,7 +515,7 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
                 break;
             }
         }
-        fileTable.setColumns(propertyColumnVisible ? 
+        fileTable.setColumns(propertyColumnVisible ?
                 new String[] { DiffNode.COLUMN_NAME_NAME, DiffNode.COLUMN_NAME_PROPERTY, DiffNode.COLUMN_NAME_STATUS, DiffNode.COLUMN_NAME_LOCATION } :
                 new String[] { DiffNode.COLUMN_NAME_NAME, DiffNode.COLUMN_NAME_STATUS, DiffNode.COLUMN_NAME_LOCATION }
         );
@@ -594,7 +594,7 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
     }
 
     private class DiffPrepareTask implements Runnable {
-        
+
         private final Setup[] prepareSetups;
 
         public DiffPrepareTask(Setup [] prepareSetups) {
@@ -656,7 +656,7 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
             });
         }
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -828,8 +828,8 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
         onRefreshButton();
     }//GEN-LAST:event_refreshButtonActionPerformed
-    
-    
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton commitButton;
     private javax.swing.JToolBar controlsToolBar;
@@ -844,7 +844,7 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
     private javax.swing.JSplitPane splitPane;
     private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
-    
+
     /** Interprets property blob. */
     static final class Property {
         final byte[] value;
@@ -853,7 +853,7 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
             this.value = (byte[]) value;
         }
 
-        String getMIME() {            
+        String getMIME() {
             return "text/plain"; // NOI18N
         }
 

@@ -57,22 +57,22 @@ import org.openide.windows.WindowManager;
 
 /**
  * Top component of the Versioning view.
- * 
+ *
  * @author Maros Sandor
  */
 public class GitVersioningTopComponent extends TopComponent {
- 
-    private static final long serialVersionUID = 1L;    
-    
+
+    private static final long serialVersionUID = 1L;
+
     private VersioningPanel         syncPanel;
     private VCSContext              context;
     private String                  contentTitle;
     private String                  branchTitle;
     private long                    lastUpdateTimestamp;
     private static final String PREFERRED_ID = "gitversioning"; // NOI18N
-    
+
     private static GitVersioningTopComponent instance;
-    
+
     public GitVersioningTopComponent() {
         putClientProperty("SlidingName", NbBundle.getMessage(GitVersioningTopComponent.class, "CTL_Versioning_TopComponent_Title")); //NOI18N
 
@@ -83,7 +83,7 @@ public class GitVersioningTopComponent extends TopComponent {
         syncPanel = new VersioningPanel(this);
         add(syncPanel);
     }
-    
+
     @Override
     public HelpCtx getHelpCtx() {
         return new HelpCtx(getClass());
@@ -109,15 +109,15 @@ public class GitVersioningTopComponent extends TopComponent {
     private void refreshContent() {
         if (syncPanel == null) return;  // the component is not showing => nothing to refresh
         updateTitle();
-        syncPanel.setContext(context);        
+        syncPanel.setContext(context);
     }
 
     /**
      * Sets the 'content' portion of Versioning component title.
      * Title pattern: Versioning[ - contentTitle[ - branchTitle]] (10 minutes ago)
-     * 
+     *
      * @param contentTitle a new content title, e.g. "2 projects" // NOI18N
-     */ 
+     */
     public void setContentTitle(String contentTitle) {
         this.contentTitle = contentTitle;
         updateTitle();
@@ -126,23 +126,23 @@ public class GitVersioningTopComponent extends TopComponent {
     /**
      * Sets the 'branch' portion of Versioning component title.
      * Title pattern: Versioning[ - contentTitle[ - branchTitle]] (10 minutes ago)
-     * 
+     *
      * @param branchTitle a new content title, e.g. "release40" branch // NOI18N
-     */ 
+     */
     void setBranchTitle(String branchTitle) {
         this.branchTitle = branchTitle;
         updateTitle();
     }
-    
+
     public void contentRefreshed() {
         lastUpdateTimestamp = System.currentTimeMillis();
         updateTitle();
     }
-    
+
     private void updateTitle() {
         SwingUtilities.invokeLater(new Runnable (){
             public void run() {
-                
+
                 if (contentTitle == null) {
                     setName(NbBundle.getMessage(GitVersioningTopComponent.class, "CTL_Versioning_TopComponent_Title")); // NOI18N
                 } else {
@@ -151,17 +151,17 @@ public class GitVersioningTopComponent extends TopComponent {
                     if(baseFile != null){
                         name = baseFile.getName();
                     }
-                    
+
                     if (branchTitle == null) {
-                        setName(NbBundle.getMessage(GitVersioningTopComponent.class, 
-                                "CTL_Versioning_TopComponent_MultiTitle", 
+                        setName(NbBundle.getMessage(GitVersioningTopComponent.class,
+                                "CTL_Versioning_TopComponent_MultiTitle",
                                 contentTitle, name.equals(contentTitle)? "": "[" + name + "]"));  // NOI18N
                     } else {
-                        setName(NbBundle.getMessage(GitVersioningTopComponent.class, 
-                                "CTL_Versioning_TopComponent_Title_ContentBranch", 
+                        setName(NbBundle.getMessage(GitVersioningTopComponent.class,
+                                "CTL_Versioning_TopComponent_Title_ContentBranch",
                                 contentTitle, name.equals(contentTitle)? "": "[" + name + "] ", branchTitle)); // NOI18N
                     }
-                }                
+                }
             }
         });
     }
@@ -181,7 +181,7 @@ public class GitVersioningTopComponent extends TopComponent {
         }
         return instance;
     }
-    
+
     /**
      * Obtain the GitVersioningTopComponent  instance. Never call {@link #getDefault} directly!
      */
@@ -194,7 +194,7 @@ public class GitVersioningTopComponent extends TopComponent {
         if (win instanceof GitVersioningTopComponent) {
             return (GitVersioningTopComponent)win;
         }
-        Git.LOG.log(Level.FINE, 
+        Git.LOG.log(Level.FINE,
                 "There seem to be multiple components with the '" + PREFERRED_ID + // NOI18N
                 "' ID. That is a potential source of errors and unexpected behavior."); // NOI18N
         return getDefault();
@@ -204,18 +204,18 @@ public class GitVersioningTopComponent extends TopComponent {
     public int getPersistenceType() {
         return TopComponent.PERSISTENCE_ALWAYS;
     }
-    
+
     /** replaces this in object stream */
     @Override
     public Object writeReplace() {
         return new ResolvableHelper();
     }
-    
+
     @Override
     protected String preferredID() {
         return PREFERRED_ID;
     }
-    
+
     final static class ResolvableHelper implements Serializable {
         private static final long serialVersionUID = 1L;
         public Object readResolve() {
@@ -225,14 +225,14 @@ public class GitVersioningTopComponent extends TopComponent {
 
     /**
      * Programmatically invokes the Refresh action.
-     */ 
+     */
     public void performRefreshAction() {
         syncPanel.performRefreshAction();
     }
 
     /**
      * Sets files/folders the user wants to synchronize. They are typically activated (selected) nodes.
-     * 
+     *
      * @param ctx new context of the Versioning view
      */
     public void setContext(VCSContext ctx) {
@@ -252,19 +252,19 @@ public class GitVersioningTopComponent extends TopComponent {
         }
         setToolTipText(getContextFilesList(ctx));
     }
-    
+
     private String getContextFilesList(VCSContext ctx) {
         if (ctx == null || ctx.getRootFiles().size() == 0)
-		return NbBundle.getMessage(GitVersioningTopComponent.class, "CTL_Versioning_TopComponent_Title"); // NOI18N
-	int size = ctx.getRootFiles().size();
+        return NbBundle.getMessage(GitVersioningTopComponent.class, "CTL_Versioning_TopComponent_Title"); // NOI18N
+    int size = ctx.getRootFiles().size();
 
-	StringBuffer sb = new StringBuffer(200);
+    StringBuffer sb = new StringBuffer(200);
         if (size > 1)
-		sb.append("<html>"); // NOI18N
+        sb.append("<html>"); // NOI18N
         for (File file : ctx.getRootFiles()) {
             sb.append(file.getAbsolutePath());
-	    size--;
-	    if (size > 0)
+        size--;
+        if (size > 0)
                 sb.append("<br>"); // NOI18N
         }
         return sb.toString();
@@ -274,5 +274,5 @@ public class GitVersioningTopComponent extends TopComponent {
     public boolean hasContext() {
         return context != null && context.getRootFiles().size() > 0;
     }
-    
+
 }

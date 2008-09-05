@@ -56,70 +56,70 @@ import org.netbeans.modules.versioning.spi.VCSContext;
 import org.netbeans.modules.versioning.util.Utils;
 
 /**
- * Status action for Git: 
+ * Status action for Git:
  * git status - show changed files in the working directory
- * 
+ *
  * @author John Rice
  */
 public class StatusAction extends ContextAction {
 
-	public StatusAction(String name, VCSContext context)
-	{
-		super(name, context);
-	}
+    public StatusAction(String name, VCSContext context)
+    {
+        super(name, context);
+    }
 
-	public void performAction(ActionEvent ev)
-	{
-		File[] files = context.getRootFiles().toArray(new File[context.getRootFiles().size()]);
-		if (files == null || files.length == 0)
-			return;
+    public void performAction(ActionEvent ev)
+    {
+        File[] files = context.getRootFiles().toArray(new File[context.getRootFiles().size()]);
+        if (files == null || files.length == 0)
+            return;
 
-		final GitVersioningTopComponent stc = GitVersioningTopComponent.findInstance();
-		stc.setContentTitle(Utils.getContextDisplayName(context));
-		stc.setContext(context);
-		stc.open();
-		stc.requestActive();
-		stc.performRefreshAction();
-	}
+        final GitVersioningTopComponent stc = GitVersioningTopComponent.findInstance();
+        stc.setContentTitle(Utils.getContextDisplayName(context));
+        stc.setContext(context);
+        stc.open();
+        stc.requestActive();
+        stc.performRefreshAction();
+    }
 
-	/**
-	 * Connects to repository and gets recent status.
-	 */
-	public static void executeStatus(final VCSContext context, GitProgressSupport support)
-	{
-		if (context == null || context.getRootFiles().size() == 0)
-			return;
-		File repository = GitUtils.getRootFile(context);
-		if (repository == null)
-			return;
+    /**
+     * Connects to repository and gets recent status.
+     */
+    public static void executeStatus(final VCSContext context, GitProgressSupport support)
+    {
+        if (context == null || context.getRootFiles().size() == 0)
+            return;
+        File repository = GitUtils.getRootFile(context);
+        if (repository == null)
+            return;
 
-		StatusCache cache = Git.getInstance().getStatusCache();
-		cache.refreshCached(context);
+        StatusCache cache = Git.getInstance().getStatusCache();
+        cache.refreshCached(context);
 
-		for (File root : context.getRootFiles()) {
-			if (support.isCanceled())
-				return;
-			if (root.isDirectory()) {
-				Map<File, StatusInfo> interestingFiles;
-				interestingFiles = GitCommand.getInterestingStatus(repository, root);
-				if (!interestingFiles.isEmpty()) {
-					Collection<File> files = interestingFiles.keySet();
+        for (File root : context.getRootFiles()) {
+            if (support.isCanceled())
+                return;
+            if (root.isDirectory()) {
+                Map<File, StatusInfo> interestingFiles;
+                interestingFiles = GitCommand.getInterestingStatus(repository, root);
+                if (!interestingFiles.isEmpty()) {
+                    Collection<File> files = interestingFiles.keySet();
 
-					Map<File, Map<File, StatusInfo>> interestingDirs =
-						GitUtils.getInterestingDirs(interestingFiles, files);
+                    Map<File, Map<File, StatusInfo>> interestingDirs =
+                        GitUtils.getInterestingDirs(interestingFiles, files);
 
-					for (File file : files) {
-						if (support.isCanceled())
-							return;
-						StatusInfo fi = interestingFiles.get(file);
+                    for (File file : files) {
+                        if (support.isCanceled())
+                            return;
+                        StatusInfo fi = interestingFiles.get(file);
 
-						cache.refreshFileStatus(file, fi,
-							interestingDirs.get(file.isDirectory() ? file : file.getParentFile()));
-					}
-				}
-			} else
-				cache.refresh(root, StatusCache.REPOSITORY_STATUS_UNKNOWN);
-		}
-	}
+                        cache.refreshFileStatus(file, fi,
+                            interestingDirs.get(file.isDirectory() ? file : file.getParentFile()));
+                    }
+                }
+            } else
+                cache.refresh(root, StatusCache.REPOSITORY_STATUS_UNKNOWN);
+        }
+    }
 
 }

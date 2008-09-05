@@ -65,105 +65,105 @@ import org.openide.windows.WindowManager;
 
 /**
  * Class to handle various aspects of NetBeans Project management.
- * 
+ *
  * @author alexbcoles
  */
 public class GitProjectUtils {
 
-	private static final String ProjectTab_ID_LOGICAL = "projectTabLogical_tc"; // NOI18N    
+    private static final String ProjectTab_ID_LOGICAL = "projectTabLogical_tc"; // NOI18N
 
-	public static void renameProject(Project p, Object caller)
-	{
-		if (p == null)
-			return;
+    public static void renameProject(Project p, Object caller)
+    {
+        if (p == null)
+            return;
 
-		ContextAwareAction action = (ContextAwareAction) CommonProjectActions.renameProjectAction();
-		Lookup ctx = Lookups.singleton(p);
-		Action ctxAction = action.createContextAwareInstance(ctx);
-		ctxAction.actionPerformed(new ActionEvent(caller, 0, "")); // NOI18N
-	}
+        ContextAwareAction action = (ContextAwareAction) CommonProjectActions.renameProjectAction();
+        Lookup ctx = Lookups.singleton(p);
+        Action ctxAction = action.createContextAwareInstance(ctx);
+        ctxAction.actionPerformed(new ActionEvent(caller, 0, "")); // NOI18N
+    }
 
-	public static void openProject(Project p, Object caller, boolean setMain)
-	{
-		if (p == null)
-			return;
-		Project[] projects = new Project[]{p};
-		OpenProjects.getDefault().open(projects, false);
-		if (setMain)
-			OpenProjects.getDefault().setMainProject(p);
+    public static void openProject(Project p, Object caller, boolean setMain)
+    {
+        if (p == null)
+            return;
+        Project[] projects = new Project[]{p};
+        OpenProjects.getDefault().open(projects, false);
+        if (setMain)
+            OpenProjects.getDefault().setMainProject(p);
 
-		// set as main project and expand
-		selectAndExpandProject(p);
-	}
+        // set as main project and expand
+        selectAndExpandProject(p);
+    }
 
-	public static void selectAndExpandProject(final Project p)
-	{
-		if (p == null)
-			return;
+    public static void selectAndExpandProject(final Project p)
+    {
+        if (p == null)
+            return;
 
-		// invoke later to select the being opened project if the focus is outside ProjectTab
-		SwingUtilities.invokeLater(new Runnable() {
+        // invoke later to select the being opened project if the focus is outside ProjectTab
+        SwingUtilities.invokeLater(new Runnable() {
 
-			final ExplorerManager.Provider ptLogial = findDefault(ProjectTab_ID_LOGICAL);
+            final ExplorerManager.Provider ptLogial = findDefault(ProjectTab_ID_LOGICAL);
 
-			public void run()
-			{
-				Node root = ptLogial.getExplorerManager().getRootContext();
-				// Node projNode = root.getChildren ().findChild( p.getProjectDirectory().getName () );
-				Node projNode = root.getChildren().findChild(ProjectUtils.getInformation(p).getName());
-				if (projNode != null)
-					try {
-						ptLogial.getExplorerManager().setSelectedNodes(new Node[]{projNode});
-					} catch (Exception ignore) {
-						// may ignore it
-					}
-			}
+            public void run()
+            {
+                Node root = ptLogial.getExplorerManager().getRootContext();
+                // Node projNode = root.getChildren ().findChild( p.getProjectDirectory().getName () );
+                Node projNode = root.getChildren().findChild(ProjectUtils.getInformation(p).getName());
+                if (projNode != null)
+                    try {
+                        ptLogial.getExplorerManager().setSelectedNodes(new Node[]{projNode});
+                    } catch (Exception ignore) {
+                        // may ignore it
+                    }
+            }
 
-		});
-	}
+        });
+    }
 
-	public static String getProjectName(final File root)
-	{
-		if (root == null || !root.isDirectory())
-			return null;
-		final ProjectManager projectManager = ProjectManager.getDefault();
-		FileObject rootFileObj = FileUtil.toFileObject(FileUtil.normalizeFile(root));
-		// This can happen if the root is "ssh://<something>"
-		if (rootFileObj == null || projectManager == null)
-			return null;
+    public static String getProjectName(final File root)
+    {
+        if (root == null || !root.isDirectory())
+            return null;
+        final ProjectManager projectManager = ProjectManager.getDefault();
+        FileObject rootFileObj = FileUtil.toFileObject(FileUtil.normalizeFile(root));
+        // This can happen if the root is "ssh://<something>"
+        if (rootFileObj == null || projectManager == null)
+            return null;
 
-		String res = null;
-		if (projectManager.isProject(rootFileObj))
-			try {
-				Project prj = projectManager.findProject(rootFileObj);
+        String res = null;
+        if (projectManager.isProject(rootFileObj))
+            try {
+                Project prj = projectManager.findProject(rootFileObj);
 
-				res = getProjectName(prj);
-			} catch (Exception ex) {
-				Git.LOG.log(Level.FINE, "getProjectName() file: {0} {1}", new Object[]{rootFileObj.getPath(), ex.toString()}); // NOI18N
-			} finally {
-				return res;
-			}
-		else
-			return res;
-	}
+                res = getProjectName(prj);
+            } catch (Exception ex) {
+                Git.LOG.log(Level.FINE, "getProjectName() file: {0} {1}", new Object[]{rootFileObj.getPath(), ex.toString()}); // NOI18N
+            } finally {
+                return res;
+            }
+        else
+            return res;
+    }
 
-	public static String getProjectName(final Project p)
-	{
-		if (p == null)
-			return null;
+    public static String getProjectName(final Project p)
+    {
+        if (p == null)
+            return null;
 
-		ProjectInformation pi = ProjectUtils.getInformation(p);
-		return pi == null ? null : pi.getDisplayName();
-	}
+        ProjectInformation pi = ProjectUtils.getInformation(p);
+        return pi == null ? null : pi.getDisplayName();
+    }
 
-	private static synchronized ExplorerManager.Provider findDefault(String tcID)
-	{
-		TopComponent tc = WindowManager.getDefault().findTopComponent(tcID);
-		return (ExplorerManager.Provider) tc;
-	}
-	// Should not be creating an instance of this class
-	private GitProjectUtils()
-	{
-	}
+    private static synchronized ExplorerManager.Provider findDefault(String tcID)
+    {
+        TopComponent tc = WindowManager.getDefault().findTopComponent(tcID);
+        return (ExplorerManager.Provider) tc;
+    }
+    // Should not be creating an instance of this class
+    private GitProjectUtils()
+    {
+    }
 
 }

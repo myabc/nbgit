@@ -53,7 +53,7 @@ import org.openide.util.NbBundle;
  * @author Peter Pis
  */
 public class PropertiesTableModel extends AbstractTableModel {
-    
+
     public static final String COLUMN_NAME_NAME = "name";   // NOI18N
     public static final String COLUMN_NAME_VALUE = "value"; // NOI18N
 
@@ -66,7 +66,7 @@ public class PropertiesTableModel extends AbstractTableModel {
         columnLabels.put(COLUMN_NAME_NAME, new String[]{loc.getString("CTL_PropertiesTable_Column_Name"), loc.getString("CTL_PropertiesTable_Column_Name")}); // NOI18N
         columnLabels.put(COLUMN_NAME_VALUE, new String[]{loc.getString("CTL_PropertiesTable_Column_Value"), loc.getString("CTL_PropertiesTable_Column_Value")}); // NOI18N
     }
-    
+
     /** Creates a new instance of PropertiesTableModel */
     public PropertiesTableModel(String[] clms) {
         if (Arrays.equals(columns, clms))
@@ -74,25 +74,25 @@ public class PropertiesTableModel extends AbstractTableModel {
         setColumns(clms);
         setNodes(new GitPropertiesNode[0]);
     }
-    
+
     public void setColumns(String[] clms) {
         this.columns = clms;
         fireTableStructureChanged();
     }
-    
+
     public void setNodes(GitPropertiesNode[] nodes) {
         this.nodes = nodes;
         fireTableDataChanged();
     }
-    
+
     public GitPropertiesNode[] getNodes() {
         return nodes;
     }
-    
+
     public GitPropertiesNode getNode(int row) {
         return nodes[row];
     }
-    
+
     public int getRowCount() {
         return nodes.length;
     }
@@ -101,7 +101,7 @@ public class PropertiesTableModel extends AbstractTableModel {
     public String getColumnName(int column) {
         return columnLabels.get(columns[column])[0];
     }
-    
+
     public int getColumnCount() {
         return columns.length;
     }
@@ -115,5 +115,5 @@ public class PropertiesTableModel extends AbstractTableModel {
         }
         throw new IllegalArgumentException("The column index is out of index: " + columnIndex); // NOI18N
     }
-    
+
 }

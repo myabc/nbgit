@@ -66,200 +66,200 @@ import org.spearce.jgit.revwalk.filter.RevFilter;
 
 /**
  * Executes searches in Search History panel.
- * 
+ *
  * @author Maros Sandor
  */
 class SearchExecutor implements Runnable {
 
-	public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");  // NOI18N
-	static final SimpleDateFormat fullDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");  // NOI18N
-	static final DateFormat[] dateFormats = new DateFormat[]{
-		fullDateFormat,
-		new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"), // NOI18N
-		simpleDateFormat,
-		new SimpleDateFormat("yyyy-MM-dd"), // NOI18N
-	};
-	private final SearchHistoryPanel master;
-	private Map<String, Set<File>> workFiles;
-	private Map<String, File> pathToRoot;
-	private final SearchCriteriaPanel criteria;
-	private boolean filterUsername;
-	private boolean filterMessage;
-	private int completedSearches;
-	private boolean searchCanceled;
-	private List<RepositoryRevision> results = new ArrayList<RepositoryRevision>();
+    public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");  // NOI18N
+    static final SimpleDateFormat fullDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");  // NOI18N
+    static final DateFormat[] dateFormats = new DateFormat[]{
+        fullDateFormat,
+        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"), // NOI18N
+        simpleDateFormat,
+        new SimpleDateFormat("yyyy-MM-dd"), // NOI18N
+    };
+    private final SearchHistoryPanel master;
+    private Map<String, Set<File>> workFiles;
+    private Map<String, File> pathToRoot;
+    private final SearchCriteriaPanel criteria;
+    private boolean filterUsername;
+    private boolean filterMessage;
+    private int completedSearches;
+    private boolean searchCanceled;
+    private List<RepositoryRevision> results = new ArrayList<RepositoryRevision>();
 
-	public SearchExecutor(SearchHistoryPanel master)
-	{
-		this.master = master;
-		criteria = master.getCriteria();
-		filterUsername = criteria.getUsername() != null;
-		filterMessage = criteria.getCommitMessage() != null;
+    public SearchExecutor(SearchHistoryPanel master)
+    {
+        this.master = master;
+        criteria = master.getCriteria();
+        filterUsername = criteria.getUsername() != null;
+        filterMessage = criteria.getCommitMessage() != null;
 
-		pathToRoot = new HashMap<String, File>();
-		if (searchingUrl()) {
-			String rootPath = Git.getInstance().getTopmostManagedParent(master.getRoots()[0]).toString();
-			pathToRoot.put(rootPath, master.getRoots()[0]);
-		} else {
-			workFiles = new HashMap<String, Set<File>>();
-			for (File file : master.getRoots()) {
-				String rootPath = Git.getInstance().getTopmostManagedParent(file).toString();
+        pathToRoot = new HashMap<String, File>();
+        if (searchingUrl()) {
+            String rootPath = Git.getInstance().getTopmostManagedParent(master.getRoots()[0]).toString();
+            pathToRoot.put(rootPath, master.getRoots()[0]);
+        } else {
+            workFiles = new HashMap<String, Set<File>>();
+            for (File file : master.getRoots()) {
+                String rootPath = Git.getInstance().getTopmostManagedParent(file).toString();
 
-				Set<File> set = workFiles.get(rootPath);
-				if (set == null) {
-					set = new HashSet<File>(2);
-					workFiles.put(rootPath, set);
-				}
-				set.add(file);
-			}
-		}
+                Set<File> set = workFiles.get(rootPath);
+                if (set == null) {
+                    set = new HashSet<File>(2);
+                    workFiles.put(rootPath, set);
+                }
+                set.add(file);
+            }
+        }
 
-	}
+    }
 
-	public void run()
-	{
+    public void run()
+    {
 
-		final String fromRevision = criteria.getFrom();
-		final String toRevision = criteria.getTo();
+        final String fromRevision = criteria.getFrom();
+        final String toRevision = criteria.getTo();
 
-		completedSearches = 0;
-		if (searchingUrl()) {
-			RequestProcessor rp = Git.getInstance().getRequestProcessor(master.getRepositoryUrl());
-			GitProgressSupport support = new GitProgressSupport() {
+        completedSearches = 0;
+        if (searchingUrl()) {
+            RequestProcessor rp = Git.getInstance().getRequestProcessor(master.getRepositoryUrl());
+            GitProgressSupport support = new GitProgressSupport() {
 
-				public void perform()
-				{
-					OutputLogger logger = getLogger();
-					search(master.getRepositoryUrl(), null, fromRevision, toRevision, this, logger);
-				}
+                public void perform()
+                {
+                    OutputLogger logger = getLogger();
+                    search(master.getRepositoryUrl(), null, fromRevision, toRevision, this, logger);
+                }
 
-			};
-			support.start(rp, master.getRepositoryUrl(), NbBundle.getMessage(SearchExecutor.class, "MSG_Search_Progress")); // NOI18N
-		} else
-			for (Iterator i = workFiles.keySet().iterator(); i.hasNext();) {
-				final String rootUrl = (String) i.next();
-				final Set<File> files = workFiles.get(rootUrl);
-				RequestProcessor rp = Git.getInstance().getRequestProcessor(rootUrl);
-				GitProgressSupport support = new GitProgressSupport() {
+            };
+            support.start(rp, master.getRepositoryUrl(), NbBundle.getMessage(SearchExecutor.class, "MSG_Search_Progress")); // NOI18N
+        } else
+            for (Iterator i = workFiles.keySet().iterator(); i.hasNext();) {
+                final String rootUrl = (String) i.next();
+                final Set<File> files = workFiles.get(rootUrl);
+                RequestProcessor rp = Git.getInstance().getRequestProcessor(rootUrl);
+                GitProgressSupport support = new GitProgressSupport() {
 
-					public void perform()
-					{
-						OutputLogger logger = getLogger();
-						search(rootUrl, files, fromRevision, toRevision, this, logger);
-					}
+                    public void perform()
+                    {
+                        OutputLogger logger = getLogger();
+                        search(rootUrl, files, fromRevision, toRevision, this, logger);
+                    }
 
-				};
-				support.start(rp, rootUrl, NbBundle.getMessage(SearchExecutor.class, "MSG_Search_Progress")); // NOI18N
-			}
-	}
+                };
+                support.start(rp, rootUrl, NbBundle.getMessage(SearchExecutor.class, "MSG_Search_Progress")); // NOI18N
+            }
+    }
 
-	private void search(String rootUrl, Set<File> files, String fromRevision,
-		String toRevision, GitProgressSupport progressSupport, OutputLogger logger)
-	{
-		if (progressSupport.isCanceled()) {
-			searchCanceled = true;
-			return;
-		}
+    private void search(String rootUrl, Set<File> files, String fromRevision,
+        String toRevision, GitProgressSupport progressSupport, OutputLogger logger)
+    {
+        if (progressSupport.isCanceled()) {
+            searchCanceled = true;
+            return;
+        }
 
-		RepositoryRevision.Walk walk;
-		/*
-		if (master.isIncomingSearch()) {
-		messages = GitCommand.getIncomingMessages(rootUrl, toRevision, master.isShowMerges(), logger);
-		}else if (master.isOutSearch()) {
-		messages = GitCommand.getOutMessages(rootUrl, master.isShowMerges(), logger);
-		} else {
-		 */
-		walk = GitCommand.getLogMessages(rootUrl, files, fromRevision, toRevision,
-			master.isShowMerges(), logger);
-		//}
-		if (walk != null)
-			appendResults(rootUrl, walk);
-	}
+        RepositoryRevision.Walk walk;
+        /*
+        if (master.isIncomingSearch()) {
+        messages = GitCommand.getIncomingMessages(rootUrl, toRevision, master.isShowMerges(), logger);
+        }else if (master.isOutSearch()) {
+        messages = GitCommand.getOutMessages(rootUrl, master.isShowMerges(), logger);
+        } else {
+         */
+        walk = GitCommand.getLogMessages(rootUrl, files, fromRevision, toRevision,
+            master.isShowMerges(), logger);
+        //}
+        if (walk != null)
+            appendResults(rootUrl, walk);
+    }
 
-	private void setupRevFilter(RepositoryRevision.Walk walk)
-	{
-		RevFilter filter = walk.getRevFilter();
+    private void setupRevFilter(RepositoryRevision.Walk walk)
+    {
+        RevFilter filter = walk.getRevFilter();
 
-		if (filterUsername) {
-			RevFilter author = AuthorRevFilter.create(criteria.getUsername());
+        if (filterUsername) {
+            RevFilter author = AuthorRevFilter.create(criteria.getUsername());
 
-			if (filter == RevFilter.ALL)
-				filter = author;
-			else
-				filter = AndRevFilter.create(filter, author);
-		}
+            if (filter == RevFilter.ALL)
+                filter = author;
+            else
+                filter = AndRevFilter.create(filter, author);
+        }
 
-		if (filterMessage) {
-			RevFilter message = MessageRevFilter.create(criteria.getCommitMessage());
-			if (filter == RevFilter.ALL)
-				filter = message;
-			else
-				filter = AndRevFilter.create(filter, message);
-		}
+        if (filterMessage) {
+            RevFilter message = MessageRevFilter.create(criteria.getCommitMessage());
+            if (filter == RevFilter.ALL)
+                filter = message;
+            else
+                filter = AndRevFilter.create(filter, message);
+        }
 
-		walk.setRevFilter(filter);
-	}
+        walk.setRevFilter(filter);
+    }
 
-	/**
-	 * Processes search results from a single repository. 
-	 * 
-	 * @param rootUrl repository root URL
-	 * @param logMessages events in chronological order
-	 */
-	private synchronized void appendResults(String rootUrl, RepositoryRevision.Walk walk)
-	{
-		Map<String, String> historyPaths = new HashMap<String, String>();
-		RevFilter filter = walk.getRevFilter();
+    /**
+     * Processes search results from a single repository.
+     *
+     * @param rootUrl repository root URL
+     * @param logMessages events in chronological order
+     */
+    private synchronized void appendResults(String rootUrl, RepositoryRevision.Walk walk)
+    {
+        Map<String, String> historyPaths = new HashMap<String, String>();
+        RevFilter filter = walk.getRevFilter();
 
-		setupRevFilter(walk);
+        setupRevFilter(walk);
 
-		// traverse in reverse chronological order
-		for (RevCommit commit : walk) {
-			RepositoryRevision rev = (RepositoryRevision) commit;
-			for (RepositoryRevision.Event event : rev.createEvents(walk)) {
-				if (event.getChangedPath().getAction() == 'A' && event.getChangedPath().getCopySrcPath() != null) {
-					// TBD: Need to handle Copy status
-					String existingMapping = historyPaths.get(event.getChangedPath().getPath());
-					if (existingMapping == null)
-						existingMapping = event.getChangedPath().getPath();
-					historyPaths.put(event.getChangedPath().getCopySrcPath(), existingMapping);
-				}
-				String originalFilePath = event.getChangedPath().getPath();
-				for (String srcPath : historyPaths.keySet()) {
-					if (originalFilePath.startsWith(srcPath) &&
-						(originalFilePath.length() == srcPath.length() || originalFilePath.charAt(srcPath.length()) == '/')) {
-						originalFilePath = historyPaths.get(srcPath) + originalFilePath.substring(srcPath.length());
-						break;
-					}
-				}
-				File file = new File(rootUrl + File.separator + originalFilePath);
-				event.setFile(file);
-			}
-			results.add(rev);
-		}
-		if (results.isEmpty())
-			results = null;
+        // traverse in reverse chronological order
+        for (RevCommit commit : walk) {
+            RepositoryRevision rev = (RepositoryRevision) commit;
+            for (RepositoryRevision.Event event : rev.createEvents(walk)) {
+                if (event.getChangedPath().getAction() == 'A' && event.getChangedPath().getCopySrcPath() != null) {
+                    // TBD: Need to handle Copy status
+                    String existingMapping = historyPaths.get(event.getChangedPath().getPath());
+                    if (existingMapping == null)
+                        existingMapping = event.getChangedPath().getPath();
+                    historyPaths.put(event.getChangedPath().getCopySrcPath(), existingMapping);
+                }
+                String originalFilePath = event.getChangedPath().getPath();
+                for (String srcPath : historyPaths.keySet()) {
+                    if (originalFilePath.startsWith(srcPath) &&
+                        (originalFilePath.length() == srcPath.length() || originalFilePath.charAt(srcPath.length()) == '/')) {
+                        originalFilePath = historyPaths.get(srcPath) + originalFilePath.substring(srcPath.length());
+                        break;
+                    }
+                }
+                File file = new File(rootUrl + File.separator + originalFilePath);
+                event.setFile(file);
+            }
+            results.add(rev);
+        }
+        if (results.isEmpty())
+            results = null;
 
-		checkFinished();
-	}
+        checkFinished();
+    }
 
-	private boolean searchingUrl()
-	{
-		return master.getRepositoryUrl() != null;
-	}
+    private boolean searchingUrl()
+    {
+        return master.getRepositoryUrl() != null;
+    }
 
-	private void checkFinished()
-	{
-		completedSearches++;
-		if (searchingUrl() && completedSearches >= 1 || workFiles.size() == completedSearches)
-			SwingUtilities.invokeLater(new Runnable() {
+    private void checkFinished()
+    {
+        completedSearches++;
+        if (searchingUrl() && completedSearches >= 1 || workFiles.size() == completedSearches)
+            SwingUtilities.invokeLater(new Runnable() {
 
-				public void run()
-				{
-					master.setResults(results);
-				}
+                public void run()
+                {
+                    master.setResults(results);
+                }
 
-			});
-	}
+            });
+    }
 
 }

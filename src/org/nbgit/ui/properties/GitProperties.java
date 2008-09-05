@@ -63,154 +63,154 @@ import org.spearce.jgit.lib.RepositoryConfig;
  */
 public class GitProperties implements ListSelectionListener {
 
-	public static final String GITPROPNAME_USER_EMAIL = "email"; // NOI18N
-	public static final String GITPROPNAME_USER_NAME = "name"; // NOI18N
-	public static final String GITPROPNAME_DEFAULT_PULL = "default-pull"; // NOI18N
-	private PropertiesPanel panel;
-	private File root;
-	private PropertiesTable propTable;
-	private GitProgressSupport support;
-	private File loadedValueFile;
-	private Font fontTextArea;
+    public static final String GITPROPNAME_USER_EMAIL = "email"; // NOI18N
+    public static final String GITPROPNAME_USER_NAME = "name"; // NOI18N
+    public static final String GITPROPNAME_DEFAULT_PULL = "default-pull"; // NOI18N
+    private PropertiesPanel panel;
+    private File root;
+    private PropertiesTable propTable;
+    private GitProgressSupport support;
+    private File loadedValueFile;
+    private Font fontTextArea;
 
-	/** Creates a new instance of GitProperties */
-	public GitProperties(PropertiesPanel panel, PropertiesTable propTable, File root)
-	{
-		this.panel = panel;
-		this.propTable = propTable;
-		this.root = root;
-		propTable.getTable().getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		propTable.getTable().getSelectionModel().addListSelectionListener(this);
+    /** Creates a new instance of GitProperties */
+    public GitProperties(PropertiesPanel panel, PropertiesTable propTable, File root)
+    {
+        this.panel = panel;
+        this.propTable = propTable;
+        this.root = root;
+        propTable.getTable().getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        propTable.getTable().getSelectionModel().addListSelectionListener(this);
 
-		refreshProperties();
-	}
+        refreshProperties();
+    }
 
-	public PropertiesPanel getPropertiesPanel()
-	{
-		return panel;
-	}
+    public PropertiesPanel getPropertiesPanel()
+    {
+        return panel;
+    }
 
-	public void setPropertiesPanel(PropertiesPanel panel)
-	{
-		this.panel = panel;
-	}
+    public void setPropertiesPanel(PropertiesPanel panel)
+    {
+        this.panel = panel;
+    }
 
-	public File getRoot()
-	{
-		return root;
-	}
+    public File getRoot()
+    {
+        return root;
+    }
 
-	public void setRoot(File root)
-	{
-		this.root = root;
-	}
+    public void setRoot(File root)
+    {
+        this.root = root;
+    }
 
-	protected String getPropertyValue()
-	{
-		return panel.txtAreaValue.getText();
-	}
+    protected String getPropertyValue()
+    {
+        return panel.txtAreaValue.getText();
+    }
 
-	protected void refreshProperties()
-	{
-		RequestProcessor rp = Git.getInstance().getRequestProcessor(root.getAbsolutePath());
-		try {
-			support = new GitProgressSupport() {
+    protected void refreshProperties()
+    {
+        RequestProcessor rp = Git.getInstance().getRequestProcessor(root.getAbsolutePath());
+        try {
+            support = new GitProgressSupport() {
 
-				protected void perform()
-				{
-					Properties props = GitModuleConfig.getDefault().getProperties(root);
-					GitPropertiesNode[] gitProps = new GitPropertiesNode[props.size()];
-					int i = 0;
+                protected void perform()
+                {
+                    Properties props = GitModuleConfig.getDefault().getProperties(root);
+                    GitPropertiesNode[] gitProps = new GitPropertiesNode[props.size()];
+                    int i = 0;
 
-					for (Enumeration e = props.propertyNames(); e.hasMoreElements();) {
-						String name = (String) e.nextElement();
-						String tmp = props.getProperty(name);
-						String value = tmp != null ? tmp : ""; // NOI18N
-						gitProps[i] = new GitPropertiesNode(name, value);
-						i++;
-					}
-					propTable.setNodes(gitProps);
-				}
-			};
-			support.start(rp, root.getAbsolutePath(), org.openide.util.NbBundle.getMessage(GitProperties.class, "LBL_Properties_Progress")); // NOI18N
-		} finally {
-			support = null;
-		}
-	}
+                    for (Enumeration e = props.propertyNames(); e.hasMoreElements();) {
+                        String name = (String) e.nextElement();
+                        String tmp = props.getProperty(name);
+                        String value = tmp != null ? tmp : ""; // NOI18N
+                        gitProps[i] = new GitPropertiesNode(name, value);
+                        i++;
+                    }
+                    propTable.setNodes(gitProps);
+                }
+            };
+            support.start(rp, root.getAbsolutePath(), org.openide.util.NbBundle.getMessage(GitProperties.class, "LBL_Properties_Progress")); // NOI18N
+        } finally {
+            support = null;
+        }
+    }
 
-	public void setProperties()
-	{
-		RequestProcessor rp = Git.getInstance().getRequestProcessor(root.getAbsolutePath());
-		try {
-			support = new GitProgressSupport() {
+    public void setProperties()
+    {
+        RequestProcessor rp = Git.getInstance().getRequestProcessor(root.getAbsolutePath());
+        try {
+            support = new GitProgressSupport() {
 
-				protected void perform()
-				{
-					Repository repo = Git.getInstance().getRepository(root);
-					if (repo == null) {
-						return;
-					}
-					RepositoryConfig config = repo.getConfig();
-					boolean save = false;
-					/*
-					GitModuleConfig.getDefault().clearProperties(root, "paths"); // NOI18N
-					GitModuleConfig.getDefault().removeProperty(root, "user", GITPROPNAME_USER_EMAIL); // NOI18N
-					GitModuleConfig.getDefault().removeProperty(root, "user", GITPROPNAME_USER_NAME); // NOI18N
-					 */
-					GitPropertiesNode[] gitPropertiesNodes = propTable.getNodes();
-					for (int i = 0; i < gitPropertiesNodes.length; i++) {
-						String name = gitPropertiesNodes[i].getName();
-						String value = gitPropertiesNodes[i].getValue().trim();
-						if (value.length() == 0) {
-							continue;
-						}
-						if (name.equals("user.name")) {
-							config.setString("user", null, "name", value);
-							save = true;
-						}
+                protected void perform()
+                {
+                    Repository repo = Git.getInstance().getRepository(root);
+                    if (repo == null) {
+                        return;
+                    }
+                    RepositoryConfig config = repo.getConfig();
+                    boolean save = false;
+                    /*
+                    GitModuleConfig.getDefault().clearProperties(root, "paths"); // NOI18N
+                    GitModuleConfig.getDefault().removeProperty(root, "user", GITPROPNAME_USER_EMAIL); // NOI18N
+                    GitModuleConfig.getDefault().removeProperty(root, "user", GITPROPNAME_USER_NAME); // NOI18N
+                     */
+                    GitPropertiesNode[] gitPropertiesNodes = propTable.getNodes();
+                    for (int i = 0; i < gitPropertiesNodes.length; i++) {
+                        String name = gitPropertiesNodes[i].getName();
+                        String value = gitPropertiesNodes[i].getValue().trim();
+                        if (value.length() == 0) {
+                            continue;
+                        }
+                        if (name.equals("user.name")) {
+                            config.setString("user", null, "name", value);
+                            save = true;
+                        }
 
-						if (name.equals("user.email")) {
-							config.setString("user", null, "email", value);
-							save = true;
-						}
-					}
+                        if (name.equals("user.email")) {
+                            config.setString("user", null, "email", value);
+                            save = true;
+                        }
+                    }
 
-					//GitRepositoryContextCache.resetPullDefault();
-					//GitRepositoryContextCache.resetPushDefault();
-					try {
-						config.save();
-					} catch (IOException ex) {
-						Exceptions.printStackTrace(ex);
-					}
-				}
-			};
-			support.start(rp, root.getAbsolutePath(), org.openide.util.NbBundle.getMessage(GitProperties.class, "LBL_Properties_Progress")); // NOI18N
-		} finally {
-			support = null;
-		}
-	}
-	private int lastIndex = -1;
+                    //GitRepositoryContextCache.resetPullDefault();
+                    //GitRepositoryContextCache.resetPushDefault();
+                    try {
+                        config.save();
+                    } catch (IOException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                }
+            };
+            support.start(rp, root.getAbsolutePath(), org.openide.util.NbBundle.getMessage(GitProperties.class, "LBL_Properties_Progress")); // NOI18N
+        } finally {
+            support = null;
+        }
+    }
+    private int lastIndex = -1;
 
-	public void updateLastSelection()
-	{
-		GitPropertiesNode[] gitPropertiesNodes = propTable.getNodes();
-		if (lastIndex >= 0) {
-			gitPropertiesNodes[lastIndex].setValue(getPropertyValue());
-		}
-	}
+    public void updateLastSelection()
+    {
+        GitPropertiesNode[] gitPropertiesNodes = propTable.getNodes();
+        if (lastIndex >= 0) {
+            gitPropertiesNodes[lastIndex].setValue(getPropertyValue());
+        }
+    }
 
-	public void valueChanged(ListSelectionEvent e)
-	{
-		int index = propTable.getTable().getSelectedRow();
-		if (index < 0) {
-			lastIndex = -1;
-			return;
-		}
-		GitPropertiesNode[] gitPropertiesNodes = propTable.getNodes();
-		if (lastIndex >= 0) {
-			gitPropertiesNodes[lastIndex].setValue(getPropertyValue());
-		}
-		panel.txtAreaValue.setText(gitPropertiesNodes[index].getValue());
-		lastIndex = index;
-	}
+    public void valueChanged(ListSelectionEvent e)
+    {
+        int index = propTable.getTable().getSelectedRow();
+        if (index < 0) {
+            lastIndex = -1;
+            return;
+        }
+        GitPropertiesNode[] gitPropertiesNodes = propTable.getNodes();
+        if (lastIndex >= 0) {
+            gitPropertiesNodes[lastIndex].setValue(getPropertyValue());
+        }
+        panel.txtAreaValue.setText(gitPropertiesNodes[index].getValue());
+        lastIndex = index;
+    }
 }

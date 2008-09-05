@@ -71,7 +71,7 @@ public class DiffTopComponent extends TopComponent implements DiffSetupSource {
     public UndoRedo getUndoRedo() {
         return panel.getUndoRedo();
     }
-    
+
     @Override
     public int getPersistenceType(){
         return TopComponent.PERSISTENCE_NEVER;
@@ -85,7 +85,7 @@ public class DiffTopComponent extends TopComponent implements DiffSetupSource {
 
     @Override
     protected String preferredID(){
-        return "PERSISTENCE_NEVER-DiffTopComponent";    // NOI18N       
+        return "PERSISTENCE_NEVER-DiffTopComponent";    // NOI18N
     }
 
     @Override
@@ -108,5 +108,5 @@ public class DiffTopComponent extends TopComponent implements DiffSetupSource {
         DiffSetupSource mainPanel = ((DiffSetupSource) getComponent(0));
         return mainPanel.getSetupDisplayName();
     }
-    
+
 }

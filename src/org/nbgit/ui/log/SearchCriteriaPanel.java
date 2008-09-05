@@ -54,7 +54,7 @@ import org.openide.util.NbBundle;
  * @author Maros Sandor
  */
 class SearchCriteriaPanel extends javax.swing.JPanel {
-    
+
     private final File[] roots;
     private final String url;
 
@@ -70,7 +70,7 @@ class SearchCriteriaPanel extends javax.swing.JPanel {
         this.roots = null;
         initComponents();
     }
-    
+
     public String getFrom() {
         String s = tfFrom.getText().trim();
         if(s.length() == 0) {
@@ -98,7 +98,7 @@ class SearchCriteriaPanel extends javax.swing.JPanel {
         tfFrom.setEnabled(false);
         fromLabel.setEnabled(false);
     }
-    
+
     void setForOut() {
         fromInfoLabel.setText(NbBundle.getMessage(SearchCriteriaPanel.class, "CTL_FromToOutOrIncomingHint"));
         toInfoLabel.setText(NbBundle.getMessage(SearchCriteriaPanel.class, "CTL_FromToOutOrIncomingHint"));
@@ -110,7 +110,7 @@ class SearchCriteriaPanel extends javax.swing.JPanel {
         tfFrom.setEnabled(false);
         fromLabel.setEnabled(false);
     }
-    
+
     private Date parseDate(String s) {
         if (s == null) return null;
         for (int i = 0; i < SearchExecutor.dateFormats.length; i++) {
@@ -123,7 +123,7 @@ class SearchCriteriaPanel extends javax.swing.JPanel {
         }
         return null;
     }
-    
+
     public String getCommitMessage() {
         String s = tfCommitMessage.getText().trim();
         return s.length() > 0 ? s : null;
@@ -143,7 +143,7 @@ class SearchCriteriaPanel extends javax.swing.JPanel {
         if (to == null) to = "";  // NOI18N
         tfTo.setText(to);
     }
-    
+
     public void setCommitMessage(String message) {
         if (message == null) message = ""; // NOI18N
         tfCommitMessage.setText(message);
@@ -153,7 +153,7 @@ class SearchCriteriaPanel extends javax.swing.JPanel {
         if (username == null) username = ""; // NOI18N
         tfUsername.setText(username);
     }
-    
+
     @Override
     public void addNotify() {
         super.addNotify();
@@ -278,7 +278,7 @@ class SearchCriteriaPanel extends javax.swing.JPanel {
         add(toInfoLabel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel commitMessageLabel;
     private javax.swing.JLabel fromInfoLabel;
@@ -291,5 +291,5 @@ class SearchCriteriaPanel extends javax.swing.JPanel {
     private javax.swing.JLabel toLabel;
     private javax.swing.JLabel usernameLabel;
     // End of variables declaration//GEN-END:variables
-    
+
 }

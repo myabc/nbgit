@@ -57,82 +57,82 @@ import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
 /**
- * Update action for Git: 
+ * Update action for Git:
  * git update - update or merge working directory
- * 
+ *
  * @author John Rice
  */
 public class UpdateAction extends ContextAction {
 
-	public UpdateAction(String name, VCSContext context)
-	{
-		super(name, context);
-	}
+    public UpdateAction(String name, VCSContext context)
+    {
+        super(name, context);
+    }
 
-	public void performAction(ActionEvent e)
-	{
-		update(context);
-	}
+    public void performAction(ActionEvent e)
+    {
+        update(context);
+    }
 
-	public static void update(final VCSContext ctx)
-	{
-		final File root = GitUtils.getRootFile(ctx);
-		if (root == null)
-			return;
-		String repository = root.getAbsolutePath();
-		String rev = null;
+    public static void update(final VCSContext ctx)
+    {
+        final File root = GitUtils.getRootFile(ctx);
+        if (root == null)
+            return;
+        String repository = root.getAbsolutePath();
+        String rev = null;
 
-		final Update update = new Update(root);
-		if (!update.showDialog())
-			return;
-		rev = update.getSelectionRevision();
-		final boolean doForcedUpdate = update.isForcedUpdateRequested();
-		final String revStr = rev;
+        final Update update = new Update(root);
+        if (!update.showDialog())
+            return;
+        rev = update.getSelectionRevision();
+        final boolean doForcedUpdate = update.isForcedUpdateRequested();
+        final String revStr = rev;
 
-		RequestProcessor rp = Git.getInstance().getRequestProcessor(repository);
-		GitProgressSupport support = new GitProgressSupport() {
+        RequestProcessor rp = Git.getInstance().getRequestProcessor(repository);
+        GitProgressSupport support = new GitProgressSupport() {
 
-			public void perform()
-			{
-				boolean bNoUpdates = true;
-				OutputLogger logger = getLogger();
+            public void perform()
+            {
+                boolean bNoUpdates = true;
+                OutputLogger logger = getLogger();
 
-				logger.outputInRed(
-						NbBundle.getMessage(UpdateAction.class,
-						"MSG_UPDATE_TITLE")); // NOI18N
-					logger.outputInRed(
-						NbBundle.getMessage(UpdateAction.class,
-						"MSG_UPDATE_TITLE_SEP")); // NOI18N
-					logger.output(
-						NbBundle.getMessage(UpdateAction.class,
-						"MSG_UPDATE_INFO_SEP", revStr, root.getAbsolutePath())); // NOI18N
-					List<String> list = GitCommand.doUpdateAll(root, doForcedUpdate, revStr);
+                logger.outputInRed(
+                        NbBundle.getMessage(UpdateAction.class,
+                        "MSG_UPDATE_TITLE")); // NOI18N
+                    logger.outputInRed(
+                        NbBundle.getMessage(UpdateAction.class,
+                        "MSG_UPDATE_TITLE_SEP")); // NOI18N
+                    logger.output(
+                        NbBundle.getMessage(UpdateAction.class,
+                        "MSG_UPDATE_INFO_SEP", revStr, root.getAbsolutePath())); // NOI18N
+                    List<String> list = GitCommand.doUpdateAll(root, doForcedUpdate, revStr);
 
-					if (list != null && !list.isEmpty()) {
-						bNoUpdates = GitCommand.isNoUpdates(list.get(0));
-						//logger.clearOutput();
-						logger.output(list);
-						logger.output(""); // NOI18N
-					}
-					// refresh filesystem to take account of changes
-					FileObject rootObj = FileUtil.toFileObject(root);
-					try {
-						rootObj.getFileSystem().refresh(true);
-					} catch (Exception ex) {
-					}
+                    if (list != null && !list.isEmpty()) {
+                        bNoUpdates = GitCommand.isNoUpdates(list.get(0));
+                        //logger.clearOutput();
+                        logger.output(list);
+                        logger.output(""); // NOI18N
+                    }
+                    // refresh filesystem to take account of changes
+                    FileObject rootObj = FileUtil.toFileObject(root);
+                    try {
+                        rootObj.getFileSystem().refresh(true);
+                    } catch (Exception ex) {
+                    }
 
-				// Force Status Refresh from this dir and below
-				if (!bNoUpdates)
-					GitUtils.forceStatusRefreshProject(ctx);
+                // Force Status Refresh from this dir and below
+                if (!bNoUpdates)
+                    GitUtils.forceStatusRefreshProject(ctx);
 
-				logger.outputInRed(
-					NbBundle.getMessage(UpdateAction.class,
-					"MSG_UPDATE_DONE")); // NOI18N
-				logger.output(""); // NOI18N
-			}
+                logger.outputInRed(
+                    NbBundle.getMessage(UpdateAction.class,
+                    "MSG_UPDATE_DONE")); // NOI18N
+                logger.output(""); // NOI18N
+            }
 
-		};
-		support.start(rp, repository, org.openide.util.NbBundle.getMessage(UpdateAction.class, "MSG_Update_Progress")); // NOI18N
-	}
+        };
+        support.start(rp, repository, org.openide.util.NbBundle.getMessage(UpdateAction.class, "MSG_Update_Progress")); // NOI18N
+    }
 
 }

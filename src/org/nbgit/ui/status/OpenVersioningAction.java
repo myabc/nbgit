@@ -49,8 +49,8 @@ import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
 /**
- * Open the Git view. It focuses recently opened view unless it's not 
- * initialized yet. For uninitialized view it behaves like StatusProjectsAction 
+ * Open the Git view. It focuses recently opened view unless it's not
+ * initialized yet. For uninitialized view it behaves like StatusProjectsAction
  * without on-open refresh.
  *
  * @author Petr Kuzel
@@ -69,14 +69,14 @@ public class OpenVersioningAction extends ShowAllChangesAction {
 
     /**
      * Window/Versioning should be always enabled.
-     * 
+     *
      * @return true
-     */ 
+     */
     @Override
     public boolean isEnabled() {
         return true;
     }
-    
+
     @Override
     public HelpCtx getHelpCtx() {
         return new HelpCtx(OpenVersioningAction.class);
@@ -84,7 +84,7 @@ public class OpenVersioningAction extends ShowAllChangesAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        
+
         GitVersioningTopComponent stc = GitVersioningTopComponent.findInstance();
         if (stc.hasContext() == false) {
             super.actionPerformed(e);
@@ -98,5 +98,5 @@ public class OpenVersioningAction extends ShowAllChangesAction {
     protected boolean shouldPostRefresh() {
         return false;
     }
-    
+
 }

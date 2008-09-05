@@ -67,18 +67,18 @@ public class VerticalFlowLayout implements LayoutManager {
     public VerticalFlowLayout(Component parent) {
         this.parent = parent;
     }
-    
+
     public void addLayoutComponent(String name, Component comp) {
     }
-    
+
     public void removeLayoutComponent(Component comp) {
     }
-    
+
     public Dimension preferredLayoutSize(Container target) {
         synchronized (target.getTreeLock()) {
             Dimension dim = new Dimension(0, 0);
             int nmembers = target.getComponentCount();
-            
+
             for (int i = 0 ; i < nmembers ; i++) {
                 Component m = target.getComponent(i);
                 if (m.isVisible()) {
@@ -93,12 +93,12 @@ public class VerticalFlowLayout implements LayoutManager {
             return dim;
         }
     }
-    
+
     public Dimension minimumLayoutSize(Container target) {
         synchronized (target.getTreeLock()) {
             Dimension dim = new Dimension(0, 0);
             int nmembers = target.getComponentCount();
-            
+
             for (int i = 0 ; i < nmembers ; i++) {
                 Component m = target.getComponent(i);
                 if (m.isVisible()) {
@@ -113,15 +113,15 @@ public class VerticalFlowLayout implements LayoutManager {
             return dim;
         }
     }
-    
+
     public void layoutContainer(Container target) {
-        
+
         synchronized (target.getTreeLock()) {
             Insets insets = target.getInsets();
             int maxwidth = parent.getWidth() - (insets.left + insets.right);
             int nmembers = target.getComponentCount();
             int x = insets.left, y = insets.top;
-            
+
             for (int i = 0 ; i < nmembers ; i++) {
                 Component m = target.getComponent(i);
                 if (m.isVisible()) {
@@ -133,5 +133,5 @@ public class VerticalFlowLayout implements LayoutManager {
             }
         }
     }
-    
+
 }

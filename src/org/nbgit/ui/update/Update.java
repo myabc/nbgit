@@ -60,7 +60,7 @@ public class Update implements PropertyChangeListener {
     private JButton okButton;
     private JButton cancelButton;
     private File repository;
-    
+
     /** Creates a new instance of Update */
     public Update(File repository) {
         this (repository, null);
@@ -77,30 +77,30 @@ public class Update implements PropertyChangeListener {
         org.openide.awt.Mnemonics.setLocalizedText(cancelButton, org.openide.util.NbBundle.getMessage(RevertModifications.class, "CTL_UpdateForm_Action_Cancel")); // NOI18N
         cancelButton.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(RevertModifications.class, "ACSD_UpdateForm_Action_Cancel")); // NOI18N
         cancelButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(RevertModifications.class, "ACSN_UpdateForm_Action_Cancel")); // NOI18N
-    } 
-    
+    }
+
     public boolean showDialog() {
         DialogDescriptor dialogDescriptor;
         dialogDescriptor = new DialogDescriptor(panel, org.openide.util.NbBundle.getMessage(RevertModifications.class, "CTL_UpdateDialog", repository.getName())); // NOI18N
         dialogDescriptor.setOptions(new Object[] {okButton, cancelButton});
-        
+
         dialogDescriptor.setModal(true);
         dialogDescriptor.setHelpCtx(new HelpCtx(this.getClass()));
         dialogDescriptor.setValid(false);
-        
-        Dialog dialog = DialogDisplayer.getDefault().createDialog(dialogDescriptor);     
+
+        Dialog dialog = DialogDisplayer.getDefault().createDialog(dialogDescriptor);
         dialog.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(RevertModifications.class, "ACSD_UpdateDialog", repository.getName())); // NOI18N
         dialog.setVisible(true);
         dialog.setResizable(false);
         boolean ret = dialogDescriptor.getValue() == okButton;
-        return ret;       
+        return ret;
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
         if(okButton != null) {
             boolean valid = ((Boolean)evt.getNewValue()).booleanValue();
             okButton.setEnabled(valid);
-        }       
+        }
     }
 
     public String getSelectionRevision() {

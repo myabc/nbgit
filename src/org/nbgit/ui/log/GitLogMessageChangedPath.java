@@ -47,36 +47,36 @@ package org.nbgit.ui.log;
  */
 class GitLogMessageChangedPath {
 
-	private String path;
-	private String copyPath;
-	private char action;
+    private String path;
+    private String copyPath;
+    private char action;
 
-	public GitLogMessageChangedPath(String path, char action)
-	{
-		this.path = path;
-		this.action = action;
-		this.copyPath = null;
-	}
+    public GitLogMessageChangedPath(String path, char action)
+    {
+        this.path = path;
+        this.action = action;
+        this.copyPath = null;
+    }
 
-	public String getPath()
-	{
-		return path;
-	}
+    public String getPath()
+    {
+        return path;
+    }
 
-	public char getAction()
-	{
-		return action;
-	}
+    public char getAction()
+    {
+        return action;
+    }
 
-	public String getCopySrcPath()
-	{
-		return copyPath;
-	}
+    public String getCopySrcPath()
+    {
+        return copyPath;
+    }
 
-	@Override
-	public String toString()
-	{
-		return "action: " + this.action + " path: " + this.path;
-	}
+    @Override
+    public String toString()
+    {
+        return "action: " + this.action + " path: " + this.path;
+    }
 
 }

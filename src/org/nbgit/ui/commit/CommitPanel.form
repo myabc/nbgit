@@ -33,11 +33,11 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="filesPanel" alignment="0" pref="626" max="32767" attributes="0"/>
-                  <Component id="jScrollPane1" alignment="0" pref="626" max="32767" attributes="0"/>
+                  <Component id="filesPanel" alignment="0" pref="610" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" alignment="0" pref="610" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="426" max="32767" attributes="0"/>
+                      <EmptySpace pref="498" max="32767" attributes="0"/>
                       <Component id="recentLink" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="filesLabel" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -60,7 +60,7 @@
               <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
               <Component id="filesLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="filesPanel" pref="205" max="32767" attributes="0"/>
+              <Component id="filesPanel" pref="173" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -125,12 +125,12 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="626" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="610" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="205" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="173" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>

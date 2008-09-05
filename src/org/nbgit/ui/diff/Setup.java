@@ -61,223 +61,223 @@ import org.openide.util.NbBundle;
  */
 public final class Setup {
 
-	/**
-	 * What was locally changed? The right pane contains local file.
-	 *
-	 * <p>Local addition, removal or change is displayed in
-	 * the right pane as addition, removal or change respectively
-	 * (i.e. not reversed as removal, addition or change).
-	 *
-	 * <pre>
-	 * diff from-BASE to-LOCAL
-	 * </pre>
-	 */
-	public static final int DIFFTYPE_LOCAL = 0;
-	/**
-	 * What was remotely changed? The right pane contains remote file.
-	 *
-	 * <p>Remote addition, removal or change is displayed in
-	 * the right pane as addition, removal or change respectively
-	 * (i.e. not reversed as removal, addition or change).
-	 *
-	 * <pre>
-	 * diff from-BASE to-HEAD
-	 * </pre>
-	 */
-	public static final int DIFFTYPE_REMOTE = 1;
-	/**
-	 * What was locally changed comparing to recent head?
-	 * The Right pane contains local file.
-	 *
-	 * <p> Local addition, removal or change is displayed in
-	 * the right pane as addition, removal or change respectively
-	 * (i.e. not reversed as removal, addition or change).
-	 *
-	 * <pre>
-	 * diff from-HEAD to-LOCAL
-	 * </pre>
-	 */
-	public static final int DIFFTYPE_ALL = 2;
-	private final File baseFile;
-	/**
-	 * Name of the file's property if the setup represents a property diff setup, null otherwise.
-	 */
-	private final String propertyName;
-	private final String firstRevision;
-	private final String secondRevision;
-	private StatusInfo info;
-	private DiffStreamSource firstSource;
-	private DiffStreamSource secondSource;
-	private DiffController view;
-	private DiffNode node;
-	private String title;
+    /**
+     * What was locally changed? The right pane contains local file.
+     *
+     * <p>Local addition, removal or change is displayed in
+     * the right pane as addition, removal or change respectively
+     * (i.e. not reversed as removal, addition or change).
+     *
+     * <pre>
+     * diff from-BASE to-LOCAL
+     * </pre>
+     */
+    public static final int DIFFTYPE_LOCAL = 0;
+    /**
+     * What was remotely changed? The right pane contains remote file.
+     *
+     * <p>Remote addition, removal or change is displayed in
+     * the right pane as addition, removal or change respectively
+     * (i.e. not reversed as removal, addition or change).
+     *
+     * <pre>
+     * diff from-BASE to-HEAD
+     * </pre>
+     */
+    public static final int DIFFTYPE_REMOTE = 1;
+    /**
+     * What was locally changed comparing to recent head?
+     * The Right pane contains local file.
+     *
+     * <p> Local addition, removal or change is displayed in
+     * the right pane as addition, removal or change respectively
+     * (i.e. not reversed as removal, addition or change).
+     *
+     * <pre>
+     * diff from-HEAD to-LOCAL
+     * </pre>
+     */
+    public static final int DIFFTYPE_ALL = 2;
+    private final File baseFile;
+    /**
+     * Name of the file's property if the setup represents a property diff setup, null otherwise.
+     */
+    private final String propertyName;
+    private final String firstRevision;
+    private final String secondRevision;
+    private StatusInfo info;
+    private DiffStreamSource firstSource;
+    private DiffStreamSource secondSource;
+    private DiffController view;
+    private DiffNode node;
+    private String title;
 
-	public Setup(File baseFile, String propertyName, int type)
-	{
-		this.baseFile = baseFile;
-		this.propertyName = propertyName;
-		info = Git.getInstance().getStatusCache().getStatus(baseFile);
-		int status = info.getStatus();
+    public Setup(File baseFile, String propertyName, int type)
+    {
+        this.baseFile = baseFile;
+        this.propertyName = propertyName;
+        info = Git.getInstance().getStatusCache().getStatus(baseFile);
+        int status = info.getStatus();
 
-		ResourceBundle loc = NbBundle.getBundle(Setup.class);
-		String firstTitle;
-		String secondTitle;
+        ResourceBundle loc = NbBundle.getBundle(Setup.class);
+        String firstTitle;
+        String secondTitle;
 
-		// the first source
+        // the first source
 
-		switch (type) {
-		case DIFFTYPE_LOCAL:
+        switch (type) {
+        case DIFFTYPE_LOCAL:
 
-			// from-BASE
+            // from-BASE
 
-			if (match(status, StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY | StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY)) {
-				firstRevision = GitRepository.REVISION_BASE;
+            if (match(status, StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY | StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY)) {
+                firstRevision = GitRepository.REVISION_BASE;
 
-				firstTitle = loc.getString("MSG_DiffPanel_LocalNew"); // NOI18N
+                firstTitle = loc.getString("MSG_DiffPanel_LocalNew"); // NOI18N
 
-			} else if (match(status, StatusInfo.STATUS_VERSIONED_NEWINREPOSITORY)) {
-				firstRevision = null;
-				firstTitle = NbBundle.getMessage(Setup.class, "LBL_Diff_NoLocalFile"); // NOI18N
+            } else if (match(status, StatusInfo.STATUS_VERSIONED_NEWINREPOSITORY)) {
+                firstRevision = null;
+                firstTitle = NbBundle.getMessage(Setup.class, "LBL_Diff_NoLocalFile"); // NOI18N
 
-			} else if (match(status, StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY | StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY)) {
-				firstRevision = GitRepository.REVISION_BASE;
-				firstTitle = MessageFormat.format(loc.getString("MSG_DiffPanel_BaseRevision"), new Object[]{firstRevision}); // NOI18N
+            } else if (match(status, StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY | StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY)) {
+                firstRevision = GitRepository.REVISION_BASE;
+                firstTitle = MessageFormat.format(loc.getString("MSG_DiffPanel_BaseRevision"), new Object[]{firstRevision}); // NOI18N
 
-			} else {
-				firstRevision = GitRepository.REVISION_BASE;
-				firstTitle = MessageFormat.format(loc.getString("MSG_DiffPanel_BaseRevision"), new Object[]{firstRevision}); // NOI18N
+            } else {
+                firstRevision = GitRepository.REVISION_BASE;
+                firstTitle = MessageFormat.format(loc.getString("MSG_DiffPanel_BaseRevision"), new Object[]{firstRevision}); // NOI18N
 
-			}
+            }
 
-			break;
+            break;
 
-		default:
-			throw new IllegalArgumentException("Unknow diff type: " + type); // NOI18N
+        default:
+            throw new IllegalArgumentException("Unknow diff type: " + type); // NOI18N
 
-		}
+        }
 
 
-		// the second source
+        // the second source
 
-		switch (type) {
-		case DIFFTYPE_LOCAL:
+        switch (type) {
+        case DIFFTYPE_LOCAL:
 
-			// to-LOCAL
+            // to-LOCAL
 
-			if (match(status, StatusInfo.STATUS_VERSIONED_CONFLICT)) {
-				secondRevision = GitRepository.REVISION_CURRENT;
-				secondTitle = MessageFormat.format(loc.getString("MSG_DiffPanel_LocalConflict"), new Object[]{secondRevision}); // NOI18N
+            if (match(status, StatusInfo.STATUS_VERSIONED_CONFLICT)) {
+                secondRevision = GitRepository.REVISION_CURRENT;
+                secondTitle = MessageFormat.format(loc.getString("MSG_DiffPanel_LocalConflict"), new Object[]{secondRevision}); // NOI18N
 
-			} else if (match(status, StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY | StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY)) {
-				secondRevision = GitRepository.REVISION_CURRENT;
-				secondTitle = loc.getString("MSG_DiffPanel_LocalNew"); // NOI18N
+            } else if (match(status, StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY | StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY)) {
+                secondRevision = GitRepository.REVISION_CURRENT;
+                secondTitle = loc.getString("MSG_DiffPanel_LocalNew"); // NOI18N
 
-			} else if (match(status, StatusInfo.STATUS_VERSIONED_NEWINREPOSITORY)) {
-				secondRevision = null;
-				secondTitle = NbBundle.getMessage(Setup.class, "LBL_Diff_NoLocalFile"); // NOI18N
+            } else if (match(status, StatusInfo.STATUS_VERSIONED_NEWINREPOSITORY)) {
+                secondRevision = null;
+                secondTitle = NbBundle.getMessage(Setup.class, "LBL_Diff_NoLocalFile"); // NOI18N
 
-			} else if (match(status, StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY | StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY)) {
-				secondRevision = null;
-				secondTitle = loc.getString("MSG_DiffPanel_LocalDeleted"); // NOI18N
+            } else if (match(status, StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY | StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY)) {
+                secondRevision = null;
+                secondTitle = loc.getString("MSG_DiffPanel_LocalDeleted"); // NOI18N
 
-			} else {
-				secondRevision = GitRepository.REVISION_CURRENT;
-				secondTitle = MessageFormat.format(loc.getString("MSG_DiffPanel_LocalModified"), new Object[]{secondRevision}); // NOI18N
+            } else {
+                secondRevision = GitRepository.REVISION_CURRENT;
+                secondTitle = MessageFormat.format(loc.getString("MSG_DiffPanel_LocalModified"), new Object[]{secondRevision}); // NOI18N
 
-			}
-			break;
+            }
+            break;
 
-		default:
-			throw new IllegalArgumentException("Unknow diff type: " + type); // NOI18N
+        default:
+            throw new IllegalArgumentException("Unknow diff type: " + type); // NOI18N
 
-		}
+        }
 
-		firstSource = new DiffStreamSource(baseFile, firstRevision, firstTitle);
-		secondSource = new DiffStreamSource(baseFile, secondRevision, secondTitle);
-		title = "<html>" + HtmlFormatter.getInstance().annotateNameHtml(baseFile, info); // NOI18N
+        firstSource = new DiffStreamSource(baseFile, firstRevision, firstTitle);
+        secondSource = new DiffStreamSource(baseFile, secondRevision, secondTitle);
+        title = "<html>" + HtmlFormatter.getInstance().annotateNameHtml(baseFile, info); // NOI18N
 
-	}
+    }
 
-	/**
-	 * Text file setup for arbitrary revisions.
-	 * @param firstRevision first revision or <code>null</code> for inital.
-	 * @param secondRevision second revision
-	 */
-	public Setup(File baseFile, String firstRevision, String secondRevision)
-	{
-		this.baseFile = baseFile;
-		this.propertyName = null;
-		this.firstRevision = firstRevision;
-		this.secondRevision = secondRevision;
-		firstSource = new DiffStreamSource(baseFile, firstRevision, firstRevision);
-		secondSource = new DiffStreamSource(baseFile, secondRevision, secondRevision);
-	}
+    /**
+     * Text file setup for arbitrary revisions.
+     * @param firstRevision first revision or <code>null</code> for inital.
+     * @param secondRevision second revision
+     */
+    public Setup(File baseFile, String firstRevision, String secondRevision)
+    {
+        this.baseFile = baseFile;
+        this.propertyName = null;
+        this.firstRevision = firstRevision;
+        this.secondRevision = secondRevision;
+        firstSource = new DiffStreamSource(baseFile, firstRevision, firstRevision);
+        secondSource = new DiffStreamSource(baseFile, secondRevision, secondRevision);
+    }
 
-	public String getPropertyName()
-	{
-		return propertyName;
-	}
+    public String getPropertyName()
+    {
+        return propertyName;
+    }
 
-	public File getBaseFile()
-	{
-		return baseFile;
-	}
+    public File getBaseFile()
+    {
+        return baseFile;
+    }
 
-	public StatusInfo getInfo()
-	{
-		return info;
-	}
+    public StatusInfo getInfo()
+    {
+        return info;
+    }
 
-	public void setView(DiffController view)
-	{
-		this.view = view;
-	}
+    public void setView(DiffController view)
+    {
+        this.view = view;
+    }
 
-	public DiffController getView()
-	{
-		return view;
-	}
+    public DiffController getView()
+    {
+        return view;
+    }
 
-	public StreamSource getFirstSource()
-	{
-		return firstSource;
-	}
+    public StreamSource getFirstSource()
+    {
+        return firstSource;
+    }
 
-	public StreamSource getSecondSource()
-	{
-		return secondSource;
-	}
+    public StreamSource getSecondSource()
+    {
+        return secondSource;
+    }
 
-	public void setNode(DiffNode node)
-	{
-		this.node = node;
-	}
+    public void setNode(DiffNode node)
+    {
+        this.node = node;
+    }
 
-	public DiffNode getNode()
-	{
-		return node;
-	}
+    public DiffNode getNode()
+    {
+        return node;
+    }
 
-	public String toString()
-	{
-		return title;
-	}
+    public String toString()
+    {
+        return title;
+    }
 
-	/**
-	 * Loads data
-	 * @param group that carries shared state. Note that this group must not be executed later on. 
-	 */
-	void initSources() throws IOException
-	{
-		if (firstSource != null)
-			firstSource.init();
-		if (secondSource != null)
-			secondSource.init();
-	}
+    /**
+     * Loads data
+     * @param group that carries shared state. Note that this group must not be executed later on.
+     */
+    void initSources() throws IOException
+    {
+        if (firstSource != null)
+            firstSource.init();
+        if (secondSource != null)
+            secondSource.init();
+    }
 
-	private static boolean match(int status, int mask)
-	{
-		return (status & mask) != 0;
-	}
+    private static boolean match(int status, int mask)
+    {
+        return (status & mask) != 0;
+    }
 
 }

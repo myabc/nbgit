@@ -68,126 +68,126 @@ import org.openide.util.RequestProcessor;
  */
 public class RevertModificationsAction extends ContextAction {
 
-	public RevertModificationsAction(String name, VCSContext context)
-	{
-		super(name, context);
-	}
+    public RevertModificationsAction(String name, VCSContext context)
+    {
+        super(name, context);
+    }
 
-	public void performAction(ActionEvent e)
-	{
-		revert(context);
-	}
+    public void performAction(ActionEvent e)
+    {
+        revert(context);
+    }
 
-	public static void revert(final VCSContext ctx)
-	{
-		final File[] files = ctx.getRootFiles().toArray(new File[ctx.getRootFiles().size()]);
-		final File repository = GitUtils.getRootFile(ctx);
-		if (repository == null)
-			return;
-		String rev = null;
+    public static void revert(final VCSContext ctx)
+    {
+        final File[] files = ctx.getRootFiles().toArray(new File[ctx.getRootFiles().size()]);
+        final File repository = GitUtils.getRootFile(ctx);
+        if (repository == null)
+            return;
+        String rev = null;
 
-		final RevertModifications revertModifications = new RevertModifications(repository, files);
-		if (!revertModifications.showDialog())
-			return;
-		rev = revertModifications.getSelectionRevision();
-		final String revStr = rev;
-		final boolean doBackup = revertModifications.isBackupRequested();
+        final RevertModifications revertModifications = new RevertModifications(repository, files);
+        if (!revertModifications.showDialog())
+            return;
+        rev = revertModifications.getSelectionRevision();
+        final String revStr = rev;
+        final boolean doBackup = revertModifications.isBackupRequested();
 
-		RequestProcessor rp = Git.getInstance().getRequestProcessor(repository);
-		GitProgressSupport support = new GitProgressSupport() {
+        RequestProcessor rp = Git.getInstance().getRequestProcessor(repository);
+        GitProgressSupport support = new GitProgressSupport() {
 
-			public void perform()
-			{
-				performRevert(repository, revStr, files, doBackup, this.getLogger());
-			}
+            public void perform()
+            {
+                performRevert(repository, revStr, files, doBackup, this.getLogger());
+            }
 
-		};
-		support.start(rp, repository.getAbsolutePath(), org.openide.util.NbBundle.getMessage(UpdateAction.class, "MSG_Revert_Progress")); // NOI18N
+        };
+        support.start(rp, repository.getAbsolutePath(), org.openide.util.NbBundle.getMessage(UpdateAction.class, "MSG_Revert_Progress")); // NOI18N
 
-		return;
-	}
+        return;
+    }
 
-	public static void performRevert(File repository, String revStr, File file, boolean doBackup, OutputLogger logger)
-	{
-		List<File> revertFiles = new ArrayList<File>();
-		revertFiles.add(file);
+    public static void performRevert(File repository, String revStr, File file, boolean doBackup, OutputLogger logger)
+    {
+        List<File> revertFiles = new ArrayList<File>();
+        revertFiles.add(file);
 
-		performRevert(repository, revStr, revertFiles, doBackup, logger);
-	}
+        performRevert(repository, revStr, revertFiles, doBackup, logger);
+    }
 
-	public static void performRevert(File repository, String revStr, File[] files, boolean doBackup, OutputLogger logger)
-	{
-		List<File> revertFiles = new ArrayList<File>();
-		for (File file : files) {
-			revertFiles.add(file);
-		}
-		performRevert(repository, revStr, revertFiles, doBackup, logger);
-	}
+    public static void performRevert(File repository, String revStr, File[] files, boolean doBackup, OutputLogger logger)
+    {
+        List<File> revertFiles = new ArrayList<File>();
+        for (File file : files) {
+            revertFiles.add(file);
+        }
+        performRevert(repository, revStr, revertFiles, doBackup, logger);
+    }
 
-	public static void performRevert(File repository, String revStr, List<File> revertFiles, boolean doBackup, OutputLogger logger)
-	{
-		logger.outputInRed(
-			NbBundle.getMessage(RevertModificationsAction.class,
-			"MSG_REVERT_TITLE")); // NOI18N
-		logger.outputInRed(
-			NbBundle.getMessage(RevertModificationsAction.class,
-			"MSG_REVERT_TITLE_SEP")); // NOI18N
+    public static void performRevert(File repository, String revStr, List<File> revertFiles, boolean doBackup, OutputLogger logger)
+    {
+        logger.outputInRed(
+            NbBundle.getMessage(RevertModificationsAction.class,
+            "MSG_REVERT_TITLE")); // NOI18N
+        logger.outputInRed(
+            NbBundle.getMessage(RevertModificationsAction.class,
+            "MSG_REVERT_TITLE_SEP")); // NOI18N
 
-		// revStr == null => no -r REV in git revert command
-		// No revisions to revert too
-		if (revStr != null && NbBundle.getMessage(RevertModificationsAction.class,
-			"MSG_Revision_Default").startsWith(revStr)) {
-			logger.output(
-				NbBundle.getMessage(RevertModificationsAction.class,
-				"MSG_REVERT_NOTHING")); // NOI18N
-			logger.outputInRed(
-				NbBundle.getMessage(RevertModificationsAction.class,
-				"MSG_REVERT_DONE")); // NOI18N
-			logger.outputInRed(""); // NOI18N
-			return;
-		}
+        // revStr == null => no -r REV in git revert command
+        // No revisions to revert too
+        if (revStr != null && NbBundle.getMessage(RevertModificationsAction.class,
+            "MSG_Revision_Default").startsWith(revStr)) {
+            logger.output(
+                NbBundle.getMessage(RevertModificationsAction.class,
+                "MSG_REVERT_NOTHING")); // NOI18N
+            logger.outputInRed(
+                NbBundle.getMessage(RevertModificationsAction.class,
+                "MSG_REVERT_DONE")); // NOI18N
+            logger.outputInRed(""); // NOI18N
+            return;
+        }
 
-		logger.output(
-			NbBundle.getMessage(RevertModificationsAction.class,
-			"MSG_REVERT_REVISION_STR", revStr)); // NOI18N
-		for (File file : revertFiles) {
-			logger.output(file.getAbsolutePath());
-		}
-		logger.output(""); // NOI18N
+        logger.output(
+            NbBundle.getMessage(RevertModificationsAction.class,
+            "MSG_REVERT_REVISION_STR", revStr)); // NOI18N
+        for (File file : revertFiles) {
+            logger.output(file.getAbsolutePath());
+        }
+        logger.output(""); // NOI18N
 
-		GitCommand.doRevert(repository, revertFiles, revStr, doBackup, logger);
-		StatusCache cache = Git.getInstance().getStatusCache();
-		File[] conflictFiles = cache.listFiles(revertFiles.toArray(new File[0]), StatusInfo.STATUS_VERSIONED_CONFLICT);
-		if (conflictFiles.length != 0)
-			ConflictResolvedAction.conflictResolved(repository, conflictFiles);
+        GitCommand.doRevert(repository, revertFiles, revStr, doBackup, logger);
+        StatusCache cache = Git.getInstance().getStatusCache();
+        File[] conflictFiles = cache.listFiles(revertFiles.toArray(new File[0]), StatusInfo.STATUS_VERSIONED_CONFLICT);
+        if (conflictFiles.length != 0)
+            ConflictResolvedAction.conflictResolved(repository, conflictFiles);
 
-		if (revStr == null)
-			for (File file : revertFiles) {
-				GitUtils.forceStatusRefresh(file);
-			}
-		else if (revertFiles.size() > 0)
-			GitUtils.forceStatusRefresh(revertFiles.get(0));
+        if (revStr == null)
+            for (File file : revertFiles) {
+                GitUtils.forceStatusRefresh(file);
+            }
+        else if (revertFiles.size() > 0)
+            GitUtils.forceStatusRefresh(revertFiles.get(0));
 
-		// refresh filesystem to take account of changes
-		FileObject rootObj = FileUtil.toFileObject(repository);
-		try {
-			rootObj.getFileSystem().refresh(true);
-		} catch (java.lang.Exception exc) {
-		}
-		logger.outputInRed(
-			NbBundle.getMessage(RevertModificationsAction.class,
-			"MSG_REVERT_DONE")); // NOI18N
-		logger.outputInRed(""); // NOI18N
+        // refresh filesystem to take account of changes
+        FileObject rootObj = FileUtil.toFileObject(repository);
+        try {
+            rootObj.getFileSystem().refresh(true);
+        } catch (java.lang.Exception exc) {
+        }
+        logger.outputInRed(
+            NbBundle.getMessage(RevertModificationsAction.class,
+            "MSG_REVERT_DONE")); // NOI18N
+        logger.outputInRed(""); // NOI18N
 
-	}
+    }
 
-	@Override
-	public boolean isEnabled()
-	{
-		Set<File> ctxFiles = context != null ? context.getRootFiles() : null;
-		if (GitUtils.getRootFile(context) == null || ctxFiles == null || ctxFiles.size() == 0)
-			return false;
-		return true;
-	}
+    @Override
+    public boolean isEnabled()
+    {
+        Set<File> ctxFiles = context != null ? context.getRootFiles() : null;
+        if (GitUtils.getRootFile(context) == null || ctxFiles == null || ctxFiles.size() == 0)
+            return false;
+        return true;
+    }
 
 }

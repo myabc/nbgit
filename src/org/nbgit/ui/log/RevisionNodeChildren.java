@@ -69,11 +69,11 @@ class RevisionNodeChildren extends Children.Keys<RepositoryRevision.Event> {
     protected void removeNotify() {
         setKeys (Collections.<RepositoryRevision.Event>emptySet());
     }
-    
+
     private void refreshKeys() {
         setKeys(container.getEvents());
     }
-    
+
     protected Node[] createNodes(RepositoryRevision.Event fn) {
         RevisionNode node = new RevisionNode(fn, master);
         return new Node[] { node };

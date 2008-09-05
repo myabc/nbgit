@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE map PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN" "http://java.sun.com/products/javahelp/map_2_0.dtd">
 <map version="2.0">
-	<mapID target="org.nbgit.docs.about" url="about.html"/>
-	<mapID target="org.nbgit.docs.credits" url="credits.html"/>
-	<mapID target="org.nbgit.docs.news" url="news.html"/>
-	<mapID target="org.nbgit.docs.issues" url="issues.html"/>
+ <mapID target="org.nbgit.docs.about" url="about.html"/>
+ <mapID target="org.nbgit.docs.credits" url="credits.html"/>
+ <mapID target="org.nbgit.docs.news" url="news.html"/>
+ <mapID target="org.nbgit.docs.issues" url="issues.html"/>
 </map>

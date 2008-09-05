@@ -59,256 +59,256 @@ import org.openide.windows.OutputWriter;
  */
 public class OutputLogger {
 
-	private InputOutput log;
-	private String repositoryRootString;
-	private static final RequestProcessor rp = new RequestProcessor("GitOutput", 1);
-	public static final int MAX_LINES_TO_PRINT = 500;
-	private static final String MSG_TOO_MANY_LINES = "The number of output lines is greater than 500; see message log for complete output";
+    private InputOutput log;
+    private String repositoryRootString;
+    private static final RequestProcessor rp = new RequestProcessor("GitOutput", 1);
+    public static final int MAX_LINES_TO_PRINT = 500;
+    private static final String MSG_TOO_MANY_LINES = "The number of output lines is greater than 500; see message log for complete output";
 
-	public static OutputLogger getLogger(String repositoryRoot)
-	{
-		if (repositoryRoot != null)
-			return new OutputLogger(repositoryRoot);
-		else
-			return new NullLogger();
-	}
+    public static OutputLogger getLogger(String repositoryRoot)
+    {
+        if (repositoryRoot != null)
+            return new OutputLogger(repositoryRoot);
+        else
+            return new NullLogger();
+    }
 
-	private OutputLogger(String repositoryRoot)
-	{
-		repositoryRootString = repositoryRoot;
-		log = IOProvider.getDefault().getIO(repositoryRootString, false);
-	}
+    private OutputLogger(String repositoryRoot)
+    {
+        repositoryRootString = repositoryRoot;
+        log = IOProvider.getDefault().getIO(repositoryRootString, false);
+    }
 
-	private OutputLogger()
-	{
-	}
+    private OutputLogger()
+    {
+    }
 
-	public void closeLog()
-	{
-		rp.post(new Runnable() {
+    public void closeLog()
+    {
+        rp.post(new Runnable() {
 
-			public void run()
-			{
-				log.getOut().flush();
-				log.getOut().close();
-				log.getErr().flush();
-				log.getErr().close();
-			}
+            public void run()
+            {
+                log.getOut().flush();
+                log.getOut().close();
+                log.getErr().flush();
+                log.getErr().close();
+            }
 
-		});
-	}
+        });
+    }
 
-	public void flushLog()
-	{
-		rp.post(new Runnable() {
+    public void flushLog()
+    {
+        rp.post(new Runnable() {
 
-			public void run()
-			{
-				log.getOut().flush();
-				log.getErr().flush();
-			}
+            public void run()
+            {
+                log.getOut().flush();
+                log.getErr().flush();
+            }
 
-		});
-	}
+        });
+    }
 
-	/**
-	 * Print contents of list to OutputLogger's tab
-	 *
-	 * @param list to print out
-	 *
-	 */
-	public void output(final List<String> list)
-	{
-		if (list.isEmpty())
-			return;
+    /**
+     * Print contents of list to OutputLogger's tab
+     *
+     * @param list to print out
+     *
+     */
+    public void output(final List<String> list)
+    {
+        if (list.isEmpty())
+            return;
 
-		rp.post(new Runnable() {
+        rp.post(new Runnable() {
 
-			public void run()
-			{
-				log.select();
-				OutputWriter out = log.getOut();
+            public void run()
+            {
+                log.select();
+                OutputWriter out = log.getOut();
 
-				int lines = list.size();
-				if (lines > MAX_LINES_TO_PRINT) {
-					out.println(list.get(1));
-					out.println(list.get(2));
-					out.println(list.get(3));
-					out.println("...");
-					out.println(list.get(list.size() - 1));
-					out.println(MSG_TOO_MANY_LINES);
-					for (String s : list) {
-						Git.LOG.log(Level.WARNING, s);
-					}
-				} else
-					for (String s : list) {
-						out.println(s);
-					}
-				out.flush();
-			}
+                int lines = list.size();
+                if (lines > MAX_LINES_TO_PRINT) {
+                    out.println(list.get(1));
+                    out.println(list.get(2));
+                    out.println(list.get(3));
+                    out.println("...");
+                    out.println(list.get(list.size() - 1));
+                    out.println(MSG_TOO_MANY_LINES);
+                    for (String s : list) {
+                        Git.LOG.log(Level.WARNING, s);
+                    }
+                } else
+                    for (String s : list) {
+                        out.println(s);
+                    }
+                out.flush();
+            }
 
-		});
-	}
+        });
+    }
 
-	/**
-	 * Print msg to OutputLogger's tab
-	 *
-	 * @param String msg to print out
-	 *
-	 */
-	public void output(final String msg)
-	{
-		if (msg == null)
-			return;
+    /**
+     * Print msg to OutputLogger's tab
+     *
+     * @param String msg to print out
+     *
+     */
+    public void output(final String msg)
+    {
+        if (msg == null)
+            return;
 
-		rp.post(new Runnable() {
+        rp.post(new Runnable() {
 
-			public void run()
-			{
-				log.select();
+            public void run()
+            {
+                log.select();
 
-				log.getOut().println(msg);
-				log.getOut().flush();
-			}
+                log.getOut().println(msg);
+                log.getOut().flush();
+            }
 
-		});
-	}
+        });
+    }
 
-	/**
-	 * Print msg to OutputLogger's tab in Red
-	 *
-	 * @param String msg to print out
-	 *
-	 */
-	public void outputInRed(final String msg)
-	{
-		if (msg == null)
-			return;
+    /**
+     * Print msg to OutputLogger's tab in Red
+     *
+     * @param String msg to print out
+     *
+     */
+    public void outputInRed(final String msg)
+    {
+        if (msg == null)
+            return;
 
-		rp.post(new Runnable() {
+        rp.post(new Runnable() {
 
-			public void run()
-			{
-				log.select();
-				log.getErr().println(msg);
-				log.getErr().flush();
-			}
+            public void run()
+            {
+                log.select();
+                log.getErr().println(msg);
+                log.getErr().flush();
+            }
 
-		});
-	}
+        });
+    }
 
-	/**
-	 * Print URL to OutputLogger's tab as an active Hyperlink
-	 *
-	 * @param String sURL to print out
-	 *
-	 */
-	public void outputLink(final String sURL)
-	{
-		if (sURL == null)
-			return;
+    /**
+     * Print URL to OutputLogger's tab as an active Hyperlink
+     *
+     * @param String sURL to print out
+     *
+     */
+    public void outputLink(final String sURL)
+    {
+        if (sURL == null)
+            return;
 
-		rp.post(new Runnable() {
+        rp.post(new Runnable() {
 
-			public void run()
-			{
-				log.select();
-				try {
-					OutputWriter out = log.getOut();
+            public void run()
+            {
+                log.select();
+                try {
+                    OutputWriter out = log.getOut();
 
-					OutputListener listener = new OutputListener() {
+                    OutputListener listener = new OutputListener() {
 
-						public void outputLineAction(OutputEvent ev)
-						{
-							try {
-								HtmlBrowser.URLDisplayer.getDefault().showURL(new URL(sURL));
-							} catch (IOException ex) {
-								// Ignore
-							}
-						}
+                        public void outputLineAction(OutputEvent ev)
+                        {
+                            try {
+                                HtmlBrowser.URLDisplayer.getDefault().showURL(new URL(sURL));
+                            } catch (IOException ex) {
+                                // Ignore
+                            }
+                        }
 
-						public void outputLineSelected(OutputEvent ev)
-						{
-						}
+                        public void outputLineSelected(OutputEvent ev)
+                        {
+                        }
 
-						public void outputLineCleared(OutputEvent ev)
-						{
-						}
+                        public void outputLineCleared(OutputEvent ev)
+                        {
+                        }
 
-					};
-					out.println(sURL, listener, true);
-					out.flush();
-				} catch (IOException ex) {
-					// Ignore
-				}
-			}
+                    };
+                    out.println(sURL, listener, true);
+                    out.flush();
+                } catch (IOException ex) {
+                    // Ignore
+                }
+            }
 
-		});
-	}
+        });
+    }
 
-	/**
-	 * Select and Clear OutputLogger's tab
-	 *
-	 * @param list to print out
-	 *
-	 */
-	public void clearOutput()
-	{
-		rp.post(new Runnable() {
+    /**
+     * Select and Clear OutputLogger's tab
+     *
+     * @param list to print out
+     *
+     */
+    public void clearOutput()
+    {
+        rp.post(new Runnable() {
 
-			public void run()
-			{
-				log.select();
-				OutputWriter out = log.getOut();
+            public void run()
+            {
+                log.select();
+                OutputWriter out = log.getOut();
 
-				try {
-					out.reset();
-				} catch (IOException ex) {
-					// Ignore Exception
-				}
-				out.flush();
-			}
+                try {
+                    out.reset();
+                } catch (IOException ex) {
+                    // Ignore Exception
+                }
+                out.flush();
+            }
 
-		});
-	}
+        });
+    }
 
-	private static class NullLogger extends OutputLogger {
+    private static class NullLogger extends OutputLogger {
 
-		@Override
-		public void closeLog()
-		{
-		}
+        @Override
+        public void closeLog()
+        {
+        }
 
-		@Override
-		public void flushLog()
-		{
-		}
+        @Override
+        public void flushLog()
+        {
+        }
 
-		@Override
-		public void output(List<String> list)
-		{
-		}
+        @Override
+        public void output(List<String> list)
+        {
+        }
 
-		@Override
-		public void output(String msg)
-		{
-		}
+        @Override
+        public void output(String msg)
+        {
+        }
 
-		@Override
-		public void outputInRed(String msg)
-		{
-		}
+        @Override
+        public void outputInRed(String msg)
+        {
+        }
 
-		@Override
-		public void outputLink(final String sURL)
-		{
-		}
+        @Override
+        public void outputLink(final String sURL)
+        {
+        }
 
-		@Override
-		public void clearOutput()
-		{
-		}
+        @Override
+        public void clearOutput()
+        {
+        }
 
-	}
+    }
 
 }

@@ -56,134 +56,134 @@ import org.openide.util.TaskListener;
  */
 public abstract class GitProgressSupport implements Runnable, Cancellable {
 
-	private Cancellable delegate;
-	private volatile boolean canceled;
-	private ProgressHandle progressHandle = null;
-	private String displayName = ""; // NOI18N
-	private String originalDisplayName = ""; // NOI18N
-	private OutputLogger logger;
-	private String repositoryRoot;
-	private RequestProcessor.Task task;
+    private Cancellable delegate;
+    private volatile boolean canceled;
+    private ProgressHandle progressHandle = null;
+    private String displayName = ""; // NOI18N
+    private String originalDisplayName = ""; // NOI18N
+    private OutputLogger logger;
+    private String repositoryRoot;
+    private RequestProcessor.Task task;
 
-	public RequestProcessor.Task start(RequestProcessor rp, String repositoryRoot, String displayName)
-	{
-		setDisplayName(displayName);
-		this.repositoryRoot = repositoryRoot;
-		startProgress();
-		setProgressQueued();
-		task = rp.post(this);
-		task.addTaskListener(new TaskListener() {
+    public RequestProcessor.Task start(RequestProcessor rp, String repositoryRoot, String displayName)
+    {
+        setDisplayName(displayName);
+        this.repositoryRoot = repositoryRoot;
+        startProgress();
+        setProgressQueued();
+        task = rp.post(this);
+        task.addTaskListener(new TaskListener() {
 
-			public void taskFinished(org.openide.util.Task task)
-			{
-				delegate = null;
-			}
+            public void taskFinished(org.openide.util.Task task)
+            {
+                delegate = null;
+            }
 
-		});
-		return task;
-	}
+        });
+        return task;
+    }
 
-	public void setRepositoryRoot(String repositoryRoot)
-	{
-		this.repositoryRoot = repositoryRoot;
-		logger = null;
-	}
+    public void setRepositoryRoot(String repositoryRoot)
+    {
+        this.repositoryRoot = repositoryRoot;
+        logger = null;
+    }
 
-	public void run()
-	{
-		setProgress();
-		performIntern();
-	}
+    public void run()
+    {
+        setProgress();
+        performIntern();
+    }
 
-	protected void performIntern()
-	{
-		try {
-			Git.LOG.log(Level.FINE, "Start - {0}", displayName); // NOI18N
+    protected void performIntern()
+    {
+        try {
+            Git.LOG.log(Level.FINE, "Start - {0}", displayName); // NOI18N
 
-			if (!canceled)
-				perform();
-			Git.LOG.log(Level.FINE, "End - {0}", displayName); // NOI18N
+            if (!canceled)
+                perform();
+            Git.LOG.log(Level.FINE, "End - {0}", displayName); // NOI18N
 
-		} finally {
-			finnishProgress();
-			if (logger != null)
-				logger.closeLog();
-		}
-	}
+        } finally {
+            finnishProgress();
+            if (logger != null)
+                logger.closeLog();
+        }
+    }
 
-	protected abstract void perform();
+    protected abstract void perform();
 
-	public synchronized boolean isCanceled()
-	{
-		return canceled;
-	}
+    public synchronized boolean isCanceled()
+    {
+        return canceled;
+    }
 
-	public synchronized boolean cancel()
-	{
-		if (canceled)
-			return false;
-		if (task != null)
-			task.cancel();
-		if (delegate != null)
-			delegate.cancel();
-		Git.getInstance().clearRequestProcessor(repositoryRoot);
-		getProgressHandle().finish();
-		canceled = true;
-		return true;
-	}
+    public synchronized boolean cancel()
+    {
+        if (canceled)
+            return false;
+        if (task != null)
+            task.cancel();
+        if (delegate != null)
+            delegate.cancel();
+        Git.getInstance().clearRequestProcessor(repositoryRoot);
+        getProgressHandle().finish();
+        canceled = true;
+        return true;
+    }
 
-	void setCancellableDelegate(Cancellable cancellable)
-	{
-		this.delegate = cancellable;
-	}
+    void setCancellableDelegate(Cancellable cancellable)
+    {
+        this.delegate = cancellable;
+    }
 
-	public void setDisplayName(String displayName)
-	{
-		if (originalDisplayName.equals("")) // NOI18N
-			originalDisplayName = displayName;
-		this.displayName = displayName;
-		setProgress();
-	}
+    public void setDisplayName(String displayName)
+    {
+        if (originalDisplayName.equals("")) // NOI18N
+            originalDisplayName = displayName;
+        this.displayName = displayName;
+        setProgress();
+    }
 
-	private void setProgressQueued()
-	{
-		if (progressHandle != null)
-			progressHandle.progress(NbBundle.getMessage(GitProgressSupport.class, "LBL_Queued", displayName));
-	}
+    private void setProgressQueued()
+    {
+        if (progressHandle != null)
+            progressHandle.progress(NbBundle.getMessage(GitProgressSupport.class, "LBL_Queued", displayName));
+    }
 
-	private void setProgress()
-	{
-		if (progressHandle != null)
-			progressHandle.progress(displayName);
-	}
+    private void setProgress()
+    {
+        if (progressHandle != null)
+            progressHandle.progress(displayName);
+    }
 
-	protected String getDisplayName()
-	{
-		return displayName;
-	}
+    protected String getDisplayName()
+    {
+        return displayName;
+    }
 
-	protected ProgressHandle getProgressHandle()
-	{
-		if (progressHandle == null)
-			progressHandle = ProgressHandleFactory.createHandle(displayName, this);
-		return progressHandle;
-	}
+    protected ProgressHandle getProgressHandle()
+    {
+        if (progressHandle == null)
+            progressHandle = ProgressHandleFactory.createHandle(displayName, this);
+        return progressHandle;
+    }
 
-	protected void startProgress()
-	{
-		getProgressHandle().start();
-	}
+    protected void startProgress()
+    {
+        getProgressHandle().start();
+    }
 
-	protected void finnishProgress()
-	{
-		getProgressHandle().finish();
-	}
+    protected void finnishProgress()
+    {
+        getProgressHandle().finish();
+    }
 
-	public OutputLogger getLogger()
-	{
-		if (logger == null)
-			logger = Git.getInstance().getLogger(repositoryRoot);
-		return logger;
-	}
+    public OutputLogger getLogger()
+    {
+        if (logger == null)
+            logger = Git.getInstance().getLogger(repositoryRoot);
+        return logger;
+    }
 
 }

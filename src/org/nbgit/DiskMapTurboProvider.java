@@ -74,13 +74,13 @@ class DiskMapTurboProvider implements TurboProvider {
 
     private static final int STATUS_VALUABLE = StatusInfo.STATUS_MANAGED & ~StatusInfo.STATUS_VERSIONED_UPTODATE;
     private static final String CACHE_DIRECTORY = "gitcache"; // NOI18N
-    
+
     private File cacheStore;
     private int                             storeSerial;
 
     private int                             cachedStoreSerial = -1;
     private Map<File, StatusInfo> cachedValues;
-    
+
     DiskMapTurboProvider() {
         initCacheStore();
     }

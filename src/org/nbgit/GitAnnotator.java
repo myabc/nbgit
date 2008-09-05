@@ -75,7 +75,7 @@ import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 
 /**
- * Responsible for coloring file labels and file icons in the IDE and providing 
+ * Responsible for coloring file labels and file icons in the IDE and providing
  * IDE with menu items.
  *
  * @author Maros Sandor
@@ -83,351 +83,351 @@ import org.openide.util.Utilities;
  */
 public class GitAnnotator extends VCSAnnotator {
 
-	private static final int INITIAL_ACTION_ARRAY_LENGTH = 25;
-	private static final int STATUS_BADGEABLE =
-		StatusInfo.STATUS_VERSIONED_UPTODATE |
-		StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY |
-		StatusInfo.STATUS_VERSIONED_MODIFIEDLOCALLY;
-	public static String ANNOTATION_REVISION = "revision"; // NOI18N
-	public static String ANNOTATION_STATUS = "status"; // NOI18N
-	public static String ANNOTATION_FOLDER = "folder"; // NOI18N
-	public static String[] LABELS = new String[]{ANNOTATION_REVISION, ANNOTATION_STATUS, ANNOTATION_FOLDER};
-	private StatusCache cache;
-	private File folderToScan;
-	private ConcurrentLinkedQueue<File> dirsToScan = new ConcurrentLinkedQueue<File>();
-	private RequestProcessor.Task scanTask;
-	private static final RequestProcessor rp = new RequestProcessor("GitAnnotateScan", 1, true); // NOI18N
-	private final HtmlFormatter format;
+    private static final int INITIAL_ACTION_ARRAY_LENGTH = 25;
+    private static final int STATUS_BADGEABLE =
+        StatusInfo.STATUS_VERSIONED_UPTODATE |
+        StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY |
+        StatusInfo.STATUS_VERSIONED_MODIFIEDLOCALLY;
+    public static String ANNOTATION_REVISION = "revision"; // NOI18N
+    public static String ANNOTATION_STATUS = "status"; // NOI18N
+    public static String ANNOTATION_FOLDER = "folder"; // NOI18N
+    public static String[] LABELS = new String[]{ANNOTATION_REVISION, ANNOTATION_STATUS, ANNOTATION_FOLDER};
+    private StatusCache cache;
+    private File folderToScan;
+    private ConcurrentLinkedQueue<File> dirsToScan = new ConcurrentLinkedQueue<File>();
+    private RequestProcessor.Task scanTask;
+    private static final RequestProcessor rp = new RequestProcessor("GitAnnotateScan", 1, true); // NOI18N
+    private final HtmlFormatter format;
 
-	public GitAnnotator()
-	{
-		format = HtmlFormatter.getInstance();
-		cache = Git.getInstance().getStatusCache();
-		scanTask = rp.create(new ScanTask());
-	}
+    public GitAnnotator()
+    {
+        format = HtmlFormatter.getInstance();
+        cache = Git.getInstance().getStatusCache();
+        scanTask = rp.create(new ScanTask());
+    }
 
-	@Override
-	public String annotateName(String name, VCSContext context)
-	{
-		int includeStatus = StatusInfo.STATUS_VERSIONED_UPTODATE | StatusInfo.STATUS_LOCAL_CHANGE | StatusInfo.STATUS_NOTVERSIONED_EXCLUDED;
+    @Override
+    public String annotateName(String name, VCSContext context)
+    {
+        int includeStatus = StatusInfo.STATUS_VERSIONED_UPTODATE | StatusInfo.STATUS_LOCAL_CHANGE | StatusInfo.STATUS_NOTVERSIONED_EXCLUDED;
 
-		StatusInfo mostImportantInfo = null;
-		File mostImportantFile = null;
-		boolean folderAnnotation = false;
+        StatusInfo mostImportantInfo = null;
+        File mostImportantFile = null;
+        boolean folderAnnotation = false;
 
-		for (final File file : context.getRootFiles()) {
-			StatusInfo info = cache.getCachedStatus(file, true);
-			if (info == null) {
-				File parentFile = file.getParentFile();
-				Git.LOG.log(Level.FINE, "null cached status for: {0} {1} {2}", new Object[]{file, folderToScan, parentFile});
-				folderToScan = parentFile;
-				reScheduleScan(1000);
-				info = new StatusInfo(StatusInfo.STATUS_VERSIONED_UPTODATE, false);
-			}
-			int status = info.getStatus();
-			if ((status & includeStatus) == 0)
-				continue;
+        for (final File file : context.getRootFiles()) {
+            StatusInfo info = cache.getCachedStatus(file, true);
+            if (info == null) {
+                File parentFile = file.getParentFile();
+                Git.LOG.log(Level.FINE, "null cached status for: {0} {1} {2}", new Object[]{file, folderToScan, parentFile});
+                folderToScan = parentFile;
+                reScheduleScan(1000);
+                info = new StatusInfo(StatusInfo.STATUS_VERSIONED_UPTODATE, false);
+            }
+            int status = info.getStatus();
+            if ((status & includeStatus) == 0)
+                continue;
 
-			if (isMoreImportant(info, mostImportantInfo)) {
-				mostImportantInfo = info;
-				mostImportantFile = file;
-				folderAnnotation = file.isDirectory();
-			}
-		}
+            if (isMoreImportant(info, mostImportantInfo)) {
+                mostImportantInfo = info;
+                mostImportantFile = file;
+                folderAnnotation = file.isDirectory();
+            }
+        }
 
-		if (folderAnnotation == false && context.getRootFiles().size() > 1)
-			folderAnnotation = !Utils.shareCommonDataObject(context.getRootFiles().toArray(new File[context.getRootFiles().size()]));
+        if (folderAnnotation == false && context.getRootFiles().size() > 1)
+            folderAnnotation = !Utils.shareCommonDataObject(context.getRootFiles().toArray(new File[context.getRootFiles().size()]));
 
-		if (mostImportantInfo == null)
-			return null;
-		if (folderAnnotation)
-			return format.annotateFolderNameHtml(name, mostImportantInfo, mostImportantFile);
-		return format.annotateNameHtml(name, mostImportantInfo, mostImportantFile);
-	}
+        if (mostImportantInfo == null)
+            return null;
+        if (folderAnnotation)
+            return format.annotateFolderNameHtml(name, mostImportantInfo, mostImportantFile);
+        return format.annotateNameHtml(name, mostImportantInfo, mostImportantFile);
+    }
 
-	@Override
-	public Image annotateIcon(Image icon, VCSContext context)
-	{
-		boolean folderAnnotation = false;
-		for (File file : context.getRootFiles()) {
-			if (file.isDirectory()) {
-				folderAnnotation = true;
-				break;
-			}
-		}
+    @Override
+    public Image annotateIcon(Image icon, VCSContext context)
+    {
+        boolean folderAnnotation = false;
+        for (File file : context.getRootFiles()) {
+            if (file.isDirectory()) {
+                folderAnnotation = true;
+                break;
+            }
+        }
 
-		if (folderAnnotation == false && context.getRootFiles().size() > 1)
-			folderAnnotation = !Utils.shareCommonDataObject(context.getRootFiles().toArray(new File[context.getRootFiles().size()]));
+        if (folderAnnotation == false && context.getRootFiles().size() > 1)
+            folderAnnotation = !Utils.shareCommonDataObject(context.getRootFiles().toArray(new File[context.getRootFiles().size()]));
 
-		if (folderAnnotation == false)
-			return null;
+        if (folderAnnotation == false)
+            return null;
 
-		boolean isVersioned = false;
-		for (Iterator i = context.getRootFiles().iterator(); i.hasNext();) {
-			File file = (File) i.next();
-			// There is an assumption here that annotateName was already 
-			// called and StatusCache.getStatus was scheduled if
-			// StatusCache.getCachedStatus returned null.
-			StatusInfo info = cache.getCachedStatus(file, true);
-			if ((info != null && (info.getStatus() & STATUS_BADGEABLE) != 0)) {
-				isVersioned = true;
-				break;
-			}
-		}
-		if (!isVersioned)
-			return null;
+        boolean isVersioned = false;
+        for (Iterator i = context.getRootFiles().iterator(); i.hasNext();) {
+            File file = (File) i.next();
+            // There is an assumption here that annotateName was already
+            // called and StatusCache.getStatus was scheduled if
+            // StatusCache.getCachedStatus returned null.
+            StatusInfo info = cache.getCachedStatus(file, true);
+            if ((info != null && (info.getStatus() & STATUS_BADGEABLE) != 0)) {
+                isVersioned = true;
+                break;
+            }
+        }
+        if (!isVersioned)
+            return null;
 
-		boolean allExcluded = true;
-		boolean modified = false;
+        boolean allExcluded = true;
+        boolean modified = false;
 
-		Map<File, StatusInfo> map = cache.getAllModifiedFiles();
-		Map<File, StatusInfo> modifiedFiles = new HashMap<File, StatusInfo>();
-		for (Iterator i = map.keySet().iterator(); i.hasNext();) {
-			File file = (File) i.next();
-			StatusInfo info = map.get(file);
-			if ((info.getStatus() & StatusInfo.STATUS_LOCAL_CHANGE) != 0)
-				modifiedFiles.put(file, info);
-		}
+        Map<File, StatusInfo> map = cache.getAllModifiedFiles();
+        Map<File, StatusInfo> modifiedFiles = new HashMap<File, StatusInfo>();
+        for (Iterator i = map.keySet().iterator(); i.hasNext();) {
+            File file = (File) i.next();
+            StatusInfo info = map.get(file);
+            if ((info.getStatus() & StatusInfo.STATUS_LOCAL_CHANGE) != 0)
+                modifiedFiles.put(file, info);
+        }
 
-		for (Iterator i = context.getRootFiles().iterator(); i.hasNext();) {
-			File file = (File) i.next();
-			if (VersioningSupport.isFlat(file))
-				for (Iterator j = modifiedFiles.keySet().iterator(); j.hasNext();) {
-					File mf = (File) j.next();
-					if (mf.getParentFile().equals(file)) {
-						StatusInfo info = modifiedFiles.get(mf);
-						if (info.isDirectory())
-							continue;
-						int status = info.getStatus();
-						if (status == StatusInfo.STATUS_VERSIONED_CONFLICT) {
-							Image badge = Utilities.loadImage("org/nbgit/resources/icons/conflicts-badge.png", true);  // NOI18N
-							return Utilities.mergeImages(icon, badge, 16, 9);
-						}
-						modified = true;
-						allExcluded &= isExcludedFromCommit(mf.getAbsolutePath());
-					}
-				}
-			else
-				for (Iterator j = modifiedFiles.keySet().iterator(); j.hasNext();) {
-					File mf = (File) j.next();
-					if (Utils.isAncestorOrEqual(file, mf)) {
-						StatusInfo info = modifiedFiles.get(mf);
-						int status = info.getStatus();
-						if ((status == StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY || status == StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY) && file.equals(mf))
-							continue;
-						if (status == StatusInfo.STATUS_VERSIONED_CONFLICT) {
-							Image badge = Utilities.loadImage("org/nbgit/resources/icons/conflicts-badge.png", true); // NOI18N
-							return Utilities.mergeImages(icon, badge, 16, 9);
-						}
-						modified = true;
-						allExcluded &= isExcludedFromCommit(mf.getAbsolutePath());
-					}
-				}
-		}
+        for (Iterator i = context.getRootFiles().iterator(); i.hasNext();) {
+            File file = (File) i.next();
+            if (VersioningSupport.isFlat(file))
+                for (Iterator j = modifiedFiles.keySet().iterator(); j.hasNext();) {
+                    File mf = (File) j.next();
+                    if (mf.getParentFile().equals(file)) {
+                        StatusInfo info = modifiedFiles.get(mf);
+                        if (info.isDirectory())
+                            continue;
+                        int status = info.getStatus();
+                        if (status == StatusInfo.STATUS_VERSIONED_CONFLICT) {
+                            Image badge = Utilities.loadImage("org/nbgit/resources/icons/conflicts-badge.png", true);  // NOI18N
+                            return Utilities.mergeImages(icon, badge, 16, 9);
+                        }
+                        modified = true;
+                        allExcluded &= isExcludedFromCommit(mf.getAbsolutePath());
+                    }
+                }
+            else
+                for (Iterator j = modifiedFiles.keySet().iterator(); j.hasNext();) {
+                    File mf = (File) j.next();
+                    if (Utils.isAncestorOrEqual(file, mf)) {
+                        StatusInfo info = modifiedFiles.get(mf);
+                        int status = info.getStatus();
+                        if ((status == StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY || status == StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY) && file.equals(mf))
+                            continue;
+                        if (status == StatusInfo.STATUS_VERSIONED_CONFLICT) {
+                            Image badge = Utilities.loadImage("org/nbgit/resources/icons/conflicts-badge.png", true); // NOI18N
+                            return Utilities.mergeImages(icon, badge, 16, 9);
+                        }
+                        modified = true;
+                        allExcluded &= isExcludedFromCommit(mf.getAbsolutePath());
+                    }
+                }
+        }
 
-		if (modified && !allExcluded) {
-			Image badge = Utilities.loadImage("org/nbgit/resources/icons/modified-badge.png", true); // NOI18N
-			return Utilities.mergeImages(icon, badge, 16, 9);
-		} else
-			return null;
-	}
+        if (modified && !allExcluded) {
+            Image badge = Utilities.loadImage("org/nbgit/resources/icons/modified-badge.png", true); // NOI18N
+            return Utilities.mergeImages(icon, badge, 16, 9);
+        } else
+            return null;
+    }
 
-	@Override
-	public Action[] getActions(VCSContext ctx, VCSAnnotator.ActionDestination destination)
-	{
-		// TODO: get resource strings for all actions:
-		ResourceBundle loc = NbBundle.getBundle(GitAnnotator.class);
-		Node[] nodes = ctx.getElements().lookupAll(Node.class).toArray(new Node[0]);
-		File[] files = ctx.getRootFiles().toArray(new File[ctx.getRootFiles().size()]);
-		File root = GitUtils.getRootFile(ctx);
-		boolean noneVersioned = root == null;
-		boolean onlyFolders = onlyFolders(files);
-		boolean onlyProjects = onlyProjects(nodes);
+    @Override
+    public Action[] getActions(VCSContext ctx, VCSAnnotator.ActionDestination destination)
+    {
+        // TODO: get resource strings for all actions:
+        ResourceBundle loc = NbBundle.getBundle(GitAnnotator.class);
+        Node[] nodes = ctx.getElements().lookupAll(Node.class).toArray(new Node[0]);
+        File[] files = ctx.getRootFiles().toArray(new File[ctx.getRootFiles().size()]);
+        File root = GitUtils.getRootFile(ctx);
+        boolean noneVersioned = root == null;
+        boolean onlyFolders = onlyFolders(files);
+        boolean onlyProjects = onlyProjects(nodes);
 
-		List<Action> actions = new ArrayList<Action>(INITIAL_ACTION_ARRAY_LENGTH);
-		if (destination == VCSAnnotator.ActionDestination.MainMenu) {
-			actions.add(new InitAction(loc.getString("CTL_MenuItem_Create"), ctx)); // NOI18N
-			actions.add(null);
-			actions.add(new StatusAction(loc.getString("CTL_PopupMenuItem_Status"), ctx)); // NOI18N
-			actions.add(new DiffAction(loc.getString("CTL_PopupMenuItem_Diff"), ctx)); // NOI18N
-			actions.add(new UpdateAction(loc.getString("CTL_PopupMenuItem_Update"), ctx)); // NOI18N
-			actions.add(new CommitAction(loc.getString("CTL_PopupMenuItem_Commit"), ctx)); // NOI18N
-			actions.add(null);
-			/*
-			actions.add(new ExportDiffAction(loc.getString("CTL_PopupMenuItem_ExportDiff"), ctx)); // NOI18N
-			actions.add(new ApplyDiffAction(loc.getString("CTL_PopupMenuItem_ImportDiff"), ctx)); // NOI18N
-			actions.add(null);
-			if (root != null) {
-			actions.add(new CloneAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_CloneLocal",  // NOI18N
-			root.getName()), ctx));
-			}
-			actions.add(new CloneExternalAction(loc.getString("CTL_PopupMenuItem_CloneOther"), ctx));     // NOI18N        
-			actions.add(null);
-			actions.add(new FetchAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_FetchLocal"), ctx)); // NOI18N
-			actions.add(new PushAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_PushLocal"), ctx)); // NOI18N
-			actions.add(new PushOtherAction(loc.getString("CTL_PopupMenuItem_PushOther"), ctx)); // NOI18N
-			actions.add(new PullAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_PullLocal"), ctx)); // NOI18N
-			actions.add(new PullOtherAction(loc.getString("CTL_PopupMenuItem_PullOther"), ctx)); // NOI18N
-			actions.add(new MergeAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Merge"), ctx)); // NOI18N
-			actions.add(null);
-			AnnotateAction tempA = new AnnotateAction(loc.getString("CTL_PopupMenuItem_ShowAnnotations"), ctx); // NOI18N
-			if (tempA.visible(nodes))
-			tempA = new AnnotateAction(loc.getString("CTL_PopupMenuItem_HideAnnotations"), ctx);
-			actions.add(tempA);
-			 */
-			actions.add(new LogAction(loc.getString("CTL_PopupMenuItem_Log"), ctx)); // NOI18N
-		/*
-			actions.add(new IncomingAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_ShowIncoming"), ctx)); // NOI18N
-			actions.add(new OutAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_ShowOut"), ctx)); // NOI18N
-			actions.add(new ViewAction(loc.getString("CTL_PopupMenuItem_View"), ctx)); // NOI18N
-			 */
-			actions.add(null);
-			actions.add(new RevertModificationsAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Revert"), ctx)); // NOI18N
-		/*
-			actions.add(new StashAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Stash"), ctx));
-			actions.add(new StripAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Strip"), ctx)); // NOI18N
-			actions.add(new BackoutAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Backout"), ctx)); // NOI18N
-			actions.add(new RollbackAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Rollback"), ctx)); // NOI18N
-			 * */
-			actions.add(new ResolveConflictsAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Resolve"), ctx)); // NOI18N
-		/*
-			if (!onlyProjects && !onlyFolders) {
-			IgnoreAction tempIA = new IgnoreAction(loc.getString("CTL_PopupMenuItem_Ignore"), ctx); // NOI18N
-			actions.add(tempIA);
-			}
-			 * */
-			actions.add(null);
-			actions.add(new PropertiesAction(loc.getString("CTL_PopupMenuItem_Properties"), ctx)); // NOI18N
-		} else if (noneVersioned)
-			actions.add(new InitAction(loc.getString("CTL_PopupMenuItem_Create"), ctx));
-		else {
-			actions.add(new StatusAction(loc.getString("CTL_PopupMenuItem_Status"), ctx)); // NOI18N
-			actions.add(new DiffAction(loc.getString("CTL_PopupMenuItem_Diff"), ctx)); // NOI18N
-			actions.add(new UpdateAction(loc.getString("CTL_PopupMenuItem_Update"), ctx)); // NOI18N
-			actions.add(new CommitAction(loc.getString("CTL_PopupMenuItem_Commit"), ctx)); // NOI18N
-			actions.add(null);
-			/*
-			if (root != null)
-			actions.add(new CloneAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_CloneLocal", // NOI18N
-			root.getName()), ctx));
-			
-			actions.add(null);
-			actions.add(new FetchAction(NbBundle.getMessage(GitAnnotator.class,
-			"CTL_PopupMenuItem_FetchLocal"), ctx)); // NOI18N
-			actions.add(new PushAction(NbBundle.getMessage(GitAnnotator.class,
-			"CTL_PopupMenuItem_PushLocal"), ctx)); // NOI18N
-			actions.add(new PullAction(NbBundle.getMessage(GitAnnotator.class,
-			"CTL_PopupMenuItem_PullLocal"), ctx)); // NOI18N
-			actions.add(new MergeAction(NbBundle.getMessage(GitAnnotator.class,
-			"CTL_PopupMenuItem_Merge"), ctx)); // NOI18N
-			actions.add(null);
-			if (!onlyFolders) {
-			AnnotateAction tempA = new AnnotateAction(loc.getString("CTL_PopupMenuItem_ShowAnnotations"), ctx);  // NOI18N
-			if (tempA.visible(nodes))
-			tempA = new AnnotateAction(loc.getString("CTL_PopupMenuItem_HideAnnotations"), ctx);
-			actions.add(tempA);
-			}
-			 */
-			actions.add(new LogAction(loc.getString("CTL_PopupMenuItem_Log"), ctx)); // NOI18N
-		/*
-			actions.add(new IncomingAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_ShowIncoming"), ctx)); // NOI18N
-			actions.add(new OutAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_ShowOut"), ctx)); // NOI18N
-			actions.add(new ViewAction(loc.getString("CTL_PopupMenuItem_View"), ctx)); // NOI18N
-			 */
-			actions.add(null);
-			actions.add(new RevertModificationsAction(NbBundle.getMessage(GitAnnotator.class,
-				"CTL_PopupMenuItem_Revert"), ctx)); // NOI18N
-		/*
-			actions.add(new StripAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Strip"), ctx)); // NOI18N
-			actions.add(new BackoutAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Backout"), ctx)); // NOI18N
-			actions.add(new RollbackAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Rollback"), ctx)); // NOI18N
-			 * */
-			actions.add(new ResolveConflictsAction(NbBundle.getMessage(GitAnnotator.class,
-				"CTL_PopupMenuItem_Resolve"), ctx)); // NOI18N
-			if (!onlyProjects && !onlyFolders)
-				actions.add(new ConflictResolvedAction(NbBundle.getMessage(GitAnnotator.class,
-					"CTL_PopupMenuItem_MarkResolved"), ctx));
-		/*
-			if (!onlyProjects && !onlyFolders) {
-			IgnoreAction tempIA = new IgnoreAction(loc.getString("CTL_PopupMenuItem_Ignore"), ctx); // NOI18N
-			actions.add(tempIA);
-			}
-			 * */
-			actions.add(null);
-			actions.add(new PropertiesAction(loc.getString("CTL_PopupMenuItem_Properties"), ctx)); // NOI18N
-		}
+        List<Action> actions = new ArrayList<Action>(INITIAL_ACTION_ARRAY_LENGTH);
+        if (destination == VCSAnnotator.ActionDestination.MainMenu) {
+            actions.add(new InitAction(loc.getString("CTL_MenuItem_Create"), ctx)); // NOI18N
+            actions.add(null);
+            actions.add(new StatusAction(loc.getString("CTL_PopupMenuItem_Status"), ctx)); // NOI18N
+            actions.add(new DiffAction(loc.getString("CTL_PopupMenuItem_Diff"), ctx)); // NOI18N
+            actions.add(new UpdateAction(loc.getString("CTL_PopupMenuItem_Update"), ctx)); // NOI18N
+            actions.add(new CommitAction(loc.getString("CTL_PopupMenuItem_Commit"), ctx)); // NOI18N
+            actions.add(null);
+            /*
+            actions.add(new ExportDiffAction(loc.getString("CTL_PopupMenuItem_ExportDiff"), ctx)); // NOI18N
+            actions.add(new ApplyDiffAction(loc.getString("CTL_PopupMenuItem_ImportDiff"), ctx)); // NOI18N
+            actions.add(null);
+            if (root != null) {
+            actions.add(new CloneAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_CloneLocal",  // NOI18N
+            root.getName()), ctx));
+            }
+            actions.add(new CloneExternalAction(loc.getString("CTL_PopupMenuItem_CloneOther"), ctx));     // NOI18N
+            actions.add(null);
+            actions.add(new FetchAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_FetchLocal"), ctx)); // NOI18N
+            actions.add(new PushAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_PushLocal"), ctx)); // NOI18N
+            actions.add(new PushOtherAction(loc.getString("CTL_PopupMenuItem_PushOther"), ctx)); // NOI18N
+            actions.add(new PullAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_PullLocal"), ctx)); // NOI18N
+            actions.add(new PullOtherAction(loc.getString("CTL_PopupMenuItem_PullOther"), ctx)); // NOI18N
+            actions.add(new MergeAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Merge"), ctx)); // NOI18N
+            actions.add(null);
+            AnnotateAction tempA = new AnnotateAction(loc.getString("CTL_PopupMenuItem_ShowAnnotations"), ctx); // NOI18N
+            if (tempA.visible(nodes))
+            tempA = new AnnotateAction(loc.getString("CTL_PopupMenuItem_HideAnnotations"), ctx);
+            actions.add(tempA);
+             */
+            actions.add(new LogAction(loc.getString("CTL_PopupMenuItem_Log"), ctx)); // NOI18N
+        /*
+            actions.add(new IncomingAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_ShowIncoming"), ctx)); // NOI18N
+            actions.add(new OutAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_ShowOut"), ctx)); // NOI18N
+            actions.add(new ViewAction(loc.getString("CTL_PopupMenuItem_View"), ctx)); // NOI18N
+             */
+            actions.add(null);
+            actions.add(new RevertModificationsAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Revert"), ctx)); // NOI18N
+        /*
+            actions.add(new StashAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Stash"), ctx));
+            actions.add(new StripAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Strip"), ctx)); // NOI18N
+            actions.add(new BackoutAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Backout"), ctx)); // NOI18N
+            actions.add(new RollbackAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Rollback"), ctx)); // NOI18N
+             * */
+            actions.add(new ResolveConflictsAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Resolve"), ctx)); // NOI18N
+        /*
+            if (!onlyProjects && !onlyFolders) {
+            IgnoreAction tempIA = new IgnoreAction(loc.getString("CTL_PopupMenuItem_Ignore"), ctx); // NOI18N
+            actions.add(tempIA);
+            }
+             * */
+            actions.add(null);
+            actions.add(new PropertiesAction(loc.getString("CTL_PopupMenuItem_Properties"), ctx)); // NOI18N
+        } else if (noneVersioned)
+            actions.add(new InitAction(loc.getString("CTL_PopupMenuItem_Create"), ctx));
+        else {
+            actions.add(new StatusAction(loc.getString("CTL_PopupMenuItem_Status"), ctx)); // NOI18N
+            actions.add(new DiffAction(loc.getString("CTL_PopupMenuItem_Diff"), ctx)); // NOI18N
+            actions.add(new UpdateAction(loc.getString("CTL_PopupMenuItem_Update"), ctx)); // NOI18N
+            actions.add(new CommitAction(loc.getString("CTL_PopupMenuItem_Commit"), ctx)); // NOI18N
+            actions.add(null);
+            /*
+            if (root != null)
+            actions.add(new CloneAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_CloneLocal", // NOI18N
+            root.getName()), ctx));
 
-		return actions.toArray(new Action[actions.size()]);
-	}
+            actions.add(null);
+            actions.add(new FetchAction(NbBundle.getMessage(GitAnnotator.class,
+            "CTL_PopupMenuItem_FetchLocal"), ctx)); // NOI18N
+            actions.add(new PushAction(NbBundle.getMessage(GitAnnotator.class,
+            "CTL_PopupMenuItem_PushLocal"), ctx)); // NOI18N
+            actions.add(new PullAction(NbBundle.getMessage(GitAnnotator.class,
+            "CTL_PopupMenuItem_PullLocal"), ctx)); // NOI18N
+            actions.add(new MergeAction(NbBundle.getMessage(GitAnnotator.class,
+            "CTL_PopupMenuItem_Merge"), ctx)); // NOI18N
+            actions.add(null);
+            if (!onlyFolders) {
+            AnnotateAction tempA = new AnnotateAction(loc.getString("CTL_PopupMenuItem_ShowAnnotations"), ctx);  // NOI18N
+            if (tempA.visible(nodes))
+            tempA = new AnnotateAction(loc.getString("CTL_PopupMenuItem_HideAnnotations"), ctx);
+            actions.add(tempA);
+            }
+             */
+            actions.add(new LogAction(loc.getString("CTL_PopupMenuItem_Log"), ctx)); // NOI18N
+        /*
+            actions.add(new IncomingAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_ShowIncoming"), ctx)); // NOI18N
+            actions.add(new OutAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_ShowOut"), ctx)); // NOI18N
+            actions.add(new ViewAction(loc.getString("CTL_PopupMenuItem_View"), ctx)); // NOI18N
+             */
+            actions.add(null);
+            actions.add(new RevertModificationsAction(NbBundle.getMessage(GitAnnotator.class,
+                "CTL_PopupMenuItem_Revert"), ctx)); // NOI18N
+        /*
+            actions.add(new StripAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Strip"), ctx)); // NOI18N
+            actions.add(new BackoutAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Backout"), ctx)); // NOI18N
+            actions.add(new RollbackAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Rollback"), ctx)); // NOI18N
+             * */
+            actions.add(new ResolveConflictsAction(NbBundle.getMessage(GitAnnotator.class,
+                "CTL_PopupMenuItem_Resolve"), ctx)); // NOI18N
+            if (!onlyProjects && !onlyFolders)
+                actions.add(new ConflictResolvedAction(NbBundle.getMessage(GitAnnotator.class,
+                    "CTL_PopupMenuItem_MarkResolved"), ctx));
+        /*
+            if (!onlyProjects && !onlyFolders) {
+            IgnoreAction tempIA = new IgnoreAction(loc.getString("CTL_PopupMenuItem_Ignore"), ctx); // NOI18N
+            actions.add(tempIA);
+            }
+             * */
+            actions.add(null);
+            actions.add(new PropertiesAction(loc.getString("CTL_PopupMenuItem_Properties"), ctx)); // NOI18N
+        }
 
-	private boolean isMoreImportant(StatusInfo a, StatusInfo b)
-	{
-		if (b == null)
-			return true;
-		if (a == null)
-			return false;
-		return GitUtils.getComparableStatus(a.getStatus()) < GitUtils.getComparableStatus(b.getStatus());
-	}
+        return actions.toArray(new Action[actions.size()]);
+    }
 
-	private boolean isExcludedFromCommit(String absolutePath)
-	{
-		return false;
-	}
+    private boolean isMoreImportant(StatusInfo a, StatusInfo b)
+    {
+        if (b == null)
+            return true;
+        if (a == null)
+            return false;
+        return GitUtils.getComparableStatus(a.getStatus()) < GitUtils.getComparableStatus(b.getStatus());
+    }
 
-	private boolean isNothingVersioned(File[] files)
-	{
-		for (File file : files) {
-			if ((cache.getStatus(file).getStatus() & StatusInfo.STATUS_MANAGED) != 0)
-				return false;
-		}
-		return true;
-	}
+    private boolean isExcludedFromCommit(String absolutePath)
+    {
+        return false;
+    }
 
-	private static boolean onlyProjects(Node[] nodes)
-	{
-		if (nodes == null)
-			return false;
-		for (Node node : nodes) {
-			if (node.getLookup().lookup(Project.class) == null)
-				return false;
-		}
-		return true;
-	}
+    private boolean isNothingVersioned(File[] files)
+    {
+        for (File file : files) {
+            if ((cache.getStatus(file).getStatus() & StatusInfo.STATUS_MANAGED) != 0)
+                return false;
+        }
+        return true;
+    }
 
-	private boolean onlyFolders(File[] files)
-	{
-		for (int i = 0; i < files.length; i++) {
-			if (files[i].isFile())
-				return false;
-			if (!files[i].exists() && !cache.getStatus(files[i]).isDirectory())
-				return false;
-		}
-		return true;
-	}
+    private static boolean onlyProjects(Node[] nodes)
+    {
+        if (nodes == null)
+            return false;
+        for (Node node : nodes) {
+            if (node.getLookup().lookup(Project.class) == null)
+                return false;
+        }
+        return true;
+    }
 
-	private void reScheduleScan(int delayMillis)
-	{
-		File dirToScan = dirsToScan.peek();
-		if (!folderToScan.equals(dirToScan))
-			if (!dirsToScan.offer(folderToScan))
-				Git.LOG.log(Level.FINE, "reScheduleScan failed to add to dirsToScan queue: {0} ", folderToScan);
-		scanTask.schedule(delayMillis);
-	}
+    private boolean onlyFolders(File[] files)
+    {
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isFile())
+                return false;
+            if (!files[i].exists() && !cache.getStatus(files[i]).isDirectory())
+                return false;
+        }
+        return true;
+    }
 
-	private class ScanTask implements Runnable {
+    private void reScheduleScan(int delayMillis)
+    {
+        File dirToScan = dirsToScan.peek();
+        if (!folderToScan.equals(dirToScan))
+            if (!dirsToScan.offer(folderToScan))
+                Git.LOG.log(Level.FINE, "reScheduleScan failed to add to dirsToScan queue: {0} ", folderToScan);
+        scanTask.schedule(delayMillis);
+    }
 
-		public void run()
-		{
-			Thread.interrupted();
-			File dirToScan = dirsToScan.poll();
-			if (dirToScan != null) {
-				cache.getScannedFiles(dirToScan, null);
-				dirToScan = dirsToScan.peek();
-				if (dirToScan != null)
-					scanTask.schedule(1000);
-			}
-		}
+    private class ScanTask implements Runnable {
 
-	}
+        public void run()
+        {
+            Thread.interrupted();
+            File dirToScan = dirsToScan.poll();
+            if (dirToScan != null) {
+                cache.getScannedFiles(dirToScan, null);
+                dirToScan = dirsToScan.peek();
+                if (dirToScan != null)
+                    scanTask.schedule(1000);
+            }
+        }
+
+    }
 
 }

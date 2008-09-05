@@ -44,7 +44,6 @@ package org.nbgit.ui.log;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.util.Collection;
-import java.util.Date;
 import org.nbgit.ui.diff.DiffSetupSource;
 import org.netbeans.modules.versioning.spi.VCSContext;
 import org.openide.util.HelpCtx;
@@ -85,10 +84,10 @@ public class SearchHistoryTopComponent extends TopComponent implements DiffSetup
 		initComponents(repositoryUrl, localRoot, revision);
 	}
 
-	public void search()
+	public void search(boolean showSearchCriteria)
 	{
 		shp.executeSearch();
-		shp.setSearchCriteria(false);
+		shp.setSearchCriteria(showSearchCriteria);
 	}
 
 	public void searchOut()

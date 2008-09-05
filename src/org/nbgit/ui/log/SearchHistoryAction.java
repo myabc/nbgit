@@ -105,6 +105,7 @@ public class SearchHistoryAction extends ContextAction {
 				tc.setDisplayName(title);
 				tc.open();
 				tc.requestActive();
+				tc.search(true);
 			}
 
 		});
@@ -189,7 +190,7 @@ public class SearchHistoryAction extends ContextAction {
 		tc.setDisplayName(tcTitle);
 		tc.open();
 		tc.requestActive();
-		tc.search();
+		tc.search(false);
 	}
 
 	private static VCSContext getDefaultContext()
@@ -213,7 +214,7 @@ public class SearchHistoryAction extends ContextAction {
 		tc.setDisplayName(tcTitle);
 		tc.open();
 		tc.requestActive();
-		tc.search();
+		tc.search(false);
 	}
 
 }

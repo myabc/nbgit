@@ -635,7 +635,7 @@ class SummaryView implements MouseListener, ComponentListener, MouseMotionListen
 
 			diffLink = new HyperlinkLabel();
 			diffLink.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 8));
-			//actionsPane.add(diffLink);
+			actionsPane.add(diffLink);
 
 			revertLink = new HyperlinkLabel();
 			revertLink.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 8));

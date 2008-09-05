@@ -3,8 +3,16 @@
     <type>org.netbeans.modules.apisupport.project</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
-            <code-name-base>org.netbeans.modules.git</code-name-base>
+            <code-name-base>org.nbgit</code-name-base>
             <standalone/>
+            <class-path-extension>
+                <runtime-relative-path>ext/org-spearce-jgit.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/org-spearce-jgit.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/com-jcraft-jsch.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/com-jcraft-jsch.jar</binary-origin>
+            </class-path-extension>
             <module-dependencies>
                 <dependency>
                     <code-name-base>org.jdesktop.layout</code-name-base>
@@ -25,15 +33,6 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.netbeans.libs.ini4j</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <release-version>1</release-version>
-                        <implementation-version/>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>org.netbeans.modules.diff</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -43,28 +42,12 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.netbeans.modules.editor.errorstripe</code-name-base>
-                    <run-dependency>
-                        <release-version>2</release-version>
-                        <specification-version>2.4.0.1.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.netbeans.modules.editor.errorstripe.api</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <release-version>1</release-version>
-                        <specification-version>2.4.0.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>org.netbeans.modules.editor.fold</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
                         <release-version>1</release-version>
-                        <specification-version>1.7</specification-version>
+                        <specification-version>1.8</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -73,16 +56,7 @@
                     <compile-dependency/>
                     <run-dependency>
                         <release-version>1</release-version>
-                        <specification-version>1.22.0.4.2</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.netbeans.modules.editor.lib2</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <release-version>1</release-version>
-                        <specification-version>1.6.0.2</specification-version>
+                        <specification-version>1.25.2.4.2</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -101,15 +75,6 @@
                     <run-dependency>
                         <release-version>1</release-version>
                         <specification-version>1.16</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.netbeans.modules.junit</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <release-version>2</release-version>
-                        <implementation-version/>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -136,7 +101,7 @@
                     <compile-dependency/>
                     <run-dependency>
                         <release-version>1</release-version>
-                        <specification-version>1.27.0.6</specification-version>
+                        <specification-version>1.29.1.6</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -170,7 +135,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>7.0.0.1</specification-version>
+                        <specification-version>7.1.0.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -186,7 +151,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>6.13</specification-version>
+                        <specification-version>6.13.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -194,7 +159,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>7.7</specification-version>
+                        <specification-version>7.8</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -218,7 +183,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>7.3.0.1</specification-version>
+                        <specification-version>7.3.1.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -226,7 +191,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>6.17</specification-version>
+                        <specification-version>6.18.2</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -242,28 +207,10 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>6.19</specification-version>
+                        <specification-version>6.20</specification-version>
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <test-dependencies>
-                <test-type>
-                    <name>unit</name>
-                </test-type>
-                <test-type>
-                    <name>qa-functional</name>
-                    <test-dependency>
-                        <code-name-base>org.openide.nodes</code-name-base>
-                        <compile-dependency/>
-                        <test/>
-                    </test-dependency>
-                    <test-dependency>
-                        <code-name-base>org.openide.util</code-name-base>
-                        <compile-dependency/>
-                        <test/>
-                    </test-dependency>
-                </test-type>
-            </test-dependencies>
             <public-packages/>
         </data>
     </configuration>

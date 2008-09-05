@@ -3,7 +3,7 @@
 *** GENERATED FROM project.xml - DO NOT EDIT  ***
 ***         EDIT ../build.xml INSTEAD         ***
 -->
-<project name="org.netbeans.modules.git-impl" basedir="..">
+<project name="org.nbgit-impl" basedir="..">
     <property file="nbproject/private/platform-private.properties"/>
     <property file="nbproject/platform.properties"/>
     <macrodef name="property" uri="http://www.netbeans.org/ns/nb-module-project/2">

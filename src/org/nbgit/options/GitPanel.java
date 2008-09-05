@@ -105,8 +105,11 @@ final class GitPanel extends javax.swing.JPanel {
         emailLabel = new javax.swing.JLabel();
         userNameLabel = new javax.swing.JLabel();
         userNameTextField = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
         statusLabels = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        signOffCommits = new javax.swing.JCheckBox();
         fileOptionsPanel = new javax.swing.JPanel();
         exportFilename = new javax.swing.JLabel();
         backupOnRevertModifications = new javax.swing.JCheckBox();
@@ -128,6 +131,8 @@ final class GitPanel extends javax.swing.JPanel {
 
         userNameTextField.setToolTipText(org.openide.util.NbBundle.getMessage(GitPanel.class, "userNameTextField.TOOLTIP")); // NOI18N
 
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, "user@example.org");
+
         org.jdesktop.layout.GroupLayout userInformationLayout = new org.jdesktop.layout.GroupLayout(userInformation);
         userInformation.setLayout(userInformationLayout);
         userInformationLayout.setHorizontalGroup(
@@ -135,28 +140,28 @@ final class GitPanel extends javax.swing.JPanel {
             .add(userInformationLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(userInformationLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, userInformationLayout.createSequentialGroup()
-                        .add(userNameLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 85, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(26, 26, 26))
-                    .add(userInformationLayout.createSequentialGroup()
-                        .add(emailLabel)
-                        .add(18, 18, 18)))
-                .add(userInformationLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(emailTextField)
-                    .add(userNameTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE))
+                    .add(userNameLabel)
+                    .add(emailLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 95, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(16, 16, 16)
+                .add(userInformationLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jLabel1)
+                    .add(emailTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
+                    .add(userNameTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE))
                 .addContainerGap())
         );
         userInformationLayout.setVerticalGroup(
             userInformationLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(userInformationLayout.createSequentialGroup()
-                .add(userInformationLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                .add(userInformationLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE, false)
+                    .add(userNameTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(userNameLabel))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(userInformationLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE, false)
                     .add(emailLabel)
                     .add(emailTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(userInformationLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(userNameLabel)
-                    .add(userNameTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(36, 36, 36))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jLabel1)
+                .addContainerGap())
         );
 
         emailTextField.getAccessibleContext().setAccessibleName("Email:");
@@ -181,47 +186,71 @@ final class GitPanel extends javax.swing.JPanel {
         statusLabels.setLayout(statusLabelsLayout);
         statusLabelsLayout.setHorizontalGroup(
             statusLabelsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, statusLabelsLayout.createSequentialGroup()
+            .add(statusLabelsLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(jLabel3)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(annotationTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 265, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(59, 59, 59)
+                .add(annotationTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(addButton)
-                .add(88, 88, 88))
+                .addContainerGap())
         );
         statusLabelsLayout.setVerticalGroup(
             statusLabelsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(statusLabelsLayout.createSequentialGroup()
-                .addContainerGap()
-                .add(statusLabelsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(annotationTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(addButton)
-                    .add(jLabel3))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .add(statusLabelsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(statusLabelsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE, false)
+                        .add(jLabel3)
+                        .add(addButton))
+                    .add(statusLabelsLayout.createSequentialGroup()
+                        .add(2, 2, 2)
+                        .add(annotationTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         addButton.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(GitPanel.class, "ACSD_addButton")); // NOI18N
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Commit Options"));
+
+        org.openide.awt.Mnemonics.setLocalizedText(signOffCommits, "Insert Signed-off-by line in commit messages");
+
+        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel1Layout.createSequentialGroup()
+                .add(signOffCommits)
+                .addContainerGap(338, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel1Layout.createSequentialGroup()
+                .add(signOffCommits)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         org.jdesktop.layout.GroupLayout generalOptionsPanelLayout = new org.jdesktop.layout.GroupLayout(generalOptionsPanel);
         generalOptionsPanel.setLayout(generalOptionsPanelLayout);
         generalOptionsPanelLayout.setHorizontalGroup(
             generalOptionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(generalOptionsPanelLayout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, generalOptionsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(generalOptionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(userInformation, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(statusLabels, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 500, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(150, Short.MAX_VALUE))
+                .add(generalOptionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, statusLabels, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, userInformation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         generalOptionsPanelLayout.setVerticalGroup(
             generalOptionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(generalOptionsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .add(userInformation, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(userInformation, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(statusLabels, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(139, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 61, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(105, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(GitPanel.class, "BasicSettingsTab.Title"), generalOptionsPanel); // NOI18N
@@ -252,12 +281,12 @@ final class GitPanel extends javax.swing.JPanel {
                         .add(exportFilenameTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 145, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                         .add(exportFilenameBrowseButton)))
-                .addContainerGap(218, Short.MAX_VALUE))
+                .addContainerGap(245, Short.MAX_VALUE))
         );
         fileOptionsPanelLayout.setVerticalGroup(
             fileOptionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, fileOptionsPanelLayout.createSequentialGroup()
-                .addContainerGap(140, Short.MAX_VALUE)
+                .addContainerGap(155, Short.MAX_VALUE)
                 .add(fileOptionsPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(exportFilenameTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(exportFilenameBrowseButton)
@@ -318,6 +347,7 @@ private void annotationTextFieldActionPerformed(java.awt.event.ActionEvent evt) 
         userNameTextField.setText(GitModuleConfig.getDefault().getUserName());
         exportFilenameTextField.setText(GitModuleConfig.getDefault().getExportFilename());
         annotationTextField.setText(GitModuleConfig.getDefault().getAnnotationFormat());
+        signOffCommits.setSelected(GitModuleConfig.getDefault().getSignOffCommits());
         backupOnRevertModifications.setSelected(GitModuleConfig.getDefault().getBackupOnRevertModifications());
     }
 
@@ -334,6 +364,7 @@ private void annotationTextFieldActionPerformed(java.awt.event.ActionEvent evt) 
         GitModuleConfig.getDefault().setUserName(userNameTextField.getText());
         GitModuleConfig.getDefault().setExportFilename(exportFilenameTextField.getText());
         GitModuleConfig.getDefault().setAnnotationFormat(annotationTextField.getText());
+        GitModuleConfig.getDefault().setSignOffComits(signOffCommits.isSelected());
         GitModuleConfig.getDefault().setBackupOnRevertModifications(backupOnRevertModifications.isSelected());
         if (HtmlFormatter.isRevisionInAnnotationFormat(annotationTextField.getText()))
             GitUtils.warningDialog(GitPanel.class,
@@ -366,9 +397,12 @@ private void annotationTextFieldActionPerformed(java.awt.event.ActionEvent evt) 
     final javax.swing.JTextField exportFilenameTextField = new javax.swing.JTextField();
     private javax.swing.JPanel fileOptionsPanel;
     private javax.swing.JPanel generalOptionsPanel;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel logoLabel;
+    private javax.swing.JCheckBox signOffCommits;
     private javax.swing.JPanel statusLabels;
     private javax.swing.JPanel userInformation;
     private javax.swing.JLabel userNameLabel;

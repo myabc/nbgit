@@ -51,6 +51,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 import javax.swing.JButton;
@@ -173,6 +174,14 @@ public class CommitAction extends ContextAction {
         final CommitTable data = new CommitTable(panel.filesLabel, CommitTable.COMMIT_COLUMNS, new String[]{CommitTableModel.COLUMN_NAME_PATH});
 
         panel.setCommitTable(data);
+
+        Properties props = GitModuleConfig.getDefault().getProperties(repository);
+        String signOff = props.getProperty("nbgit.signoff");
+        if (signOff.equals("yes") || signOff.equals("true") || signOff.equals("1")) {
+            panel.messageTextArea.append("\nSigned-off-by: ");
+            panel.messageTextArea.append(props.getProperty("user.name") + " <");
+            panel.messageTextArea.append(props.getProperty("user.email") + ">");
+        }
 
         GitFileNode[] nodes;
         ArrayList<GitFileNode> nodesList = new ArrayList<GitFileNode>(fileList.size());

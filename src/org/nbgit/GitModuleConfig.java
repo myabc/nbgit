@@ -75,6 +75,7 @@ public class GitModuleConfig {
     public static final String SAVE_PASSWORD = "savePassword";                               // NOI18N
     public static final String KEY_BACKUP_ON_REVERTMODS = "backupOnRevert";                               // NOI18N
     public static final String KEY_SHOW_HITORY_MERGES = "showHistoryMerges";                               // NOI18N
+    public static final String KEY_SIGN_OFF_COMMITS = "signOffCommits"; // NOI18N
     private static final String RECENT_URL = "repository.recentURL";                                        // NOI18N
     private static final String SHOW_CLONE_COMPLETED = "cloneCompleted.showCloneCompleted";        // NOI18N
     private static final String SET_MAIN_PROJECT = "cloneCompleted.setMainProject";        // NOI18N
@@ -180,6 +181,16 @@ public class GitModuleConfig {
     public void setBackupOnRevertModifications(boolean bBackup)
     {
         getPreferences().putBoolean(KEY_BACKUP_ON_REVERTMODS, bBackup);
+    }
+    
+    public boolean getSignOffCommits()
+    {
+        return getPreferences().getBoolean(KEY_SIGN_OFF_COMMITS, false);
+    }
+
+    public void setSignOffComits(boolean signOff)
+    {
+        getPreferences().putBoolean(KEY_SIGN_OFF_COMMITS, signOff);
     }
 
     public boolean getShowHistoryMerges()
@@ -297,6 +308,13 @@ public class GitModuleConfig {
         if (name == null || name.length() == 0)
             name = getUserName();
         props.setProperty("user.name", name); // NOI18N
+
+        String signOff = null;
+        if (config != null)
+            signOff = config.getString("nbgit", null, "signoff");
+        if (signOff == null)
+            signOff = getSignOffCommits() ? "yes" : "no";
+        props.setProperty("nbgit.signoff", signOff); // NOI18N
 
         return props;
     }

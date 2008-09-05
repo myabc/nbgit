@@ -164,6 +164,7 @@ public class GitProperties implements ListSelectionListener {
                         if (value.length() == 0) {
                             continue;
                         }
+
                         if (name.equals("user.name")) {
                             config.setString("user", null, "name", value);
                             save = true;
@@ -171,6 +172,11 @@ public class GitProperties implements ListSelectionListener {
 
                         if (name.equals("user.email")) {
                             config.setString("user", null, "email", value);
+                            save = true;
+                        }
+
+                        if (name.equals("nbgit.signoff")) {
+                            config.setString("nbgit", null, "signoff", value);
                             save = true;
                         }
                     }
@@ -183,12 +189,14 @@ public class GitProperties implements ListSelectionListener {
                         Exceptions.printStackTrace(ex);
                     }
                 }
+
             };
             support.start(rp, root.getAbsolutePath(), org.openide.util.NbBundle.getMessage(GitProperties.class, "LBL_Properties_Progress")); // NOI18N
         } finally {
             support = null;
         }
     }
+
     private int lastIndex = -1;
 
     public void updateLastSelection()
@@ -213,4 +221,5 @@ public class GitProperties implements ListSelectionListener {
         panel.txtAreaValue.setText(gitPropertiesNodes[index].getValue());
         lastIndex = index;
     }
+
 }

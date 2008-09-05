@@ -1,37 +1,4 @@
-Netbeans Git Plugin
+Netbeans Git Module
 ===================
 
-A versioning plugin for working with Git repositories in Netbeans. It supports
-the basic tasks of status, diff, commit, and log viewing.
-
-It uses the JGit library for accessing repositories. To ease installation
-a JGit jar is distributed with the project source in release/modules/ext/.
-
-More information and documentation are available in the form of JavaHelp files
-which can be found under:
-
-  - javahelp/org/nbgit/docs/
-
-They will also be accessible via the Help menu when the plugin has been
-installed.
-
-To download the latest version, check the current status of development, or
-report an issue visit the project page at:
-
- - http://nbgit.googlecode.com/
-
-Installation
-------------
-
-This module is still under development and thus may randomly crash, eat
-all your memory, etc. So consider yourself warned! Before installing or
-upgrading make sure you read the release notes and list of known issues.
-They can be found in:
-
- - javahelp/org/nbgit/docs/news.html
- - javahelp/org/nbgit/docs/issues.html
-
-To install from source clone the repository and use File > Open Project to
-add it to your project list in Netbeans. Then right click on the new project
-and select "Install/Reload in Development IDE". You are advised to first test
-the plugin by "running" the project.
+Please see README.markdown.

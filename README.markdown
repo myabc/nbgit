@@ -1,30 +1,42 @@
-NetBeans Git Module README
-==========================
+NetBeans Git Module
+===================
 
-A NetBeans Module to provide first-class support for the Git version control
-system in the NetBeans IDE.
+A versioning plugin for working with Git repositories in Netbeans. Presently,
+it supports the basic tasks of status, diff, commit, and log viewing. Future
+versions will increase functionality to provide a full set of 'porcelain'
+commands.
 
-This module currently targets NetBeans 6.1 and above.
+It uses the JGit library for accessing repositories. To ease installation
+a JGit jar is distributed with the project source in release/modules/ext/.
 
-The code is ported directly from the Mercurial Module (included as part of the 
-NetBeans core distribution, as of NetBeans 6.1).
+More information and documentation are available in the form of JavaHelp files
+which can be found under:
 
-Pre-Requisites
---------------
+  - javahelp/org/nbgit/docs/
 
- * Install Git (version 1.5.6 or 1.6.0):
-  * on OS X / Linux / Solaris, install from Source:  http://git.or.cz/
-  * on Windows, install the binaries using MSys Git: http://code.google.com/p/msysgit/
+They will also be accessible via the Help menu when the plugin has been
+installed.
 
-Warning
--------
+To download the latest version, check the current status of development, or
+report an issue visit the project page at:
 
-**PLEASE READ BEFORE DOWNLOADING**
-As of 19 August 2008, this Module is under **heavy development** and is not yet
-suitable for end-users who want Git functionality within NetBeans. If you've
-got NetBeans and Java experience, please feel clone, download, and experiment.
-*If you're looking for a working NetBeans module, this project is not there yet!
-Please consider joining the mailing list to stay in touch!*
+ - <http://nbgit.googlecode.com/>
+
+Installation
+------------
+
+This module is still under development and thus may randomly crash, eat
+all your memory, etc. So consider yourself warned! Before installing or
+upgrading make sure you read the release notes and list of known issues.
+They can be found in:
+
+ - javahelp/org/nbgit/docs/news.html
+ - javahelp/org/nbgit/docs/issues.html
+
+To install from source clone the repository and use File > Open Project to
+add it to your project list in Netbeans. Then right click on the new project
+and select "Install/Reload in Development IDE". You are advised to first test
+the plugin by "running" the project.
 
 Getting the Source
 ------------------
@@ -40,24 +52,16 @@ The following additional mirrors are available:
     git://repo.or.cz/nbgit.git
     http://repo.or.cz/r/nbgit.git
 
-Build Instructions
-------------------
-
-Please see here: <http://github.com/myabc/nbgit/wikis/buildinstructions>
-
 Licensing and Copyright
 -----------------------
 
-This code is licensed under the **GNU Public License (GPL) v2**. Please see
+This code is dual-licensed under the **COMMON DEVELOPMENT AND DISTRIBUTION
+LICENSE (CDDL) Version 1.0** and the **GNU Public License (GPL) v2**. Please see
 LICENSE for licensing and copyright information.
 
 Support
 -------
 
-This Module is under heavy development. No official support is currently 
-provided.
-
- * **NetBeans Git mailing list**: <http://groups.google.com/group/nbgit>
- * **NetBeans Git homepage**: <http://trac.ikonoklastik.com/nbgit/>
- * Contact the developers directly:
-   - <alex@alexcolesportfolio.com> | myabc on #datamapper, #merb IRC
+ * **nbgit**: <http://nbgit.org/>
+ * **nbgit Mailing List**: <http://groups.google.com/group/nbgit>
+ 

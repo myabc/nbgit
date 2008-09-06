@@ -677,8 +677,7 @@ public class StatusCache {
             return folderFiles;
         }
 
-        boolean bInIgnoredDir = GitIgnore.isIgnored(dir);
-        if (bInIgnoredDir) {
+        if (GitIgnore.isIgnored(dir)) {
             for (File file : files) {
                 if (GitUtils.isPartOfGitMetadata(file)) {
                     continue;

@@ -52,7 +52,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -154,8 +153,7 @@ public class GitIgnore {
 
         Set<Pattern> patterns = getIgnorePatterns(topFile);
 
-        for (Iterator i = patterns.iterator(); i.hasNext();) {
-            Pattern pattern = (Pattern) i.next();
+        for (Pattern pattern : patterns) {
             if (pattern.matcher(path).find()) {
                 return true;
             }
@@ -317,10 +315,8 @@ public class GitIgnore {
             // ignore invalid entries
             return;
         }
-        for (Iterator i = shPatterns.iterator(); i.hasNext();) {
-            String shPattern = (String) i.next();
-            if ("!".equals(shPattern)) // NOI18N
-            {
+        for (String shPattern : shPatterns) {
+            if ("!".equals(shPattern)) { // NOI18N
                 patterns.clear();
             } else {
                 try {
@@ -373,7 +369,7 @@ public class GitIgnore {
         return name.replace(' ', '?').replace(File.separatorChar, '/');
     }
 
-    private static void writeIgnoreEntries(File directory, Set entries) throws IOException {
+    private static void writeIgnoreEntries(File directory, Set<String> entries) throws IOException {
         File gitIgnore = new File(directory, FILENAME_GITIGNORE);
         FileObject fo = FileUtil.toFileObject(gitIgnore);
 
@@ -392,8 +388,8 @@ public class GitIgnore {
         PrintWriter w = null;
         try {
             w = new PrintWriter(fo.getOutputStream(lock));
-            for (Iterator i = entries.iterator(); i.hasNext();) {
-                w.println(i.next());
+            for (String entry : entries) {
+                w.println(entry);
             }
         } finally {
             lock.releaseLock();
@@ -428,7 +424,7 @@ public class GitIgnore {
      * @param files an array of Files to be removed
      */
     public static void removeIgnored(File directory, File[] files) throws IOException {
-        Set entries = readIgnoreEntries(directory);
+        Set<String> entries = readIgnoreEntries(directory);
         for (File file : files) {
             String patterntoIgnore = computePatternToIgnore(directory, file);
             entries.remove(patterntoIgnore);

@@ -43,7 +43,6 @@ package org.nbgit.ui.update;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
-import javax.swing.Action;
 import org.nbgit.StatusInfo;
 import org.nbgit.StatusCache;
 import org.nbgit.Git;
@@ -59,18 +58,15 @@ import org.openide.NotifyDescriptor;
  */
 public class ResolveConflictsAction extends ContextAction {
 
-    public ResolveConflictsAction(String name, VCSContext context)
-    {
+    public ResolveConflictsAction(String name, VCSContext context) {
         super(name, context);
     }
 
-    public void performAction(ActionEvent e)
-    {
+    public void performAction(ActionEvent e) {
         resolve(context);
     }
 
-    public static void resolve(VCSContext ctx)
-    {
+    public static void resolve(VCSContext ctx) {
         StatusCache cache = Git.getInstance().getStatusCache();
         File[] files = cache.listFiles(ctx, StatusInfo.STATUS_VERSIONED_CONFLICT);
 
@@ -80,25 +76,23 @@ public class ResolveConflictsAction extends ContextAction {
     }
 
     @Override
-    public boolean isEnabled()
-    {
+    public boolean isEnabled() {
         StatusCache cache = Git.getInstance().getStatusCache();
         return cache.containsFileOfStatus(context, StatusInfo.STATUS_VERSIONED_CONFLICT);
     }
 
-    static void resolveConflicts(File[] files)
-    {
+    static void resolveConflicts(File[] files) {
         if (files.length == 0) {
             NotifyDescriptor nd = new NotifyDescriptor.Message(
-                org.openide.util.NbBundle.getMessage(
-                ResolveConflictsAction.class, "MSG_NoConflictsFound")); // NOI18N
+                    org.openide.util.NbBundle.getMessage(
+                    ResolveConflictsAction.class, "MSG_NoConflictsFound")); // NOI18N
             DialogDisplayer.getDefault().notify(nd);
-        } else
+        } else {
             for (int i = 0; i < files.length; i++) {
                 File file = files[i];
                 ResolveConflictsExecutor executor = new ResolveConflictsExecutor(file);
                 executor.exec();
             }
+        }
     }
-
 }

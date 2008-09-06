@@ -83,8 +83,7 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
      *
      * @param parent enclosing top component
      */
-    public VersioningPanel(GitVersioningTopComponent parent)
-    {
+    public VersioningPanel(GitVersioningTopComponent parent) {
         this.parentTopComponent = parent;
         this.git = Git.getInstance();
         refreshViewTask = rp.create(new RefreshViewTask());
@@ -103,33 +102,35 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
         jPanel2.setLayout(new ToolbarLayout());
     }
 
-    public void preferenceChange(PreferenceChangeEvent evt)
-    {
-        if (evt.getKey().startsWith(GitModuleConfig.PROP_COMMIT_EXCLUSIONS))
+    public void preferenceChange(PreferenceChangeEvent evt) {
+        if (evt.getKey().startsWith(GitModuleConfig.PROP_COMMIT_EXCLUSIONS)) {
             repaint();
+        }
     }
 
-    public void propertyChange(PropertyChangeEvent evt)
-    {
+    public void propertyChange(PropertyChangeEvent evt) {
         if (StatusCache.PROP_FILE_STATUS_CHANGED.equals(evt.getPropertyName())) {
             StatusCache.ChangedEvent changedEvent = (StatusCache.ChangedEvent) evt.getNewValue();
             Git.LOG.log(Level.FINE, "Status.propertyChange(): {0} file:  {1}", new Object[]{parentTopComponent.getContentTitle(), changedEvent.getFile()}); // NOI18N
-            if (affectsView(evt))
+            if (affectsView(evt)) {
                 reScheduleRefresh(1000);
+            }
             return;
         }
         if (Git.PROP_CHANGESET_CHANGED.equals(evt.getPropertyName())) {
             Object source = evt.getOldValue();
             File root = GitUtils.getRootFile(context);
             Git.LOG.log(Level.FINE, "Git.changesetChanged: source {0} repo {1} ", new Object[]{source, root}); // NOI18N
-            if (root != null && root.equals(source))
+            if (root != null && root.equals(source)) {
                 reScheduleRefresh(1000);
+            }
             return;
         }
         if (ExplorerManager.PROP_SELECTED_NODES.equals(evt.getPropertyName())) {
             TopComponent tc = (TopComponent) SwingUtilities.getAncestorOfClass(TopComponent.class, this);
-            if (tc != null)
+            if (tc != null) {
                 tc.setActivatedNodes((Node[]) evt.getNewValue());
+            }
             return;
         }
     }
@@ -139,20 +140,17 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
      *
      * @param ctx new context if the Versioning panel
      */
-    void setContext(VCSContext ctx)
-    {
+    void setContext(VCSContext ctx) {
         context = ctx;
         reScheduleRefresh(0);
     }
 
-    public ExplorerManager getExplorerManager()
-    {
+    public ExplorerManager getExplorerManager() {
         return explorerManager;
     }
 
     @Override
-    public void addNotify()
-    {
+    public void addNotify() {
         super.addNotify();
         GitModuleConfig.getDefault().getPreferences().addPreferenceChangeListener(this);
         git.getStatusCache().addPropertyChangeListener(this);
@@ -162,8 +160,7 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
     }
 
     @Override
-    public void removeNotify()
-    {
+    public void removeNotify() {
         GitModuleConfig.getDefault().getPreferences().removePreferenceChangeListener(this);
         git.getStatusCache().removePropertyChangeListener(this);
         git.removePropertyChangeListener(this);
@@ -171,18 +168,18 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
         super.removeNotify();
     }
 
-    private void setVersioningComponent(JComponent component)
-    {
+    private void setVersioningComponent(JComponent component) {
         Component[] children = getComponents();
         for (int i = 0; i < children.length; i++) {
             Component child = children[i];
-            if (child != jPanel2)
-                if (child == component)
+            if (child != jPanel2) {
+                if (child == component) {
                     return;
-                else {
+                } else {
                     remove(child);
                     break;
                 }
+            }
         }
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -202,13 +199,11 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
     /**
      * Must NOT be run from AWT.
      */
-    private void setupModels()
-    {
+    private void setupModels() {
         if (context == null) {
             SwingUtilities.invokeLater(new Runnable() {
 
-                public void run()
-                {
+                public void run() {
                     syncTable.setTableModel(new SyncFileNode[0]);
                     File root = GitUtils.getRootFile(GitUtils.getCurrentContext(null));
                 /* #126311: Optimize UI for Large repos
@@ -219,7 +214,6 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
                 setRepositoryBranchInfo(rev, changeset);
                 }*/
                 }
-
             });
             return;
         }
@@ -231,97 +225,99 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
             ph.start();
             final SyncFileNode[] nodes = getNodes(context, displayStatuses);  // takes long
 
-            if (nodes == null)
+            if (nodes == null) {
                 return;
-
+            }
             final String[] tableColumns;
             final String branchTitle;
             File[] files = context.getRootFiles().toArray(new File[context.getRootFiles().size()]);
-            if (files == null || files.length == 0)
+            if (files == null || files.length == 0) {
                 return;
 
             /* #126311: begin Optimize UI for Large repos */
+            }
             File root = git.getTopmostManagedParent(files[0]);
             String[] info = getRepositoryBranchInfo(root);
-            if (info != null)
+            if (info != null) {
                 branchTitle = NbBundle.getMessage(VersioningPanel.class, "CTL_VersioningView_BranchTitle", info[0]);
-            else
+            } else {
                 branchTitle = NbBundle.getMessage(VersioningPanel.class, "CTL_VersioningView_UnnamedBranchTitle");
             /* #126311: end */
+            }
             if (nodes.length > 0) {
                 boolean stickyCommon = false;
                 for (int i = 1; i < nodes.length; i++) {
-                    if (Thread.interrupted())
-                        // TODO set model that displays that fact to user
+                    if (Thread.interrupted()) // TODO set model that displays that fact to user
+                    {
                         return;
+                    }
                 }
                 tableColumns = new String[]{SyncFileNode.COLUMN_NAME_NAME, SyncFileNode.COLUMN_NAME_STATUS, SyncFileNode.COLUMN_NAME_PATH};
-            } else
+            } else {
                 tableColumns = null;
             /* #126311: Optimize UI for Large repos */
+            }
             setRepositoryBranchInfo(info != null ? info[1] : null);
             /* end */
             SwingUtilities.invokeLater(new Runnable() {
 
-                public void run()
-                {
+                public void run() {
                     /* #126311: Optimize UI for Large repos */
                     parentTopComponent.setBranchTitle(branchTitle);
                     /* end */
                     if (nodes.length > 0) {
                         syncTable.setColumns(tableColumns);
                         setVersioningComponent(syncTable.getComponent());
-                    } else
+                    } else {
                         setVersioningComponent(noContentComponent);
+                    }
                     syncTable.setTableModel(nodes);
                 // finally section, it's enqueued after this request
                 }
-
             });
         } finally {
             SwingUtilities.invokeLater(new Runnable() {
 
-                public void run()
-                {
+                public void run() {
                     ph.finish();
                 }
-
             });
         }
     }
 
-    private void setRepositoryBranchInfo(String rev)
-    {
+    private void setRepositoryBranchInfo(String rev) {
         String info;
-        if (rev != null)
+        if (rev != null) {
             info = NbBundle.getMessage(VersioningPanel.class,
-                "CTL_VersioningView_BranchInfo", // NOI18N
-                rev);
-        else
+                    "CTL_VersioningView_BranchInfo", // NOI18N
+                    rev);
+        } else {
             info = NbBundle.getMessage(VersioningPanel.class,
-                "CTL_VersioningView_BranchInfoNotCommitted");
+                    "CTL_VersioningView_BranchInfoNotCommitted");
+        }
         String title = NbBundle.getMessage(VersioningPanel.class, "CTL_VersioningView_StatusTitle", info); // NOI18N
-        if (!title.equals(statusLabel.getText()))
+        if (!title.equals(statusLabel.getText())) {
             statusLabel.setText(title);
+        }
     }
 
-    private String[] getRepositoryBranchInfo(File root)
-    {
+    private String[] getRepositoryBranchInfo(File root) {
         Repository repo = git.getRepository(root);
 
-        if (repo == null)
+        if (repo == null) {
             return null;
-
+        }
         try {
             String branch = repo.getBranch();
             String head = branch != null ? repo.getFullBranch() : Constants.HEAD;
             ObjectId id = repo.resolve(head);
-            if (branch == null)
+            if (branch == null) {
                 branch = Constants.HEAD;
+            }
             return new String[]{
-                    branch,
-                    id != null ? id.toString() : null
-                };
+                        branch,
+                        id != null ? id.toString() : null
+                    };
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -329,36 +325,33 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
         return null;
     }
 
-    private SyncFileNode[] getNodes(VCSContext context, int status)
-    {
+    private SyncFileNode[] getNodes(VCSContext context, int status) {
         File[] files = git.getStatusCache().listFiles(context, status);
         SyncFileNode[] nodes = new SyncFileNode[files.length];
         int i = 0;
 
-        for (File file: files) {
-            if (Thread.interrupted())
+        for (File file : files) {
+            if (Thread.interrupted()) {
                 return null;
+            }
             nodes[i++] = new SyncFileNode(new GitFileNode(file), this);
         }
 
         return nodes;
     }
 
-    public int getDisplayStatuses()
-    {
+    public int getDisplayStatuses() {
         return displayStatuses;
     }
 
-    public String getDisplayBranchInfo()
-    {
+    public String getDisplayBranchInfo() {
         return branchInfo;
     }
 
     /**
      * Performs the "cvs commit" command on all diplayed roots plus "cvs add" for files that are not yet added. // NOI18N
      */
-    private void onCommitAction()
-    {
+    private void onCommitAction() {
         //TODO: Status Commit Action
         LifecycleManager.getDefault().saveAll();
         CommitAction.commit(parentTopComponent.getContentTitle(), context);
@@ -367,8 +360,7 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
     /**
      * Performs the "cvs update" command on all diplayed roots. // NOI18N
      */
-    private void onUpdateAction()
-    {
+    private void onUpdateAction() {
         UpdateAction.update(context);
         parentTopComponent.contentRefreshed();
     }
@@ -378,11 +370,11 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
      * that by issuing the "git status -marduiC" command, updating the cache
      * and refreshing file nodes.
      */
-    private void onRefreshAction()
-    {
+    private void onRefreshAction() {
         LifecycleManager.getDefault().saveAll();
-        if (context == null || context.getRootFiles().size() == 0)
+        if (context == null || context.getRootFiles().size() == 0) {
             return;
+        }
         refreshStatuses();
     }
 
@@ -390,32 +382,28 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
      * Programmatically invokes the Refresh action.
      * Connects to repository and gets recent status.
      */
-    void performRefreshAction()
-    {
+    void performRefreshAction() {
         refreshStatuses();
     }
 
     /* Async Connects to repository and gets recent status. */
-    private void refreshStatuses()
-    {
+    private void refreshStatuses() {
         if (gitProgressSupport != null) {
             gitProgressSupport.cancel();
             gitProgressSupport = null;
         }
 
         final String repository = GitUtils.getRootPath(context);
-        if (repository == null)
+        if (repository == null) {
             return;
-
+        }
         RequestProcessor rp = Git.getInstance().getRequestProcessor(repository);
         gitProgressSupport = new GitProgressSupport() {
 
-            public void perform()
-            {
+            public void perform() {
                 StatusAction.executeStatus(context, this);
                 setupModels();
             }
-
         };
 
         parentTopComponent.contentRefreshed();
@@ -427,67 +415,61 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
      * Shows Diff panel for all files in the view. The initial type of diff depends on the sync mode: Local, Remote, All.
      * In Local mode, the diff shows CURRENT <-> BASE differences. In Remote mode, it shows BASE<->HEAD differences.
      */
-    private void onDiffAction()
-    {
+    private void onDiffAction() {
         String title = parentTopComponent.getContentTitle();
         if (displayStatuses == StatusInfo.STATUS_LOCAL_CHANGE) {
             LifecycleManager.getDefault().saveAll();
             DiffAction.diff(context, Setup.DIFFTYPE_LOCAL, title);
-        } else if (displayStatuses == StatusInfo.STATUS_REMOTE_CHANGE)
+        } else if (displayStatuses == StatusInfo.STATUS_REMOTE_CHANGE) {
             DiffAction.diff(context, Setup.DIFFTYPE_REMOTE, title);
-        else {
+        } else {
             LifecycleManager.getDefault().saveAll();
             DiffAction.diff(context, Setup.DIFFTYPE_ALL, title);
         }
     }
 
-    private void onDisplayedStatusChanged()
-    {
+    private void onDisplayedStatusChanged() {
         setDisplayStatuses(StatusInfo.STATUS_REMOTE_CHANGE | StatusInfo.STATUS_LOCAL_CHANGE);
         noContentComponent.setLabel(NbBundle.getMessage(VersioningPanel.class, "MSG_No_Changes_All")); // NOI18N
     }
 
-    private void setDisplayStatuses(int displayStatuses)
-    {
+    private void setDisplayStatuses(int displayStatuses) {
         this.displayStatuses = displayStatuses;
         reScheduleRefresh(0);
     }
 
-    private boolean affectsView(PropertyChangeEvent event)
-    {
+    private boolean affectsView(PropertyChangeEvent event) {
         StatusCache.ChangedEvent changedEvent = (StatusCache.ChangedEvent) event.getNewValue();
         File file = changedEvent.getFile();
         StatusInfo oldInfo = changedEvent.getOldInfo();
         StatusInfo newInfo = changedEvent.getNewInfo();
         if (oldInfo == null) {
-            if ((newInfo.getStatus() & displayStatuses) == 0)
+            if ((newInfo.getStatus() & displayStatuses) == 0) {
                 return false;
-        } else if ((oldInfo.getStatus() & displayStatuses) + (newInfo.getStatus() & displayStatuses) == 0)
+            }
+        } else if ((oldInfo.getStatus() & displayStatuses) + (newInfo.getStatus() & displayStatuses) == 0) {
             return false;
+        }
         return context == null ? false : context.contains(file);
     }
 
     /** Reloads data from cache */
-    private void reScheduleRefresh(int delayMillis)
-    {
+    private void reScheduleRefresh(int delayMillis) {
         refreshViewTask.schedule(delayMillis);
     }
     // HACK copy&paste HACK, replace by save/restore of column width/position
-    void deserialize()
-    {
-        if (syncTable != null)
+    void deserialize() {
+        if (syncTable != null) {
             SwingUtilities.invokeLater(new Runnable() {
 
-                public void run()
-                {
+                public void run() {
                     syncTable.setDefaultColumnSizes();
                 }
-
             });
+        }
     }
 
-    void focus()
-    {
+    void focus() {
         syncTable.focus();
     }
 
@@ -498,18 +480,15 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
      * <li>background cvs -N update
      * </ul>
      */
-    public void cancelRefresh()
-    {
+    public void cancelRefresh() {
         refreshViewTask.cancel();
     }
 
     private class RefreshViewTask implements Runnable {
 
-        public void run()
-        {
+        public void run() {
             setupModels();
         }
-
     }
 
     /**
@@ -533,12 +512,10 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
         private Dimension parentSize;
         private Set<JComponent> adjusted = new HashSet<JComponent>();
 
-        public void removeLayoutComponent(Component comp)
-        {
+        public void removeLayoutComponent(Component comp) {
         }
 
-        public void layoutContainer(Container parent)
-        {
+        public void layoutContainer(Container parent) {
             Dimension dim = VersioningPanel.this.getSize();
             Dimension max = parent.getSize();
 
@@ -548,32 +525,33 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
             int horizont = 0;
             for (int i = 0; i < components; i++) {
                 JComponent comp = (JComponent) parent.getComponent(i);
-                if (comp.isVisible() == false)
+                if (comp.isVisible() == false) {
                     continue;
+                }
                 comp.setLocation(horizont, 0);
                 Dimension pref = comp.getPreferredSize();
                 int width = pref.width;
-                if (comp instanceof JSeparator && ((dim.height - dim.width) <= 0))
+                if (comp instanceof JSeparator && ((dim.height - dim.width) <= 0)) {
                     width = Math.max(width, TOOLBAR_SEPARATOR_MIN_WIDTH);
-                if (comp instanceof JProgressBar && reminder > 0)
+                }
+                if (comp instanceof JProgressBar && reminder > 0) {
                     width += reminder;
 //                if (comp == getMiniStatus()) {
 //                    width = reminder;
 //                }
 
                 // in column layout use taller toolbar
+                }
                 int height = getToolbarHeight(dim) - 1;
                 comp.setSize(width, height);  // 1 verySoftBevel compensation
                 horizont += width;
             }
         }
 
-        public void addLayoutComponent(String name, Component comp)
-        {
+        public void addLayoutComponent(String name, Component comp) {
         }
 
-        public Dimension minimumLayoutSize(Container parent)
-        {
+        public Dimension minimumLayoutSize(Container parent) {
 
             // in column layout use taller toolbar
             Dimension dim = VersioningPanel.this.getSize();
@@ -583,24 +561,26 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
             int horizont = 0;
             for (int i = 0; i < components; i++) {
                 Component comp = parent.getComponent(i);
-                if (comp.isVisible() == false)
+                if (comp.isVisible() == false) {
                     continue;
-                if (comp instanceof AbstractButton)
+                }
+                if (comp instanceof AbstractButton) {
                     adjustToobarButton((AbstractButton) comp);
-                else
+                } else {
                     adjustToolbarComponentSize((JComponent) comp);
+                }
                 Dimension pref = comp.getPreferredSize();
                 int width = pref.width;
-                if (comp instanceof JSeparator && ((dim.height - dim.width) <= 0))
+                if (comp instanceof JSeparator && ((dim.height - dim.width) <= 0)) {
                     width = Math.max(width, TOOLBAR_SEPARATOR_MIN_WIDTH);
+                }
                 horizont += width;
             }
 
             return new Dimension(horizont, height);
         }
 
-        public Dimension preferredLayoutSize(Container parent)
-        {
+        public Dimension preferredLayoutSize(Container parent) {
             // Eliminates double height toolbar problem
             Dimension dim = VersioningPanel.this.getSize();
             int height = getToolbarHeight(dim);
@@ -612,8 +592,7 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
          * Computes vertical toolbar components height that can used for layout manager hinting.
          * @return size based on font size and expected border.
          */
-        private int getToolbarHeight(Dimension parent)
-        {
+        private int getToolbarHeight(Dimension parent) {
 
             if (parentSize == null || (parentSize.equals(parent) == false)) {
                 parentSize = parent;
@@ -633,23 +612,22 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
                     height = Math.max(height, fm.getHeight());
                 }
                 toolbarHeight = height + TOOLBAR_HEIGHT_ADJUSTMENT;
-                if ((parent.height - parent.width) > 0)
+                if ((parent.height - parent.width) > 0) {
                     toolbarHeight += TOOLBAR_HEIGHT_ADJUSTMENT;
+                }
             }
 
             return toolbarHeight;
         }
 
         /** Toolbar controls must be smaller and should be transparent*/
-        private void adjustToobarButton(final AbstractButton button)
-        {
+        private void adjustToobarButton(final AbstractButton button) {
 
-            if (adjusted.contains(button))
-                return;
-
-            // workaround for Ocean L&F clutter - toolbars use gradient.
+            if (adjusted.contains(button)) {
+                return;            // workaround for Ocean L&F clutter - toolbars use gradient.
             // To make the gradient visible under buttons the content area must not
             // be filled. To support rollover it must be temporarily filled
+            }
             if (button instanceof JToggleButton == false) {
                 button.setContentAreaFilled(false);
                 button.setMargin(new Insets(0, 3, 0, 3));
@@ -657,44 +635,40 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
                 button.addMouseListener(new MouseAdapter() {
 
                     @Override
-                    public void mouseEntered(MouseEvent e)
-                    {
+                    public void mouseEntered(MouseEvent e) {
                         button.setContentAreaFilled(true);
                         button.setBorderPainted(true);
                     }
 
                     @Override
-                    public void mouseExited(MouseEvent e)
-                    {
+                    public void mouseExited(MouseEvent e) {
                         button.setContentAreaFilled(false);
                         button.setBorderPainted(false);
                     }
-
                 });
             }
 
             adjustToolbarComponentSize(button);
         }
 
-        private void adjustToolbarComponentSize(JComponent button)
-        {
+        private void adjustToolbarComponentSize(JComponent button) {
 
-            if (adjusted.contains(button))
-                return;
-
-            // as we cannot get the button small enough using the margin and border...
+            if (adjusted.contains(button)) {
+                return;            // as we cannot get the button small enough using the margin and border...
+            }
             if (button.getBorder() instanceof CompoundBorder) { // from BasicLookAndFeel
                 Dimension pref = button.getPreferredSize();
 
                 // XXX #41827 workaround w2k, that adds eclipsis (...) instead of actual text
-                if ("Windows".equals(UIManager.getLookAndFeel().getID()))  // NOI18N
+                if ("Windows".equals(UIManager.getLookAndFeel().getID())) // NOI18N
+                {
                     pref.width += 9;
+                }
                 button.setPreferredSize(pref);
             }
 
             adjusted.add(button);
         }
-
     }
 
     /** This method is called from within the constructor to

@@ -73,7 +73,7 @@ public class DiffTopComponent extends TopComponent implements DiffSetupSource {
     }
 
     @Override
-    public int getPersistenceType(){
+    public int getPersistenceType() {
         return TopComponent.PERSISTENCE_NEVER;
     }
 
@@ -84,7 +84,7 @@ public class DiffTopComponent extends TopComponent implements DiffSetupSource {
     }
 
     @Override
-    protected String preferredID(){
+    protected String preferredID() {
         return "PERSISTENCE_NEVER-DiffTopComponent";    // NOI18N
     }
 
@@ -108,5 +108,4 @@ public class DiffTopComponent extends TopComponent implements DiffSetupSource {
         DiffSetupSource mainPanel = ((DiffSetupSource) getComponent(0));
         return mainPanel.getSetupDisplayName();
     }
-
 }

@@ -62,7 +62,7 @@ public class RevertModifications implements PropertyChangeListener {
 
     /** Creates a new instance of RevertModifications */
     public RevertModifications(File repository, File[] files) {
-        this (repository, files, null);
+        this(repository, files, null);
     }
 
     public RevertModifications(File repository, File[] files, String defaultRevision) {
@@ -85,7 +85,7 @@ public class RevertModifications implements PropertyChangeListener {
         } else {
             dialogDescriptor = new DialogDescriptor(panel, org.openide.util.NbBundle.getMessage(RevertModifications.class, "CTL_MultiRevertDialog")); // NOI18N
         }
-        dialogDescriptor.setOptions(new Object[] {okButton, cancelButton});
+        dialogDescriptor.setOptions(new Object[]{okButton, cancelButton});
 
         dialogDescriptor.setModal(true);
         dialogDescriptor.setHelpCtx(new HelpCtx(this.getClass()));
@@ -104,20 +104,23 @@ public class RevertModifications implements PropertyChangeListener {
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
-        if(okButton != null) {
-            boolean valid = ((Boolean)evt.getNewValue()).booleanValue();
+        if (okButton != null) {
+            boolean valid = ((Boolean) evt.getNewValue()).booleanValue();
             okButton.setEnabled(valid);
         }
     }
 
     public String getSelectionRevision() {
-        if (panel == null) return null;
+        if (panel == null) {
+            return null;
+        }
         return panel.getSelectedRevision();
     }
 
     public boolean isBackupRequested() {
-        if (panel == null) return false;
+        if (panel == null) {
+            return false;
+        }
         return panel.isBackupRequested();
     }
-
 }

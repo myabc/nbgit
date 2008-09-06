@@ -57,22 +57,20 @@ public class PropertiesTableModel extends AbstractTableModel {
 
     public static final String COLUMN_NAME_NAME = "name"; // NOI18N
     public static final String COLUMN_NAME_VALUE = "value"; // NOI18N
-
     private GitPropertiesNode[] nodes;
     private String[] columns;
-
     private static final Map<String, String[]> columnLabels = new HashMap<String, String[]>(2);
-
     {
         ResourceBundle loc = NbBundle.getBundle(PropertiesTableModel.class);
-        columnLabels.put(COLUMN_NAME_NAME, new String[] {loc.getString("CTL_PropertiesTable_Column_Name"), loc.getString("CTL_PropertiesTable_Column_Name")}); // NOI18N
-        columnLabels.put(COLUMN_NAME_VALUE, new String[] {loc.getString("CTL_PropertiesTable_Column_Value"), loc.getString("CTL_PropertiesTable_Column_Value")}); // NOI18N
+        columnLabels.put(COLUMN_NAME_NAME, new String[]{loc.getString("CTL_PropertiesTable_Column_Name"), loc.getString("CTL_PropertiesTable_Column_Name")}); // NOI18N
+        columnLabels.put(COLUMN_NAME_VALUE, new String[]{loc.getString("CTL_PropertiesTable_Column_Value"), loc.getString("CTL_PropertiesTable_Column_Value")}); // NOI18N
     }
 
     /** Creates a new instance of PropertiesTableModel */
     public PropertiesTableModel(String[] clms) {
-        if (Arrays.equals(columns, clms))
+        if (Arrays.equals(columns, clms)) {
             return;
+        }
         setColumns(clms);
         setNodes(new GitPropertiesNode[0]);
     }
@@ -117,6 +115,4 @@ public class PropertiesTableModel extends AbstractTableModel {
         }
         throw new IllegalArgumentException("The column index is out of index: " + columnIndex); // NOI18N
     }
-
-
 }

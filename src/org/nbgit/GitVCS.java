@@ -59,8 +59,7 @@ public class GitVCS extends VersioningSystem implements PropertyChangeListener, 
     final private GitInterceptor gitInterceptor = new GitInterceptor();
     final private GitAnnotator gitAnnotator = new GitAnnotator();
 
-    public GitVCS()
-    {
+    public GitVCS() {
         putProperty(PROP_DISPLAY_NAME, NbBundle.getMessage(GitVCS.class, "CTL_Git_DisplayName")); // NOI18N
         putProperty(PROP_MENU_LABEL, NbBundle.getMessage(GitVCS.class, "CTL_Git_MainMenu")); // NOI18N
 
@@ -68,16 +67,14 @@ public class GitVCS extends VersioningSystem implements PropertyChangeListener, 
         Git.getInstance().getStatusCache().addPropertyChangeListener(this);
     }
 
-    public boolean areCollocated(File a, File b)
-    {
+    public boolean areCollocated(File a, File b) {
         File fra = getTopmostManagedAncestor(a);
         File frb = getTopmostManagedAncestor(b);
 
         return fra != null && fra.equals(frb);
     }
 
-    public File findRoot(File file)
-    {
+    public File findRoot(File file) {
         return getTopmostManagedAncestor(file);
     }
 
@@ -91,8 +88,7 @@ public class GitVCS extends VersioningSystem implements PropertyChangeListener, 
      *  supplied file is NOT managed by this versioning system
      */
     @Override
-    public File getTopmostManagedAncestor(File file)
-    {
+    public File getTopmostManagedAncestor(File file) {
         return Git.getInstance().getTopmostManagedParent(file);
     }
 
@@ -100,8 +96,7 @@ public class GitVCS extends VersioningSystem implements PropertyChangeListener, 
      * Coloring label, modifying icons, providing action on file
      */
     @Override
-    public VCSAnnotator getVCSAnnotator()
-    {
+    public VCSAnnotator getVCSAnnotator() {
         return gitAnnotator;
     }
 
@@ -109,27 +104,24 @@ public class GitVCS extends VersioningSystem implements PropertyChangeListener, 
      * Handle file system events such as delete, create, remove etc.
      */
     @Override
-    public VCSInterceptor getVCSInterceptor()
-    {
+    public VCSInterceptor getVCSInterceptor() {
         return gitInterceptor;
     }
 
     @Override
-    public void getOriginalFile(File workingCopy, File originalFile)
-    {
+    public void getOriginalFile(File workingCopy, File originalFile) {
         Git.getInstance().getOriginalFile(workingCopy, originalFile);
     }
 
     @SuppressWarnings("unchecked") // Property Change event.getNewValue returning Object
-    public void propertyChange(PropertyChangeEvent event)
-    {
+    public void propertyChange(PropertyChangeEvent event) {
         if (event.getPropertyName().equals(StatusCache.PROP_FILE_STATUS_CHANGED)) {
             StatusCache.ChangedEvent changedEvent = (StatusCache.ChangedEvent) event.getNewValue();
             fireStatusChanged(changedEvent.getFile());
-        } else if (event.getPropertyName().equals(Git.PROP_ANNOTATIONS_CHANGED))
+        } else if (event.getPropertyName().equals(Git.PROP_ANNOTATIONS_CHANGED)) {
             fireAnnotationsChanged((Set<File>) event.getNewValue());
-        else if (event.getPropertyName().equals(Git.PROP_VERSIONED_FILES_CHANGED))
+        } else if (event.getPropertyName().equals(Git.PROP_VERSIONED_FILES_CHANGED)) {
             fireVersionedFilesChanged();
+        }
     }
-
 }

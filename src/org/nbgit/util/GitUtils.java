@@ -95,8 +95,7 @@ public class GitUtils {
      *
      * @return String modified string with **** instead of passwords
      */
-    public static String replaceHttpPassword(String s)
-    {
+    public static String replaceHttpPassword(String s) {
         Matcher m = httpPasswordPattern.matcher(s);
         return m.replaceAll(httpPasswordReplacementStr);
     }
@@ -106,11 +105,10 @@ public class GitUtils {
      *
      * @return List<String> containing modified strings with **** instead of passwords
      */
-    public static List<String> replaceHttpPassword(List<String> list)
-    {
-        if (list == null)
+    public static List<String> replaceHttpPassword(List<String> list) {
+        if (list == null) {
             return null;
-
+        }
         List<String> out = new ArrayList<String>(list.size());
         for (String s : list) {
             out.add(replaceHttpPassword(s));
@@ -124,24 +122,26 @@ public class GitUtils {
      * @param name to check
      * @return boolean true - on PATH, false - not on PATH
      */
-    public static boolean isInUserPath(String name)
-    {
+    public static boolean isInUserPath(String name) {
         String pathEnv = System.getenv().get("PATH");// NOI18N
         // Work around issues on Windows fetching PATH
-        if (pathEnv == null)
+        if (pathEnv == null) {
             pathEnv = System.getenv().get("Path");// NOI18N
-        if (pathEnv == null)
+        }
+        if (pathEnv == null) {
             pathEnv = System.getenv().get("path");// NOI18N
+        }
         String pathSeparator = System.getProperty("path.separator");// NOI18N
-        if (pathEnv == null || pathSeparator == null)
+        if (pathEnv == null || pathSeparator == null) {
             return false;
-
+        }
         String[] paths = pathEnv.split(pathSeparator);
         for (String path : paths) {
             File f = new File(path, name);
             // On Windows isFile will fail on gitk.cmd use !isDirectory
-            if (f.exists() && !f.isDirectory())
+            if (f.exists() && !f.isDirectory()) {
                 return true;
+            }
         }
         return false;
     }
@@ -154,14 +154,14 @@ public class GitUtils {
      * @param query ask user
      * @return boolean true - answered Yes, false - answered No
      */
-    public static boolean confirmDialog(Class bundleLocation, String title, String query)
-    {
+    public static boolean confirmDialog(Class bundleLocation, String title, String query) {
         int response = JOptionPane.showOptionDialog(null, NbBundle.getMessage(bundleLocation, query), NbBundle.getMessage(bundleLocation, title), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
-        if (response == JOptionPane.YES_OPTION)
+        if (response == JOptionPane.YES_OPTION) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     /**
@@ -171,12 +171,11 @@ public class GitUtils {
      * @param title of dialog to display
      * @param warning to display to the user
      */
-    public static void warningDialog(Class bundleLocation, String title, String warning)
-    {
+    public static void warningDialog(Class bundleLocation, String title, String warning) {
         JOptionPane.showMessageDialog(null,
-            NbBundle.getMessage(bundleLocation, warning),
-            NbBundle.getMessage(bundleLocation, title),
-            JOptionPane.WARNING_MESSAGE);
+                NbBundle.getMessage(bundleLocation, warning),
+                NbBundle.getMessage(bundleLocation, title),
+                JOptionPane.WARNING_MESSAGE);
     }
 
     /**
@@ -185,10 +184,10 @@ public class GitUtils {
      * @param String path to convert
      * @return String converted path
      */
-    public static String stripDoubleSlash(String path)
-    {
-        if (Utilities.isWindows())
+    public static String stripDoubleSlash(String path) {
+        if (Utilities.isWindows()) {
             return path.replace("\\\\", "\\");
+        }
         return path;
     }
 
@@ -198,16 +197,17 @@ public class GitUtils {
      * @param file to check
      * @return boolean true - ignore, false - not ignored
      */
-    public static boolean isLocallyAdded(File file)
-    {
-        if (file == null)
+    public static boolean isLocallyAdded(File file) {
+        if (file == null) {
             return false;
+        }
         Git git = Git.getInstance();
 
-        if ((git.getStatusCache().getStatus(file).getStatus() & StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY) != 0)
+        if ((git.getStatusCache().getStatus(file).getStatus() & StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY) != 0) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     /**
@@ -217,19 +217,20 @@ public class GitUtils {
      * @param Collection of <File> files to be processed against the interestingFiles
      * @return Map of Dirs containing Map of files and status for all files in each directory
      */
-    public static Map<File, Map<File, StatusInfo>> getInterestingDirs(Map<File, StatusInfo> interestingFiles, Collection<File> files)
-    {
+    public static Map<File, Map<File, StatusInfo>> getInterestingDirs(Map<File, StatusInfo> interestingFiles, Collection<File> files) {
         Map<File, Map<File, StatusInfo>> interestingDirs = new HashMap<File, Map<File, StatusInfo>>();
 
         for (File file : files) {
             if (file.isDirectory()) {
-                if (interestingDirs.get(file) == null)
+                if (interestingDirs.get(file) == null) {
                     interestingDirs.put(file, new HashMap<File, StatusInfo>());
+                }
             } else {
                 File par = file.getParentFile();
                 if (par != null) {
-                    if (interestingDirs.get(par) == null)
+                    if (interestingDirs.get(par) == null) {
                         interestingDirs.put(par, new HashMap<File, StatusInfo>());
+                    }
                     StatusInfo fi = interestingFiles.get(file);
                     interestingDirs.get(par).put(file, fi);
                 }
@@ -250,17 +251,18 @@ public class GitUtils {
      * @param includingFolderStatus if any activated folder does not have this CVS status, an empty array is returned
      * @return File [] array of activated files, or an empty array if any of examined files/folders does not have given status
      */
-    public static VCSContext getCurrentContext(Node[] nodes, int includingFileStatus, int includingFolderStatus)
-    {
+    public static VCSContext getCurrentContext(Node[] nodes, int includingFileStatus, int includingFolderStatus) {
         VCSContext context = getCurrentContext(nodes);
         StatusCache cache = Git.getInstance().getStatusCache();
         for (File file : context.getRootFiles()) {
             StatusInfo fi = cache.getStatus(file);
             if (file.isDirectory()) {
-                if ((fi.getStatus() & includingFolderStatus) == 0)
+                if ((fi.getStatus() & includingFolderStatus) == 0) {
                     return VCSContext.EMPTY;
-            } else if ((fi.getStatus() & includingFileStatus) == 0)
+                }
+            } else if ((fi.getStatus() & includingFileStatus) == 0) {
                 return VCSContext.EMPTY;
+            }
         }
         return context;
     }
@@ -278,10 +280,10 @@ public class GitUtils {
      * @param nodes or null (then taken from windowsystem, it may be wrong on ed
     itor tabs #66700).
      */
-    public static VCSContext getCurrentContext(Node[] nodes)
-    {
-        if (nodes == null)
+    public static VCSContext getCurrentContext(Node[] nodes) {
+        if (nodes == null) {
             nodes = TopComponent.getRegistry().getActivatedNodes();
+        }
         return VCSContext.forNodes(nodes);
     }
 
@@ -291,8 +293,7 @@ public class GitUtils {
      * @param VCSContext
      * @return String of repository root path
      */
-    public static String getRootPath(VCSContext context)
-    {
+    public static String getRootPath(VCSContext context) {
         File root = getRootFile(context);
         return (root == null) ? null : root.getAbsolutePath();
     }
@@ -303,15 +304,15 @@ public class GitUtils {
      * @param VCSContext
      * @return String of repository root path
      */
-    public static File getRootFile(VCSContext context)
-    {
-        if (context == null)
+    public static File getRootFile(VCSContext context) {
+        if (context == null) {
             return null;
+        }
         Git git = Git.getInstance();
         File[] files = context.getRootFiles().toArray(new File[context.getRootFiles().size()]);
-        if (files == null || files.length == 0)
+        if (files == null || files.length == 0) {
             return null;
-
+        }
         return git.getTopmostManagedParent(files[0]);
     }
 
@@ -321,45 +322,44 @@ public class GitUtils {
      * @param VCSContext
      * @return File object of Project Directory
      */
-    public static File getProjectFile(VCSContext context)
-    {
+    public static File getProjectFile(VCSContext context) {
         return getProjectFile(getProject(context));
     }
 
-    public static Project getProject(VCSContext context)
-    {
-        if (context == null)
+    public static Project getProject(VCSContext context) {
+        if (context == null) {
             return null;
+        }
         File[] files = context.getRootFiles().toArray(new File[context.getRootFiles().size()]);
 
         for (File file : files) {
             /* We may be committing a LocallyDeleted file */
-            if (!file.exists())
+            if (!file.exists()) {
                 file = file.getParentFile();
-
+            }
             Project p = FileOwnerQuery.getOwner(FileUtil.toFileObject(file));
-            if (p != null)
+            if (p != null) {
                 return p;
-            else
+            } else {
                 Git.LOG.log(Level.FINE, "GitUtils.getProjectFile(): No project for {0}", // NOI18N
-                    file);
+                        file);
+            }
         }
         return null;
     }
 
-    public static File getProjectFile(Project project)
-    {
-        if (project == null)
+    public static File getProjectFile(Project project) {
+        if (project == null) {
             return null;
-
+        }
         FileObject fo = project.getProjectDirectory();
         return FileUtil.toFile(fo);
     }
 
-    public static File[] getProjectRootFiles(Project project)
-    {
-        if (project == null)
+    public static File[] getProjectRootFiles(Project project) {
+        if (project == null) {
             return null;
+        }
         Set<File> set = new HashSet<File>();
 
         Sources sources = ProjectUtils.getSources(project);
@@ -379,8 +379,7 @@ public class GitUtils {
      * @param file file to check
      * @return true if the file or folder is a part of Git metadata, false otherwise
      */
-    public static boolean isPartOfGitMetadata(File file)
-    {
+    public static boolean isPartOfGitMetadata(File file) {
         return metadataPattern.matcher(file.getAbsolutePath()).matches();
     }
 
@@ -390,18 +389,17 @@ public class GitUtils {
      * @param start file or dir to begin refresh from
      * @return void
      */
-    public static void forceStatusRefresh(File file)
-    {
-        if (Git.getInstance().isAdministrative(file))
+    public static void forceStatusRefresh(File file) {
+        if (Git.getInstance().isAdministrative(file)) {
             return;
-
+        }
         StatusCache cache = Git.getInstance().getStatusCache();
 
         cache.refreshCached(file);
         File repository = Git.getInstance().getTopmostManagedParent(file);
-        if (repository == null)
+        if (repository == null) {
             return;
-
+        }
         if (file.isDirectory()) {
             Map<File, StatusInfo> interestingFiles;
             interestingFiles = GitCommand.getInterestingStatus(repository, file);
@@ -421,8 +419,7 @@ public class GitUtils {
      * @param VCSContext context to be updated.
      * @return void
      */
-    public static void forceStatusRefresh(VCSContext context)
-    {
+    public static void forceStatusRefresh(VCSContext context) {
         for (File root : context.getRootFiles()) {
             forceStatusRefresh(root);
         }
@@ -434,11 +431,11 @@ public class GitUtils {
      * @param VCSContext ctx whose project is be updated.
      * @return void
      */
-    public static void forceStatusRefreshProject(VCSContext context)
-    {
+    public static void forceStatusRefreshProject(VCSContext context) {
         Project project = getProject(context);
-        if (project == null)
+        if (project == null) {
             return;
+        }
         File[] files = getProjectRootFiles(project);
         for (int j = 0; j < files.length; j++) {
             forceStatusRefresh(files[j]);
@@ -452,11 +449,11 @@ public class GitUtils {
      * @param file file to be a child of the first parameter
      * @return true if the second parameter represents the same file as the first parameter OR is its descendant (child)
      */
-    public static boolean isParentOrEqual(File parent, File file)
-    {
+    public static boolean isParentOrEqual(File parent, File file) {
         for (; file != null; file = file.getParentFile()) {
-            if (file.equals(parent))
+            if (file.equals(parent)) {
                 return true;
+            }
         }
         return false;
     }
@@ -468,24 +465,25 @@ public class GitUtils {
      * @param File to get relative path from the repository root
      * @return String of relative path of the file from teh repository root
      */
-    public static String getRelativePath(File file)
-    {
-        if (file == null)
+    public static String getRelativePath(File file) {
+        if (file == null) {
             return NbBundle.getMessage(SyncFileNode.class, "LBL_Location_NotInRepository");
+        }
         String shortPath = file.getAbsolutePath();
-        if (shortPath == null)
+        if (shortPath == null) {
             return NbBundle.getMessage(SyncFileNode.class, "LBL_Location_NotInRepository");
-
+        }
         Git git = Git.getInstance();
         File rootManagedFolder = git.getTopmostManagedParent(file);
-        if (rootManagedFolder == null)
+        if (rootManagedFolder == null) {
             return NbBundle.getMessage(SyncFileNode.class, "LBL_Location_NotInRepository");
-
+        }
         String root = rootManagedFolder.getAbsolutePath();
-        if (shortPath.startsWith(root))
+        if (shortPath.startsWith(root)) {
             return shortPath.substring(root.length() + 1);
-        else
+        } else {
             return NbBundle.getMessage(SyncFileNode.class, "LBL_Location_NotInRepository");
+        }
     }
 
     /**
@@ -501,22 +499,23 @@ public class GitUtils {
      *
      * @return files with given status and direct descendants with given status.
      */
-    public static File[] flatten(File[] files, int status)
-    {
+    public static File[] flatten(File[] files, int status) {
         LinkedList<File> ret = new LinkedList<File>();
 
         StatusCache cache = Git.getInstance().getStatusCache();
         for (int i = 0; i < files.length; i++) {
             File dir = files[i];
             StatusInfo info = cache.getStatus(dir);
-            if ((status & info.getStatus()) != 0)
+            if ((status & info.getStatus()) != 0) {
                 ret.add(dir);
+            }
             File[] entries = cache.listFiles(dir);  // comparing to dir.listFiles() lists already deleted too
             for (int e = 0; e < entries.length; e++) {
                 File entry = entries[e];
                 info = cache.getStatus(entry);
-                if ((status & info.getStatus()) != 0)
+                if ((status & info.getStatus()) != 0) {
                     ret.add(entry);
+                }
             }
         }
 
@@ -531,22 +530,23 @@ public class GitUtils {
      * @param includeStatus bit mask of file statuses to include in result
      * @return File [] array of Files having specified status
      */
-    public static File[] getModifiedFiles(VCSContext context, int includeStatus)
-    {
+    public static File[] getModifiedFiles(VCSContext context, int includeStatus) {
         File[] all = Git.getInstance().getStatusCache().listFiles(context, includeStatus);
         List<File> files = new ArrayList<File>();
         for (int i = 0; i < all.length; i++) {
             File file = all[i];
             String path = file.getAbsolutePath();
-            if (GitModuleConfig.getDefault().isExcludedFromCommit(path) == false)
+            if (GitModuleConfig.getDefault().isExcludedFromCommit(path) == false) {
                 files.add(file);
+            }
         }
 
         // ensure that command roots (files that were explicitly selected by user) are included in Diff
         StatusCache cache = Git.getInstance().getStatusCache();
         for (File file : context.getRootFiles()) {
-            if (file.isFile() && (cache.getStatus(file).getStatus() & includeStatus) != 0 && !files.contains(file))
+            if (file.isFile() && (cache.getStatus(file).getStatus() & includeStatus) != 0 && !files.contains(file)) {
                 files.add(file);
+            }
         }
         return files.toArray(new File[files.size()]);
     }
@@ -557,11 +557,11 @@ public class GitUtils {
      * @param file file to check
      * @return true if the file cannot be edited in NetBeans text editor, false otherwise
      */
-    public static boolean isFileContentBinary(File file)
-    {
+    public static boolean isFileContentBinary(File file) {
         FileObject fo = FileUtil.toFileObject(file);
-        if (fo == null)
+        if (fo == null) {
             return false;
+        }
         try {
             DataObject dao = DataObject.find(fo);
             return dao.getCookie(EditorCookie.class) == null;
@@ -576,12 +576,12 @@ public class GitUtils {
      * Note: Non-ASCII based encoding encoded text is binary,
      * newlines cannot be reliably detected.
      */
-    public static boolean isBinary(byte[] buffer)
-    {
+    public static boolean isBinary(byte[] buffer) {
         for (int i = 0; i < buffer.length; i++) {
             int ch = buffer[i];
-            if (ch < 32 && ch != '\t' && ch != '\n' && ch != '\r')
+            if (ch < 32 && ch != '\t' && ch != '\n' && ch != '\r') {
                 return true;
+            }
         }
         return false;
     }
@@ -591,23 +591,23 @@ public class GitUtils {
      *
      * @return null if the file does not exist in given revision
      */
-    public static File getFileRevision(File base, String revision) throws IOException
-    {
-        if (revision.equals("-1"))
+    public static File getFileRevision(File base, String revision) throws IOException {
+        if (revision.equals("-1")) {
             return null;
-
-        if (GitRepository.REVISION_CURRENT.equals(revision))
+        }
+        if (GitRepository.REVISION_CURRENT.equals(revision)) {
             return base;
-
-        if (GitRepository.REVISION_BASE.equals(revision))
+        }
+        if (GitRepository.REVISION_BASE.equals(revision)) {
             revision = Constants.HEAD;
-
+        }
         File tempFile = File.createTempFile("tmp", "-" + base.getName()); //NOI18N
         File repository = Git.getInstance().getTopmostManagedParent(base);
 
         GitCommand.doCat(repository, base, tempFile, revision);
-        if (tempFile.length() == 0)
+        if (tempFile.length() == 0) {
             return null;
+        }
         return tempFile;
     }
 
@@ -616,11 +616,9 @@ public class GitUtils {
      */
     public static class ByImportanceComparator<T> implements Comparator<StatusInfo> {
 
-        public int compare(StatusInfo i1, StatusInfo i2)
-        {
+        public int compare(StatusInfo i1, StatusInfo i2) {
             return getComparableStatus(i1.getStatus()) - getComparableStatus(i2.getStatus());
         }
-
     }
 
     /**
@@ -629,49 +627,47 @@ public class GitUtils {
      *
      * @return status constant suitable for 'by importance' comparators
      */
-    public static int getComparableStatus(int status)
-    {
-        if (0 != (status & StatusInfo.STATUS_VERSIONED_CONFLICT))
+    public static int getComparableStatus(int status) {
+        if (0 != (status & StatusInfo.STATUS_VERSIONED_CONFLICT)) {
             return 0;
-        else if (0 != (status & StatusInfo.STATUS_VERSIONED_MERGE))
+        } else if (0 != (status & StatusInfo.STATUS_VERSIONED_MERGE)) {
             return 1;
-        else if (0 != (status & StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY))
+        } else if (0 != (status & StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY)) {
             return 10;
-        else if (0 != (status & StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY))
+        } else if (0 != (status & StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY)) {
             return 11;
-        else if (0 != (status & StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY))
+        } else if (0 != (status & StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY)) {
             return 12;
-        else if (0 != (status & StatusInfo.STATUS_VERSIONED_COPIEDLOCALLY))
+        } else if (0 != (status & StatusInfo.STATUS_VERSIONED_COPIEDLOCALLY)) {
             return 13;
-        else if (0 != (status & StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY))
+        } else if (0 != (status & StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY)) {
             return 14;
-        else if (0 != (status & StatusInfo.STATUS_VERSIONED_MODIFIEDLOCALLY))
+        } else if (0 != (status & StatusInfo.STATUS_VERSIONED_MODIFIEDLOCALLY)) {
             return 15;
-        else if (0 != (status & StatusInfo.STATUS_VERSIONED_REMOVEDINREPOSITORY))
+        } else if (0 != (status & StatusInfo.STATUS_VERSIONED_REMOVEDINREPOSITORY)) {
             return 30;
-        else if (0 != (status & StatusInfo.STATUS_VERSIONED_NEWINREPOSITORY))
+        } else if (0 != (status & StatusInfo.STATUS_VERSIONED_NEWINREPOSITORY)) {
             return 31;
-        else if (0 != (status & StatusInfo.STATUS_VERSIONED_MODIFIEDINREPOSITORY))
+        } else if (0 != (status & StatusInfo.STATUS_VERSIONED_MODIFIEDINREPOSITORY)) {
             return 32;
-        else if (0 != (status & StatusInfo.STATUS_VERSIONED_UPTODATE))
+        } else if (0 != (status & StatusInfo.STATUS_VERSIONED_UPTODATE)) {
             return 50;
-        else if (0 != (status & StatusInfo.STATUS_NOTVERSIONED_EXCLUDED))
+        } else if (0 != (status & StatusInfo.STATUS_NOTVERSIONED_EXCLUDED)) {
             return 100;
-        else if (0 != (status & StatusInfo.STATUS_NOTVERSIONED_NOTMANAGED))
+        } else if (0 != (status & StatusInfo.STATUS_NOTVERSIONED_NOTMANAGED)) {
             return 101;
-        else if (status == StatusInfo.STATUS_UNKNOWN)
+        } else if (status == StatusInfo.STATUS_UNKNOWN) {
             return 102;
-        else
+        } else {
             throw new IllegalArgumentException("Uncomparable status: " + status);
+        }
     }
 
-    protected static int getFileEnabledStatus()
-    {
+    protected static int getFileEnabledStatus() {
         return ~0;
     }
 
-    protected static int getDirectoryEnabledStatus()
-    {
+    protected static int getDirectoryEnabledStatus() {
         return StatusInfo.STATUS_MANAGED & ~StatusInfo.STATUS_NOTVERSIONED_EXCLUDED;
     }
 
@@ -681,20 +677,18 @@ public class GitUtils {
      * @param host - hostname with a userneame
      * @return host - hostname without the username
      */
-    public static String ripUserFromHost(String host)
-    {
+    public static String ripUserFromHost(String host) {
         int idx = host.indexOf('@');
-        if (idx < 0)
+        if (idx < 0) {
             return host;
-        else
+        } else {
             return host.substring(idx + 1);
+        }
     }
 
     /**
      * This utility class should not be instantiated anywhere.
      */
-    private GitUtils()
-    {
+    private GitUtils() {
     }
-
 }

@@ -71,8 +71,7 @@ public class RevertModificationsPanel extends javax.swing.JPanel {
     private List<String[]> revisionMap;
 
     /** Creates new form ReverModificationsPanel */
-    public RevertModificationsPanel(File repo, File[] files)
-    {
+    public RevertModificationsPanel(File repo, File[] files) {
         repository = repo;
         revertFiles = files;
         refreshViewTask = rp.create(new RefreshViewTask());
@@ -80,30 +79,30 @@ public class RevertModificationsPanel extends javax.swing.JPanel {
         refreshViewTask.schedule(0);
     }
 
-    public File[] getRevertFiles()
-    {
+    public File[] getRevertFiles() {
         return revertFiles;
     }
 
-    public boolean isBackupRequested()
-    {
+    public boolean isBackupRequested() {
         return doBackupChxBox.isSelected();
     }
 
-    public String getSelectedRevision()
-    {
+    public String getSelectedRevision() {
         String revStr = (String) revisionsComboBox.getSelectedItem();
-        if (revStr != null)
+        if (revStr != null) {
             if (revStr.equals(NbBundle.getMessage(RevertModificationsPanel.class, "MSG_Revision_Default")) || // NOI18N
-                revStr.equals(NbBundle.getMessage(RevertModificationsPanel.class, "MSG_Fetching_Revisions"))) // NOI18N
+                    revStr.equals(NbBundle.getMessage(RevertModificationsPanel.class, "MSG_Fetching_Revisions"))) // NOI18N
+            {
                 revStr = null;
-            else if (revisionMap != null)
+            } else if (revisionMap != null) {
                 for (String[] entry : revisionMap) {
                     if (entry[0].equals(revStr)) {
                         revStr = entry[1];
                         break;
                     }
                 }
+            }
+        }
         return revStr;
     }
 

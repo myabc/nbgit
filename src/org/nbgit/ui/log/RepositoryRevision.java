@@ -72,19 +72,16 @@ public class RepositoryRevision extends RevCommit {
      */
     private final List<Event> events = new ArrayList<Event>(1);
 
-    private RepositoryRevision(AnyObjectId id, Repository repo)
-    {
+    private RepositoryRevision(AnyObjectId id, Repository repo) {
         super(id);
         this.repo = repo;
     }
 
-    public String getRepositoryRootUrl()
-    {
+    public String getRepositoryRootUrl() {
         return repo.getDirectory().getAbsolutePath();
     }
 
-    Iterable<Event> createEvents(Walk walk)
-    {
+    Iterable<Event> createEvents(Walk walk) {
         try {
             initEvents(walk.getTreeWalk());
         } catch (MissingObjectException ex) {
@@ -100,8 +97,7 @@ public class RepositoryRevision extends RevCommit {
         return events;
     }
 
-    private ObjectId[] getTrees()
-    {
+    private ObjectId[] getTrees() {
         final ObjectId[] r = new ObjectId[getParentCount() + 1];
         for (int i = 0; i < r.length - 1; i++) {
             r[i] = getParent(i).getTree().getId();
@@ -110,97 +106,91 @@ public class RepositoryRevision extends RevCommit {
         return r;
     }
 
-    private char getStatus(TreeWalk walk, int mode0, int mode1)
-    {
-        if (mode0 == 0 && mode1 != 0)
+    private char getStatus(TreeWalk walk, int mode0, int mode1) {
+        if (mode0 == 0 && mode1 != 0) {
             return 'A';
-        else if (mode0 != 0 && mode1 == 0)
+        } else if (mode0 != 0 && mode1 == 0) {
             return 'D';
-        else if (!walk.idEqual(0, 1))
+        } else if (!walk.idEqual(0, 1)) {
             return 'M';
-        else if (mode0 != mode1)
+        } else if (mode0 != mode1) {
             return 'm';
-
+        }
         return 0;
     }
 
     private void initEvents(final TreeWalk walk)
-        throws MissingObjectException, IncorrectObjectTypeException,
-        CorruptObjectException, IOException
-    {
+            throws MissingObjectException, IncorrectObjectTypeException,
+            CorruptObjectException, IOException {
         ObjectId[] trees = getTrees();
         final int revTree = trees.length - 1;
 
         walk.reset(trees);
 
         switch (trees.length) {
-        case 1:
-            /* Inital commit. */
-            while (walk.next()) {
-                events.add(new Event(walk.getPathString(), 'A'));
-            }
-            break;
-        case 2:
-            while (walk.next()) {
-                int mode0 = walk.getRawMode(0);
-                int mode1 = walk.getRawMode(1);
-                char status = getStatus(walk, mode0, mode1);
-                if (status == 0)
-                    continue;
-
-                events.add(new Event(walk.getPathString(), status));
-            }
-            break;
-        default:
-            /* Merge. */
-            while (walk.next()) {
-                int mode0 = 0;
-                int mode1 = walk.getRawMode(revTree);
-                int i;
-
-                for (i = 0; i < revTree; i++) {
-                    int mode = walk.getRawMode(i);
-                    if (mode == mode1 && walk.idEqual(i, revTree))
-                        break;
-                    mode0 |= mode;
+            case 1:
+                /* Inital commit. */
+                while (walk.next()) {
+                    events.add(new Event(walk.getPathString(), 'A'));
                 }
+                break;
+            case 2:
+                while (walk.next()) {
+                    int mode0 = walk.getRawMode(0);
+                    int mode1 = walk.getRawMode(1);
+                    char status = getStatus(walk, mode0, mode1);
+                    if (status == 0) {
+                        continue;
+                    }
+                    events.add(new Event(walk.getPathString(), status));
+                }
+                break;
+            default:
+                /* Merge. */
+                while (walk.next()) {
+                    int mode0 = 0;
+                    int mode1 = walk.getRawMode(revTree);
+                    int i;
 
-                if (i != revTree)
-                    continue;
+                    for (i = 0; i < revTree; i++) {
+                        int mode = walk.getRawMode(i);
+                        if (mode == mode1 && walk.idEqual(i, revTree)) {
+                            break;
+                        }
+                        mode0 |= mode;
+                    }
 
-                char status = getStatus(walk, mode0, mode1);
-                if (status == 0)
-                    continue;
-
-                events.add(new Event(walk.getPathString(), status));
-            }
-            break;
+                    if (i != revTree) {
+                        continue;
+                    }
+                    char status = getStatus(walk, mode0, mode1);
+                    if (status == 0) {
+                        continue;
+                    }
+                    events.add(new Event(walk.getPathString(), status));
+                }
+                break;
         }
 
     }
 
-    public List<Event> getEvents()
-    {
+    public List<Event> getEvents() {
         return events;
     }
 
-    public String getAuthor()
-    {
+    public String getAuthor() {
         return getAuthorIdent().getName();
     }
 
-    String getMessage()
-    {
+    String getMessage() {
         return getFullMessage();
     }
 
-    public String getRevision()
-    {
+    public String getRevision() {
         return getId().toString();
     }
 
-    public Date getDate()
-    {
+    public Date getDate() {
         return getCommitterIdent().getWhen();
     }
 
@@ -214,92 +204,78 @@ public class RepositoryRevision extends RevCommit {
         private String name;
         private String path;
 
-        private Event(GitLogMessageChangedPath changedPath)
-        {
+        private Event(GitLogMessageChangedPath changedPath) {
             this.changedPath = changedPath;
             name = changedPath.getPath().substring(changedPath.getPath().lastIndexOf('/') + 1);
 
             int indexPath = changedPath.getPath().lastIndexOf('/');
-            if (indexPath > -1)
+            if (indexPath > -1) {
                 path = changedPath.getPath().substring(0, indexPath);
-            else
+            } else {
                 path = "";
+            }
         }
 
-        private Event(String pathString, char c)
-        {
+        private Event(String pathString, char c) {
             this(new GitLogMessageChangedPath(pathString, c));
         }
 
-        public RepositoryRevision getLogInfoHeader()
-        {
+        public RepositoryRevision getLogInfoHeader() {
             return RepositoryRevision.this;
         }
 
-        public GitLogMessageChangedPath getChangedPath()
-        {
+        public GitLogMessageChangedPath getChangedPath() {
             return changedPath;
         }
 
         /** Getter for property file.
          * @return Value of property file.
          */
-        public File getFile()
-        {
+        public File getFile() {
             return file;
         }
 
         /** Setter for property file.
          * @param file New value of property file.
          */
-        public void setFile(File file)
-        {
+        public void setFile(File file) {
             this.file = file;
         }
 
-        public String getName()
-        {
+        public String getName() {
             return name;
         }
 
-        public String getPath()
-        {
+        public String getPath() {
             return path;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             StringBuffer text = new StringBuffer();
             text.append("\t");
             text.append(getPath());
             return text.toString();
         }
-
     }
 
     public static class Walk extends RevWalk {
 
         private final TreeWalk walk;
 
-        public Walk(Repository repo)
-        {
+        public Walk(Repository repo) {
             super(repo);
             walk = new TreeWalk(repo);
             walk.setRecursive(true);
         }
 
         @Override
-        protected RevCommit createCommit(final AnyObjectId id)
-        {
+        protected RevCommit createCommit(final AnyObjectId id) {
             return new RepositoryRevision(id, getRepository());
         }
 
-        private TreeWalk getTreeWalk()
-        {
+        private TreeWalk getTreeWalk() {
             return walk;
         }
-
     }
-
 }

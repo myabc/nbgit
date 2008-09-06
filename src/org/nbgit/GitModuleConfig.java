@@ -89,7 +89,7 @@ public class GitModuleConfig {
     private static final GitModuleConfig INSTANCE = new GitModuleConfig();
     private static String userEmail;
     private static String userName;
-
+    
 
     static {
         final RepositoryConfig config = RepositoryConfig.openUserConfig();
@@ -102,9 +102,9 @@ public class GitModuleConfig {
 
         if (userEmail == null || userEmail.length() == 0) {
             userEmail = "";
-            // nothing
-            // TODO: does NetBeans provide this with product registration?
-            // if not, then get this information in setup wizard.
+        // nothing
+        // TODO: does NetBeans provide this with product registration?
+        // if not, then get this information in setup wizard.
         }
 
     /* FIXME:
@@ -116,128 +116,108 @@ public class GitModuleConfig {
 
     }
 
-    public static GitModuleConfig getDefault()
-    {
+    public static GitModuleConfig getDefault() {
         return INSTANCE;
     }
-
     private Set<String> exclusions;
     // properties ~~~~~~~~~~~~~~~~~~~~~~~~~
-    public Preferences getPreferences()
-    {
+    public Preferences getPreferences() {
         return NbPreferences.forModule(GitModuleConfig.class);
     }
 
-    public boolean getShowCloneCompleted()
-    {
+    public boolean getShowCloneCompleted() {
         return getPreferences().getBoolean(SHOW_CLONE_COMPLETED, true);
     }
 
-    public boolean getSetMainProject()
-    {
+    public boolean getSetMainProject() {
         return getPreferences().getBoolean(SET_MAIN_PROJECT, true);
     }
 
-    public Pattern[] getIgnoredFilePatterns()
-    {
+    public Pattern[] getIgnoredFilePatterns() {
         return getDefaultFilePatterns();
     }
 
-    public boolean isExcludedFromCommit(String path)
-    {
+    public boolean isExcludedFromCommit(String path) {
         return getCommitExclusions().contains(path);
     }
 
     /**
      * @param paths collection of paths, of File.getAbsolutePath()
      */
-    public void addExclusionPaths(Collection<String> paths)
-    {
+    public void addExclusionPaths(Collection<String> paths) {
         Set<String> exclusions = getCommitExclusions();
-        if (exclusions.addAll(paths))
+        if (exclusions.addAll(paths)) {
             Utils.put(getPreferences(), PROP_COMMIT_EXCLUSIONS, new ArrayList<String>(exclusions));
+        }
     }
 
     /**
      * @param paths collection of paths, File.getAbsolutePath()
      */
-    public void removeExclusionPaths(Collection<String> paths)
-    {
+    public void removeExclusionPaths(Collection<String> paths) {
         Set<String> exclusions = getCommitExclusions();
-        if (exclusions.removeAll(paths))
+        if (exclusions.removeAll(paths)) {
             Utils.put(getPreferences(), PROP_COMMIT_EXCLUSIONS, new ArrayList<String>(exclusions));
+        }
     }
 
-    public String getExecutableBinaryPath()
-    {
+    public String getExecutableBinaryPath() {
         return getPreferences().get(KEY_EXECUTABLE_BINARY, ""); // NOI18N
     }
 
-    public boolean getBackupOnRevertModifications()
-    {
+    public boolean getBackupOnRevertModifications() {
         return getPreferences().getBoolean(KEY_BACKUP_ON_REVERTMODS, true);
     }
 
-    public void setBackupOnRevertModifications(boolean bBackup)
-    {
+    public void setBackupOnRevertModifications(boolean bBackup) {
         getPreferences().putBoolean(KEY_BACKUP_ON_REVERTMODS, bBackup);
     }
-    
-    public boolean getSignOffCommits()
-    {
+
+    public boolean getSignOffCommits() {
         return getPreferences().getBoolean(KEY_SIGN_OFF_COMMITS, false);
     }
 
-    public void setSignOffComits(boolean signOff)
-    {
+    public void setSignOffComits(boolean signOff) {
         getPreferences().putBoolean(KEY_SIGN_OFF_COMMITS, signOff);
     }
 
-    public boolean getShowHistoryMerges()
-    {
+    public boolean getShowHistoryMerges() {
         return getPreferences().getBoolean(KEY_SHOW_HITORY_MERGES, true);
     }
 
-    public void setShowHistoryMerges(boolean bShowMerges)
-    {
+    public void setShowHistoryMerges(boolean bShowMerges) {
         getPreferences().putBoolean(KEY_SHOW_HITORY_MERGES, bShowMerges);
     }
 
-    public void setExecutableBinaryPath(String path)
-    {
+    public void setExecutableBinaryPath(String path) {
         getPreferences().put(KEY_EXECUTABLE_BINARY, path);
     }
 
-    public String getExportFolder()
-    {
+    public String getExportFolder() {
         return getPreferences().get(KEY_EXPORT_FOLDER, System.getProperty("user.home")); // NOI18N
     }
 
-    public void setExportFolder(String path)
-    {
+    public void setExportFolder(String path) {
         getPreferences().put(KEY_EXPORT_FOLDER, path);
     }
 
-    public String getImportFolder()
-    {
+    public String getImportFolder() {
         return getPreferences().get(KEY_IMPORT_FOLDER, System.getProperty("user.home")); // NOI18N
     }
 
-    public void setImportFolder(String path)
-    {
+    public void setImportFolder(String path) {
         getPreferences().put(KEY_IMPORT_FOLDER, path);
     }
 
-    public String getExportFilename()
-    {
+    public String getExportFilename() {
         String str = getPreferences().get(KEY_EXPORT_FILENAME, ""); // NOI18N
-        if (str.trim().length() == 0)
+        if (str.trim().length() == 0) {
             str = DEFAULT_EXPORT_FILENAME;
+        }
         return str;
     }
 
-    public void setExportFilename(String path)
-    {
+    public void setExportFilename(String path) {
         getPreferences().put(KEY_EXPORT_FILENAME, path);
     }
 
@@ -245,8 +225,7 @@ public class GitModuleConfig {
      * This method returns the email address specified in $HOME/.gitconfig
      * or a default email address if none is found.
      */
-    public String getEmail()
-    {
+    public String getEmail() {
         return userEmail;
     }
 
@@ -254,103 +233,100 @@ public class GitModuleConfig {
      * This method returns the username specified in $HOME/.gitconfig
      * or a default username if none is found.
      */
-    public String getUserName()
-    {
+    public String getUserName() {
         return userName;
     }
 
-    public void setEmail(String email)
-    {
+    public void setEmail(String email) {
         userEmail = email;
     }
 
-    public void setUserName(String name)
-    {
+    public void setUserName(String name) {
         userName = name;
     }
 
-    public Boolean isEmailValid(String email)
-    {
-        if (email.equals(email))
+    public Boolean isEmailValid(String email) {
+        if (email.equals(email)) {
             return true;
-        if (email.length() == 0)
+        }
+        if (email.length() == 0) {
             return false; // cannot be blank
+        }
         return true;//GitMail.isEmailValid(email);
     }
 
-    public Boolean isUserNameValid(String name)
-    {
-        if (name.equals(userName))
+    public Boolean isUserNameValid(String name) {
+        if (name.equals(userName)) {
             return true;
-        if (name.length() == 0)
+        }
+        if (name.length() == 0) {
             return true;
+        }
         return true;
     }
 
-    public Properties getProperties(File file)
-    {
+    public Properties getProperties(File file) {
         Properties props = new Properties();
         Repository repo = Git.getInstance().getRepository(file);
         RepositoryConfig config = repo != null
-            ? repo.getConfig()
-            : RepositoryConfig.openUserConfig();
+                ? repo.getConfig()
+                : RepositoryConfig.openUserConfig();
 
         String email = null;
-        if (config != null)
+        if (config != null) {
             email = config.getString("user", null, "email");
-        if (email == null || email.length() == 0)
+        }
+        if (email == null || email.length() == 0) {
             email = getEmail();
+        }
         props.setProperty("user.email", email);
 
         String name = null;
-        if (config != null)
+        if (config != null) {
             name = config.getString("user", null, "name");
-        if (name == null || name.length() == 0)
+        }
+        if (name == null || name.length() == 0) {
             name = getUserName();
+        }
         props.setProperty("user.name", name); // NOI18N
 
         String signOff = null;
-        if (config != null)
+        if (config != null) {
             signOff = config.getString("nbgit", null, "signoff");
-        if (signOff == null)
+        }
+        if (signOff == null) {
             signOff = getSignOffCommits() ? "yes" : "no";
+        }
         props.setProperty("nbgit.signoff", signOff); // NOI18N
 
         return props;
     }
 
-    public String getAnnotationFormat()
-    {
+    public String getAnnotationFormat() {
         return getPreferences().get(KEY_ANNOTATION_FORMAT, getDefaultAnnotationFormat());
     }
 
-    public String getDefaultAnnotationFormat()
-    {
+    public String getDefaultAnnotationFormat() {
         return "[{" + GitAnnotator.ANNOTATION_STATUS + "} {" + GitAnnotator.ANNOTATION_FOLDER + "}]"; // NOI18N
     }
 
-    public void setAnnotationFormat(String annotationFormat)
-    {
+    public void setAnnotationFormat(String annotationFormat) {
         getPreferences().put(KEY_ANNOTATION_FORMAT, annotationFormat);
     }
 
-    public boolean getSavePassword()
-    {
+    public boolean getSavePassword() {
         return getPreferences().getBoolean(SAVE_PASSWORD, true);
     }
 
-    public void setSavePassword(boolean bl)
-    {
+    public void setSavePassword(boolean bl) {
         getPreferences().putBoolean(SAVE_PASSWORD, bl);
     }
 
-    public void setShowCloneCompleted(boolean bl)
-    {
+    public void setShowCloneCompleted(boolean bl) {
         getPreferences().putBoolean(SHOW_CLONE_COMPLETED, bl);
     }
 
-    public void setSetMainProject(boolean bl)
-    {
+    public void setSetMainProject(boolean bl) {
         getPreferences().putBoolean(SET_MAIN_PROJECT, bl);
     }
 
@@ -371,7 +347,7 @@ public class GitModuleConfig {
     public void insertRecentUrl(RepositoryConnection rc)
     {
     Preferences prefs = getPreferences();
-
+    
     List<String> urlValues = Utils.getStringList(prefs, RECENT_URL);
     for (Iterator<String> it = urlValues.iterator(); it.hasNext();) {
     String rcOldString = it.next();
@@ -381,11 +357,11 @@ public class GitModuleConfig {
     }
     Utils.insert(prefs, RECENT_URL, RepositoryConnection.getString(rc), -1);
     }
-
+    
     public void setRecentUrls(List<RepositoryConnection> recentUrls)
     {
     List<String> urls = new ArrayList<String>(recentUrls.size());
-
+    
     int idx = 0;
     for (Iterator<RepositoryConnection> it = recentUrls.iterator(); it.hasNext();) {
     idx++;
@@ -395,7 +371,7 @@ public class GitModuleConfig {
     Preferences prefs = getPreferences();
     Utils.put(prefs, RECENT_URL, urls);
     }
-
+    
     public List<RepositoryConnection> getRecentUrls()
     {
     Preferences prefs = getPreferences();
@@ -447,83 +423,78 @@ public class GitModuleConfig {
     private TableSorter importTableSorter;
     private TableSorter commitTableSorter;
 
-    public TableSorter getImportTableSorter()
-    {
+    public TableSorter getImportTableSorter() {
         return importTableSorter;
     }
 
-    public void setImportTableSorter(TableSorter sorter)
-    {
+    public void setImportTableSorter(TableSorter sorter) {
         importTableSorter = sorter;
     }
 
-    public TableSorter getCommitTableSorter()
-    {
+    public TableSorter getCommitTableSorter() {
         return commitTableSorter;
     }
 
-    public void setCommitTableSorter(TableSorter sorter)
-    {
+    public void setCommitTableSorter(TableSorter sorter) {
         commitTableSorter = sorter;
     }
     // private methods ~~~~~~~~~~~~~~~~~~
-    private synchronized Set<String> getCommitExclusions()
-    {
-        if (exclusions == null)
+    private synchronized Set<String> getCommitExclusions() {
+        if (exclusions == null) {
             exclusions = new HashSet<String>(Utils.getStringList(getPreferences(), PROP_COMMIT_EXCLUSIONS));
+        }
         return exclusions;
     }
 
-    private static Pattern[] getDefaultFilePatterns()
-    {
+    private static Pattern[] getDefaultFilePatterns() {
         return new Pattern[]{
-                Pattern.compile("cvslog\\..*"), // NOI18N
-                Pattern.compile("\\.make\\.state"), // NOI18N
-                Pattern.compile("\\.nse_depinfo"), // NOI18N
-                Pattern.compile(".*~"), // NOI18N
-                Pattern.compile("#.*"), // NOI18N
-                Pattern.compile("\\.#.*"), // NOI18N
-                Pattern.compile(",.*"), // NOI18N
-                Pattern.compile("_\\$.*"), // NOI18N
-                Pattern.compile(".*\\$"), // NOI18N
-                Pattern.compile(".*\\.old"), // NOI18N
-                Pattern.compile(".*\\.bak"), // NOI18N
-                Pattern.compile(".*\\.BAK"), // NOI18N
-                Pattern.compile(".*\\.orig"), // NOI18N
-                Pattern.compile(".*\\.rej"), // NOI18N
-                Pattern.compile(".*\\.del-.*"), // NOI18N
-                Pattern.compile(".*\\.a"), // NOI18N
-                Pattern.compile(".*\\.olb"), // NOI18N
-                Pattern.compile(".*\\.o"), // NOI18N
-                Pattern.compile(".*\\.obj"), // NOI18N
-                Pattern.compile(".*\\.so"), // NOI18N
-                Pattern.compile(".*\\.exe"), // NOI18N
-                Pattern.compile(".*\\.Z"), // NOI18N
-                Pattern.compile(".*\\.elc"), // NOI18N
-                Pattern.compile(".*\\.ln"), // NOI18N
-            };
+                    Pattern.compile("cvslog\\..*"), // NOI18N
+                    Pattern.compile("\\.make\\.state"), // NOI18N
+                    Pattern.compile("\\.nse_depinfo"), // NOI18N
+                    Pattern.compile(".*~"), // NOI18N
+                    Pattern.compile("#.*"), // NOI18N
+                    Pattern.compile("\\.#.*"), // NOI18N
+                    Pattern.compile(",.*"), // NOI18N
+                    Pattern.compile("_\\$.*"), // NOI18N
+                    Pattern.compile(".*\\$"), // NOI18N
+                    Pattern.compile(".*\\.old"), // NOI18N
+                    Pattern.compile(".*\\.bak"), // NOI18N
+                    Pattern.compile(".*\\.BAK"), // NOI18N
+                    Pattern.compile(".*\\.orig"), // NOI18N
+                    Pattern.compile(".*\\.rej"), // NOI18N
+                    Pattern.compile(".*\\.del-.*"), // NOI18N
+                    Pattern.compile(".*\\.a"), // NOI18N
+                    Pattern.compile(".*\\.olb"), // NOI18N
+                    Pattern.compile(".*\\.o"), // NOI18N
+                    Pattern.compile(".*\\.obj"), // NOI18N
+                    Pattern.compile(".*\\.so"), // NOI18N
+                    Pattern.compile(".*\\.exe"), // NOI18N
+                    Pattern.compile(".*\\.Z"), // NOI18N
+                    Pattern.compile(".*\\.elc"), // NOI18N
+                    Pattern.compile(".*\\.ln"), // NOI18N
+                };
     }
 
     /**
      * Return the path for the systemwide command lines configuration directory
      */
-    private static String getGlobalConfigPath()
-    {
-        if (Utilities.isUnix())
+    private static String getGlobalConfigPath() {
+        if (Utilities.isUnix()) {
             return "/etc/gitconfig";
-        else if (Utilities.isWindows())
+        } else if (Utilities.isWindows()) {
             return WINDOWS_GLOBAL_CONFIG_DIR;
+        }
         return "";                                  // NOI18N
     }
 
     /**
      * Returns the value for the %APPDATA% env variable on Windows
      */
-    private static String getAPPDATA()
-    {
+    private static String getAPPDATA() {
         String appdata = ""; // NOI18N
-        if (Utilities.isWindows())
+        if (Utilities.isWindows()) {
             appdata = System.getenv("APPDATA");
+        }
         return appdata != null ? appdata : ""; // NOI18N
     }
 
@@ -531,26 +502,31 @@ public class GitModuleConfig {
      * Returns the value for the %ALLUSERSPROFILE% + the last folder segment
      * from %APPDATA% env variables on Windows
      */
-    private static String getGlobalAPPDATA()
-    {
+    private static String getGlobalAPPDATA() {
         if (Utilities.isWindows()) {
             String globalProfile = System.getenv("ALLUSERSPROFILE");                                // NOI18N
-            if (globalProfile == null || globalProfile.trim().equals(""))                          // NOI18N
+            if (globalProfile == null || globalProfile.trim().equals("")) // NOI18N
+            {
                 globalProfile = "";
+            }
             String appdataPath = WINDOWS_USER_APPDATA;
-            if (appdataPath == null || appdataPath.equals(""))                                     // NOI18N
+            if (appdataPath == null || appdataPath.equals("")) // NOI18N
+            {
                 return "";
+            }
             String appdata = "";                                                                    // NOI18N
             int idx = appdataPath.lastIndexOf("\\");                                                // NOI18N
             if (idx > -1) {
                 appdata = appdataPath.substring(idx + 1);
                 if (appdata.trim().equals("")) {                                                     // NOI18N
                     int previdx = appdataPath.lastIndexOf("\\", idx);                               // NOI18N
-                    if (idx > -1)
+                    if (idx > -1) {
                         appdata = appdataPath.substring(previdx + 1, idx);
+                    }
                 }
-            } else
+            } else {
                 return "";
+            }
             return globalProfile + "/" + appdata;                                                   // NOI18N
         }
         return "";                                                                                  // NOI18N
@@ -561,14 +537,13 @@ public class GitModuleConfig {
      *
      * @return the path
      */
-    public static String getUserConfigPath()
-    {
+    public static String getUserConfigPath() {
         if (Utilities.isUnix()) {
             String path = System.getProperty("user.home");     // NOI18N
             return path + "/.";                                 // NOI18N
-        } else if (Utilities.isWindows())
+        } else if (Utilities.isWindows()) {
             return WINDOWS_CONFIG_DIR + "/";
+        }
         return "";                                              // NOI18N
     }
-
 }

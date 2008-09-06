@@ -71,8 +71,7 @@ class DiffTreeTable extends TreeTableView {
     private List results;
     private final SearchHistoryPanel master;
 
-    public DiffTreeTable(SearchHistoryPanel master)
-    {
+    public DiffTreeTable(SearchHistoryPanel master) {
         this.master = master;
         treeTable.setShowHorizontalLines(true);
         treeTable.setShowVerticalLines(false);
@@ -89,8 +88,7 @@ class DiffTreeTable extends TreeTableView {
     }
 
     @SuppressWarnings("unchecked")
-    private void setupColumns()
-    {
+    private void setupColumns() {
         Node.Property[] columns = new Node.Property[4];
         ResourceBundle loc = NbBundle.getBundle(DiffTreeTable.class);
         columns[0] = new ColumnDescriptor(RevisionNode.COLUMN_NAME_NAME, String.class, "", "");  // NOI18N
@@ -101,34 +99,30 @@ class DiffTreeTable extends TreeTableView {
         setProperties(columns);
     }
 
-    private void setDefaultColumnSizes()
-    {
+    private void setDefaultColumnSizes() {
         SwingUtilities.invokeLater(new Runnable() {
 
-            public void run()
-            {
+            public void run() {
                 int width = getWidth();
                 treeTable.getColumnModel().getColumn(0).setPreferredWidth(width * 25 / 100);
                 treeTable.getColumnModel().getColumn(1).setPreferredWidth(width * 15 / 100);
                 treeTable.getColumnModel().getColumn(2).setPreferredWidth(width * 10 / 100);
                 treeTable.getColumnModel().getColumn(3).setPreferredWidth(width * 50 / 100);
             }
-
         });
     }
 
-    void setSelection(int idx)
-    {
+    void setSelection(int idx) {
         treeTable.getSelectionModel().setValueIsAdjusting(false);
         treeTable.scrollRectToVisible(treeTable.getCellRect(idx, 1, true));
         treeTable.getSelectionModel().setSelectionInterval(idx, idx);
     }
 
-    void setSelection(RepositoryRevision container)
-    {
+    void setSelection(RepositoryRevision container) {
         RevisionNode node = (RevisionNode) getNode(rootNode, container);
-        if (node == null)
+        if (node == null) {
             return;
+        }
         ExplorerManager em = ExplorerManager.find(this);
         try {
             em.setSelectedNodes(new Node[]{node});
@@ -137,11 +131,11 @@ class DiffTreeTable extends TreeTableView {
         }
     }
 
-    void setSelection(RepositoryRevision.Event revision)
-    {
+    void setSelection(RepositoryRevision.Event revision) {
         RevisionNode node = (RevisionNode) getNode(rootNode, revision);
-        if (node == null)
+        if (node == null) {
             return;
+        }
         ExplorerManager em = ExplorerManager.find(this);
         try {
             em.setSelectedNodes(new Node[]{node});
@@ -150,120 +144,110 @@ class DiffTreeTable extends TreeTableView {
         }
     }
 
-    private Node getNode(Node node, Object obj)
-    {
+    private Node getNode(Node node, Object obj) {
         Object object = node.getLookup().lookup(obj.getClass());
-        if (obj.equals(object))
+        if (obj.equals(object)) {
             return node;
+        }
         Enumeration children = node.getChildren().nodes();
         while (children.hasMoreElements()) {
             Node child = (Node) children.nextElement();
             Node result = getNode(child, obj);
-            if (result != null)
+            if (result != null) {
                 return result;
+            }
         }
         return null;
     }
 
-    public int[] getSelection()
-    {
+    public int[] getSelection() {
         return treeTable.getSelectedRows();
     }
 
-    public int getRowCount()
-    {
+    public int getRowCount() {
         return treeTable.getRowCount();
     }
 
     private static class ColumnDescriptor<T> extends PropertySupport.ReadOnly<T> {
 
-        public ColumnDescriptor(String name, Class<T> type, String displayName, String shortDescription)
-        {
+        public ColumnDescriptor(String name, Class<T> type, String displayName, String shortDescription) {
             super(name, type, displayName, shortDescription);
         }
 
-        public T getValue() throws IllegalAccessException, InvocationTargetException
-        {
+        public T getValue() throws IllegalAccessException, InvocationTargetException {
             return null;
         }
-
     }
 
-    public void addNotify()
-    {
+    @Override
+    public void addNotify() {
         super.addNotify();
         ExplorerManager em = ExplorerManager.find(this);
         em.setRootContext(rootNode);
         setDefaultColumnSizes();
     }
 
-    public void setResults(List results)
-    {
+    public void setResults(List results) {
         this.results = results;
         rootNode = new RevisionsRootNode();
         ExplorerManager em = ExplorerManager.find(this);
-        if (em != null)
+        if (em != null) {
             em.setRootContext(rootNode);
+        }
     }
 
     private class RevisionsRootNode extends AbstractNode {
 
-        public RevisionsRootNode()
-        {
+        public RevisionsRootNode() {
             super(new RevisionsRootNodeChildren(), Lookups.singleton(results));
         }
 
-        public String getName()
-        {
+        @Override
+        public String getName() {
             return "revision"; // NOI18N
         }
 
-        public String getDisplayName()
-        {
+        @Override
+        public String getDisplayName() {
             return NbBundle.getMessage(DiffTreeTable.class, "LBL_DiffTree_Column_Name"); // NOI18N
         }
 
-        public String getShortDescription()
-        {
+        @Override
+        public String getShortDescription() {
             return NbBundle.getMessage(DiffTreeTable.class, "LBL_DiffTree_Column_Name_Desc"); // NOI18N
         }
-
     }
 
     private class RevisionsRootNodeChildren extends Children.Keys {
 
-        public RevisionsRootNodeChildren()
-        {
+        public RevisionsRootNodeChildren() {
         }
 
-        protected void addNotify()
-        {
+        @Override
+        protected void addNotify() {
             refreshKeys();
         }
 
         @SuppressWarnings("unchecked")
         @Override
-        protected void removeNotify()
-        {
+        protected void removeNotify() {
             setKeys(Collections.EMPTY_SET);
         }
 
         @SuppressWarnings("unchecked")
-        private void refreshKeys()
-        {
+        private void refreshKeys() {
             setKeys(results);
         }
 
-        protected Node[] createNodes(Object key)
-        {
+        protected Node[] createNodes(Object key) {
             RevisionNode node;
-            if (key instanceof RepositoryRevision)
+            if (key instanceof RepositoryRevision) {
                 node = new RevisionNode((RepositoryRevision) key, master);
-            else // key instanceof RepositoryRevision.Event
+            } else // key instanceof RepositoryRevision.Event
+            {
                 node = new RevisionNode(((RepositoryRevision.Event) key), master);
+            }
             return new Node[]{node};
         }
-
     }
-
 }

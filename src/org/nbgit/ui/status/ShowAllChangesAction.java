@@ -37,6 +37,7 @@ public class ShowAllChangesAction extends SystemAction {
 
     public void actionPerformed(ActionEvent e) {
         RequestProcessor.getDefault().post(new Runnable() {
+
             public void run() {
                 async();
             }
@@ -47,6 +48,7 @@ public class ShowAllChangesAction extends SystemAction {
         try {
             setEnabled(false);
             SwingUtilities.invokeLater(new Runnable() {
+
                 public void run() {
                     GitVersioningTopComponent stc = GitVersioningTopComponent.findInstance();
                     stc.setContext(null);
@@ -54,7 +56,7 @@ public class ShowAllChangesAction extends SystemAction {
                 }
             });
 
-            Project [] projects = OpenProjects.getDefault().getOpenProjects();
+            Project[] projects = OpenProjects.getDefault().getOpenProjects();
             List<Node> allNodes = new ArrayList<Node>();
             for (int i = 0; i < projects.length; i++) {
                 AbstractNode node = new AbstractNode(new Children.Array(), projects[i].getLookup());
@@ -71,6 +73,7 @@ public class ShowAllChangesAction extends SystemAction {
                 title = NbBundle.getMessage(ShowAllChangesAction.class, "CTL_ShowAllChanges_WindowTitle", Integer.toString(projects.length)); // NOI18N
             }
             SwingUtilities.invokeLater(new Runnable() {
+
                 public void run() {
                     final GitVersioningTopComponent stc = GitVersioningTopComponent.findInstance();
                     stc.setContentTitle(title);
@@ -92,5 +95,4 @@ public class ShowAllChangesAction extends SystemAction {
     protected boolean shouldPostRefresh() {
         return true;
     }
-
 }

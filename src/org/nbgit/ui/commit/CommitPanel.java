@@ -63,7 +63,6 @@ import org.openide.util.NbBundle;
 public class CommitPanel extends javax.swing.JPanel implements PreferenceChangeListener, TableModelListener {
 
     static final Object EVENT_SETTINGS_CHANGED = new Object();
-
     private CommitTable commitTable;
 
     /** Creates new form CommitPanel */
@@ -88,6 +87,7 @@ public class CommitPanel extends javax.swing.JPanel implements PreferenceChangeL
 
         recentLink.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         recentLink.addMouseListener(new MouseAdapter() {
+
             @Override
             public void mouseClicked(MouseEvent e) {
                 onBrowseRecentMessages();
@@ -109,9 +109,9 @@ public class CommitPanel extends javax.swing.JPanel implements PreferenceChangeL
     }
 
     private void onBrowseRecentMessages() {
-        String message = StringSelector.select(NbBundle.getMessage(CommitPanel.class, "CTL_CommitForm_RecentTitle"),  // NOI18N
-                                               NbBundle.getMessage(CommitPanel.class, "CTL_CommitForm_RecentPrompt"),  // NOI18N
-            Utils.getStringList(GitModuleConfig.getDefault().getPreferences(), CommitAction.RECENT_COMMIT_MESSAGES));
+        String message = StringSelector.select(NbBundle.getMessage(CommitPanel.class, "CTL_CommitForm_RecentTitle"), // NOI18N
+                NbBundle.getMessage(CommitPanel.class, "CTL_CommitForm_RecentPrompt"), // NOI18N
+                Utils.getStringList(GitModuleConfig.getDefault().getPreferences(), CommitAction.RECENT_COMMIT_MESSAGES));
         if (message != null) {
             messageTextArea.replaceSelection(message);
         }

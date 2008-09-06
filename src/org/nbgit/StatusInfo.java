@@ -126,50 +126,50 @@ public class StatusInfo implements Serializable {
      */
     public static final int STATUS_MANAGED = StatusInfo.STATUS_ALL & ~StatusInfo.STATUS_NOTVERSIONED_NOTMANAGED;
     public static final int STATUS_VERSIONED = StatusInfo.STATUS_VERSIONED_UPTODATE |
-        StatusInfo.STATUS_VERSIONED_MODIFIEDLOCALLY |
-        StatusInfo.STATUS_VERSIONED_MODIFIEDINREPOSITORY |
-        StatusInfo.STATUS_VERSIONED_CONFLICT |
-        StatusInfo.STATUS_VERSIONED_MERGE |
-        StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY |
-        StatusInfo.STATUS_VERSIONED_REMOVEDINREPOSITORY |
-        StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY |
-        StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY |
-        StatusInfo.STATUS_VERSIONED_COPIEDLOCALLY;
+            StatusInfo.STATUS_VERSIONED_MODIFIEDLOCALLY |
+            StatusInfo.STATUS_VERSIONED_MODIFIEDINREPOSITORY |
+            StatusInfo.STATUS_VERSIONED_CONFLICT |
+            StatusInfo.STATUS_VERSIONED_MERGE |
+            StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY |
+            StatusInfo.STATUS_VERSIONED_REMOVEDINREPOSITORY |
+            StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY |
+            StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY |
+            StatusInfo.STATUS_VERSIONED_COPIEDLOCALLY;
     public static final int STATUS_IN_REPOSITORY = StatusInfo.STATUS_VERSIONED_UPTODATE |
-        StatusInfo.STATUS_VERSIONED_MODIFIEDLOCALLY |
-        StatusInfo.STATUS_VERSIONED_MODIFIEDINREPOSITORY |
-        StatusInfo.STATUS_VERSIONED_CONFLICT |
-        StatusInfo.STATUS_VERSIONED_MERGE |
-        StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY |
-        StatusInfo.STATUS_VERSIONED_NEWINREPOSITORY |
-        StatusInfo.STATUS_VERSIONED_REMOVEDINREPOSITORY |
-        StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY;
+            StatusInfo.STATUS_VERSIONED_MODIFIEDLOCALLY |
+            StatusInfo.STATUS_VERSIONED_MODIFIEDINREPOSITORY |
+            StatusInfo.STATUS_VERSIONED_CONFLICT |
+            StatusInfo.STATUS_VERSIONED_MERGE |
+            StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY |
+            StatusInfo.STATUS_VERSIONED_NEWINREPOSITORY |
+            StatusInfo.STATUS_VERSIONED_REMOVEDINREPOSITORY |
+            StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY;
     public static final int STATUS_LOCAL_CHANGE =
-        StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY |
-        StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY |
-        StatusInfo.STATUS_VERSIONED_COPIEDLOCALLY |
-        StatusInfo.STATUS_VERSIONED_CONFLICT |
-        StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY |
-        StatusInfo.STATUS_VERSIONED_MERGE |
-        StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY |
-        StatusInfo.STATUS_VERSIONED_MODIFIEDLOCALLY;
+            StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY |
+            StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY |
+            StatusInfo.STATUS_VERSIONED_COPIEDLOCALLY |
+            StatusInfo.STATUS_VERSIONED_CONFLICT |
+            StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY |
+            StatusInfo.STATUS_VERSIONED_MERGE |
+            StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY |
+            StatusInfo.STATUS_VERSIONED_MODIFIEDLOCALLY;
     /**
      * Modified, in conflict, scheduled for removal or addition;
      * or deleted but with existing entry record.
      */
     public static final int STATUS_REVERTIBLE_CHANGE =
-        StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY |
-        StatusInfo.STATUS_VERSIONED_COPIEDLOCALLY |
-        StatusInfo.STATUS_VERSIONED_CONFLICT |
-        StatusInfo.STATUS_VERSIONED_MERGE |
-        StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY |
-        StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY |
-        StatusInfo.STATUS_VERSIONED_MODIFIEDLOCALLY;
+            StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY |
+            StatusInfo.STATUS_VERSIONED_COPIEDLOCALLY |
+            StatusInfo.STATUS_VERSIONED_CONFLICT |
+            StatusInfo.STATUS_VERSIONED_MERGE |
+            StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY |
+            StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY |
+            StatusInfo.STATUS_VERSIONED_MODIFIEDLOCALLY;
     public static final int STATUS_REMOTE_CHANGE =
-        StatusInfo.STATUS_VERSIONED_MERGE |
-        StatusInfo.STATUS_VERSIONED_MODIFIEDINREPOSITORY |
-        StatusInfo.STATUS_VERSIONED_NEWINREPOSITORY |
-        StatusInfo.STATUS_VERSIONED_REMOVEDINREPOSITORY;
+            StatusInfo.STATUS_VERSIONED_MERGE |
+            StatusInfo.STATUS_VERSIONED_MODIFIEDINREPOSITORY |
+            StatusInfo.STATUS_VERSIONED_NEWINREPOSITORY |
+            StatusInfo.STATUS_VERSIONED_REMOVEDINREPOSITORY;
     /**
      * Status constant.
      */
@@ -186,21 +186,18 @@ public class StatusInfo implements Serializable {
     /**
      * For deserialization purposes only.
      */
-    public StatusInfo()
-    {
+    public StatusInfo() {
         status = 0;
         isDirectory = false;
     }
 
-    public StatusInfo(int status, File entry, boolean isDirectory)
-    {
+    public StatusInfo(int status, File entry, boolean isDirectory) {
         this.status = status;
         this.entry = entry;
         this.isDirectory = isDirectory;
     }
 
-    StatusInfo(int status, boolean isDirectory)
-    {
+    StatusInfo(int status, boolean isDirectory) {
         this(status, null, isDirectory);
     }
 
@@ -209,13 +206,11 @@ public class StatusInfo implements Serializable {
      *
      * @return one of status constants
      */
-    public int getStatus()
-    {
+    public int getStatus() {
         return status;
     }
 
-    public boolean isDirectory()
-    {
+    public boolean isDirectory() {
         return isDirectory;
     }
 
@@ -227,15 +222,14 @@ public class StatusInfo implements Serializable {
      * @return Status parsed entry form the .svn/entries file or null if the file does not exist,
      * is not versioned or its entry is invalid
      */
-    public File getStatus(File file)
-    {
-        if (entry == null && file != null)
+    public File getStatus(File file) {
+        if (entry == null && file != null) {
             readEntry(file);
+        }
         return entry;
     }
 
-    private void readEntry(File file)
-    {
+    private void readEntry(File file) {
         // Fetches File info from .svn directory:
         // entry = Subversion.getInstance().getClient(true).getSingleStatus(file);
         entry = null;       // TODO: read your detailed information about the file here, or disregard the entry field
@@ -247,8 +241,7 @@ public class StatusInfo implements Serializable {
      * @return status name, for multistatuses prefers local
      * status name.
      */
-    public String getStatusText()
-    {
+    public String getStatusText() {
         return getStatusText(~0);
     }
 
@@ -260,79 +253,76 @@ public class StatusInfo implements Serializable {
      * @return status name, for multistatuses prefers local
      * status name, for masked <tt>""</tt>. // NOI18N
      */
-    public String getStatusText(int displayStatuses)
-    {
+    public String getStatusText(int displayStatuses) {
         int stat = this.status & displayStatuses;
         ResourceBundle loc = NbBundle.getBundle(StatusInfo.class);
-        if (stat == StatusInfo.STATUS_UNKNOWN)
+        if (stat == StatusInfo.STATUS_UNKNOWN) {
             return loc.getString("CTL_FileInfoStatus_Unknown");
-        else if (StatusInfo.match(stat, StatusInfo.STATUS_NOTVERSIONED_EXCLUDED))
+        } else if (StatusInfo.match(stat, StatusInfo.STATUS_NOTVERSIONED_EXCLUDED)) {
             return loc.getString("CTL_FileInfoStatus_Excluded");
-        else if (StatusInfo.match(stat, StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY))
+        } else if (StatusInfo.match(stat, StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY)) {
             return loc.getString("CTL_FileInfoStatus_NewLocally");
-        else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY))
-            /* FIXME
-            if (entry != null && entry.isCopied())
-            return loc.getString("CTL_FileInfoStatus_AddedLocallyCopied");
-             */
+        } else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY)) /* FIXME
+        if (entry != null && entry.isCopied())
+        return loc.getString("CTL_FileInfoStatus_AddedLocallyCopied");
+         */ {
             return loc.getString("CTL_FileInfoStatus_AddedLocally"); // NOI18N
-        else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_COPIEDLOCALLY))
+        } else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_COPIEDLOCALLY)) {
             return loc.getString("CTL_FileInfoStatus_AddedLocallyCopied");
-        else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_UPTODATE))
+        } else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_UPTODATE)) {
             return loc.getString("CTL_FileInfoStatus_UpToDate");
-        else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_CONFLICT))
+        } else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_CONFLICT)) {
             return loc.getString("CTL_FileInfoStatus_Conflict");
-        else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_MERGE))
+        } else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_MERGE)) {
             return loc.getString("CTL_FileInfoStatus_Merge");
-        else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY))
+        } else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY)) {
             return loc.getString("CTL_FileInfoStatus_DeletedLocally");
-        else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY))
+        } else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY)) {
             return loc.getString("CTL_FileInfoStatus_RemovedLocally");
-        else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_MODIFIEDLOCALLY))
+        } else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_MODIFIEDLOCALLY)) {
             return loc.getString("CTL_FileInfoStatus_ModifiedLocally");
-        else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_NEWINREPOSITORY))
+        } else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_NEWINREPOSITORY)) {
             return loc.getString("CTL_FileInfoStatus_NewInRepository");
-        else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_MODIFIEDINREPOSITORY))
+        } else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_MODIFIEDINREPOSITORY)) {
             return loc.getString("CTL_FileInfoStatus_ModifiedInRepository");
-        else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_REMOVEDINREPOSITORY))
+        } else if (StatusInfo.match(stat, StatusInfo.STATUS_VERSIONED_REMOVEDINREPOSITORY)) {
             return loc.getString("CTL_FileInfoStatus_RemovedInRepository");
-        else
+        } else {
             return "";
+        }
     }
 
     /**
      * @return short status name for local changes, for remote
      * changes returns <tt>""</tt> // NOI18N
      */
-    public String getShortStatusText()
-    {
+    public String getShortStatusText() {
         ResourceBundle loc = NbBundle.getBundle(StatusInfo.class);
-        if (StatusInfo.match(status, StatusInfo.STATUS_NOTVERSIONED_EXCLUDED))
+        if (StatusInfo.match(status, StatusInfo.STATUS_NOTVERSIONED_EXCLUDED)) {
             return loc.getString("CTL_FileInfoStatus_Excluded_Short");
-        else if (StatusInfo.match(status, StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY))
+        } else if (StatusInfo.match(status, StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY)) {
             return loc.getString("CTL_FileInfoStatus_NewLocally_Short");
-        else if (StatusInfo.match(status, StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY)) /* {
-            if (entry != null && entry.isCopied())
-            return loc.getString("CTL_FileInfoStatus_AddedLocallyCopied_Short");
-             */
-
+        } else if (StatusInfo.match(status, StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY)) /* {
+        if (entry != null && entry.isCopied())
+        return loc.getString("CTL_FileInfoStatus_AddedLocallyCopied_Short");
+         */ {
             return loc.getString("CTL_FileInfoStatus_AddedLocally_Short"); // NOI18N
-        else if (StatusInfo.match(status, StatusInfo.STATUS_VERSIONED_COPIEDLOCALLY))
+        } else if (StatusInfo.match(status, StatusInfo.STATUS_VERSIONED_COPIEDLOCALLY)) {
             return loc.getString("CTL_FileInfoStatus_AddedLocallyCopied_Short");
-        else if (status == StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY)
+        } else if (status == StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY) {
             return loc.getString("CTL_FileInfoStatus_RemovedLocally_Short");
-        else if (status == StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY)
+        } else if (status == StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY) {
             return loc.getString("CTL_FileInfoStatus_DeletedLocally_Short");
-        else if (StatusInfo.match(status, StatusInfo.STATUS_VERSIONED_MODIFIEDLOCALLY))
+        } else if (StatusInfo.match(status, StatusInfo.STATUS_VERSIONED_MODIFIEDLOCALLY)) {
             return loc.getString("CTL_FileInfoStatus_ModifiedLocally_Short");
-        else if (StatusInfo.match(status, StatusInfo.STATUS_VERSIONED_CONFLICT))
+        } else if (StatusInfo.match(status, StatusInfo.STATUS_VERSIONED_CONFLICT)) {
             return loc.getString("CTL_FileInfoStatus_Conflict_Short");
-        else
+        } else {
             return "";
+        }
     }
 
-    private static boolean match(int status, int mask)
-    {
+    private static boolean match(int status, int mask) {
         return (status & mask) != 0;
     }
 
@@ -343,11 +333,10 @@ public class StatusInfo implements Serializable {
      * @param other object to compare to
      * @return true if status constants of both object are equal, false otherwise
      */
-    public static boolean equivalent(StatusInfo main, StatusInfo other)
-    {
-        if (other == null || main.getStatus() != other.getStatus() || main.isDirectory() != other.isDirectory())
+    public static boolean equivalent(StatusInfo main, StatusInfo other) {
+        if (other == null || main.getStatus() != other.getStatus() || main.isDirectory() != other.isDirectory()) {
             return false;
-
+        }
         File e1 = main.getStatus(null);
         File e2 = other.getStatus(null);
         return e1 == e2 || e1 == null || e2 == null || equal(e1, e2);
@@ -360,16 +349,13 @@ public class StatusInfo implements Serializable {
      * @param e2 second Entry to compare
      * @return true if supplied entries contain equivalent information
      */
-    private static boolean equal(File e1, File e2)
-    {
+    private static boolean equal(File e1, File e2) {
         // TODO: use your own logic here
         return true;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Text: " + status + " " + getStatusText(status); // NOI18N
     }
-
 }

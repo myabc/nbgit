@@ -61,74 +61,67 @@ import org.openide.util.RequestProcessor;
  */
 public class ConflictResolvedAction extends ContextAction {
 
-    public ConflictResolvedAction(String name, VCSContext context)
-    {
+    public ConflictResolvedAction(String name, VCSContext context) {
         super(name, context);
     }
 
-    public void performAction(ActionEvent e)
-    {
+    public void performAction(ActionEvent e) {
         resolved(context);
     }
 
-    public static void resolved(VCSContext ctx)
-    {
+    public static void resolved(VCSContext ctx) {
         StatusCache cache = Git.getInstance().getStatusCache();
         File[] files = cache.listFiles(ctx, StatusInfo.STATUS_VERSIONED_CONFLICT);
         final File root = GitUtils.getRootFile(ctx);
-        if (root == null || files == null || files.length == 0)
+        if (root == null || files == null || files.length == 0) {
             return;
-
+        }
         conflictResolved(root, files);
 
         return;
     }
 
     @Override
-    public boolean isEnabled()
-    {
+    public boolean isEnabled() {
         StatusCache cache = Git.getInstance().getStatusCache();
 
-        if (cache.listFiles(context, StatusInfo.STATUS_VERSIONED_CONFLICT).length != 0)
+        if (cache.listFiles(context, StatusInfo.STATUS_VERSIONED_CONFLICT).length != 0) {
             return true;
-
+        }
         return false;
     }
 
-    public static void conflictResolved(File repository, final File[] files)
-    {
-        if (repository == null || files == null || files.length == 0)
+    public static void conflictResolved(File repository, final File[] files) {
+        if (repository == null || files == null || files.length == 0) {
             return;
+        }
         RequestProcessor rp = Git.getInstance().getRequestProcessor(repository);
         GitProgressSupport support = new GitProgressSupport() {
 
-            public void perform()
-            {
+            public void perform() {
                 for (int i = 0; i < files.length; i++) {
-                    if (isCanceled())
+                    if (isCanceled()) {
                         return;
+                    }
                     File file = files[i];
                     ConflictResolvedAction.perform(file);
                 }
             }
-
         };
         support.start(rp, repository.getAbsolutePath(), NbBundle.getMessage(ConflictResolvedAction.class, "MSG_ConflictResolved_Progress")); // NOI18N
     }
 
-    private static void perform(File file)
-    {
-        if (file == null)
+    private static void perform(File file) {
+        if (file == null) {
             return;
+        }
         StatusCache cache = Git.getInstance().getStatusCache();
 
         GitCommand.deleteConflictFile(file.getAbsolutePath());
         cache.refresh(file, StatusCache.REPOSITORY_STATUS_UNKNOWN);
     }
 
-    public static void resolved(File file)
-    {
+    public static void resolved(File file) {
         perform(file);
     }
-
 }

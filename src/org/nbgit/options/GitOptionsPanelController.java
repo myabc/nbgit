@@ -76,8 +76,7 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private boolean changed;
 
-    public GitOptionsPanelController()
-    {
+    public GitOptionsPanelController() {
         panel = new GitPanel(this);
         panel.exportFilenameBrowseButton.addActionListener(this);
 
@@ -87,17 +86,15 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
         panel.addButton.addActionListener(this);
     }
 
-    public void update()
-    {
+    public void update() {
         getPanel().load();
         changed = false;
     }
 
-    public void applyChanges()
-    {
-        if (!validateFields())
+    public void applyChanges() {
+        if (!validateFields()) {
             return;
-
+        }
         getPanel().store();
         // {folder} variable setting
         HtmlFormatter.getInstance().refresh();
@@ -106,70 +103,60 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
         changed = false;
     }
 
-    public void cancel()
-    {
+    public void cancel() {
         // need not do anything special, if no changes have been persisted yet
     }
 
-    public boolean isValid()
-    {
+    public boolean isValid() {
         return getPanel().valid();
     }
 
-    public boolean isChanged()
-    {
+    public boolean isChanged() {
         return changed;
     }
 
-    public HelpCtx getHelpCtx()
-    {
+    public HelpCtx getHelpCtx() {
         return new HelpCtx(GitOptionsPanelController.class);
     }
 
-    public JComponent getComponent(Lookup masterLookup)
-    {
+    public JComponent getComponent(Lookup masterLookup) {
         return getPanel();
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener l)
-    {
+    public void addPropertyChangeListener(PropertyChangeListener l) {
         pcs.addPropertyChangeListener(l);
     }
 
-    public void removePropertyChangeListener(PropertyChangeListener l)
-    {
+    public void removePropertyChangeListener(PropertyChangeListener l) {
         pcs.removePropertyChangeListener(l);
     }
 
-    public void actionPerformed(ActionEvent evt)
-    {
-        if (evt.getSource() == panel.exportFilenameBrowseButton)
+    public void actionPerformed(ActionEvent evt) {
+        if (evt.getSource() == panel.exportFilenameBrowseButton) {
             onExportFilenameBrowseClick();
-        else if (evt.getSource() == panel.addButton)
+        } else if (evt.getSource() == panel.addButton) {
             onAddClick();
+        }
     }
 
-    private File getExportFile()
-    {
+    private File getExportFile() {
         String execPath = panel.exportFilenameTextField.getText();
         return FileUtil.normalizeFile(new File(execPath));
     }
 
-    private Boolean validateFields()
-    {
+    private Boolean validateFields() {
         String username = panel.emailTextField.getText();
         if (!GitModuleConfig.getDefault().isUserNameValid(username)) {
             JOptionPane.showMessageDialog(null,
-                NbBundle.getMessage(GitPanel.class, "MSG_WARN_USER_NAME_TEXT"), // NOI18N
-                NbBundle.getMessage(GitPanel.class, "MSG_WARN_FIELD_TITLE"), // NOI18N
-                JOptionPane.WARNING_MESSAGE);
+                    NbBundle.getMessage(GitPanel.class, "MSG_WARN_USER_NAME_TEXT"), // NOI18N
+                    NbBundle.getMessage(GitPanel.class, "MSG_WARN_FIELD_TITLE"), // NOI18N
+                    JOptionPane.WARNING_MESSAGE);
             return false;
         }
         return true;
     }
 
-    private void onExportFilenameBrowseClick()
-    {
+    private void onExportFilenameBrowseClick() {
         File oldFile = getExportFile();
         JFileChooser fileChooser = new AccessibleJFileChooser(NbBundle.getMessage(GitOptionsPanelController.class, "ACSD_ExportBrowseFolder"), oldFile);   // NOI18N
         fileChooser.setDialogTitle(NbBundle.getMessage(GitOptionsPanelController.class, "ExportBrowse_title"));                                            // NOI18N
@@ -181,19 +168,19 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
         }
         fileChooser.showDialog(panel, NbBundle.getMessage(GitOptionsPanelController.class, "OK_Button"));                                            // NOI18N
         File f = fileChooser.getSelectedFile();
-        if (f != null)
+        if (f != null) {
             panel.exportFilenameTextField.setText(f.getAbsolutePath());
+        }
     }
 
-    private GitPanel getPanel()
-    {
-        if (panel == null)
+    private GitPanel getPanel() {
+        if (panel == null) {
             panel = new GitPanel(this);
+        }
         return panel;
     }
 
-    void changed()
-    {
+    void changed() {
         if (!changed) {
             changed = true;
             pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
@@ -206,39 +193,33 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
         private String description;
         private String variable;
 
-        public LabelVariable(String variable, String description)
-        {
+        public LabelVariable(String variable, String description) {
             this.description = description;
             this.variable = variable;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return description;
         }
 
-        public String getDescription()
-        {
+        public String getDescription() {
             return description;
         }
 
-        public String getVariable()
-        {
+        public String getVariable() {
             return variable;
         }
-
     }
 
-    private void onAddClick()
-    {
+    private void onAddClick() {
         LabelsPanel labelsPanel = new LabelsPanel();
         List<LabelVariable> variables = new ArrayList<LabelVariable>(GitAnnotator.LABELS.length);
         for (int i = 0; i < GitAnnotator.LABELS.length; i++) {
             LabelVariable variable = new LabelVariable(
-                GitAnnotator.LABELS[i],
-                "{" + GitAnnotator.LABELS[i] + "} - " + NbBundle.getMessage(GitPanel.class, "GitPanel.label." + GitAnnotator.LABELS[i]) // NOI18N
-                );
+                    GitAnnotator.LABELS[i],
+                    "{" + GitAnnotator.LABELS[i] + "} - " + NbBundle.getMessage(GitPanel.class, "GitPanel.label." + GitAnnotator.LABELS[i]) // NOI18N
+                    );
             variables.add(variable);
         }
         labelsPanel.labelsList.setListData(variables.toArray(new LabelVariable[variables.size()]));
@@ -256,12 +237,11 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
         labelsPanel.labelsList.addMouseListener(new MouseAdapter() {
 
             @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                if (e.getClickCount() == 2)
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
                     dialog.setVisible(false);
+                }
             }
-
         });
 
         dialog.setVisible(true);
@@ -278,22 +258,22 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
             String annotation = panel.annotationTextField.getText();
 
             int pos = panel.annotationTextField.getCaretPosition();
-            if (pos < 0)
+            if (pos < 0) {
                 pos = annotation.length();
-
+            }
             StringBuffer sb = new StringBuffer(annotation.length() + variable.length());
             sb.append(annotation.substring(0, pos));
             sb.append(variable);
-            if (pos < annotation.length())
+            if (pos < annotation.length()) {
                 sb.append(annotation.substring(pos, annotation.length()));
+            }
             panel.annotationTextField.setText(sb.toString());
             panel.annotationTextField.requestFocus();
             panel.annotationTextField.setCaretPosition(pos + variable.length());
         }
     }
 
-    private void onManageClick()
-    {
+    private void onManageClick() {
         final PropertiesPanel panel = new PropertiesPanel();
 
         final PropertiesTable propTable;
@@ -324,8 +304,8 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
 
         dialog.pack();
         dialog.setVisible(true);
-        if (dd.getValue() == okButton)
+        if (dd.getValue() == okButton) {
             gitProperties.setProperties();
+        }
     }
-
 }

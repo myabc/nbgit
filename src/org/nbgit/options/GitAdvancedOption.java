@@ -47,19 +47,15 @@ import org.openide.util.NbBundle;
 
 public final class GitAdvancedOption extends AdvancedOption {
 
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
         return NbBundle.getMessage(GitAdvancedOption.class, "AdvancedOption_DisplayName_Git"); // NOI18N
     }
 
-    public String getTooltip()
-    {
+    public String getTooltip() {
         return NbBundle.getMessage(GitAdvancedOption.class, "AdvancedOption_Tooltip_Git"); // NOI18N
     }
 
-    public OptionsPanelController create()
-    {
+    public OptionsPanelController create() {
         return new GitOptionsPanelController();
     }
-
 }

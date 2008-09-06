@@ -69,33 +69,33 @@ public class UpdatePanel extends javax.swing.JPanel {
     private static final int GIT_REVERT_TARGET_LIMIT = 100;
 
     /** Creates new form ReverModificationsPanel */
-    public UpdatePanel(File repo)
-    {
+    public UpdatePanel(File repo) {
         repository = repo;
         refreshViewTask = rp.create(new RefreshViewTask());
         initComponents();
         refreshViewTask.schedule(0);
     }
 
-    public String getSelectedRevision()
-    {
+    public String getSelectedRevision() {
         String revStr = (String) revisionsComboBox.getSelectedItem();
-        if (revStr != null)
+        if (revStr != null) {
             if (revStr.equals(NbBundle.getMessage(RevertModificationsPanel.class, "MSG_Revision_Default")) || // NOI18N
-                revStr.equals(NbBundle.getMessage(RevertModificationsPanel.class, "MSG_Fetching_Revisions"))) // NOI18N
+                    revStr.equals(NbBundle.getMessage(RevertModificationsPanel.class, "MSG_Fetching_Revisions"))) // NOI18N
+            {
                 revStr = null;
-            else if (revisionMap != null)
+            } else if (revisionMap != null) {
                 for (String[] entry : revisionMap) {
                     if (entry[0].equals(revStr)) {
                         revStr = entry[1];
                         break;
                     }
                 }
+            }
+        }
         return revStr;
     }
 
-    public boolean isForcedUpdateRequested()
-    {
+    public boolean isForcedUpdateRequested() {
         return forcedUpdateChxBox.isSelected();
     }
 

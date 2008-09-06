@@ -68,8 +68,7 @@ class DiffNode extends AbstractNode {
     private final Setup setup;
     private String htmlDisplayName;
 
-    public DiffNode(Setup setup)
-    {
+    public DiffNode(Setup setup) {
         super(Children.LEAF, Lookups.singleton(setup));
         this.setup = setup;
         setName(setup.getBaseFile().getName());
@@ -77,47 +76,44 @@ class DiffNode extends AbstractNode {
         refreshHtmlDisplayName();
     }
 
-    private void refreshHtmlDisplayName()
-    {
+    private void refreshHtmlDisplayName() {
         StatusInfo info = setup.getInfo();
         int status = info.getStatus();
         // Special treatment: Mergeable status should be annotated as Conflict in Versioning view according to UI spec
-        if (status == StatusInfo.STATUS_VERSIONED_MERGE)
+        if (status == StatusInfo.STATUS_VERSIONED_MERGE) {
             status = StatusInfo.STATUS_VERSIONED_CONFLICT;
+        }
         htmlDisplayName = HtmlFormatter.getInstance().annotateNameHtml(setup.getBaseFile().getName(), info, null);
         fireDisplayNameChange(htmlDisplayName, htmlDisplayName);
     }
 
     @Override
-    public String getHtmlDisplayName()
-    {
+    public String getHtmlDisplayName() {
         return htmlDisplayName;
     }
 
-    public Setup getSetup()
-    {
+    public Setup getSetup() {
         return setup;
     }
 
     @Override
-    public Action[] getActions(boolean context)
-    {
-        if (context)
+    public Action[] getActions(boolean context) {
+        if (context) {
             return null;
+        }
         return new Action[0];
     }
 
-    private void initProperties()
-    {
+    private void initProperties() {
         Sheet sheet = Sheet.createDefault();
         Sheet.Set ps = Sheet.createPropertiesSet();
 
         ps.put(new NameProperty());
         ps.put(new LocationProperty());
         ps.put(new StatusProperty());
-        if (setup.getPropertyName() != null)
+        if (setup.getPropertyName() != null) {
             ps.put(new PropertyNameProperty());
-
+        }
         sheet.put(ps);
         setSheet(sheet);
     }
@@ -125,14 +121,12 @@ class DiffNode extends AbstractNode {
     private abstract class DiffNodeProperty extends PropertySupport.ReadOnly {
 
         @SuppressWarnings("unchecked")
-        protected DiffNodeProperty(String name, Class type, String displayName, String shortDescription)
-        {
+        protected DiffNodeProperty(String name, Class type, String displayName, String shortDescription) {
             super(name, type, displayName, shortDescription);
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             try {
                 return getValue().toString();
             } catch (Exception e) {
@@ -140,72 +134,57 @@ class DiffNode extends AbstractNode {
                 return e.getLocalizedMessage();
             }
         }
-
     }
 
     private class NameProperty extends DiffNodeProperty {
 
-        public NameProperty()
-        {
+        public NameProperty() {
             super(COLUMN_NAME_NAME, String.class, COLUMN_NAME_NAME, COLUMN_NAME_NAME);
         }
 
-        public Object getValue() throws IllegalAccessException, InvocationTargetException
-        {
+        public Object getValue() throws IllegalAccessException, InvocationTargetException {
             return DiffNode.this.getName();
         }
-
     }
 
     private class PropertyNameProperty extends DiffNodeProperty {
 
-        public PropertyNameProperty()
-        {
+        public PropertyNameProperty() {
             super(COLUMN_NAME_PROPERTY, String.class, COLUMN_NAME_PROPERTY, COLUMN_NAME_PROPERTY);
         }
 
-        public Object getValue() throws IllegalAccessException, InvocationTargetException
-        {
+        public Object getValue() throws IllegalAccessException, InvocationTargetException {
             return setup.getPropertyName();
         }
-
     }
 
     private class LocationProperty extends DiffNodeProperty {
 
         private String location;
 
-        public LocationProperty()
-        {
+        public LocationProperty() {
             super(COLUMN_NAME_LOCATION, String.class, COLUMN_NAME_LOCATION, COLUMN_NAME_LOCATION);
             location = GitUtils.getRelativePath(setup.getBaseFile());
             setValue("sortkey", location + "\t" + DiffNode.this.getName()); // NOI18N
         }
 
-        public Object getValue() throws IllegalAccessException, InvocationTargetException
-        {
+        public Object getValue() throws IllegalAccessException, InvocationTargetException {
             return location;
         }
-
     }
-
     private static final String[] zeros = new String[]{"", "00", "0", ""}; // NOI18N
 
     private class StatusProperty extends DiffNodeProperty {
 
-        public StatusProperty()
-        {
+        public StatusProperty() {
             super(COLUMN_NAME_STATUS, String.class, COLUMN_NAME_STATUS, COLUMN_NAME_STATUS);
             String shortPath = GitUtils.getRelativePath(setup.getBaseFile());
             String sortable = Integer.toString(GitUtils.getComparableStatus(setup.getInfo().getStatus()));
             setValue("sortkey", zeros[sortable.length()] + sortable + "\t" + shortPath + "\t" + DiffNode.this.getName().toUpperCase()); // NOI18N
         }
 
-        public Object getValue() throws IllegalAccessException, InvocationTargetException
-        {
+        public Object getValue() throws IllegalAccessException, InvocationTargetException {
             return setup.getInfo().getStatusText();
         }
-
     }
-
 }

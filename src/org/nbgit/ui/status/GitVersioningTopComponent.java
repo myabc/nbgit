@@ -63,14 +63,12 @@ import org.openide.windows.WindowManager;
 public class GitVersioningTopComponent extends TopComponent {
 
     private static final long serialVersionUID = 1L;
-
-    private VersioningPanel         syncPanel;
-    private VCSContext              context;
-    private String                  contentTitle;
-    private String                  branchTitle;
-    private long                    lastUpdateTimestamp;
+    private VersioningPanel syncPanel;
+    private VCSContext context;
+    private String contentTitle;
+    private String branchTitle;
+    private long lastUpdateTimestamp;
     private static final String PREFERRED_ID = "gitversioning"; // NOI18N
-
     private static GitVersioningTopComponent instance;
 
     public GitVersioningTopComponent() {
@@ -107,7 +105,9 @@ public class GitVersioningTopComponent extends TopComponent {
     }
 
     private void refreshContent() {
-        if (syncPanel == null) return;  // the component is not showing => nothing to refresh
+        if (syncPanel == null) {
+            return;  // the component is not showing => nothing to refresh
+        }
         updateTitle();
         syncPanel.setContext(context);
     }
@@ -140,7 +140,8 @@ public class GitVersioningTopComponent extends TopComponent {
     }
 
     private void updateTitle() {
-        SwingUtilities.invokeLater(new Runnable (){
+        SwingUtilities.invokeLater(new Runnable() {
+
             public void run() {
 
                 if (contentTitle == null) {
@@ -148,18 +149,18 @@ public class GitVersioningTopComponent extends TopComponent {
                 } else {
                     File baseFile = GitUtils.getRootFile(context);
                     String name = "";
-                    if(baseFile != null){
+                    if (baseFile != null) {
                         name = baseFile.getName();
                     }
 
                     if (branchTitle == null) {
                         setName(NbBundle.getMessage(GitVersioningTopComponent.class,
                                 "CTL_Versioning_TopComponent_MultiTitle",
-                                contentTitle, name.equals(contentTitle)? "": "[" + name + "]"));  // NOI18N
+                                contentTitle, name.equals(contentTitle) ? "" : "[" + name + "]"));  // NOI18N
                     } else {
                         setName(NbBundle.getMessage(GitVersioningTopComponent.class,
                                 "CTL_Versioning_TopComponent_Title_ContentBranch",
-                                contentTitle, name.equals(contentTitle)? "": "[" + name + "] ", branchTitle)); // NOI18N
+                                contentTitle, name.equals(contentTitle) ? "" : "[" + name + "] ", branchTitle)); // NOI18N
                     }
                 }
             }
@@ -192,7 +193,7 @@ public class GitVersioningTopComponent extends TopComponent {
             return getDefault();
         }
         if (win instanceof GitVersioningTopComponent) {
-            return (GitVersioningTopComponent)win;
+            return (GitVersioningTopComponent) win;
         }
         Git.LOG.log(Level.FINE,
                 "There seem to be multiple components with the '" + PREFERRED_ID + // NOI18N
@@ -217,7 +218,9 @@ public class GitVersioningTopComponent extends TopComponent {
     }
 
     final static class ResolvableHelper implements Serializable {
+
         private static final long serialVersionUID = 1L;
+
         public Object readResolve() {
             return GitVersioningTopComponent.getDefault();
         }
@@ -254,18 +257,21 @@ public class GitVersioningTopComponent extends TopComponent {
     }
 
     private String getContextFilesList(VCSContext ctx) {
-        if (ctx == null || ctx.getRootFiles().size() == 0)
-        return NbBundle.getMessage(GitVersioningTopComponent.class, "CTL_Versioning_TopComponent_Title"); // NOI18N
-    int size = ctx.getRootFiles().size();
+        if (ctx == null || ctx.getRootFiles().size() == 0) {
+            return NbBundle.getMessage(GitVersioningTopComponent.class, "CTL_Versioning_TopComponent_Title"); // NOI18N
+        }
+        int size = ctx.getRootFiles().size();
 
-    StringBuffer sb = new StringBuffer(200);
-        if (size > 1)
-        sb.append("<html>"); // NOI18N
+        StringBuffer sb = new StringBuffer(200);
+        if (size > 1) {
+            sb.append("<html>"); // NOI18N
+        }
         for (File file : ctx.getRootFiles()) {
             sb.append(file.getAbsolutePath());
-        size--;
-        if (size > 0)
+            size--;
+            if (size > 0) {
                 sb.append("<br>"); // NOI18N
+            }
         }
         return sb.toString();
     }
@@ -274,5 +280,4 @@ public class GitVersioningTopComponent extends TopComponent {
     public boolean hasContext() {
         return context != null && context.getRootFiles().size() > 0;
     }
-
 }

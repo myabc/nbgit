@@ -41,7 +41,6 @@
  */
 package org.nbgit.ui.status;
 
-
 import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
 import org.openide.util.HelpCtx;
@@ -98,5 +97,4 @@ public class OpenVersioningAction extends ShowAllChangesAction {
     protected boolean shouldPostRefresh() {
         return false;
     }
-
 }

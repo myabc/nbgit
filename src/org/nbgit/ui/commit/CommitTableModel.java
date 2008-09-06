@@ -67,7 +67,6 @@ public class CommitTableModel extends AbstractTableModel {
     public static final String COLUMN_NAME_BRANCH = "branch"; // NOI18N
 
     private class RootFile {
-
         String repositoryPath;
         String rootLocalPath;
     }
@@ -77,32 +76,29 @@ public class CommitTableModel extends AbstractTableModel {
      * Defines labels for Versioning view table columns.
      */
     private static final Map<String, String[]> columnLabels = new HashMap<String, String[]>(4);
-
-
     {
         ResourceBundle loc = NbBundle.getBundle(CommitTableModel.class);
         columnLabels.put(COLUMN_NAME_NAME, new String[]{
-                loc.getString("CTL_CommitTable_Column_File"), // NOI18N
-                loc.getString("CTL_CommitTable_Column_File")
-            }); // NOI18N
+                    loc.getString("CTL_CommitTable_Column_File"), // NOI18N
+                    loc.getString("CTL_CommitTable_Column_File")
+                }); // NOI18N
         columnLabels.put(COLUMN_NAME_BRANCH, new String[]{
-                loc.getString("CTL_CommitTable_Column_Branch"), // NOI18N
-                loc.getString("CTL_CommitTable_Column_Branch")
-            }); // NOI18N
+                    loc.getString("CTL_CommitTable_Column_Branch"), // NOI18N
+                    loc.getString("CTL_CommitTable_Column_Branch")
+                }); // NOI18N
         columnLabels.put(COLUMN_NAME_STATUS, new String[]{
-                loc.getString("CTL_CommitTable_Column_Status"), // NOI18N
-                loc.getString("CTL_CommitTable_Column_Status")
-            }); // NOI18N
+                    loc.getString("CTL_CommitTable_Column_Status"), // NOI18N
+                    loc.getString("CTL_CommitTable_Column_Status")
+                }); // NOI18N
         columnLabels.put(COLUMN_NAME_ACTION, new String[]{
-                loc.getString("CTL_CommitTable_Column_Action"), // NOI18N
-                loc.getString("CTL_CommitTable_Column_Action")
-            }); // NOI18N
+                    loc.getString("CTL_CommitTable_Column_Action"), // NOI18N
+                    loc.getString("CTL_CommitTable_Column_Action")
+                }); // NOI18N
         columnLabels.put(COLUMN_NAME_PATH, new String[]{
-                loc.getString("CTL_CommitTable_Column_Folder"), // NOI18N
-                loc.getString("CTL_CommitTable_Column_Folder")
-            }); // NOI18N
+                    loc.getString("CTL_CommitTable_Column_Folder"), // NOI18N
+                    loc.getString("CTL_CommitTable_Column_Folder")
+                }); // NOI18N
     }
-
     private CommitOptions[] commitOptions;
     private GitFileNode[] nodes;
     private String[] columns;
@@ -111,23 +107,21 @@ public class CommitTableModel extends AbstractTableModel {
      * Create stable with name, status, action and path columns
      * and empty nodes {@link #setNodes model}.
      */
-    public CommitTableModel(String[] columns)
-    {
+    public CommitTableModel(String[] columns) {
         setColumns(columns);
         setNodes(new GitFileNode[0]);
     }
 
-    void setNodes(GitFileNode[] nodes)
-    {
+    void setNodes(GitFileNode[] nodes) {
         this.nodes = nodes;
         defaultCommitOptions();
         fireTableDataChanged();
     }
 
-    void setColumns(String[] cols)
-    {
-        if (Arrays.equals(cols, columns))
+    void setColumns(String[] cols) {
+        if (Arrays.equals(cols, columns)) {
             return;
+        }
         columns = cols;
         fireTableStructureChanged();
     }
@@ -135,8 +129,7 @@ public class CommitTableModel extends AbstractTableModel {
     /**
      * @return Map&lt;GitFileNode, CommitOptions>
      */
-    public Map<GitFileNode, CommitOptions> getCommitFiles()
-    {
+    public Map<GitFileNode, CommitOptions> getCommitFiles() {
         Map<GitFileNode, CommitOptions> ret = new HashMap<GitFileNode, CommitOptions>(nodes.length);
         for (int i = 0; i < nodes.length; i++) {
             ret.put(nodes[i], commitOptions[i]);
@@ -145,52 +138,47 @@ public class CommitTableModel extends AbstractTableModel {
     }
 
     @Override
-    public String getColumnName(int column)
-    {
+    public String getColumnName(int column) {
         return columnLabels.get(columns[column])[0];
     }
 
-    public int getColumnCount()
-    {
+    public int getColumnCount() {
         return columns.length;
     }
 
-    public int getRowCount()
-    {
+    public int getRowCount() {
         return nodes.length;
     }
 
     @Override
-    public Class getColumnClass(int columnIndex)
-    {
+    public Class getColumnClass(int columnIndex) {
         String col = columns[columnIndex];
-        if (col.equals(COLUMN_NAME_ACTION))
+        if (col.equals(COLUMN_NAME_ACTION)) {
             return CommitOptions.class;
+        }
         return String.class;
     }
 
     @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex)
-    {
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
         String col = columns[columnIndex];
         return col.equals(COLUMN_NAME_ACTION);
     }
 
-    public Object getValueAt(int rowIndex, int columnIndex)
-    {
+    public Object getValueAt(int rowIndex, int columnIndex) {
         GitFileNode node;
         String col = columns[columnIndex];
-        if (col.equals(COLUMN_NAME_NAME))
+        if (col.equals(COLUMN_NAME_NAME)) {
             return nodes[rowIndex].getName();
-        else if (col.equals(COLUMN_NAME_STATUS)) {
+        } else if (col.equals(COLUMN_NAME_STATUS)) {
             node = nodes[rowIndex];
             StatusInfo finfo = node.getInformation();
             //TODO what should we do with this?
             //finfo.getEntry(node.getFile());  // HACK returned value is not interesting, point is side effect, it loads ISVNStatus structure
             return finfo.getStatusText();
-        } else if (col.equals(COLUMN_NAME_ACTION))
+        } else if (col.equals(COLUMN_NAME_ACTION)) {
             return commitOptions[rowIndex];
-        else if (col.equals(COLUMN_NAME_PATH)) {
+        } else if (col.equals(COLUMN_NAME_PATH)) {
             String shortPath = null;
             // XXX this is a mess
             if (rootFile != null) {
@@ -199,8 +187,9 @@ public class CommitTableModel extends AbstractTableModel {
                 shortPath = rootFile.repositoryPath + relativePath.replace(File.separatorChar, '/');
             } else {
                 shortPath = GitUtils.getRelativePath(nodes[rowIndex].getFile());
-                if (shortPath == null)
+                if (shortPath == null) {
                     shortPath = org.openide.util.NbBundle.getMessage(CommitTableModel.class, "CTL_CommitForm_NotInRepository");
+                }
             }
             return shortPath;
         }
@@ -208,52 +197,48 @@ public class CommitTableModel extends AbstractTableModel {
     }
 
     @Override
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex)
-    {
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         String col = columns[columnIndex];
         if (col.equals(COLUMN_NAME_ACTION)) {
             commitOptions[rowIndex] = (CommitOptions) aValue;
             fireTableCellUpdated(rowIndex, columnIndex);
-        } else
+        } else {
             throw new IllegalArgumentException("Column index out of range: " + columnIndex);
+        }
     }
 
-    private void defaultCommitOptions()
-    {
+    private void defaultCommitOptions() {
         boolean excludeNew = System.getProperty("netbeans.git.excludeNewFiles") != null; // NOI18N
         commitOptions = new CommitOptions[nodes.length];
         for (int i = 0; i < nodes.length; i++) {
             GitFileNode node = nodes[i];
             File file = node.getFile();
-            if (GitModuleConfig.getDefault().isExcludedFromCommit(file.getAbsolutePath()))
+            if (GitModuleConfig.getDefault().isExcludedFromCommit(file.getAbsolutePath())) {
                 commitOptions[i] = CommitOptions.EXCLUDE;
-            else
+            } else {
                 switch (node.getInformation().getStatus()) {
-                case StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY:
-                case StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY:
-                    commitOptions[i] = CommitOptions.COMMIT_REMOVE;
-                    break;
-                default:
-                    commitOptions[i] = CommitOptions.COMMIT;
+                    case StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY:
+                    case StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY:
+                        commitOptions[i] = CommitOptions.COMMIT_REMOVE;
+                        break;
+                    default:
+                        commitOptions[i] = CommitOptions.COMMIT;
                 }
+            }
         }
     }
 
-    public GitFileNode getNode(int row)
-    {
+    public GitFileNode getNode(int row) {
         return nodes[row];
     }
 
-    public CommitOptions getOptions(int row)
-    {
+    public CommitOptions getOptions(int row) {
         return commitOptions[row];
     }
 
-    void setRootFile(String repositoryPath, String rootLocalPath)
-    {
+    void setRootFile(String repositoryPath, String rootLocalPath) {
         rootFile = new RootFile();
         rootFile.repositoryPath = repositoryPath;
         rootFile.rootLocalPath = rootLocalPath;
     }
-
 }

@@ -63,7 +63,7 @@ public class Update implements PropertyChangeListener {
 
     /** Creates a new instance of Update */
     public Update(File repository) {
-        this (repository, null);
+        this(repository, null);
     }
 
     public Update(File repository, String defaultRevision) {
@@ -82,7 +82,7 @@ public class Update implements PropertyChangeListener {
     public boolean showDialog() {
         DialogDescriptor dialogDescriptor;
         dialogDescriptor = new DialogDescriptor(panel, org.openide.util.NbBundle.getMessage(RevertModifications.class, "CTL_UpdateDialog", repository.getName())); // NOI18N
-        dialogDescriptor.setOptions(new Object[] {okButton, cancelButton});
+        dialogDescriptor.setOptions(new Object[]{okButton, cancelButton});
 
         dialogDescriptor.setModal(true);
         dialogDescriptor.setHelpCtx(new HelpCtx(this.getClass()));
@@ -97,18 +97,23 @@ public class Update implements PropertyChangeListener {
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
-        if(okButton != null) {
-            boolean valid = ((Boolean)evt.getNewValue()).booleanValue();
+        if (okButton != null) {
+            boolean valid = ((Boolean) evt.getNewValue()).booleanValue();
             okButton.setEnabled(valid);
         }
     }
 
     public String getSelectionRevision() {
-        if (panel == null) return null;
+        if (panel == null) {
+            return null;
+        }
         return panel.getSelectedRevision();
     }
+
     public boolean isForcedUpdateRequested() {
-        if (panel == null) return false;
+        if (panel == null) {
+            return false;
+        }
         return panel.isForcedUpdateRequested();
     }
 }

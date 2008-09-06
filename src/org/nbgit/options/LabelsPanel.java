@@ -50,9 +50,6 @@ public class LabelsPanel extends javax.swing.JPanel {
     /** Creates new form LabelsPanel */
     public LabelsPanel() {
         initComponents();
-
-
-
     }
 
     /** This method is called from within the constructor to
@@ -83,11 +80,8 @@ public class LabelsPanel extends javax.swing.JPanel {
             .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     final javax.swing.JList labelsList = new javax.swing.JList();
     // End of variables declaration//GEN-END:variables
-
 }

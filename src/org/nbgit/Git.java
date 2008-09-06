@@ -68,39 +68,36 @@ import org.spearce.jgit.lib.Repository;
 public class Git {
 
     public static final String GIT_OUTPUT_TAB_TITLE = org.openide.util.NbBundle.getMessage(Git.class, "CTL_Git_DisplayName"); // NOI18N
-
     public static final String PROP_ANNOTATIONS_CHANGED = "annotationsChanged"; // NOI18N
     public static final String PROP_VERSIONED_FILES_CHANGED = "versionedFilesChanged"; // NOI18N
     public static final String PROP_CHANGESET_CHANGED = "changesetChanged"; // NOI18N
     public static final Logger LOG = Logger.getLogger("org.nbgit"); // NOI18N
     private static final int STATUS_DIFFABLE =
-        StatusInfo.STATUS_VERSIONED_UPTODATE |
-        StatusInfo.STATUS_VERSIONED_MODIFIEDLOCALLY |
-        StatusInfo.STATUS_VERSIONED_MODIFIEDINREPOSITORY |
-        StatusInfo.STATUS_VERSIONED_CONFLICT |
-        StatusInfo.STATUS_VERSIONED_MERGE |
-        StatusInfo.STATUS_VERSIONED_REMOVEDINREPOSITORY |
-        StatusInfo.STATUS_VERSIONED_MODIFIEDINREPOSITORY |
-        StatusInfo.STATUS_VERSIONED_MODIFIEDINREPOSITORY;
+            StatusInfo.STATUS_VERSIONED_UPTODATE |
+            StatusInfo.STATUS_VERSIONED_MODIFIEDLOCALLY |
+            StatusInfo.STATUS_VERSIONED_MODIFIEDINREPOSITORY |
+            StatusInfo.STATUS_VERSIONED_CONFLICT |
+            StatusInfo.STATUS_VERSIONED_MERGE |
+            StatusInfo.STATUS_VERSIONED_REMOVEDINREPOSITORY |
+            StatusInfo.STATUS_VERSIONED_MODIFIEDINREPOSITORY |
+            StatusInfo.STATUS_VERSIONED_MODIFIEDINREPOSITORY;
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
     private final StatusCache statusCache = new StatusCache(this);
     private HashMap<String, RequestProcessor> processorsToUrl;
     private final Map<File, Repository> repos = new HashMap<File, Repository>();
     private static Git instance;
 
-    private Git()
-    {
+    private Git() {
     }
 
-    public static synchronized Git getInstance()
-    {
-        if (instance == null)
+    public static synchronized Git getInstance() {
+        if (instance == null) {
             instance = new Git();
+        }
         return instance;
     }
 
-    public Repository getRepository(File root)
-    {
+    public Repository getRepository(File root) {
         Repository repo = repos.get(root);
 
         if (repo == null) {
@@ -120,8 +117,7 @@ public class Git {
      *
      * @return StatusCache for the repository
      */
-    public StatusCache getStatusCache()
-    {
+    public StatusCache getStatusCache() {
         return statusCache;
     }
 
@@ -131,14 +127,12 @@ public class Git {
      * @param file
      * @return
      */
-    public boolean isAdministrative(File file)
-    {
+    public boolean isAdministrative(File file) {
         String name = file.getName();
         return isAdministrative(name) && file.isDirectory();
     }
 
-    public boolean isAdministrative(String fileName)
-    {
+    public boolean isAdministrative(String fileName) {
         return fileName.equals(".git"); // NOI18N
     }
 
@@ -149,24 +143,24 @@ public class Git {
      * @param file a file or directory
      * @return false if the file should receive the STATUS_NOTVERSIONED_NOTMANAGED status, true otherwise
      */
-    public boolean isManaged(File file)
-    {
+    public boolean isManaged(File file) {
         return VersioningSupport.getOwner(file) instanceof GitVCS && !GitUtils.isPartOfGitMetadata(file);
     }
 
-    public File getTopmostManagedParent(File file)
-    {
-        if (GitUtils.isPartOfGitMetadata(file))
+    public File getTopmostManagedParent(File file) {
+        if (GitUtils.isPartOfGitMetadata(file)) {
             for (; file != null; file = file.getParentFile()) {
                 if (isAdministrative(file)) {
                     file = file.getParentFile();
                     break;
                 }
             }
+        }
         File topmost = null;
         for (; file != null; file = file.getParentFile()) {
-            if (org.netbeans.modules.versioning.util.Utils.isScanForbidden(file))
+            if (org.netbeans.modules.versioning.util.Utils.isScanForbidden(file)) {
                 break;
+            }
             if (new File(file, ".git").canWrite()) { // NOI18N
                 topmost = file;
                 break;
@@ -181,62 +175,58 @@ public class Git {
      * @param file file to examine
      * @return String mime type of the file (or best guess)
      */
-    public String getMimeType(File file)
-    {
+    public String getMimeType(File file) {
         FileObject fo = FileUtil.toFileObject(file);
         String foMime;
-        if (fo == null)
+        if (fo == null) {
             foMime = "content/unknown";
-        else {
+        } else {
             foMime = fo.getMIMEType();
             if ("content/unknown".equals(foMime)) // NOI18N
+            {
                 foMime = "text/plain";
+            }
         }
-        if ((statusCache.getStatus(file).getStatus() & StatusInfo.STATUS_VERSIONED) == 0)
+        if ((statusCache.getStatus(file).getStatus() & StatusInfo.STATUS_VERSIONED) == 0) {
             return GitUtils.isFileContentBinary(file) ? "application/octet-stream" : foMime;
-        else
+        } else {
             return foMime;
+        }
     }
 
-    public void versionedFilesChanged()
-    {
+    public void versionedFilesChanged() {
         support.firePropertyChange(PROP_VERSIONED_FILES_CHANGED, null, null);
     }
 
-    public void refreshAllAnnotations()
-    {
+    public void refreshAllAnnotations() {
         support.firePropertyChange(PROP_ANNOTATIONS_CHANGED, null, null);
     }
 
-    public void changesetChanged(File repository)
-    {
+    public void changesetChanged(File repository) {
         support.firePropertyChange(PROP_CHANGESET_CHANGED, repository, null);
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener listener)
-    {
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
         support.addPropertyChangeListener(listener);
     }
 
-    public void removePropertyChangeListener(PropertyChangeListener listener)
-    {
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
         support.removePropertyChangeListener(listener);
     }
 
-    public void getOriginalFile(File workingCopy, File originalFile)
-    {
+    public void getOriginalFile(File workingCopy, File originalFile) {
         StatusInfo info = statusCache.getStatus(workingCopy);
         LOG.log(Level.FINE, "getOriginalFile: {0} {1}", new Object[]{workingCopy, info}); // NOI18N
-        if ((info.getStatus() & STATUS_DIFFABLE) == 0)
-            return;
-
-        // We can get status returned as UptoDate instead of LocallyNew
+        if ((info.getStatus() & STATUS_DIFFABLE) == 0) {
+            return;        // We can get status returned as UptoDate instead of LocallyNew
         // because refreshing of status after creation has been scheduled
         // but may not have happened yet.
+        }
         try {
             File original = GitUtils.getFileRevision(workingCopy, GitRepository.REVISION_BASE);
-            if (original == null)
+            if (original == null) {
                 return;
+            }
             org.netbeans.modules.versioning.util.Utils.copyStreamsCloseAll(new FileOutputStream(originalFile), new FileInputStream(original));
             original.delete();
         } catch (IOException e) {
@@ -248,30 +238,27 @@ public class Git {
     /**
      * Serializes all Git requests (moves them out of AWT).
      */
-    public RequestProcessor getRequestProcessor()
-    {
+    public RequestProcessor getRequestProcessor() {
         return getRequestProcessor((String) null);
     }
 
     /**
      * Serializes all Git requests (moves them out of AWT).
      */
-    public RequestProcessor getRequestProcessor(File file)
-    {
+    public RequestProcessor getRequestProcessor(File file) {
         return getRequestProcessor(file.getAbsolutePath());
     }
 
-    public RequestProcessor getRequestProcessor(String url)
-    {
-        if (processorsToUrl == null)
+    public RequestProcessor getRequestProcessor(String url) {
+        if (processorsToUrl == null) {
             processorsToUrl = new HashMap<String, RequestProcessor>();
-
+        }
         String key;
-        if (url != null)
+        if (url != null) {
             key = url;
-        else
+        } else {
             key = "ANY_URL";
-
+        }
         RequestProcessor rp = processorsToUrl.get(key);
         if (rp == null) {
             rp = new RequestProcessor("Git - " + key, 1, true); // NOI18N
@@ -280,10 +267,10 @@ public class Git {
         return rp;
     }
 
-    public void clearRequestProcessor(String url)
-    {
-        if (processorsToUrl != null & url != null)
+    public void clearRequestProcessor(String url) {
+        if (processorsToUrl != null & url != null) {
             processorsToUrl.remove(url);
+        }
     }
 
     /**
@@ -292,9 +279,7 @@ public class Git {
      * in which case the logger will not print anything
      * @return OutputLogger logger to write to
      */
-    public OutputLogger getLogger(String repositoryRoot)
-    {
+    public OutputLogger getLogger(String repositoryRoot) {
         return OutputLogger.getLogger(repositoryRoot);
     }
-
 }

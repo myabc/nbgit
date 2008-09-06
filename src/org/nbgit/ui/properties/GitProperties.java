@@ -74,8 +74,7 @@ public class GitProperties implements ListSelectionListener {
     private Font fontTextArea;
 
     /** Creates a new instance of GitProperties */
-    public GitProperties(PropertiesPanel panel, PropertiesTable propTable, File root)
-    {
+    public GitProperties(PropertiesPanel panel, PropertiesTable propTable, File root) {
         this.panel = panel;
         this.propTable = propTable;
         this.root = root;
@@ -85,39 +84,32 @@ public class GitProperties implements ListSelectionListener {
         refreshProperties();
     }
 
-    public PropertiesPanel getPropertiesPanel()
-    {
+    public PropertiesPanel getPropertiesPanel() {
         return panel;
     }
 
-    public void setPropertiesPanel(PropertiesPanel panel)
-    {
+    public void setPropertiesPanel(PropertiesPanel panel) {
         this.panel = panel;
     }
 
-    public File getRoot()
-    {
+    public File getRoot() {
         return root;
     }
 
-    public void setRoot(File root)
-    {
+    public void setRoot(File root) {
         this.root = root;
     }
 
-    protected String getPropertyValue()
-    {
+    protected String getPropertyValue() {
         return panel.txtAreaValue.getText();
     }
 
-    protected void refreshProperties()
-    {
+    protected void refreshProperties() {
         RequestProcessor rp = Git.getInstance().getRequestProcessor(root.getAbsolutePath());
         try {
             support = new GitProgressSupport() {
 
-                protected void perform()
-                {
+                protected void perform() {
                     Properties props = GitModuleConfig.getDefault().getProperties(root);
                     GitPropertiesNode[] gitProps = new GitPropertiesNode[props.size()];
                     int i = 0;
@@ -138,14 +130,12 @@ public class GitProperties implements ListSelectionListener {
         }
     }
 
-    public void setProperties()
-    {
+    public void setProperties() {
         RequestProcessor rp = Git.getInstance().getRequestProcessor(root.getAbsolutePath());
         try {
             support = new GitProgressSupport() {
 
-                protected void perform()
-                {
+                protected void perform() {
                     Repository repo = Git.getInstance().getRepository(root);
                     if (repo == null) {
                         return;
@@ -189,26 +179,22 @@ public class GitProperties implements ListSelectionListener {
                         Exceptions.printStackTrace(ex);
                     }
                 }
-
             };
             support.start(rp, root.getAbsolutePath(), org.openide.util.NbBundle.getMessage(GitProperties.class, "LBL_Properties_Progress")); // NOI18N
         } finally {
             support = null;
         }
     }
-
     private int lastIndex = -1;
 
-    public void updateLastSelection()
-    {
+    public void updateLastSelection() {
         GitPropertiesNode[] gitPropertiesNodes = propTable.getNodes();
         if (lastIndex >= 0) {
             gitPropertiesNodes[lastIndex].setValue(getPropertyValue());
         }
     }
 
-    public void valueChanged(ListSelectionEvent e)
-    {
+    public void valueChanged(ListSelectionEvent e) {
         int index = propTable.getTable().getSelectedRow();
         if (index < 0) {
             lastIndex = -1;
@@ -221,5 +207,4 @@ public class GitProperties implements ListSelectionListener {
         panel.txtAreaValue.setText(gitPropertiesNodes[index].getValue());
         lastIndex = index;
     }
-
 }

@@ -67,7 +67,7 @@ class RevisionNodeChildren extends Children.Keys<RepositoryRevision.Event> {
 
     @Override
     protected void removeNotify() {
-        setKeys (Collections.<RepositoryRevision.Event>emptySet());
+        setKeys(Collections.<RepositoryRevision.Event>emptySet());
     }
 
     private void refreshKeys() {
@@ -76,7 +76,7 @@ class RevisionNodeChildren extends Children.Keys<RepositoryRevision.Event> {
 
     protected Node[] createNodes(RepositoryRevision.Event fn) {
         RevisionNode node = new RevisionNode(fn, master);
-        return new Node[] { node };
+        return new Node[]{node};
     }
 
     public void refreshChildren() {

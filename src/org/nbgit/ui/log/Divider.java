@@ -66,8 +66,7 @@ class Divider extends JPanel {
     private ActionListener listener;
     private int arrowDirection;
 
-    public Divider(ActionListener listener)
-    {
+    public Divider(ActionListener listener) {
         this.listener = listener;
         enableEvents(MouseEvent.MOUSE_ENTERED | MouseEvent.MOUSE_EXITED | MouseEvent.MOUSE_CLICKED);
         bkg = getBackground();
@@ -79,25 +78,21 @@ class Divider extends JPanel {
     }
 
     @Override
-    public Dimension getPreferredSize()
-    {
+    public Dimension getPreferredSize() {
         return new Dimension(Integer.MAX_VALUE, 6);
     }
 
     @Override
-    public Dimension getMaximumSize()
-    {
+    public Dimension getMaximumSize() {
         return new Dimension(Integer.MAX_VALUE, 6);
     }
 
-    public void setArrowDirection(int direction)
-    {
+    public void setArrowDirection(int direction) {
         arrowDirection = direction;
     }
 
     @Override
-    protected void processMouseEvent(MouseEvent e)
-    {
+    protected void processMouseEvent(MouseEvent e) {
         super.processMouseEvent(e);
         if (e.getID() == MouseEvent.MOUSE_ENTERED) {
             setBackground(sbkg);
@@ -107,20 +102,20 @@ class Divider extends JPanel {
             setBackground(bkg);
             repaint();
         }
-        if (e.getID() == MouseEvent.MOUSE_CLICKED)
+        if (e.getID() == MouseEvent.MOUSE_CLICKED) {
             listener.actionPerformed(new ActionEvent(this, DIVIDER_CLICKED, ""));
+        }
     }
 
     @Override
-    protected void paintComponent(Graphics g)
-    {
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Dimension dim = getSize();
-        if (getBackground().equals(bkg))
+        if (getBackground().equals(bkg)) {
             g.setColor(arrowColor);
-        else
+        } else {
             g.setColor(selectedArrowColor);
-
+        }
         int mid = dim.width / 2;
         if (arrowDirection == DOWN) {
             g.drawLine(mid - 4, 1, mid + 4, 1);
@@ -134,5 +129,4 @@ class Divider extends JPanel {
             g.drawLine(mid - 1, 1, mid + 1, 1);
         }
     }
-
 }

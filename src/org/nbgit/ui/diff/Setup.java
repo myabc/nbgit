@@ -112,8 +112,7 @@ public final class Setup {
     private DiffNode node;
     private String title;
 
-    public Setup(File baseFile, String propertyName, int type)
-    {
+    public Setup(File baseFile, String propertyName, int type) {
         this.baseFile = baseFile;
         this.propertyName = propertyName;
         info = Git.getInstance().getStatusCache().getStatus(baseFile);
@@ -126,33 +125,33 @@ public final class Setup {
         // the first source
 
         switch (type) {
-        case DIFFTYPE_LOCAL:
+            case DIFFTYPE_LOCAL:
 
-            // from-BASE
+                // from-BASE
 
-            if (match(status, StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY | StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY)) {
-                firstRevision = GitRepository.REVISION_BASE;
+                if (match(status, StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY | StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY)) {
+                    firstRevision = GitRepository.REVISION_BASE;
 
-                firstTitle = loc.getString("MSG_DiffPanel_LocalNew"); // NOI18N
+                    firstTitle = loc.getString("MSG_DiffPanel_LocalNew"); // NOI18N
 
-            } else if (match(status, StatusInfo.STATUS_VERSIONED_NEWINREPOSITORY)) {
-                firstRevision = null;
-                firstTitle = NbBundle.getMessage(Setup.class, "LBL_Diff_NoLocalFile"); // NOI18N
+                } else if (match(status, StatusInfo.STATUS_VERSIONED_NEWINREPOSITORY)) {
+                    firstRevision = null;
+                    firstTitle = NbBundle.getMessage(Setup.class, "LBL_Diff_NoLocalFile"); // NOI18N
 
-            } else if (match(status, StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY | StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY)) {
-                firstRevision = GitRepository.REVISION_BASE;
-                firstTitle = MessageFormat.format(loc.getString("MSG_DiffPanel_BaseRevision"), new Object[]{firstRevision}); // NOI18N
+                } else if (match(status, StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY | StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY)) {
+                    firstRevision = GitRepository.REVISION_BASE;
+                    firstTitle = MessageFormat.format(loc.getString("MSG_DiffPanel_BaseRevision"), new Object[]{firstRevision}); // NOI18N
 
-            } else {
-                firstRevision = GitRepository.REVISION_BASE;
-                firstTitle = MessageFormat.format(loc.getString("MSG_DiffPanel_BaseRevision"), new Object[]{firstRevision}); // NOI18N
+                } else {
+                    firstRevision = GitRepository.REVISION_BASE;
+                    firstTitle = MessageFormat.format(loc.getString("MSG_DiffPanel_BaseRevision"), new Object[]{firstRevision}); // NOI18N
 
-            }
+                }
 
-            break;
+                break;
 
-        default:
-            throw new IllegalArgumentException("Unknow diff type: " + type); // NOI18N
+            default:
+                throw new IllegalArgumentException("Unknow diff type: " + type); // NOI18N
 
         }
 
@@ -160,35 +159,35 @@ public final class Setup {
         // the second source
 
         switch (type) {
-        case DIFFTYPE_LOCAL:
+            case DIFFTYPE_LOCAL:
 
-            // to-LOCAL
+                // to-LOCAL
 
-            if (match(status, StatusInfo.STATUS_VERSIONED_CONFLICT)) {
-                secondRevision = GitRepository.REVISION_CURRENT;
-                secondTitle = MessageFormat.format(loc.getString("MSG_DiffPanel_LocalConflict"), new Object[]{secondRevision}); // NOI18N
+                if (match(status, StatusInfo.STATUS_VERSIONED_CONFLICT)) {
+                    secondRevision = GitRepository.REVISION_CURRENT;
+                    secondTitle = MessageFormat.format(loc.getString("MSG_DiffPanel_LocalConflict"), new Object[]{secondRevision}); // NOI18N
 
-            } else if (match(status, StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY | StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY)) {
-                secondRevision = GitRepository.REVISION_CURRENT;
-                secondTitle = loc.getString("MSG_DiffPanel_LocalNew"); // NOI18N
+                } else if (match(status, StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY | StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY)) {
+                    secondRevision = GitRepository.REVISION_CURRENT;
+                    secondTitle = loc.getString("MSG_DiffPanel_LocalNew"); // NOI18N
 
-            } else if (match(status, StatusInfo.STATUS_VERSIONED_NEWINREPOSITORY)) {
-                secondRevision = null;
-                secondTitle = NbBundle.getMessage(Setup.class, "LBL_Diff_NoLocalFile"); // NOI18N
+                } else if (match(status, StatusInfo.STATUS_VERSIONED_NEWINREPOSITORY)) {
+                    secondRevision = null;
+                    secondTitle = NbBundle.getMessage(Setup.class, "LBL_Diff_NoLocalFile"); // NOI18N
 
-            } else if (match(status, StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY | StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY)) {
-                secondRevision = null;
-                secondTitle = loc.getString("MSG_DiffPanel_LocalDeleted"); // NOI18N
+                } else if (match(status, StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY | StatusInfo.STATUS_VERSIONED_REMOVEDLOCALLY)) {
+                    secondRevision = null;
+                    secondTitle = loc.getString("MSG_DiffPanel_LocalDeleted"); // NOI18N
 
-            } else {
-                secondRevision = GitRepository.REVISION_CURRENT;
-                secondTitle = MessageFormat.format(loc.getString("MSG_DiffPanel_LocalModified"), new Object[]{secondRevision}); // NOI18N
+                } else {
+                    secondRevision = GitRepository.REVISION_CURRENT;
+                    secondTitle = MessageFormat.format(loc.getString("MSG_DiffPanel_LocalModified"), new Object[]{secondRevision}); // NOI18N
 
-            }
-            break;
+                }
+                break;
 
-        default:
-            throw new IllegalArgumentException("Unknow diff type: " + type); // NOI18N
+            default:
+                throw new IllegalArgumentException("Unknow diff type: " + type); // NOI18N
 
         }
 
@@ -203,8 +202,7 @@ public final class Setup {
      * @param firstRevision first revision or <code>null</code> for inital.
      * @param secondRevision second revision
      */
-    public Setup(File baseFile, String firstRevision, String secondRevision)
-    {
+    public Setup(File baseFile, String firstRevision, String secondRevision) {
         this.baseFile = baseFile;
         this.propertyName = null;
         this.firstRevision = firstRevision;
@@ -213,53 +211,44 @@ public final class Setup {
         secondSource = new DiffStreamSource(baseFile, secondRevision, secondRevision);
     }
 
-    public String getPropertyName()
-    {
+    public String getPropertyName() {
         return propertyName;
     }
 
-    public File getBaseFile()
-    {
+    public File getBaseFile() {
         return baseFile;
     }
 
-    public StatusInfo getInfo()
-    {
+    public StatusInfo getInfo() {
         return info;
     }
 
-    public void setView(DiffController view)
-    {
+    public void setView(DiffController view) {
         this.view = view;
     }
 
-    public DiffController getView()
-    {
+    public DiffController getView() {
         return view;
     }
 
-    public StreamSource getFirstSource()
-    {
+    public StreamSource getFirstSource() {
         return firstSource;
     }
 
-    public StreamSource getSecondSource()
-    {
+    public StreamSource getSecondSource() {
         return secondSource;
     }
 
-    public void setNode(DiffNode node)
-    {
+    public void setNode(DiffNode node) {
         this.node = node;
     }
 
-    public DiffNode getNode()
-    {
+    public DiffNode getNode() {
         return node;
     }
 
-    public String toString()
-    {
+    @Override
+    public String toString() {
         return title;
     }
 
@@ -267,17 +256,16 @@ public final class Setup {
      * Loads data
      * @param group that carries shared state. Note that this group must not be executed later on.
      */
-    void initSources() throws IOException
-    {
-        if (firstSource != null)
+    void initSources() throws IOException {
+        if (firstSource != null) {
             firstSource.init();
-        if (secondSource != null)
+        }
+        if (secondSource != null) {
             secondSource.init();
+        }
     }
 
-    private static boolean match(int status, int mask)
-    {
+    private static boolean match(int status, int mask) {
         return (status & mask) != 0;
     }
-
 }

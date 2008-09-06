@@ -65,49 +65,41 @@ public class OutputLogger {
     public static final int MAX_LINES_TO_PRINT = 500;
     private static final String MSG_TOO_MANY_LINES = "The number of output lines is greater than 500; see message log for complete output";
 
-    public static OutputLogger getLogger(String repositoryRoot)
-    {
-        if (repositoryRoot != null)
+    public static OutputLogger getLogger(String repositoryRoot) {
+        if (repositoryRoot != null) {
             return new OutputLogger(repositoryRoot);
-        else
+        } else {
             return new NullLogger();
+        }
     }
 
-    private OutputLogger(String repositoryRoot)
-    {
+    private OutputLogger(String repositoryRoot) {
         repositoryRootString = repositoryRoot;
         log = IOProvider.getDefault().getIO(repositoryRootString, false);
     }
 
-    private OutputLogger()
-    {
+    private OutputLogger() {
     }
 
-    public void closeLog()
-    {
+    public void closeLog() {
         rp.post(new Runnable() {
 
-            public void run()
-            {
+            public void run() {
                 log.getOut().flush();
                 log.getOut().close();
                 log.getErr().flush();
                 log.getErr().close();
             }
-
         });
     }
 
-    public void flushLog()
-    {
+    public void flushLog() {
         rp.post(new Runnable() {
 
-            public void run()
-            {
+            public void run() {
                 log.getOut().flush();
                 log.getErr().flush();
             }
-
         });
     }
 
@@ -117,15 +109,13 @@ public class OutputLogger {
      * @param list to print out
      *
      */
-    public void output(final List<String> list)
-    {
-        if (list.isEmpty())
+    public void output(final List<String> list) {
+        if (list.isEmpty()) {
             return;
-
+        }
         rp.post(new Runnable() {
 
-            public void run()
-            {
+            public void run() {
                 log.select();
                 OutputWriter out = log.getOut();
 
@@ -140,13 +130,13 @@ public class OutputLogger {
                     for (String s : list) {
                         Git.LOG.log(Level.WARNING, s);
                     }
-                } else
+                } else {
                     for (String s : list) {
                         out.println(s);
                     }
+                }
                 out.flush();
             }
-
         });
     }
 
@@ -156,21 +146,18 @@ public class OutputLogger {
      * @param String msg to print out
      *
      */
-    public void output(final String msg)
-    {
-        if (msg == null)
+    public void output(final String msg) {
+        if (msg == null) {
             return;
-
+        }
         rp.post(new Runnable() {
 
-            public void run()
-            {
+            public void run() {
                 log.select();
 
                 log.getOut().println(msg);
                 log.getOut().flush();
             }
-
         });
     }
 
@@ -180,20 +167,17 @@ public class OutputLogger {
      * @param String msg to print out
      *
      */
-    public void outputInRed(final String msg)
-    {
-        if (msg == null)
+    public void outputInRed(final String msg) {
+        if (msg == null) {
             return;
-
+        }
         rp.post(new Runnable() {
 
-            public void run()
-            {
+            public void run() {
                 log.select();
                 log.getErr().println(msg);
                 log.getErr().flush();
             }
-
         });
     }
 
@@ -203,23 +187,20 @@ public class OutputLogger {
      * @param String sURL to print out
      *
      */
-    public void outputLink(final String sURL)
-    {
-        if (sURL == null)
+    public void outputLink(final String sURL) {
+        if (sURL == null) {
             return;
-
+        }
         rp.post(new Runnable() {
 
-            public void run()
-            {
+            public void run() {
                 log.select();
                 try {
                     OutputWriter out = log.getOut();
 
                     OutputListener listener = new OutputListener() {
 
-                        public void outputLineAction(OutputEvent ev)
-                        {
+                        public void outputLineAction(OutputEvent ev) {
                             try {
                                 HtmlBrowser.URLDisplayer.getDefault().showURL(new URL(sURL));
                             } catch (IOException ex) {
@@ -227,14 +208,11 @@ public class OutputLogger {
                             }
                         }
 
-                        public void outputLineSelected(OutputEvent ev)
-                        {
+                        public void outputLineSelected(OutputEvent ev) {
                         }
 
-                        public void outputLineCleared(OutputEvent ev)
-                        {
+                        public void outputLineCleared(OutputEvent ev) {
                         }
-
                     };
                     out.println(sURL, listener, true);
                     out.flush();
@@ -242,7 +220,6 @@ public class OutputLogger {
                     // Ignore
                 }
             }
-
         });
     }
 
@@ -252,12 +229,10 @@ public class OutputLogger {
      * @param list to print out
      *
      */
-    public void clearOutput()
-    {
+    public void clearOutput() {
         rp.post(new Runnable() {
 
-            public void run()
-            {
+            public void run() {
                 log.select();
                 OutputWriter out = log.getOut();
 
@@ -268,47 +243,37 @@ public class OutputLogger {
                 }
                 out.flush();
             }
-
         });
     }
 
     private static class NullLogger extends OutputLogger {
 
         @Override
-        public void closeLog()
-        {
+        public void closeLog() {
         }
 
         @Override
-        public void flushLog()
-        {
+        public void flushLog() {
         }
 
         @Override
-        public void output(List<String> list)
-        {
+        public void output(List<String> list) {
         }
 
         @Override
-        public void output(String msg)
-        {
+        public void output(String msg) {
         }
 
         @Override
-        public void outputInRed(String msg)
-        {
+        public void outputInRed(String msg) {
         }
 
         @Override
-        public void outputLink(final String sURL)
-        {
+        public void outputLink(final String sURL) {
         }
 
         @Override
-        public void clearOutput()
-        {
+        public void clearOutput() {
         }
-
     }
-
 }

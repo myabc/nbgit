@@ -87,8 +87,7 @@ public class DiffStreamSource extends StreamSource {
      * @param revision file revision, may be null if the revision does not exist (ie for new files)
      * @param title title to use in diff panel
      */
-    public DiffStreamSource(File baseFile, String revision, String title)
-    {
+    public DiffStreamSource(File baseFile, String revision, String title) {
         this.baseFile = baseFile;
         this.revision = revision;
         this.title = title;
@@ -96,33 +95,30 @@ public class DiffStreamSource extends StreamSource {
     }
 
     /** Creates DiffStreamSource for nonexiting files. */
-    public DiffStreamSource(String title)
-    {
+    public DiffStreamSource(String title) {
         this.baseFile = null;
         this.revision = null;
         this.title = title;
         this.start = true;
     }
 
-    public String getName()
-    {
-        if (baseFile != null)
+    public String getName() {
+        if (baseFile != null) {
             return baseFile.getName();
-        else
+        } else {
             return NbBundle.getMessage(DiffStreamSource.class, "LBL_Diff_Anonymous");
+        }
     }
 
-    public String getTitle()
-    {
+    public String getTitle() {
         return title;
     }
 
-    public synchronized String getMIMEType()
-    {
-        if (baseFile.isDirectory())
-            // http://www.rfc-editor.org/rfc/rfc2425.txt
+    public synchronized String getMIMEType() {
+        if (baseFile.isDirectory()) // http://www.rfc-editor.org/rfc/rfc2425.txt
+        {
             return "content/unknown";
-
+        }
         try {
             init();
         } catch (IOException e) {
@@ -131,80 +127,84 @@ public class DiffStreamSource extends StreamSource {
         return mimeType;
     }
 
-    public synchronized Reader createReader() throws IOException
-    {
-        if (baseFile.isDirectory())
-            // XXX return directory listing?
-            // could be nice te return sorted directory content
-            // such as vim if user "edits" directory // NOI18N
+    public synchronized Reader createReader() throws IOException {
+        if (baseFile.isDirectory()) // XXX return directory listing?
+        // could be nice te return sorted directory content
+        // such as vim if user "edits" directory // NOI18N
+        {
             return new StringReader(NbBundle.getMessage(DiffStreamSource.class, "LBL_Diff_NoFolderDiff"));
+        }
         init();
-        if (revision == null || remoteFile == null)
+        if (revision == null || remoteFile == null) {
             return null;
+        }
         if (!mimeType.startsWith("text/")) // NOI18N
+        {
             return null;
-        else
+        } else {
             return Utils.createReader(remoteFile);
+        }
     }
 
-    public Writer createWriter(Difference[] conflicts) throws IOException
-    {
+    public Writer createWriter(Difference[] conflicts) throws IOException {
         throw new IOException("Operation not supported"); // NOI18N
     }
 
-    public boolean isEditable()
-    {
+    @Override
+    public boolean isEditable() {
         return GitRepository.REVISION_CURRENT.equals(revision) && isPrimary();
     }
 
-    private boolean isPrimary()
-    {
+    private boolean isPrimary() {
         FileObject fo = FileUtil.toFileObject(baseFile);
-        if (fo != null)
+        if (fo != null) {
             try {
                 DataObject dao = DataObject.find(fo);
                 return fo.equals(dao.getPrimaryFile());
             } catch (DataObjectNotFoundException e) {
                 // no dataobject, never mind
             }
+        }
         return true;
     }
 
     @Override
-    public synchronized Lookup getLookup()
-    {
+    public synchronized Lookup getLookup() {
         try {
             init();
         } catch (IOException e) {
             return Lookups.fixed();
         }
-        if (remoteFile == null || !isPrimary())
+        if (remoteFile == null || !isPrimary()) {
             return Lookups.fixed();
+        }
         FileObject remoteFo = FileUtil.toFileObject(remoteFile);
-        if (remoteFo == null)
+        if (remoteFo == null) {
             return Lookups.fixed();
-
+        }
         return Lookups.fixed(remoteFo);
     }
 
     /**
      * Loads data.
      */
-    synchronized void init() throws IOException
-    {
-        if (baseFile.isDirectory())
+    synchronized void init() throws IOException {
+        if (baseFile.isDirectory()) {
             return;
-        if (start == false)
+        }
+        if (start == false) {
             return;
+        }
         start = false;
-        if (remoteFile != null || revision == null)
+        if (remoteFile != null || revision == null) {
             return;
+        }
         mimeType = Git.getInstance().getMimeType(baseFile);
         try {
-            if (isEditable())
-                // we cannot move editable documents because that would break Document sharing
+            if (isEditable()) // we cannot move editable documents because that would break Document sharing
+            {
                 remoteFile = GitUtils.getFileRevision(baseFile, revision);
-            else {
+            } else {
                 File tempFolder = Utils.getTempFolder();
                 // To correctly get content of the base file, we need to checkout all files that belong to the same
                 // DataObject. One example is Form files: data loader removes //GEN:BEGIN comments from the java file but ONLY
@@ -226,14 +226,16 @@ public class DiffStreamSource extends StreamSource {
                             Utils.associateEncoding(file, newRemoteFile);
                         }
                     } catch (Exception e) {
-                        if (isBase)
+                        if (isBase) {
                             throw e;
-                    // we cannot check out peer file so the dataobject will not be constructed properly
+                        // we cannot check out peer file so the dataobject will not be constructed properly
+                        }
                     }
                 }
             }
-            if (!baseFile.exists() && remoteFile != null && remoteFile.exists())
+            if (!baseFile.exists() && remoteFile != null && remoteFile.exists()) {
                 mimeType = Git.getInstance().getMimeType(remoteFile);
+            }
         } catch (Exception e) {
             // TODO detect interrupted IO (exception subclass), i.e. user cancel
             IOException failure = new IOException("Can not load remote file for " + baseFile); // NOI18N
@@ -241,5 +243,4 @@ public class DiffStreamSource extends StreamSource {
             throw failure;
         }
     }
-
 }

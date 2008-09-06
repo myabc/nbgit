@@ -87,8 +87,7 @@ class DiffResultsView implements AncestorListener, PropertyChangeListener, DiffS
     private List<RepositoryRevision> results;
     private static final RequestProcessor rp = new RequestProcessor("GitDiff", 1, true);  // NOI18N
 
-    public DiffResultsView(SearchHistoryPanel parent, List<RepositoryRevision> results)
-    {
+    public DiffResultsView(SearchHistoryPanel parent, List<RepositoryRevision> results) {
         this.parent = parent;
         this.results = results;
         treeView = new DiffTreeTable(parent);
@@ -100,35 +99,30 @@ class DiffResultsView implements AncestorListener, PropertyChangeListener, DiffS
         setBottomComponent(new NoContentPanel(NbBundle.getMessage(DiffResultsView.class, "MSG_DiffPanel_NoRevisions"))); // NOI18N
     }
 
-    public void ancestorAdded(AncestorEvent event)
-    {
+    public void ancestorAdded(AncestorEvent event) {
         ExplorerManager em = ExplorerManager.find(treeView);
         em.addPropertyChangeListener(this);
-        if (!dividerSet)
+        if (!dividerSet) {
             SwingUtilities.invokeLater(new Runnable() {
 
-                public void run()
-                {
+                public void run() {
                     dividerSet = true;
                     diffView.setDividerLocation(0.33);
                 }
-
             });
+        }
     }
 
-    public void ancestorMoved(AncestorEvent event)
-    {
+    public void ancestorMoved(AncestorEvent event) {
     }
 
-    public void ancestorRemoved(AncestorEvent event)
-    {
+    public void ancestorRemoved(AncestorEvent event) {
         ExplorerManager em = ExplorerManager.find(treeView);
         em.removePropertyChangeListener(this);
         cancelBackgroundTasks();
     }
 
-    public void propertyChange(PropertyChangeEvent evt)
-    {
+    public void propertyChange(PropertyChangeEvent evt) {
         if (ExplorerManager.PROP_SELECTED_NODES.equals(evt.getPropertyName())) {
             final Node[] nodes = (Node[]) evt.getNewValue();
             currentDifferenceIndex = 0;
@@ -145,23 +139,24 @@ class DiffResultsView implements AncestorListener, PropertyChangeListener, DiffS
             // invoked asynchronously becase treeView.getSelection() may not be ready yet
             Runnable runnable = new Runnable() {
 
-                public void run()
-                {
+                public void run() {
                     RepositoryRevision container1 = nodes[0].getLookup().lookup(RepositoryRevision.class);
                     RepositoryRevision.Event r1 = nodes[0].getLookup().lookup(RepositoryRevision.Event.class);
                     try {
                         currentIndex = treeView.getSelection()[0];
                         if (nodes.length == 1) {
-                            if (container1 != null)
+                            if (container1 != null) {
                                 showContainerDiff(container1, onSelectionshowLastDifference);
-                            else if (r1 != null)
+                            } else if (r1 != null) {
                                 showRevisionDiff(r1, onSelectionshowLastDifference);
+                            }
                         } else if (nodes.length == 2) {
                             RepositoryRevision.Event r2 = nodes[1].getLookup().lookup(RepositoryRevision.Event.class);
-                            if (r2.getFile() == null || !r2.getFile().equals(r1.getFile()))
+                            if (r2.getFile() == null || !r2.getFile().equals(r1.getFile())) {
                                 throw new Exception();
+                            }
                             showDiff(r1, r1.getLogInfoHeader().getRevision(),
-                                r2.getLogInfoHeader().getRevision(), false);
+                                    r2.getLogInfoHeader().getRevision(), false);
                         }
                     } catch (Exception e) {
                         showDiffError(NbBundle.getMessage(DiffResultsView.class, "MSG_DiffPanel_IllegalSelection")); // NOI18N
@@ -170,49 +165,44 @@ class DiffResultsView implements AncestorListener, PropertyChangeListener, DiffS
                     }
 
                 }
-
             };
             SwingUtilities.invokeLater(runnable);
         }
     }
 
-    public Collection getSetups()
-    {
+    public Collection getSetups() {
         Node[] nodes = TopComponent.getRegistry().getActivatedNodes();
-        if (nodes.length == 0)
+        if (nodes.length == 0) {
             return parent.getSetups(results.toArray(new RepositoryRevision[results.size()]), new RepositoryRevision.Event[0]);
-
+        }
         Set<RepositoryRevision.Event> events = new HashSet<RepositoryRevision.Event>();
         Set<RepositoryRevision> revisions = new HashSet<RepositoryRevision>();
         for (Node n : nodes) {
             RevisionNode node = (RevisionNode) n;
-            if (node.getEvent() != null)
+            if (node.getEvent() != null) {
                 events.add(node.getEvent());
-            else
+            } else {
                 revisions.add(node.getContainer());
+            }
         }
         return parent.getSetups(revisions.toArray(new RepositoryRevision[revisions.size()]), events.toArray(new RepositoryRevision.Event[events.size()]));
     }
 
-    public String getSetupDisplayName()
-    {
+    public String getSetupDisplayName() {
         return null;
     }
 
-    private void showDiffError(String s)
-    {
+    private void showDiffError(String s) {
         setBottomComponent(new NoContentPanel(s));
     }
 
-    private void setBottomComponent(Component component)
-    {
+    private void setBottomComponent(Component component) {
         int dl = diffView.getDividerLocation();
         diffView.setBottomComponent(component);
         diffView.setDividerLocation(dl);
     }
 
-    private void showDiff(RepositoryRevision.Event header, String revision1, String revision2, boolean showLastDifference)
-    {
+    private void showDiff(RepositoryRevision.Event header, String revision1, String revision2, boolean showLastDifference) {
         synchronized (this) {
             cancelBackgroundTasks();
             currentTask = new ShowDiffTask(header, revision1, revision2, showLastDifference);
@@ -221,34 +211,30 @@ class DiffResultsView implements AncestorListener, PropertyChangeListener, DiffS
         }
     }
 
-    private synchronized void cancelBackgroundTasks()
-    {
+    private synchronized void cancelBackgroundTasks() {
         if (currentShowDiffTask != null && !currentShowDiffTask.isFinished()) {
             currentShowDiffTask.cancel();  // it almost always late it's enqueued, so:
             currentTask.cancel();
         }
     }
-
     private boolean onSelectionshowLastDifference;
 
-    private void setDiffIndex(int idx, boolean showLastDifference)
-    {
+    private void setDiffIndex(int idx, boolean showLastDifference) {
         currentIndex = idx;
         onSelectionshowLastDifference = showLastDifference;
         treeView.setSelection(idx);
     }
 
-    private void showRevisionDiff(RepositoryRevision.Event rev, boolean showLastDifference)
-    {
-        if (rev.getFile() == null)
+    private void showRevisionDiff(RepositoryRevision.Event rev, boolean showLastDifference) {
+        if (rev.getFile() == null) {
             return;
+        }
         String id = rev.getLogInfoHeader().getRevision();
 
         showDiff(rev, id + "^", id, showLastDifference);
     }
 
-    private void showContainerDiff(RepositoryRevision container, boolean showLastDifference)
-    {
+    private void showContainerDiff(RepositoryRevision container, boolean showLastDifference) {
         List<RepositoryRevision.Event> revs = container.getEvents();
 
         RepositoryRevision.Event newest = null;
@@ -256,60 +242,66 @@ class DiffResultsView implements AncestorListener, PropertyChangeListener, DiffS
         File[] roots = parent.getRoots();
         for (File root : roots) {
             for (RepositoryRevision.Event evt : revs) {
-                if (root.equals(evt.getFile()))
+                if (root.equals(evt.getFile())) {
                     newest = evt;
+                }
             }
         }
-        if (newest == null)
+        if (newest == null) {
             newest = revs.get(0);
-        if (newest.getFile() == null)
+        }
+        if (newest.getFile() == null) {
             return;
+        }
         String rev = newest.getLogInfoHeader().getRevision();
         showDiff(newest, rev + "^", rev, showLastDifference);
     }
 
-    void onNextButton()
-    {
-        if (currentDiff != null)
+    void onNextButton() {
+        if (currentDiff != null) {
             if (++currentDifferenceIndex >= currentDiff.getDifferenceCount()) {
-                if (++currentIndex >= treeView.getRowCount())
+                if (++currentIndex >= treeView.getRowCount()) {
                     currentIndex = 0;
+                }
                 setDiffIndex(currentIndex, false);
-            } else
+            } else {
                 currentDiff.setCurrentDifference(currentDifferenceIndex);
-        else {
-            if (++currentIndex >= treeView.getRowCount())
+            }
+        } else {
+            if (++currentIndex >= treeView.getRowCount()) {
                 currentIndex = 0;
+            }
             setDiffIndex(currentIndex, false);
         }
     }
 
-    void onPrevButton()
-    {
-        if (currentDiff != null)
+    void onPrevButton() {
+        if (currentDiff != null) {
             if (--currentDifferenceIndex < 0) {
-                if (--currentIndex < 0)
+                if (--currentIndex < 0) {
                     currentIndex = treeView.getRowCount() - 1;
+                }
                 setDiffIndex(currentIndex, true);
-            } else
+            } else {
                 currentDiff.setCurrentDifference(currentDifferenceIndex);
-        else {
-            if (--currentIndex < 0)
+            }
+        } else {
+            if (--currentIndex < 0) {
                 currentIndex = treeView.getRowCount() - 1;
+            }
             setDiffIndex(currentIndex, true);
         }
     }
 
-    boolean isNextEnabled()
-    {
-        if (currentDiff != null)
+    boolean isNextEnabled() {
+        if (currentDiff != null) {
             return currentIndex < treeView.getRowCount() - 1 || currentDifferenceIndex < currentDiff.getDifferenceCount() - 1;
-        else
+        } else {
             return false;
+        }
     }
 
-    boolean isPrevEnabled()
-    {
+    boolean isPrevEnabled() {
         return currentIndex > 0 || currentDifferenceIndex > 0;
     }
 
@@ -318,14 +310,12 @@ class DiffResultsView implements AncestorListener, PropertyChangeListener, DiffS
      *
      * @param revision revision to select
      */
-    void select(RepositoryRevision.Event revision)
-    {
+    void select(RepositoryRevision.Event revision) {
         treeView.requestFocusInWindow();
         treeView.setSelection(revision);
     }
 
-    void select(RepositoryRevision container)
-    {
+    void select(RepositoryRevision container) {
         treeView.requestFocusInWindow();
         treeView.setSelection(container);
     }
@@ -338,39 +328,37 @@ class DiffResultsView implements AncestorListener, PropertyChangeListener, DiffS
         private boolean showLastDifference;
         private volatile boolean cancelled;
 
-        public ShowDiffTask(RepositoryRevision.Event header, String revision1, String revision2, boolean showLastDifference)
-        {
+        public ShowDiffTask(RepositoryRevision.Event header, String revision1, String revision2, boolean showLastDifference) {
             this.header = header;
             this.revision1 = revision1;
             this.revision2 = revision2;
             this.showLastDifference = showLastDifference;
         }
 
-        public void run()
-        {
+        public void run() {
             final Diff diff = Diff.getDefault();
             final DiffStreamSource s1 = new DiffStreamSource(header.getFile(), revision1, revision1);
             final DiffStreamSource s2 = new DiffStreamSource(header.getFile(), revision2, revision2);
 
             // it's enqueued at ClientRuntime queue and does not return until previous request handled
             s1.getMIMEType();  // triggers s1.init()
-            if (cancelled)
+            if (cancelled) {
                 return;
-
+            }
             s2.getMIMEType();  // triggers s2.init()
-            if (cancelled)
+            if (cancelled) {
                 return;
-
-            if (currentTask != this)
+            }
+            if (currentTask != this) {
                 return;
-
+            }
             SwingUtilities.invokeLater(new Runnable() {
 
-                public void run()
-                {
+                public void run() {
                     try {
-                        if (cancelled)
+                        if (cancelled) {
                             return;
+                        }
                         final DiffView view = diff.createDiff(s1, s2);
                         if (currentTask == ShowDiffTask.this) {
                             currentDiff = view;
@@ -385,22 +373,17 @@ class DiffResultsView implements AncestorListener, PropertyChangeListener, DiffS
                         ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
                     }
                 }
-
             });
         }
 
-        public boolean cancel()
-        {
+        public boolean cancel() {
             cancelled = true;
             return true;
         }
-
     }
 
-    public JComponent getComponent()
-    {
+    public JComponent getComponent() {
         return diffView;
     }
-
 }
 

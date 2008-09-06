@@ -62,16 +62,15 @@ import org.openide.util.HelpCtx;
  */
 public class PropertiesAction extends ContextAction {
 
-    public PropertiesAction(String name, VCSContext context)
-    {
+    public PropertiesAction(String name, VCSContext context) {
         super(name, context);
     }
 
-    public void performAction(ActionEvent e)
-    {
+    public void performAction(ActionEvent e) {
         File root = GitUtils.getRootFile(context);
-        if (root == null)
+        if (root == null) {
             return;
+        }
         final PropertiesPanel panel = new PropertiesPanel();
         final PropertiesTable propTable;
 
@@ -110,5 +109,4 @@ public class PropertiesAction extends ContextAction {
             gitProperties.setProperties();
         }
     }
-
 }

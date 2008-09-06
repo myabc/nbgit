@@ -80,34 +80,32 @@ import org.openide.windows.TopComponent;
  */
 class SearchHistoryPanel extends javax.swing.JPanel implements ExplorerManager.Provider, PropertyChangeListener, ActionListener, DiffSetupSource, DocumentListener {
 
-    private final File[]                roots;
-    private final String                repositoryUrl;
-    private final SearchCriteriaPanel   criteria;
-
-    private Divider                 divider;
-    private Action                  searchAction;
-    private SearchExecutor          currentSearch;
-    private RequestProcessor.Task   currentSearchTask;
-
-    private boolean                 criteriaVisible;
-    private boolean                 searchInProgress;
+    private final File[] roots;
+    private final String repositoryUrl;
+    private final SearchCriteriaPanel criteria;
+    private Divider divider;
+    private Action searchAction;
+    private SearchExecutor currentSearch;
+    private RequestProcessor.Task currentSearchTask;
+    private boolean criteriaVisible;
+    private boolean searchInProgress;
     private List<RepositoryRevision> results;
-    private SummaryView             summaryView;
-    private DiffResultsView         diffView;
-    private boolean                 bOutSearch;
-    private boolean                 bIncomingSearch;
+    private SummaryView summaryView;
+    private DiffResultsView diffView;
+    private boolean bOutSearch;
+    private boolean bIncomingSearch;
     private AbstractAction nextAction;
     private AbstractAction prevAction;
 
     /** Creates new form SearchHistoryPanel */
-    public SearchHistoryPanel(File [] roots, SearchCriteriaPanel criteria) {
+    public SearchHistoryPanel(File[] roots, SearchCriteriaPanel criteria) {
         this.bOutSearch = false;
         this.bIncomingSearch = false;
         this.roots = roots;
         this.repositoryUrl = null;
         this.criteria = criteria;
         criteriaVisible = true;
-        explorerManager = new ExplorerManager ();
+        explorerManager = new ExplorerManager();
         initComponents();
         setupComponents();
         refreshComponents(true);
@@ -117,10 +115,10 @@ class SearchHistoryPanel extends javax.swing.JPanel implements ExplorerManager.P
         this.bOutSearch = false;
         this.bIncomingSearch = false;
         this.repositoryUrl = repositoryUrl;
-        this.roots = new File[] { localRoot };
+        this.roots = new File[]{localRoot};
         this.criteria = criteria;
         criteriaVisible = true;
-        explorerManager = new ExplorerManager ();
+        explorerManager = new ExplorerManager();
         initComponents();
         setupComponents();
         refreshComponents(true);
@@ -130,9 +128,9 @@ class SearchHistoryPanel extends javax.swing.JPanel implements ExplorerManager.P
         criteria.setForOut();
         bOutSearch = true;
         divider.setVisible(false);
-        tbSummary.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class,  "TT_OutSummary"));
-        showMergesChkBox.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class,  "TT_OutShowMerges"));
-        tbDiff.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class,  "TT_OutShowDiff"));
+        tbSummary.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class, "TT_OutSummary"));
+        showMergesChkBox.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class, "TT_OutShowMerges"));
+        tbDiff.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class, "TT_OutShowDiff"));
     }
 
     boolean isOutSearch() {
@@ -143,15 +141,14 @@ class SearchHistoryPanel extends javax.swing.JPanel implements ExplorerManager.P
         return showMergesChkBox.isSelected();
     }
 
-
     void setIncomingSearch() {
         criteria.setForIncoming();
         bIncomingSearch = true;
         tbDiff.setVisible(false);
         bNext.setVisible(false);
         bPrev.setVisible(false);
-        showMergesChkBox.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class,  "TT_IncomingShowMerges"));
-        tbSummary.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class,  "TT_IncomingSummary"));
+        showMergesChkBox.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class, "TT_IncomingShowMerges"));
+        tbSummary.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class, "TT_IncomingSummary"));
     }
 
     boolean isIncomingSearch() {
@@ -177,10 +174,12 @@ class SearchHistoryPanel extends javax.swing.JPanel implements ExplorerManager.P
         add(divider, gridBagConstraints);
 
         searchCriteriaPanel.add(criteria);
-        searchAction = new AbstractAction(NbBundle.getMessage(SearchHistoryPanel.class,  "CTL_Search")) { // NOI18N
+        searchAction = new AbstractAction(NbBundle.getMessage(SearchHistoryPanel.class, "CTL_Search")) { // NOI18N
+
             {
                 putValue(Action.SHORT_DESCRIPTION, NbBundle.getMessage(SearchHistoryPanel.class, "TT_Search")); // NOI18N
             }
+
             public void actionPerformed(ActionEvent e) {
                 search();
             }
@@ -188,7 +187,7 @@ class SearchHistoryPanel extends javax.swing.JPanel implements ExplorerManager.P
         getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "search"); // NOI18N
         getActionMap().put("search", searchAction); // NOI18N
         bSearch.setAction(searchAction);
-        Mnemonics.setLocalizedText(bSearch, NbBundle.getMessage(SearchHistoryPanel.class,  "CTL_Search")); // NOI18N
+        Mnemonics.setLocalizedText(bSearch, NbBundle.getMessage(SearchHistoryPanel.class, "CTL_Search")); // NOI18N
 
         Dimension d1 = tbSummary.getPreferredSize();
         Dimension d2 = tbDiff.getPreferredSize();
@@ -197,19 +196,23 @@ class SearchHistoryPanel extends javax.swing.JPanel implements ExplorerManager.P
         }
 
         nextAction = new AbstractAction(null, new javax.swing.ImageIcon(getClass().getResource("/org/nbgit/resources/icons/diff-next.png"))) { // NOI18N
+
             {
                 putValue(Action.SHORT_DESCRIPTION, java.util.ResourceBundle.getBundle("org/nbgit/ui/diff/Bundle"). // NOI18N
-                                                   getString("CTL_DiffPanel_Next_Tooltip")); // NOI18N
+                        getString("CTL_DiffPanel_Next_Tooltip")); // NOI18N
             }
+
             public void actionPerformed(ActionEvent e) {
                 diffView.onNextButton();
             }
         };
         prevAction = new AbstractAction(null, new javax.swing.ImageIcon(getClass().getResource("/org/nbgit/resources/icons/diff-prev.png"))) { // NOI18N
+
             {
                 putValue(Action.SHORT_DESCRIPTION, java.util.ResourceBundle.getBundle("org/nbgit/ui/diff/Bundle"). // NOI18N
-                                                   getString("CTL_DiffPanel_Prev_Tooltip")); // NOI18N
+                        getString("CTL_DiffPanel_Prev_Tooltip")); // NOI18N
             }
+
             public void actionPerformed(ActionEvent e) {
                 diffView.onPrevButton();
             }
@@ -233,13 +236,14 @@ class SearchHistoryPanel extends javax.swing.JPanel implements ExplorerManager.P
             refreshComponents(false);
         }
     }
-
-    private ExplorerManager             explorerManager;
+    private ExplorerManager explorerManager;
 
     public void propertyChange(PropertyChangeEvent evt) {
         if (ExplorerManager.PROP_SELECTED_NODES.equals(evt.getPropertyName())) {
             TopComponent tc = (TopComponent) SwingUtilities.getAncestorOfClass(TopComponent.class, this);
-            if (tc == null) return;
+            if (tc == null) {
+                return;
+            }
             tc.setActivatedNodes((Node[]) evt.getNewValue());
         }
     }
@@ -254,7 +258,7 @@ class SearchHistoryPanel extends javax.swing.JPanel implements ExplorerManager.P
         super.removeNotify();
     }
 
-    public ExplorerManager getExplorerManager () {
+    public ExplorerManager getExplorerManager() {
         return explorerManager;
     }
 
@@ -310,8 +314,9 @@ class SearchHistoryPanel extends javax.swing.JPanel implements ExplorerManager.P
     }
 
     public String getSearchRepositoryRootUrl() {
-        if (repositoryUrl != null) return repositoryUrl;
-
+        if (repositoryUrl != null) {
+            return repositoryUrl;
+        }
         File root = Git.getInstance().getTopmostManagedParent(roots[0]);
         return root.toString();
     }
@@ -366,15 +371,19 @@ class SearchHistoryPanel extends javax.swing.JPanel implements ExplorerManager.P
         }
     }
 
-    Collection getSetups(RepositoryRevision [] revisions, RepositoryRevision.Event [] events) {
+    Collection getSetups(RepositoryRevision[] revisions, RepositoryRevision.Event[] events) {
         long fromRevision = Long.MAX_VALUE;
         long toRevision = Long.MIN_VALUE;
         Set<File> filesToDiff = new HashSet<File>();
 
         for (RepositoryRevision revision : revisions) {
             long rev = 0; //Long.parseLong(revision.getLog().getRevision());
-            if (rev > toRevision) toRevision = rev;
-            if (rev < fromRevision) fromRevision = rev;
+            if (rev > toRevision) {
+                toRevision = rev;
+            }
+            if (rev < fromRevision) {
+                fromRevision = rev;
+            }
             List<RepositoryRevision.Event> evs = revision.getEvents();
             for (RepositoryRevision.Event event : evs) {
                 File file = event.getFile();
@@ -386,8 +395,12 @@ class SearchHistoryPanel extends javax.swing.JPanel implements ExplorerManager.P
 
         for (RepositoryRevision.Event event : events) {
             long rev = 0; //Long.parseLong(event.getLogInfoHeader().getLog().getRevision());
-            if (rev > toRevision) toRevision = rev;
-            if (rev < fromRevision) fromRevision = rev;
+            if (rev > toRevision) {
+                toRevision = rev;
+            }
+            if (rev < fromRevision) {
+                fromRevision = rev;
+            }
             if (event.getFile() != null) {
                 filesToDiff.add(event.getFile());
             }
@@ -417,7 +430,9 @@ class SearchHistoryPanel extends javax.swing.JPanel implements ExplorerManager.P
             }
             int n1 = Integer.parseInt(st1.nextToken());
             int n2 = Integer.parseInt(st2.nextToken());
-            if (n1 != n2) return n2 - n1;
+            if (n1 != n2) {
+                return n2 - n1;
+            }
         }
     }
 
@@ -549,7 +564,7 @@ class SearchHistoryPanel extends javax.swing.JPanel implements ExplorerManager.P
     }//GEN-LAST:event_onViewToggle
 
 private void showMergesChkBoxStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_showMergesChkBoxStateChanged
-        GitModuleConfig.getDefault().setShowHistoryMerges( showMergesChkBox.isSelected());
+    GitModuleConfig.getDefault().setShowHistoryMerges(showMergesChkBox.isSelected());
 }//GEN-LAST:event_showMergesChkBoxStateChanged
 
     public void insertUpdate(DocumentEvent e) {

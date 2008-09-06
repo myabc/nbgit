@@ -51,32 +51,26 @@ class GitLogMessageChangedPath {
     private String copyPath;
     private char action;
 
-    public GitLogMessageChangedPath(String path, char action)
-    {
+    public GitLogMessageChangedPath(String path, char action) {
         this.path = path;
         this.action = action;
         this.copyPath = null;
     }
 
-    public String getPath()
-    {
+    public String getPath() {
         return path;
     }
 
-    public char getAction()
-    {
+    public char getAction() {
         return action;
     }
 
-    public String getCopySrcPath()
-    {
+    public String getCopySrcPath() {
         return copyPath;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "action: " + this.action + " path: " + this.path;
     }
-
 }

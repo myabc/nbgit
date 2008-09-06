@@ -76,14 +76,12 @@ import org.spearce.jgit.treewalk.TreeWalk;
  */
 public class InitAction extends ContextAction {
 
-    public InitAction(String name, VCSContext context)
-    {
+    public InitAction(String name, VCSContext context) {
         super(name, context);
     }
 
     @Override
-    public boolean isEnabled()
-    {
+    public boolean isEnabled() {
         // If it is not a Git managed repository enable action
         File root = GitUtils.getRootFile(context);
         File[] files = context.getRootFiles().toArray(new File[context.getRootFiles().size()]);
@@ -97,8 +95,7 @@ public class InitAction extends ContextAction {
         }
     }
 
-    private File getCommonAncestor(File firstFile, File secondFile)
-    {
+    private File getCommonAncestor(File firstFile, File secondFile) {
         if (firstFile.equals(secondFile)) {
             return firstFile;
         }
@@ -116,22 +113,20 @@ public class InitAction extends ContextAction {
         return null;
     }
 
-    private File getCommonAncestor(File[] files)
-    {
+    private File getCommonAncestor(File[] files) {
         File f1 = files[0];
 
         for (int i = 1; i < files.length; i++) {
             f1 = getCommonAncestor(f1, files[i]);
             if (f1 == null) {
                 Git.LOG.log(Level.SEVERE, "Unable to get common parent of {0} and {1} ", // NOI18N
-                    new Object[]{f1.getAbsolutePath(), files[i].getAbsolutePath()});
+                        new Object[]{f1.getAbsolutePath(), files[i].getAbsolutePath()});
             }
         }
         return f1;
     }
 
-    public void performAction(ActionEvent e)
-    {
+    public void performAction(ActionEvent e) {
         final Git git = Git.getInstance();
 
         File[] files = context.getRootFiles().toArray(new File[context.getRootFiles().size()]);
@@ -145,7 +140,7 @@ public class InitAction extends ContextAction {
             }
             if (git.getTopmostManagedParent(file) != null) {
                 Git.LOG.log(Level.SEVERE, "Found .git directory in ancestor of {0} ", // NOI18N
-                    file);
+                        file);
                 return;
             }
         }
@@ -158,12 +153,12 @@ public class InitAction extends ContextAction {
             logger.outputInRed(NbBundle.getMessage(InitAction.class, "MSG_CREATE_TITLE")); // NOI18N
             logger.outputInRed(NbBundle.getMessage(InitAction.class, "MSG_CREATE_TITLE_SEP")); // NOI18N
             logger.outputInRed(
-                NbBundle.getMessage(InitAction.class, "MSG_CREATE_NOT_SUPPORTED_INVIEW_INFO")); // NOI18N
+                    NbBundle.getMessage(InitAction.class, "MSG_CREATE_NOT_SUPPORTED_INVIEW_INFO")); // NOI18N
             logger.output(""); // NOI18N
             JOptionPane.showMessageDialog(null,
-                NbBundle.getMessage(InitAction.class, "MSG_CREATE_NOT_SUPPORTED_INVIEW"),// NOI18N
-                NbBundle.getMessage(InitAction.class, "MSG_CREATE_NOT_SUPPORTED_INVIEW_TITLE"),// NOI18N
-                JOptionPane.INFORMATION_MESSAGE);
+                    NbBundle.getMessage(InitAction.class, "MSG_CREATE_NOT_SUPPORTED_INVIEW"),// NOI18N
+                    NbBundle.getMessage(InitAction.class, "MSG_CREATE_NOT_SUPPORTED_INVIEW_TITLE"),// NOI18N
+                    JOptionPane.INFORMATION_MESSAGE);
             logger.closeLog();
             return;
         }
@@ -181,19 +176,18 @@ public class InitAction extends ContextAction {
 
         GitProgressSupport supportCreate = new GitProgressSupport() {
 
-            public void perform()
-            {
+            public void perform() {
                 try {
                     OutputLogger logger = getLogger();
                     logger.outputInRed(
-                        NbBundle.getMessage(InitAction.class,
-                        "MSG_CREATE_TITLE")); // NOI18N
+                            NbBundle.getMessage(InitAction.class,
+                            "MSG_CREATE_TITLE")); // NOI18N
                     logger.outputInRed(
-                        NbBundle.getMessage(InitAction.class,
-                        "MSG_CREATE_TITLE_SEP")); // NOI18N
+                            NbBundle.getMessage(InitAction.class,
+                            "MSG_CREATE_TITLE_SEP")); // NOI18N
                     logger.output(
-                        NbBundle.getMessage(InitAction.class,
-                        "MSG_CREATE_INIT", prjName, root)); // NOI18N
+                            NbBundle.getMessage(InitAction.class,
+                            "MSG_CREATE_INIT", prjName, root)); // NOI18N
 
                     repo.create();
                     git.versionedFilesChanged();
@@ -205,12 +199,11 @@ public class InitAction extends ContextAction {
             }
         };
         supportCreate.start(rp, root.getAbsolutePath(),
-            org.openide.util.NbBundle.getMessage(InitAction.class, "MSG_Create_Progress")); // NOI18N
+                org.openide.util.NbBundle.getMessage(InitAction.class, "MSG_Create_Progress")); // NOI18N
 
         GitProgressSupport supportAdd = new GitProgressSupport() {
 
-            public void perform()
-            {
+            public void perform() {
                 OutputLogger logger = getLogger();
                 try {
                     GitIndex index = repo.getIndex();
@@ -228,8 +221,8 @@ public class InitAction extends ContextAction {
                     }
 
                     logger.output(
-                        NbBundle.getMessage(InitAction.class,
-                        "MSG_CREATE_ADD", newFiles, root.getAbsolutePath())); // NOI18N
+                            NbBundle.getMessage(InitAction.class,
+                            "MSG_CREATE_ADD", newFiles, root.getAbsolutePath())); // NOI18N
 
                     if (newFiles > 0) {
                         index.write();
@@ -247,19 +240,18 @@ public class InitAction extends ContextAction {
         };
 
         supportAdd.start(rp, root.getAbsolutePath(),
-            org.openide.util.NbBundle.getMessage(InitAction.class, "MSG_Create_Add_Progress")); // NOI18N
+                org.openide.util.NbBundle.getMessage(InitAction.class, "MSG_Create_Add_Progress")); // NOI18N
     }
 
-    private List<File> getFileList(Repository repo, File rootFile) throws IOException
-    {
+    private List<File> getFileList(Repository repo, File rootFile) throws IOException {
         final FileTreeIterator workTree = new FileTreeIterator(rootFile);
         final TreeWalk walk = new TreeWalk(repo);
         final List<File> files = new ArrayList<File>();
         int share = SharabilityQuery.getSharability(rootFile);
 
-        if (share == SharabilityQuery.NOT_SHARABLE)
+        if (share == SharabilityQuery.NOT_SHARABLE) {
             return files;
-
+        }
         walk.reset(); // drop the first empty tree, which we do not need here
         walk.setRecursive(true);
         walk.addTree(workTree);
@@ -269,13 +261,12 @@ public class InitAction extends ContextAction {
             File file = new File(rootFile, path);
 
             if (share == SharabilityQuery.MIXED &&
-                !GitIgnore.isSharable(file))
+                    !GitIgnore.isSharable(file)) {
                 continue;
-
+            }
             files.add(file);
         }
 
         return files;
     }
-
 }

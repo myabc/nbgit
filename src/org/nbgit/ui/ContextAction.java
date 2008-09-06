@@ -57,15 +57,13 @@ public abstract class ContextAction extends AbstractAction {
 
     protected final VCSContext context;
 
-    public ContextAction(String name, VCSContext context)
-    {
+    public ContextAction(String name, VCSContext context) {
         this.context = context;
         putValue(Action.NAME, name);
     }
 
     @Override
-    public boolean isEnabled()
-    {
+    public boolean isEnabled() {
         return GitUtils.getRootFile(context) != null;
     }
 
@@ -73,8 +71,7 @@ public abstract class ContextAction extends AbstractAction {
      * Synchronizes memory modificatios with disk and calls
      * {@link  #performContextAction}.
      */
-    public void actionPerformed(final ActionEvent event)
-    {
+    public void actionPerformed(final ActionEvent event) {
         // TODO try to save files in invocation context only
         // list somehow modified file in the context and save
         // just them.
@@ -84,5 +81,4 @@ public abstract class ContextAction extends AbstractAction {
     }
 
     protected abstract void performAction(ActionEvent event);
-
 }

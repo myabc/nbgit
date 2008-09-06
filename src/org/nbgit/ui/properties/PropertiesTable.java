@@ -64,7 +64,6 @@ import org.openide.util.NbBundle;
 public class PropertiesTable implements AncestorListener, TableModelListener {
 
     public static final String[] PROPERTIES_COLUMNS = new String[]{PropertiesTableModel.COLUMN_NAME_NAME, PropertiesTableModel.COLUMN_NAME_VALUE};
-
     private PropertiesTableModel tableModel;
     private JTable table;
     private JComponent component;
@@ -92,8 +91,9 @@ public class PropertiesTable implements AncestorListener, TableModelListener {
     }
 
     public void setColumns(String[] clmns) {
-        if (Arrays.equals(columns, clmns))
+        if (Arrays.equals(columns, clmns)) {
             return;
+        }
         columns = clmns;
         tableModel.setColumns(clmns);
         setDefaultColumnSize();
@@ -106,10 +106,12 @@ public class PropertiesTable implements AncestorListener, TableModelListener {
     private void setDefaultColumnSize() {
         int width = table.getWidth();
         TableColumnModel columnModel = table.getColumnModel();
-        if (columns == null || columnModel == null)
+        if (columns == null || columnModel == null) {
             return;
-        if (columnModel.getColumnCount() != columns.length)
+        }
+        if (columnModel.getColumnCount() != columns.length) {
             return;
+        }
         for (int i = 0; i < columns.length; i++) {
             String col = columns[i];
             if (col.equals(PropertiesTableModel.COLUMN_NAME_NAME)) {
@@ -175,5 +177,4 @@ public class PropertiesTable implements AncestorListener, TableModelListener {
             return renderer;
         }
     }
-
 }

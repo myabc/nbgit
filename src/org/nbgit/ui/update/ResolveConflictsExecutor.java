@@ -81,15 +81,12 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
 
     private static final String TMP_PREFIX = "merge"; // NOI18N
     private static final String ORIG_SUFFIX = ".orig."; // NOI18N
-
     static final String CHANGE_LEFT = "<<<<<<< "; // NOI18N
     static final String CHANGE_RIGHT = ">>>>>>> "; // NOI18N
     static final String CHANGE_DELIMETER = "======="; // NOI18N
     static final String CHANGE_BASE_DELIMETER = "|||||||"; // NOI18N
-
     private String leftFileRevision = null;
     private String rightFileRevision = null;
-
     private final File file;
 
     public ResolveConflictsExecutor(File file) {
@@ -121,9 +118,9 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
     }
 
     private void handleMergeFor(final File file, FileObject fo, FileLock lock,
-                                final MergeVisualizer merge) throws IOException {
+            final MergeVisualizer merge) throws IOException {
         String mimeType = (fo == null) ? "text/plain" : fo.getMIMEType(); // NOI18N
-        String ext = "."+fo.getExt(); // NOI18N
+        String ext = "." + fo.getExt(); // NOI18N
         File f1 = FileUtil.normalizeFile(File.createTempFile(TMP_PREFIX, ext));
         File f2 = FileUtil.normalizeFile(File.createTempFile(TMP_PREFIX, ext));
         File f3 = FileUtil.normalizeFile(File.createTempFile(TMP_PREFIX, ext));
@@ -141,9 +138,13 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
         //GraphicalMergeVisualizer merge = new GraphicalMergeVisualizer();
         String originalLeftFileRevision = leftFileRevision;
         String originalRightFileRevision = rightFileRevision;
-        if (leftFileRevision != null) leftFileRevision.trim();
-        if (rightFileRevision != null) rightFileRevision.trim();
-        if (leftFileRevision == null || leftFileRevision.equals(file.getAbsolutePath() + ORIG_SUFFIX)){
+        if (leftFileRevision != null) {
+            leftFileRevision.trim();
+        }
+        if (rightFileRevision != null) {
+            rightFileRevision.trim();
+        }
+        if (leftFileRevision == null || leftFileRevision.equals(file.getAbsolutePath() + ORIG_SUFFIX)) {
             leftFileRevision = org.openide.util.NbBundle.getMessage(ResolveConflictsExecutor.class, "Diff.titleWorkingFile"); // NOI18N
         } else {
             leftFileRevision = org.openide.util.NbBundle.getMessage(ResolveConflictsExecutor.class, "Diff.titleRevision", leftFileRevision); // NOI18N
@@ -160,9 +161,9 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
         s1 = StreamSource.createSource(file.getName(), leftFileRevision, mimeType, f1);
         s2 = StreamSource.createSource(file.getName(), rightFileRevision, mimeType, f2);
         final StreamSource result = new MergeResultWriterInfo(f1, f2, f3, file, mimeType,
-                                                              originalLeftFileRevision,
-                                                              originalRightFileRevision,
-                                                              fo, lock, encoding);
+                originalLeftFileRevision,
+                originalRightFileRevision,
+                fo, lock, encoding);
 
         try {
             Component c = merge.createView(diffs, s1, s2, result);
@@ -178,7 +179,7 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
      * Copy the file and conflict parts into another file.
      */
     private Difference[] copyParts(boolean generateDiffs, File source,
-                                   File dest, boolean leftPart) throws IOException {
+            File dest, boolean leftPart) throws IOException {
         BufferedReader r = new BufferedReader(new FileReader(source));
         BufferedWriter w = new BufferedWriter(new FileWriter(dest));
         ArrayList<Difference> diffList = null;
@@ -215,17 +216,16 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
                         if (isChangeLeft) {
                             f1l2 = i - 1;
                             diffList.add((f1l1 > f1l2) ? new Difference(Difference.ADD,
-                                                                        f1l1 - 1, 0, f2l1, f2l2,
-                                                                        text1.toString(),
-                                                                        text2.toString()) :
-                                         (f2l1 > f2l2) ? new Difference(Difference.DELETE,
-                                                                        f1l1, f1l2, f2l1 - 1, 0,
-                                                                        text1.toString(),
-                                                                        text2.toString())
-                                                       : new Difference(Difference.CHANGE,
-                                                                        f1l1, f1l2, f2l1, f2l2,
-                                                                        text1.toString(),
-                                                                        text2.toString()));
+                                    f1l1 - 1, 0, f2l1, f2l2,
+                                    text1.toString(),
+                                    text2.toString()) : (f2l1 > f2l2) ? new Difference(Difference.DELETE,
+                                    f1l1, f1l2, f2l1 - 1, 0,
+                                    text1.toString(),
+                                    text2.toString())
+                                    : new Difference(Difference.CHANGE,
+                                    f1l1, f1l2, f2l1, f2l2,
+                                    text1.toString(),
+                                    text2.toString()));
                             f1l1 = f1l2 = f2l1 = f2l2 = 0;
                             text1.delete(0, text1.length());
                             text2.delete(0, text2.length());
@@ -243,23 +243,22 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
                         if (isChangeRight) {
                             f2l2 = j - 1;
                             diffList.add((f1l1 > f1l2) ? new Difference(Difference.ADD,
-                                                                        f1l1 - 1, 0, f2l1, f2l2,
-                                                                        text1.toString(),
-                                                                        text2.toString()) :
-                                         (f2l1 > f2l2) ? new Difference(Difference.DELETE,
-                                                                        f1l1, f1l2, f2l1 - 1, 0,
-                                                                        text1.toString(),
-                                                                        text2.toString())
-                                                       : new Difference(Difference.CHANGE,
-                                                                        f1l1, f1l2, f2l1, f2l2,
-                                                                        text1.toString(),
-                                                                        text2.toString()));
-                                                       /*
+                                    f1l1 - 1, 0, f2l1, f2l2,
+                                    text1.toString(),
+                                    text2.toString()) : (f2l1 > f2l2) ? new Difference(Difference.DELETE,
+                                    f1l1, f1l2, f2l1 - 1, 0,
+                                    text1.toString(),
+                                    text2.toString())
+                                    : new Difference(Difference.CHANGE,
+                                    f1l1, f1l2, f2l1, f2l2,
+                                    text1.toString(),
+                                    text2.toString()));
+                            /*
                             diffList.add(new Difference((f1l1 > f1l2) ? Difference.ADD :
-                                                        (f2l1 > f2l2) ? Difference.DELETE :
-                                                                        Difference.CHANGE,
-                                                        f1l1, f1l2, f2l1, f2l2));
-                                                        */
+                            (f2l1 > f2l2) ? Difference.DELETE :
+                            Difference.CHANGE,
+                            f1l1, f1l2, f2l1, f2l2));
+                             */
                             f1l1 = f1l2 = f2l1 = f2l2 = 0;
                             text1.delete(0, text1.length());
                             text2.delete(0, text2.length());
@@ -278,17 +277,16 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
                         text2.append(lineText);
                         f2l2 = j;
                         diffList.add((f1l1 > f1l2) ? new Difference(Difference.ADD,
-                                                                    f1l1 - 1, 0, f2l1, f2l2,
-                                                                    text1.toString(),
-                                                                    text2.toString()) :
-                                     (f2l1 > f2l2) ? new Difference(Difference.DELETE,
-                                                                    f1l1, f1l2, f2l1 - 1, 0,
-                                                                    text1.toString(),
-                                                                    text2.toString())
-                                                   : new Difference(Difference.CHANGE,
-                                                                    f1l1, f1l2, f2l1, f2l2,
-                                                                    text1.toString(),
-                                                                    text2.toString()));
+                                f1l1 - 1, 0, f2l1, f2l2,
+                                text1.toString(),
+                                text2.toString()) : (f2l1 > f2l2) ? new Difference(Difference.DELETE,
+                                f1l1, f1l2, f2l1 - 1, 0,
+                                text1.toString(),
+                                text2.toString())
+                                : new Difference(Difference.CHANGE,
+                                f1l1, f1l2, f2l1, f2l2,
+                                text1.toString(),
+                                text2.toString()));
                         f1l1 = f1l2 = f2l1 = f2l2 = 0;
                         text1.delete(0, text1.length());
                         text2.delete(0, text2.length());
@@ -342,12 +340,18 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
                     w.write(line);
                     w.newLine();
                 }
-                if (isChangeLeft) text1.append(line + "\n"); // NOI18N
-                if (isChangeRight) text2.append(line + "\n"); // NOI18N
+                if (isChangeLeft) {
+                    text1.append(line + "\n"); // NOI18N
+                }
+                if (isChangeRight) {
+                    text2.append(line + "\n"); // NOI18N
+                }
                 if (generateDiffs) {
-                    if (isChangeLeft) i++;
-                    else if (isChangeRight) j++;
-                    else {
+                    if (isChangeLeft) {
+                        i++;
+                    } else if (isChangeRight) {
+                        j++;
+                    } else {
                         i++;
                         j++;
                     }
@@ -376,10 +380,9 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
         throw new RuntimeException("Not implemented"); // NOI18N
     }
 
-
     private static class MergeResultWriterInfo extends StreamSource {
 
-        private File tempf1, tempf2, tempf3, outputFile;
+        private File tempf1,  tempf2,  tempf3,  outputFile;
         private File fileToRepairEntriesOf;
         private String mimeType;
         private String leftFileRevision;
@@ -389,9 +392,9 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
         private Charset encoding;
 
         public MergeResultWriterInfo(File tempf1, File tempf2, File tempf3,
-                                     File outputFile, String mimeType,
-                                     String leftFileRevision, String rightFileRevision,
-                                     FileObject fo, FileLock lock, Charset encoding) {
+                File outputFile, String mimeType,
+                String leftFileRevision, String rightFileRevision,
+                FileObject fo, FileLock lock, Charset encoding) {
             this.tempf1 = tempf1;
             this.tempf2 = tempf2;
             this.tempf3 = tempf3;
@@ -441,7 +444,7 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
                 return w;
             } else {
                 return new MergeConflictFileWriter(w, fo, conflicts,
-                                                   leftFileRevision, rightFileRevision);
+                        leftFileRevision, rightFileRevision);
             }
         }
 
@@ -480,8 +483,8 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
         private FileObject fo;
 
         public MergeConflictFileWriter(Writer delegate, FileObject fo,
-                                       Difference[] conflicts, String leftName,
-                                       String rightName) throws IOException {
+                Difference[] conflicts, String leftName,
+                String rightName) throws IOException {
             super(delegate);
             this.conflicts = conflicts;
             this.leftName = leftName;
@@ -524,7 +527,9 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
         @Override
         public void close() throws IOException {
             super.close();
-            if (fo != null) fo.refresh(true);
+            if (fo != null) {
+                fo.refresh(true);
+            }
         }
     }
 }

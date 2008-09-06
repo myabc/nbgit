@@ -64,27 +64,26 @@ import org.openide.util.RequestProcessor;
  */
 public class UpdateAction extends ContextAction {
 
-    public UpdateAction(String name, VCSContext context)
-    {
+    public UpdateAction(String name, VCSContext context) {
         super(name, context);
     }
 
-    public void performAction(ActionEvent e)
-    {
+    public void performAction(ActionEvent e) {
         update(context);
     }
 
-    public static void update(final VCSContext ctx)
-    {
+    public static void update(final VCSContext ctx) {
         final File root = GitUtils.getRootFile(ctx);
-        if (root == null)
+        if (root == null) {
             return;
+        }
         String repository = root.getAbsolutePath();
         String rev = null;
 
         final Update update = new Update(root);
-        if (!update.showDialog())
+        if (!update.showDialog()) {
             return;
+        }
         rev = update.getSelectionRevision();
         final boolean doForcedUpdate = update.isForcedUpdateRequested();
         final String revStr = rev;
@@ -92,47 +91,44 @@ public class UpdateAction extends ContextAction {
         RequestProcessor rp = Git.getInstance().getRequestProcessor(repository);
         GitProgressSupport support = new GitProgressSupport() {
 
-            public void perform()
-            {
+            public void perform() {
                 boolean bNoUpdates = true;
                 OutputLogger logger = getLogger();
 
                 logger.outputInRed(
                         NbBundle.getMessage(UpdateAction.class,
                         "MSG_UPDATE_TITLE")); // NOI18N
-                    logger.outputInRed(
+                logger.outputInRed(
                         NbBundle.getMessage(UpdateAction.class,
                         "MSG_UPDATE_TITLE_SEP")); // NOI18N
-                    logger.output(
+                logger.output(
                         NbBundle.getMessage(UpdateAction.class,
                         "MSG_UPDATE_INFO_SEP", revStr, root.getAbsolutePath())); // NOI18N
-                    List<String> list = GitCommand.doUpdateAll(root, doForcedUpdate, revStr);
+                List<String> list = GitCommand.doUpdateAll(root, doForcedUpdate, revStr);
 
-                    if (list != null && !list.isEmpty()) {
-                        bNoUpdates = GitCommand.isNoUpdates(list.get(0));
-                        //logger.clearOutput();
-                        logger.output(list);
-                        logger.output(""); // NOI18N
-                    }
-                    // refresh filesystem to take account of changes
-                    FileObject rootObj = FileUtil.toFileObject(root);
-                    try {
-                        rootObj.getFileSystem().refresh(true);
-                    } catch (Exception ex) {
-                    }
+                if (list != null && !list.isEmpty()) {
+                    bNoUpdates = GitCommand.isNoUpdates(list.get(0));
+                    //logger.clearOutput();
+                    logger.output(list);
+                    logger.output(""); // NOI18N
+                }
+                // refresh filesystem to take account of changes
+                FileObject rootObj = FileUtil.toFileObject(root);
+                try {
+                    rootObj.getFileSystem().refresh(true);
+                } catch (Exception ex) {
+                }
 
                 // Force Status Refresh from this dir and below
-                if (!bNoUpdates)
+                if (!bNoUpdates) {
                     GitUtils.forceStatusRefreshProject(ctx);
-
+                }
                 logger.outputInRed(
-                    NbBundle.getMessage(UpdateAction.class,
-                    "MSG_UPDATE_DONE")); // NOI18N
+                        NbBundle.getMessage(UpdateAction.class,
+                        "MSG_UPDATE_DONE")); // NOI18N
                 logger.output(""); // NOI18N
             }
-
         };
         support.start(rp, repository, org.openide.util.NbBundle.getMessage(UpdateAction.class, "MSG_Update_Progress")); // NOI18N
     }
-
 }

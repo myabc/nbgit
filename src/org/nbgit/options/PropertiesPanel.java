@@ -79,7 +79,7 @@ public class PropertiesPanel extends javax.swing.JPanel implements PreferenceCha
         return btnRemove;
     }
 
-    public void setPropertiesTable(PropertiesTable propertiesTable){
+    public void setPropertiesTable(PropertiesTable propertiesTable) {
         this.propertiesTable = propertiesTable;
     }
 
@@ -205,8 +205,6 @@ public class PropertiesPanel extends javax.swing.JPanel implements PreferenceCha
         btnRemove.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(PropertiesPanel.class, "ACSD_btnRemove")); // NOI18N
         btnAdd.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(PropertiesPanel.class, "ACSD_btnAdd")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     final javax.swing.JButton btnAdd = new javax.swing.JButton();
     final javax.swing.JButton btnRemove = new javax.swing.JButton();
@@ -218,6 +216,5 @@ public class PropertiesPanel extends javax.swing.JPanel implements PreferenceCha
     public javax.swing.JPanel propsPanel;
     final javax.swing.JTextArea txtAreaValue = new javax.swing.JTextArea();
     // End of variables declaration//GEN-END:variables
-
 }
 

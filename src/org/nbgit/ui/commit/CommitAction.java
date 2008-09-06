@@ -92,33 +92,30 @@ public class CommitAction extends ContextAction {
 
     static final String RECENT_COMMIT_MESSAGES = "recentCommitMessage"; // NOI18N
 
-    public CommitAction(String name, VCSContext context)
-    {
+    public CommitAction(String name, VCSContext context) {
         super(name, context);
     }
 
     @Override
-    public boolean isEnabled()
-    {
+    public boolean isEnabled() {
         StatusCache cache = Git.getInstance().getStatusCache();
         return cache.containsFileOfStatus(context, StatusInfo.STATUS_LOCAL_CHANGE);
     }
 
-    public void performAction(ActionEvent e)
-    {
+    public void performAction(ActionEvent e) {
         final File root = GitUtils.getRootFile(context);
         if (root == null) {
             OutputLogger logger = OutputLogger.getLogger(Git.GIT_OUTPUT_TAB_TITLE);
             logger.outputInRed(NbBundle.getMessage(CommitAction.class, "MSG_COMMIT_TITLE")); // NOI18N
             logger.outputInRed(NbBundle.getMessage(CommitAction.class, "MSG_COMMIT_TITLE_SEP")); // NOI18N
             logger.outputInRed(
-                NbBundle.getMessage(CommitAction.class, "MSG_COMMIT_NOT_SUPPORTED_INVIEW_INFO")); // NOI18N
+                    NbBundle.getMessage(CommitAction.class, "MSG_COMMIT_NOT_SUPPORTED_INVIEW_INFO")); // NOI18N
             logger.output(""); // NOI18N
             logger.closeLog();
             JOptionPane.showMessageDialog(null,
-                NbBundle.getMessage(CommitAction.class, "MSG_COMMIT_NOT_SUPPORTED_INVIEW"),// NOI18N
-                NbBundle.getMessage(CommitAction.class, "MSG_COMMIT_NOT_SUPPORTED_INVIEW_TITLE"),// NOI18N
-                JOptionPane.INFORMATION_MESSAGE);
+                    NbBundle.getMessage(CommitAction.class, "MSG_COMMIT_NOT_SUPPORTED_INVIEW"),// NOI18N
+                    NbBundle.getMessage(CommitAction.class, "MSG_COMMIT_NOT_SUPPORTED_INVIEW_TITLE"),// NOI18N
+                    JOptionPane.INFORMATION_MESSAGE);
             return;
         }
         String contentTitle = Utils.getContextDisplayName(context);
@@ -126,16 +123,16 @@ public class CommitAction extends ContextAction {
         commit(contentTitle, context);
     }
 
-    public static void commit(String contentTitle, final VCSContext ctx)
-    {
+    public static void commit(String contentTitle, final VCSContext ctx) {
         StatusCache cache = Git.getInstance().getStatusCache();
         File[] roots = ctx.getRootFiles().toArray(new File[ctx.getRootFiles().size()]);
-        if (roots == null || roots.length == 0)
+        if (roots == null || roots.length == 0) {
             return;
-
+        }
         final File repository = GitUtils.getRootFile(ctx);
-        if (repository == null)
+        if (repository == null) {
             return;
+        }
         String projName = GitProjectUtils.getProjectName(repository);
         if (projName == null) {
             File projFile = GitUtils.getProjectFile(ctx);
@@ -152,24 +149,26 @@ public class CommitAction extends ContextAction {
                 File[] files = cache.listFiles(ctx, StatusInfo.STATUS_LOCAL_CHANGE);
                 for (int i = 0; i < files.length; i++) {
                     for (int r = 0; r < roots.length; r++) {
-                        if (GitUtils.isParentOrEqual(roots[r], files[i]))
-                            if (!fileList.contains(files[i]))
+                        if (GitUtils.isParentOrEqual(roots[r], files[i])) {
+                            if (!fileList.contains(files[i])) {
                                 fileList.add(files[i]);
+                            }
+                        }
                     }
                 }
             } else {
                 File[] files = GitUtils.flatten(roots, StatusInfo.STATUS_LOCAL_CHANGE);
                 for (int i = 0; i < files.length; i++) {
-                    if (!fileList.contains(files[i]))
+                    if (!fileList.contains(files[i])) {
                         fileList.add(files[i]);
+                    }
                 }
             }
         }
 
-        if (fileList.size() == 0)
-            return;
-
-        // show commit dialog
+        if (fileList.size() == 0) {
+            return;        // show commit dialog
+        }
         final CommitPanel panel = new CommitPanel();
         final CommitTable data = new CommitTable(panel.filesLabel, CommitTable.COMMIT_COLUMNS, new String[]{CommitTableModel.COLUMN_NAME_PATH});
 
@@ -214,19 +213,15 @@ public class CommitAction extends ContextAction {
         dd.setHelpCtx(new HelpCtx(CommitAction.class));
         panel.addVersioningListener(new VersioningListener() {
 
-            public void versioningEvent(VersioningEvent event)
-            {
+            public void versioningEvent(VersioningEvent event) {
                 refreshCommitDialog(panel, data, commitButton);
             }
-
         });
         data.getTableModel().addTableModelListener(new TableModelListener() {
 
-            public void tableChanged(TableModelEvent e)
-            {
+            public void tableChanged(TableModelEvent e) {
                 refreshCommitDialog(panel, data, commitButton);
             }
-
         });
         commitButton.setEnabled(containsCommitable(data));
 
@@ -246,23 +241,21 @@ public class CommitAction extends ContextAction {
             RequestProcessor rp = Git.getInstance().getRequestProcessor(repository.getAbsolutePath());
             GitProgressSupport support = new GitProgressSupport() {
 
-                public void perform()
-                {
+                public void perform() {
                     OutputLogger logger = getLogger();
                     performCommit(message, commitFiles, ctx, this, prjName, logger);
                 }
-
             };
             support.start(rp, repository.getAbsolutePath(), org.openide.util.NbBundle.getMessage(CommitAction.class, "LBL_Commit_Progress")); // NOI18N
         }
     }
 
-    private static boolean containsCommitable(CommitTable data)
-    {
+    private static boolean containsCommitable(CommitTable data) {
         Map<GitFileNode, CommitOptions> map = data.getCommitFiles();
         for (CommitOptions co : map.values()) {
-            if (co != CommitOptions.EXCLUDE)
+            if (co != CommitOptions.EXCLUDE) {
                 return true;
+            }
         }
         return false;
     }
@@ -273,8 +266,7 @@ public class CommitAction extends ContextAction {
      * @param panel
      * @param commit
      */
-    private static void refreshCommitDialog(CommitPanel panel, CommitTable table, JButton commit)
-    {
+    private static void refreshCommitDialog(CommitPanel panel, CommitTable table, JButton commit) {
         ResourceBundle loc = NbBundle.getBundle(CommitAction.class);
         Map<GitFileNode, CommitOptions> files = table.getCommitFiles();
         Set<String> stickyTags = new HashSet<String>();
@@ -285,14 +277,15 @@ public class CommitAction extends ContextAction {
         for (GitFileNode fileNode : files.keySet()) {
 
             CommitOptions options = files.get(fileNode);
-            if (options == CommitOptions.EXCLUDE)
+            if (options == CommitOptions.EXCLUDE) {
                 continue;
             //stickyTags.add(GitUtils.getCopy(fileNode.getFile()));
+            }
             int status = fileNode.getInformation().getStatus();
             if ((status & StatusInfo.STATUS_REMOTE_CHANGE) != 0 || status == StatusInfo.STATUS_VERSIONED_CONFLICT) {
                 enabled = false;
                 String msg = (status == StatusInfo.STATUS_VERSIONED_CONFLICT) ? loc.getString("MSG_CommitForm_ErrorConflicts") : // NOI18N
-                    loc.getString("MSG_CommitForm_ErrorRemoteChanges"); // NOI18N
+                        loc.getString("MSG_CommitForm_ErrorRemoteChanges"); // NOI18N
                 panel.setErrorLabel("<html><font color=\"#002080\">" + msg + "</font></html>");  // NOI18N
                 conflicts = true;
             }
@@ -300,15 +293,15 @@ public class CommitAction extends ContextAction {
 
         }
 
-        if (stickyTags.size() > 1)
+        if (stickyTags.size() > 1) {
             table.setColumns(new String[]{CommitTableModel.COLUMN_NAME_NAME, CommitTableModel.COLUMN_NAME_BRANCH, CommitTableModel.COLUMN_NAME_STATUS,
-                    CommitTableModel.COLUMN_NAME_ACTION, CommitTableModel.COLUMN_NAME_PATH
-                });
-        else
+                        CommitTableModel.COLUMN_NAME_ACTION, CommitTableModel.COLUMN_NAME_PATH
+                    });
+        } else {
             table.setColumns(new String[]{CommitTableModel.COLUMN_NAME_NAME, CommitTableModel.COLUMN_NAME_STATUS,
-                    CommitTableModel.COLUMN_NAME_ACTION, CommitTableModel.COLUMN_NAME_PATH
-                });
-
+                        CommitTableModel.COLUMN_NAME_ACTION, CommitTableModel.COLUMN_NAME_PATH
+                    });
+        }
         String contentTitle = (String) panel.getClientProperty("contentTitle"); // NOI18N
 // NOI18N
         DialogDescriptor dd = (DialogDescriptor) panel.getClientProperty("DialogDescriptor"); // NOI18N
@@ -336,8 +329,7 @@ public class CommitAction extends ContextAction {
     }
 
     private static void performCommit(String message, Map<GitFileNode, CommitOptions> commitFiles,
-        VCSContext ctx, GitProgressSupport support, String prjName, OutputLogger logger)
-    {
+            VCSContext ctx, GitProgressSupport support, String prjName, OutputLogger logger) {
         StatusCache cache = Git.getInstance().getStatusCache();
         final File repository = GitUtils.getRootFile(ctx);
         List<File> addCandidates = new ArrayList<File>();
@@ -348,36 +340,40 @@ public class CommitAction extends ContextAction {
         List<String> excPaths = new ArrayList<String>();
         List<String> incPaths = new ArrayList<String>();
         while (it.hasNext()) {
-            if (support.isCanceled())
+            if (support.isCanceled()) {
                 return;
+            }
             GitFileNode node = it.next();
             CommitOptions option = commitFiles.get(node);
             if (option != CommitOptions.EXCLUDE) {
                 int status = cache.getStatus(node.getFile()).getStatus();
-                if ((status & StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY) != 0)
+                if ((status & StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY) != 0) {
                     addCandidates.add(node.getFile());
-                else if ((status & StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY) != 0)
+                } else if ((status & StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY) != 0) {
                     deleteCandidates.add(node.getFile());
+                }
                 commitCandidates.add(node.getFile());
                 incPaths.add(node.getFile().getAbsolutePath());
-            } else
+            } else {
                 excPaths.add(node.getFile().getAbsolutePath());
+            }
         }
-        if (support.isCanceled())
+        if (support.isCanceled()) {
             return;
-
-        if (!excPaths.isEmpty())
+        }
+        if (!excPaths.isEmpty()) {
             GitModuleConfig.getDefault().addExclusionPaths(excPaths);
-        if (!incPaths.isEmpty())
+        }
+        if (!incPaths.isEmpty()) {
             GitModuleConfig.getDefault().removeExclusionPaths(incPaths);
-
+        }
         try {
             logger.outputInRed(
-                NbBundle.getMessage(CommitAction.class,
-                "MSG_COMMIT_TITLE")); // NOI18N
+                    NbBundle.getMessage(CommitAction.class,
+                    "MSG_COMMIT_TITLE")); // NOI18N
             logger.outputInRed(
-                NbBundle.getMessage(CommitAction.class,
-                "MSG_COMMIT_TITLE_SEP")); // NOI18N
+                    NbBundle.getMessage(CommitAction.class,
+                    "MSG_COMMIT_TITLE_SEP")); // NOI18N
             logger.output(message); // NOI18N
             if (addCandidates.size() > 0) {
                 GitCommand.doAdd(repository, addCandidates, logger);
@@ -394,14 +390,15 @@ public class CommitAction extends ContextAction {
 
             GitCommand.doCommit(repository, commitCandidates, message, logger);
 
-            if (commitCandidates.size() == 1)
+            if (commitCandidates.size() == 1) {
                 logger.output(
-                    NbBundle.getMessage(CommitAction.class,
-                    "MSG_COMMIT_INIT_SEP_ONE", commitCandidates.size(), prjName));
-            else
+                        NbBundle.getMessage(CommitAction.class,
+                        "MSG_COMMIT_INIT_SEP_ONE", commitCandidates.size(), prjName));
+            } else {
                 logger.output(
-                    NbBundle.getMessage(CommitAction.class,
-                    "MSG_COMMIT_INIT_SEP", commitCandidates.size(), prjName));
+                        NbBundle.getMessage(CommitAction.class,
+                        "MSG_COMMIT_INIT_SEP", commitCandidates.size(), prjName));
+            }
             for (File f : commitCandidates) {
                 logger.output("\t" + f.getAbsolutePath()); // NOI18N
             }
@@ -414,5 +411,4 @@ public class CommitAction extends ContextAction {
             logger.output(""); // NOI18N
         }
     }
-
 }

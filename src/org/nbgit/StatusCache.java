@@ -102,19 +102,16 @@ public class StatusCache {
     private Git git;
     private Set<FileSystem> filesystemsToRefresh;
 
-    StatusCache(Git git)
-    {
+    StatusCache(Git git) {
         this.git = git;
         cacheProvider = new DiskMapTurboProvider();
         turbo = Turbo.createCustom(new CustomProviders() {
 
             private final Set providers = Collections.singleton(cacheProvider);
 
-            public Iterator providers()
-            {
+            public Iterator providers() {
                 return providers.iterator();
             }
-
         }, 200, 5000);
     }
 
@@ -127,8 +124,7 @@ public class StatusCache {
      * @param dir folder to list
      * @return
      */
-    public File[] listFiles(File dir)
-    {
+    public File[] listFiles(File dir) {
         Set<File> files = getScannedFiles(dir, null).keySet();
         return files.toArray(new File[files.size()]);
     }
@@ -143,8 +139,7 @@ public class StatusCache {
      * @param includeStatus limit returned files to those having one of supplied statuses
      * @return File [] array of interesting files
      */
-    public File[] listFiles(VCSContext context, int includeStatus)
-    {
+    public File[] listFiles(VCSContext context, int includeStatus) {
         Set<File> set = new HashSet<File>();
         Map allFiles = cacheProvider.getAllModifiedValues();
         if (allFiles == null) {
@@ -155,8 +150,9 @@ public class StatusCache {
         for (Iterator i = allFiles.keySet().iterator(); i.hasNext();) {
             File file = (File) i.next();
             StatusInfo info = (StatusInfo) allFiles.get(file);
-            if ((info.getStatus() & includeStatus) == 0)
+            if ((info.getStatus() & includeStatus) == 0) {
                 continue;
+            }
             Set<File> roots = context.getRootFiles();
             for (File root : roots) {
                 if (VersioningSupport.isFlat(root)) {
@@ -170,15 +166,17 @@ public class StatusCache {
                 }
             }
         }
-        if (context.getExclusions().size() > 0)
+        if (context.getExclusions().size() > 0) {
             for (Iterator i = context.getExclusions().iterator(); i.hasNext();) {
                 File excluded = (File) i.next();
                 for (Iterator j = set.iterator(); j.hasNext();) {
                     File file = (File) j.next();
-                    if (Utils.isAncestorOrEqual(excluded, file))
+                    if (Utils.isAncestorOrEqual(excluded, file)) {
                         j.remove();
+                    }
                 }
             }
+        }
         return set.toArray(new File[set.size()]);
     }
 
@@ -192,15 +190,15 @@ public class StatusCache {
      * @param includeStatus limit returned files to those having one of supplied statuses
      * @return File [] array of interesting files
      */
-    public File[] listFiles(File[] roots, int includeStatus)
-    {
+    public File[] listFiles(File[] roots, int includeStatus) {
         Set<File> set = new HashSet<File>();
         Map<File, StatusInfo> allFiles = cacheProvider.getAllModifiedValues();
 
         for (File file : allFiles.keySet()) {
             StatusInfo info = allFiles.get(file);
-            if ((info.getStatus() & includeStatus) == 0)
+            if ((info.getStatus() & includeStatus) == 0) {
                 continue;
+            }
             for (int j = 0; j < roots.length; j++) {
                 File root = roots[j];
                 if (VersioningSupport.isFlat(root)) {
@@ -224,8 +222,7 @@ public class StatusCache {
      * @param includeStatus file status to check for
      * @return boolean true if this context contains at least one file with the includeStatus, false otherwise
      */
-    public boolean containsFileOfStatus(VCSContext context, int includeStatus)
-    {
+    public boolean containsFileOfStatus(VCSContext context, int includeStatus) {
         Map<File, StatusInfo> allFiles = cacheProvider.getAllModifiedValues();
         if (allFiles == null) {
             Git.LOG.log(Level.FINE, "containsFileOfStatus(): allFiles == null"); // NOI18N
@@ -240,8 +237,9 @@ public class StatusCache {
 
         for (File file : setAllFiles) {
             StatusInfo info = allFiles.get(file);
-            if ((info.getStatus() & includeStatus) == 0)
+            if ((info.getStatus() & includeStatus) == 0) {
                 continue;
+            }
             for (File root : roots) {
                 if (VersioningSupport.isFlat(root)) {
                     if (file.equals(root) || file.getParentFile().equals(root)) {
@@ -256,11 +254,13 @@ public class StatusCache {
             // Check it is not an excluded file
             if (bContainsFile && bExclusions) {
                 for (File excluded : exclusions) {
-                    if (!Utils.isAncestorOrEqual(excluded, file))
+                    if (!Utils.isAncestorOrEqual(excluded, file)) {
                         return true;
+                    }
                 }
-            } else if (bContainsFile)
+            } else if (bContainsFile) {
                 return true;
+            }
         }
         return false;
     }
@@ -272,25 +272,30 @@ public class StatusCache {
      * @return StatusInfo structure containing the file status
      * @see StatusInfo
      */
-    public StatusInfo getStatus(File file)
-    {
-        if (file.isDirectory() && excludeFile(file))
+    public StatusInfo getStatus(File file) {
+        if (file.isDirectory() && excludeFile(file)) {
             return StatusCache.FILE_STATUS_EXCLUDED_DIRECTORY;
+        }
         File dir = file.getParentFile();
-        if (dir == null)
+        if (dir == null) {
             return StatusCache.FILE_STATUS_NOTMANAGED;
+        }
         Map files = getScannedFiles(dir, null);
-        if (files == StatusCache.NOT_MANAGED_MAP)
+        if (files == StatusCache.NOT_MANAGED_MAP) {
             return StatusCache.FILE_STATUS_NOTMANAGED;
+        }
         StatusInfo fi = (StatusInfo) files.get(file);
-        if (fi != null)
+        if (fi != null) {
             return fi;
-        if (!exists(file))
+        }
+        if (!exists(file)) {
             return StatusCache.FILE_STATUS_UNKNOWN;
-        if (file.isDirectory())
+        }
+        if (file.isDirectory()) {
             return refresh(file, REPOSITORY_STATUS_UNKNOWN);
-        else
+        } else {
             return new StatusInfo(StatusInfo.STATUS_VERSIONED_UPTODATE, false);
+        }
     }
 
     /**
@@ -300,50 +305,52 @@ public class StatusCache {
      * @return give file's status or null if the file's status is not in cache
      */
     @SuppressWarnings("unchecked") // Need to change turbo module to remove warning at source
-    StatusInfo getCachedStatus( File file, boolean bCheckSharability)
-    {
+    StatusInfo getCachedStatus( File file, boolean bCheckSharability) {
         File parent = file.getParentFile();
-        if (parent == null)
+        if (parent == null) {
             return StatusCache.FILE_STATUS_NOTMANAGED_DIRECTORY;
-
+        }
         Map<File, StatusInfo> files = (Map<File, StatusInfo>) turbo.readEntry(parent, FILE_STATUS_MAP);
         StatusInfo fi = files != null ? files.get(file) : null;
-        if (fi != null)
+        if (fi != null) {
             return fi;
-
-        if (file.isDirectory())
-            if (excludeFile(file))
+        }
+        if (file.isDirectory()) {
+            if (excludeFile(file)) {
                 return StatusCache.FILE_STATUS_EXCLUDED_DIRECTORY;
-            else
+            } else {
                 return StatusCache.FILE_STATUS_UPTODATE_DIRECTORY;
-
+            }
+        }
         return fi;
     }
 
-    private StatusInfo refresh(File file, File repoStat, boolean forceChangeEvent)
-    {
+    private StatusInfo refresh(File file, File repoStat, boolean forceChangeEvent) {
         Git.LOG.log(Level.FINE, "refresh(): {0}", file); // NOI18N
         File dir = file.getParentFile();
-        if (dir == null)
+        if (dir == null) {
             return StatusCache.FILE_STATUS_NOTMANAGED;
-
+        }
         Map<File, StatusInfo> files = getScannedFiles(dir, null); // Has side effect of updating the cache
-        if (files == StatusCache.NOT_MANAGED_MAP && repoStat == StatusCache.REPOSITORY_STATUS_UNKNOWN)
+        if (files == StatusCache.NOT_MANAGED_MAP && repoStat == StatusCache.REPOSITORY_STATUS_UNKNOWN) {
             return StatusCache.FILE_STATUS_NOTMANAGED;
+        }
         StatusInfo current = files.get(file);
 
         StatusInfo fi = createFileInformation(file, true);
 
         if (StatusInfo.equivalent(fi, current)) {
-            if (forceChangeEvent)
+            if (forceChangeEvent) {
                 fireFileStatusChanged(file, current, fi);
+            }
             return fi;
         }
 
         // do not include uptodate files into cache, missing directories must be included
         if (current == null && !fi.isDirectory() && fi.getStatus() == StatusInfo.STATUS_VERSIONED_UPTODATE) {
-            if (forceChangeEvent)
+            if (forceChangeEvent) {
                 fireFileStatusChanged(file, current, fi);
+            }
             return fi;
         }
 
@@ -353,10 +360,11 @@ public class StatusCache {
         if (fi.getStatus() == StatusInfo.STATUS_UNKNOWN) {
             newFiles.remove(file);
             turbo.writeEntry(file, FILE_STATUS_MAP, null);  // remove mapping in case of directories
-        } else if (fi.getStatus() == StatusInfo.STATUS_VERSIONED_UPTODATE && file.isFile())
+        } else if (fi.getStatus() == StatusInfo.STATUS_VERSIONED_UPTODATE && file.isFile()) {
             newFiles.remove(file);
-        else
+        } else {
             newFiles.put(file, fi);
+        }
         assert newFiles.containsKey(dir) == false;
         turbo.writeEntry(dir, FILE_STATUS_MAP, newFiles.size() == 0 ? null : newFiles);
 
@@ -370,27 +378,29 @@ public class StatusCache {
         return fi;
     }
 
-    private StatusInfo createFileInformation(File file, Boolean callStatus)
-    {
+    private StatusInfo createFileInformation(File file, Boolean callStatus) {
         Git.LOG.log(Level.FINE, "createFileInformation(): {0} {1}", new Object[]{file, callStatus}); // NOI18N
-        if (file == null)
+        if (file == null) {
             return FILE_STATUS_UNKNOWN;
-        if (git.isAdministrative(file))
+        }
+        if (git.isAdministrative(file)) {
             return FILE_STATUS_EXCLUDED_DIRECTORY; // Excluded
-
+        }
         File rootManagedFolder = git.getTopmostManagedParent(file);
-        if (rootManagedFolder == null)
+        if (rootManagedFolder == null) {
             return FILE_STATUS_UNKNOWN; // Avoiding returning NOT_MANAGED dir or file
-
-        if (file.isDirectory())
-            if (GitIgnore.isIgnored(file))
+        }
+        if (file.isDirectory()) {
+            if (GitIgnore.isIgnored(file)) {
                 return FILE_STATUS_EXCLUDED_DIRECTORY;
-            else
+            } else {
                 return FILE_STATUS_UPTODATE_DIRECTORY;
-
+            }
+        }
         if (callStatus == false) {
-            if (GitIgnore.isIgnored(file))
+            if (GitIgnore.isIgnored(file)) {
                 return FILE_STATUS_EXCLUDED;
+            }
             return null;
         }
 
@@ -408,102 +418,109 @@ public class StatusCache {
      * @param file
      * @param repositoryStatus
      */
-    public StatusInfo refresh(File file, File repositoryStatus)
-    {
+    public StatusInfo refresh(File file, File repositoryStatus) {
         return refresh(file, repositoryStatus, false);
     }
 
     @SuppressWarnings("unchecked") // Need to change turbo module to remove warning at source
-    public Map<File, StatusInfo> getScannedFiles(File dir, Map<File, StatusInfo> interestingFiles)
-    {
+    public Map<File, StatusInfo> getScannedFiles(File dir, Map<File, StatusInfo> interestingFiles) {
         Map<File, StatusInfo> files;
 
         files = (Map<File, StatusInfo>) turbo.readEntry(dir, FILE_STATUS_MAP);
-        if (files != null)
+        if (files != null) {
             return files;
-
-        if (!dir.exists() && interestingFiles == null)
+        }
+        if (!dir.exists() && interestingFiles == null) {
             return StatusCache.NOT_MANAGED_MAP;
-
+        }
         dir = FileUtil.normalizeFile(dir);
         files = scanFolder(dir, interestingFiles);
         assert files.containsKey(dir) == false;
         turbo.writeEntry(dir, FILE_STATUS_MAP, files);
-        if (interestingFiles == null)
+        if (interestingFiles == null) {
             for (Iterator i = files.keySet().iterator(); i.hasNext();) {
                 File file = (File) i.next();
                 StatusInfo info = files.get(file);
-                if ((info.getStatus() & (StatusInfo.STATUS_LOCAL_CHANGE | StatusInfo.STATUS_NOTVERSIONED_EXCLUDED)) != 0)
+                if ((info.getStatus() & (StatusInfo.STATUS_LOCAL_CHANGE | StatusInfo.STATUS_NOTVERSIONED_EXCLUDED)) != 0) {
                     fireFileStatusChanged(file, null, info);
+                }
             }
+        }
         return files;
     }
 
-    public void refreshFileStatus(File file, StatusInfo fi, Map<File, StatusInfo> interestingFiles)
-    {
+    public void refreshFileStatus(File file, StatusInfo fi, Map<File, StatusInfo> interestingFiles) {
         refreshFileStatus(file, fi, interestingFiles, false);
     }
 
-    public void refreshFileStatus(File file, StatusInfo fi, Map<File, StatusInfo> interestingFiles, boolean alwaysFireEvent)
-    {
-        if (file == null || fi == null)
+    public void refreshFileStatus(File file, StatusInfo fi, Map<File, StatusInfo> interestingFiles, boolean alwaysFireEvent) {
+        if (file == null || fi == null) {
             return;
+        }
         File dir = file.getParentFile();
-        if (dir == null)
+        if (dir == null) {
             return;
-
+        }
         Map<File, StatusInfo> files = getScannedFiles(dir, interestingFiles);
 
-        if (files == null || files == StatusCache.NOT_MANAGED_MAP)
+        if (files == null || files == StatusCache.NOT_MANAGED_MAP) {
             return;
+        }
         StatusInfo current = files.get(file);
-        if (StatusInfo.equivalent(fi, current))
-            if (StatusInfo.equivalent(FILE_STATUS_NEWLOCALLY, fi))
+        if (StatusInfo.equivalent(fi, current)) {
+            if (StatusInfo.equivalent(FILE_STATUS_NEWLOCALLY, fi)) {
                 if (GitIgnore.isIgnored(file)) {
                     Git.LOG.log(Level.FINE, "refreshFileStatus() file: {0} was LocallyNew but is NotSharable", file.getAbsolutePath()); // NOI18N
                     fi = FILE_STATUS_EXCLUDED;
-                } else
+                } else {
                     return;
-            else if (!StatusInfo.equivalent(FILE_STATUS_REMOVEDLOCALLY, fi))
+                }
+            } else if (!StatusInfo.equivalent(FILE_STATUS_REMOVEDLOCALLY, fi)) {
                 return;
-        if (StatusInfo.equivalent(FILE_STATUS_NEWLOCALLY, fi))
+            }
+        }
+        if (StatusInfo.equivalent(FILE_STATUS_NEWLOCALLY, fi)) {
             if (StatusInfo.equivalent(FILE_STATUS_EXCLUDED, current)) {
                 Git.LOG.log(Level.FINE, "refreshFileStatus() file: {0} was LocallyNew but is Excluded", file.getAbsolutePath()); // NOI18N
                 return;
-            } else if (current == null)
+            } else if (current == null) {
                 if (GitIgnore.isIgnored(file)) {
                     Git.LOG.log(Level.FINE, "refreshFileStatus() file: {0} was LocallyNew but current is null and is not NotSharable", file.getAbsolutePath()); // NOI18N
                     fi = FILE_STATUS_EXCLUDED;
                 }
+            }
+        }
         file = FileUtil.normalizeFile(file);
         dir = FileUtil.normalizeFile(dir);
         Map<File, StatusInfo> newFiles = new HashMap<File, StatusInfo>(files);
         if (fi.getStatus() == StatusInfo.STATUS_UNKNOWN) {
             newFiles.remove(file);
             turbo.writeEntry(file, FILE_STATUS_MAP, null);  // remove mapping in case of directories
-        } else if (fi.getStatus() == StatusInfo.STATUS_VERSIONED_UPTODATE && file.isFile())
+        } else if (fi.getStatus() == StatusInfo.STATUS_VERSIONED_UPTODATE && file.isFile()) {
             newFiles.remove(file);
-        else
+        } else {
             newFiles.put(file, fi);
+        }
         assert files.containsKey(dir) == false;
         turbo.writeEntry(dir, FILE_STATUS_MAP, newFiles);
 
-        if (interestingFiles == null)
+        if (interestingFiles == null) {
             fireFileStatusChanged(file, current, fi);
-        else if (alwaysFireEvent)
+        } else if (alwaysFireEvent) {
             fireFileStatusChanged(file, null, fi);
-
+        }
         return;
     }
 
-    private boolean needRecursiveRefresh(StatusInfo fi, StatusInfo current)
-    {
+    private boolean needRecursiveRefresh(StatusInfo fi, StatusInfo current) {
         if (fi.getStatus() == StatusInfo.STATUS_NOTVERSIONED_EXCLUDED ||
-            current != null && current.getStatus() == StatusInfo.STATUS_NOTVERSIONED_EXCLUDED)
+                current != null && current.getStatus() == StatusInfo.STATUS_NOTVERSIONED_EXCLUDED) {
             return true;
+        }
         if (fi.getStatus() == StatusInfo.STATUS_NOTVERSIONED_NOTMANAGED ||
-            current != null && current.getStatus() == StatusInfo.STATUS_NOTVERSIONED_NOTMANAGED)
+                current != null && current.getStatus() == StatusInfo.STATUS_NOTVERSIONED_NOTMANAGED) {
             return true;
+        }
         return false;
     }
 
@@ -514,8 +531,7 @@ public class StatusCache {
      * @param file
      * @param repositoryStatus
      */
-    public void refreshCached(File file, File repositoryStatus)
-    {
+    public void refreshCached(File file, File repositoryStatus) {
         refresh(file, repositoryStatus);
     }
 
@@ -525,32 +541,34 @@ public class StatusCache {
      *
      * @param file
      */
-    public void refreshCached(File root)
-    {
+    public void refreshCached(File root) {
         if (!root.isDirectory()) {
             refresh(root, StatusCache.REPOSITORY_STATUS_UNKNOWN);
             return;
         }
 
         File repository = git.getTopmostManagedParent(root);
-        if (repository == null)
+        if (repository == null) {
             return;
+        }
         File roots[] = new File[1];
         roots[0] = root;
         File[] files = listFiles(roots, ~0);
-        if (files.length == 0)
+        if (files.length == 0) {
             return;
+        }
         Map<File, StatusInfo> allFiles;
         try {
             allFiles = GitCommand.getAllStatus(repository, root);
             for (int i = 0; i < files.length; i++) {
                 File file = files[i];
                 StatusInfo fi = allFiles.get(file);
-                if (fi == null)
-                    // We have a file in the cache which seems to have disappeared
+                if (fi == null) // We have a file in the cache which seems to have disappeared
+                {
                     refresh(file, StatusCache.REPOSITORY_STATUS_UNKNOWN);
-                else
+                } else {
                     refreshFileStatus(file, fi, null);
+                }
             }
         } catch (IOException ex) {
             Git.LOG.log(Level.FINE, "refreshCached() file: {0} {1} { 2} ", new Object[]{repository.getAbsolutePath(), root.getAbsolutePath(), ex.toString()}); // NOI18N
@@ -562,15 +580,13 @@ public class StatusCache {
      *
      * @param ctx context to refresh
      */
-    public void refreshCached(VCSContext ctx)
-    {
+    public void refreshCached(VCSContext ctx) {
         for (File root : ctx.getRootFiles()) {
             refreshCached(root);
         }
     }
 
-    public void addToCache(Set<File> files)
-    {
+    public void addToCache(Set<File> files) {
         StatusInfo fi = new StatusInfo(StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY, null, false);
         HashMap<File, Map<File, StatusInfo>> dirMap = new HashMap<File, Map<File, StatusInfo>>(files.size());
 
@@ -593,8 +609,7 @@ public class StatusCache {
         }
     }
     // --- Package private contract ------------------------------------------
-    Map<File, StatusInfo> getAllModifiedFiles()
-    {
+    Map<File, StatusInfo> getAllModifiedFiles() {
         return cacheProvider.getAllModifiedValues();
     }
 
@@ -603,19 +618,18 @@ public class StatusCache {
      *
      * @param dir directory to refresh
      */
-    void directoryContentChanged(File dir)
-    {
+    void directoryContentChanged(File dir) {
         Map originalFiles = (Map) turbo.readEntry(dir, FILE_STATUS_MAP);
-        if (originalFiles != null)
+        if (originalFiles != null) {
             for (Iterator i = originalFiles.keySet().iterator(); i.hasNext();) {
                 File file = (File) i.next();
                 refresh(file, StatusCache.REPOSITORY_STATUS_UNKNOWN);
             }
+        }
     }
 
     // --- Private methods ---------------------------------------------------
-    private boolean isNotManagedByDefault(File dir)
-    {
+    private boolean isNotManagedByDefault(File dir) {
         return !dir.exists();
     }
 
@@ -625,14 +639,15 @@ public class StatusCache {
      * @param dir directory to scan
      * @return Map map to be included in the status cache (File => StatusInfo)
      */
-    private Map<File, StatusInfo> scanFolder(File dir, Map<File, StatusInfo> interestingFiles)
-    {
+    private Map<File, StatusInfo> scanFolder(File dir, Map<File, StatusInfo> interestingFiles) {
         File[] files = dir.listFiles();
-        if (files == null)
-            if (interestingFiles == null)
+        if (files == null) {
+            if (interestingFiles == null) {
                 files = new File[0];
-            else
+            } else {
                 files = interestingFiles.keySet().toArray(new File[interestingFiles.keySet().size()]);
+            }
+        }
         Map<File, StatusInfo> folderFiles = new HashMap<File, StatusInfo>(files.length);
 
         Git.LOG.log(Level.FINE, "scanFolder(): {0}", dir); // NOI18N
@@ -645,18 +660,19 @@ public class StatusCache {
         if (rootManagedFolder == null) {
             // Only interested in looking for Git managed dirs
             for (File file : files) {
-                if (file.isDirectory() && git.getTopmostManagedParent(file) != null)
+                if (file.isDirectory() && git.getTopmostManagedParent(file) != null) {
                     if (excludeFile(file)) {
                         Git.LOG.log(Level.FINE, "scanFolder NotMng Ignored Dir {0}: exclude SubDir: {1}", // NOI18N
-                            new Object[]{dir.getAbsolutePath(), file.getName()});
+                                new Object[]{dir.getAbsolutePath(), file.getName()});
                         folderFiles.put(file, FILE_STATUS_EXCLUDED_DIRECTORY); // Excluded dir
                     } else {
                         Git.LOG.log(Level.FINE, "scanFolder NotMng Dir {0}: up to date Dir: {1}", // NOI18N
-                            new Object[]{dir.getAbsolutePath(), file.getName()});
+                                new Object[]{dir.getAbsolutePath(), file.getName()});
                         folderFiles.put(file, FILE_STATUS_UPTODATE_DIRECTORY);
                     }
-            // Do NOT put any unmanaged dir's (FILE_STATUS_NOTMANAGED_DIRECTORY) or
-            // files (FILE_STATUS_NOTMANAGED) into the folderFiles
+                // Do NOT put any unmanaged dir's (FILE_STATUS_NOTMANAGED_DIRECTORY) or
+                // files (FILE_STATUS_NOTMANAGED) into the folderFiles
+                }
             }
             return folderFiles;
         }
@@ -664,79 +680,77 @@ public class StatusCache {
         boolean bInIgnoredDir = GitIgnore.isIgnored(dir);
         if (bInIgnoredDir) {
             for (File file : files) {
-                if (GitUtils.isPartOfGitMetadata(file))
+                if (GitUtils.isPartOfGitMetadata(file)) {
                     continue;
-
+                }
                 if (file.isDirectory()) {
                     folderFiles.put(file, FILE_STATUS_EXCLUDED_DIRECTORY); // Excluded dir
                     Git.LOG.log(Level.FINE, "scanFolder Mng Ignored Dir {0}: exclude SubDir: {1}", // NOI18N
-                        new Object[]{dir.getAbsolutePath(), file.getName()});
+                            new Object[]{dir.getAbsolutePath(), file.getName()});
                 } else {
                     Git.LOG.log(Level.FINE, "scanFolder Mng Ignored Dir {0}: exclude File: {1}", // NOI18N
-                        new Object[]{dir.getAbsolutePath(), file.getName()});
+                            new Object[]{dir.getAbsolutePath(), file.getName()});
                     folderFiles.put(file, FILE_STATUS_EXCLUDED);
                 }
             }
             return folderFiles;
         }
 
-        if (interestingFiles == null)
+        if (interestingFiles == null) {
             interestingFiles = GitCommand.getInterestingStatus(rootManagedFolder, dir);
-
-        if (interestingFiles == null)
+        }
+        if (interestingFiles == null) {
             return folderFiles;
-
+        }
         for (File file : files) {
-            if (GitUtils.isPartOfGitMetadata(file))
+            if (GitUtils.isPartOfGitMetadata(file)) {
                 continue;
-
-            if (file.isDirectory())
+            }
+            if (file.isDirectory()) {
                 if (excludeFile(file)) {
                     Git.LOG.log(Level.FINE, "scanFolder Mng Dir {0}: exclude Dir: {1}", // NOI18N
-                        new Object[]{dir.getAbsolutePath(), file.getName()});
+                            new Object[]{dir.getAbsolutePath(), file.getName()});
                     folderFiles.put(file, FILE_STATUS_EXCLUDED_DIRECTORY); // Excluded dir
                 } else {
                     Git.LOG.log(Level.FINE, "scanFolder Mng Dir {0}: up to date Dir: {1}", // NOI18N
-                        new Object[]{dir.getAbsolutePath(), file.getName()});
+                            new Object[]{dir.getAbsolutePath(), file.getName()});
                     folderFiles.put(file, FILE_STATUS_UPTODATE_DIRECTORY);
                 }
-            else {
+            } else {
                 StatusInfo fi = interestingFiles.get(file);
-                if (fi == null)
-                    // We have removed -i from GitCommand.getInterestingFiles
-                    // so we might have a file we should be ignoring
+                if (fi == null) // We have removed -i from GitCommand.getInterestingFiles
+                // so we might have a file we should be ignoring
+                {
                     fi = createFileInformation(file, false);
-                if (fi != null && fi.getStatus() != StatusInfo.STATUS_VERSIONED_UPTODATE)
+                }
+                if (fi != null && fi.getStatus() != StatusInfo.STATUS_VERSIONED_UPTODATE) {
                     folderFiles.put(file, fi);
+                }
             }
         }
         return folderFiles;
     }
 
-    private boolean exists(File file)
-    {
-        if (!file.exists())
+    private boolean exists(File file) {
+        if (!file.exists()) {
             return false;
+        }
         return file.getAbsolutePath().equals(FileUtil.normalizeFile(file).getAbsolutePath());
     }
 
-    public synchronized void addPropertyChangeListener(PropertyChangeListener listener)
-    {
+    public synchronized void addPropertyChangeListener(PropertyChangeListener listener) {
         listenerSupport.addPropertyChangeListener(listener);
     }
 
-    public void removePropertyChangeListener(PropertyChangeListener listener)
-    {
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
         listenerSupport.removePropertyChangeListener(listener);
     }
 
-    private void fireFileStatusChanged(File file, StatusInfo oldInfo, StatusInfo newInfo)
-    {
+    private void fireFileStatusChanged(File file, StatusInfo oldInfo, StatusInfo newInfo) {
         listenerSupport.firePropertyChange(PROP_FILE_STATUS_CHANGED, null, new ChangedEvent(file, oldInfo, newInfo));
     }
 
-    public void refreshDirtyFileSystems()
-    {
+    public void refreshDirtyFileSystems() {
         Set<FileSystem> filesystems = getFilesystemsToRefresh();
         FileSystem[] fstoRefresh = new FileSystem[filesystems.size()];
         synchronized (filesystems) {
@@ -749,25 +763,22 @@ public class StatusCache {
         }
     }
 
-    private Set<FileSystem> getFilesystemsToRefresh()
-    {
-        if (filesystemsToRefresh == null)
+    private Set<FileSystem> getFilesystemsToRefresh() {
+        if (filesystemsToRefresh == null) {
             filesystemsToRefresh = new HashSet<FileSystem>();
+        }
         return filesystemsToRefresh;
     }
 
-    private boolean excludeFile(File file)
-    {
+    private boolean excludeFile(File file) {
         return git.isAdministrative(file) || GitIgnore.isIgnored(file);
     }
 
     private static final class NotManagedMap extends AbstractMap<File, StatusInfo> {
 
-        public Set<Entry<File, StatusInfo>> entrySet()
-        {
+        public Set<Entry<File, StatusInfo>> entrySet() {
             return Collections.emptySet();
         }
-
     }
 
     public static class ChangedEvent {
@@ -776,28 +787,22 @@ public class StatusCache {
         private StatusInfo oldInfo;
         private StatusInfo newInfo;
 
-        public ChangedEvent(File file, StatusInfo oldInfo, StatusInfo newInfo)
-        {
+        public ChangedEvent(File file, StatusInfo oldInfo, StatusInfo newInfo) {
             this.file = file;
             this.oldInfo = oldInfo;
             this.newInfo = newInfo;
         }
 
-        public File getFile()
-        {
+        public File getFile() {
             return file;
         }
 
-        public StatusInfo getOldInfo()
-        {
+        public StatusInfo getOldInfo() {
             return oldInfo;
         }
 
-        public StatusInfo getNewInfo()
-        {
+        public StatusInfo getNewInfo() {
             return newInfo;
         }
-
     }
-
 }

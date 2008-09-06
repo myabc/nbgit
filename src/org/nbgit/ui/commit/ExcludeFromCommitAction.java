@@ -64,69 +64,64 @@ public final class ExcludeFromCommitAction extends ContextAction {
     public static final int EXCLUDING = 1;
     public static final int INCLUDING = 2;
 
-    public ExcludeFromCommitAction(String name, VCSContext context)
-    {
+    public ExcludeFromCommitAction(String name, VCSContext context) {
         super(name, context);
     }
 
-    protected boolean enable(VCSContext ctx)
-    {
+    protected boolean enable(VCSContext ctx) {
         return getActionStatus(ctx) != UNDEFINED;
     }
 
-    protected int getFileEnabledStatus()
-    {
+    protected int getFileEnabledStatus() {
         return StatusInfo.STATUS_LOCAL_CHANGE;
     }
 
-    protected int getDirectoryEnabledStatus()
-    {
+    protected int getDirectoryEnabledStatus() {
         return StatusInfo.STATUS_LOCAL_CHANGE;
     }
 
-    protected String getBaseName(VCSContext ctx)
-    {
+    protected String getBaseName(VCSContext ctx) {
         int actionStatus = getActionStatus(ctx);
         switch (actionStatus) {
-        case UNDEFINED:
-        case EXCLUDING:
-            return "popup_commit_exclude"; // NOI18N
-        case INCLUDING:
-            return "popup_commit_include"; // NOI18N
-        default:
-            throw new RuntimeException("Invalid action status: " + actionStatus); // NOI18N
+            case UNDEFINED:
+            case EXCLUDING:
+                return "popup_commit_exclude"; // NOI18N
+            case INCLUDING:
+                return "popup_commit_include"; // NOI18N
+            default:
+                throw new RuntimeException("Invalid action status: " + actionStatus); // NOI18N
         }
     }
 
-    public int getActionStatus(VCSContext ctx)
-    {
+    public int getActionStatus(VCSContext ctx) {
         GitModuleConfig config = GitModuleConfig.getDefault();
         int status = UNDEFINED;
-        if (ctx == null)
+        if (ctx == null) {
             ctx = context;
+        }
         Set<File> files = ctx.getRootFiles();
         for (File file : files) {
             if (config.isExcludedFromCommit(file.getAbsolutePath())) {
-                if (status == EXCLUDING)
+                if (status == EXCLUDING) {
                     return UNDEFINED;
+                }
                 status = INCLUDING;
             } else {
-                if (status == INCLUDING)
+                if (status == INCLUDING) {
                     return UNDEFINED;
+                }
                 status = EXCLUDING;
             }
         }
         return status;
     }
 
-    public void performAction(ActionEvent e)
-    {
+    public void performAction(ActionEvent e) {
         final VCSContext ctx = context;
         RequestProcessor rp = Git.getInstance().getRequestProcessor();
         GitProgressSupport support = new GitProgressSupport() {
 
-            public void perform()
-            {
+            public void perform() {
                 GitModuleConfig config = GitModuleConfig.getDefault();
                 int status = getActionStatus(ctx);
                 Set<File> files = ctx.getRootFiles();
@@ -134,16 +129,16 @@ public final class ExcludeFromCommitAction extends ContextAction {
                 for (File file : files) {
                     paths.add(file.getAbsolutePath());
                 }
-                if (isCanceled())
+                if (isCanceled()) {
                     return;
-                if (status == EXCLUDING)
+                }
+                if (status == EXCLUDING) {
                     config.addExclusionPaths(paths);
-                else if (status == INCLUDING)
+                } else if (status == INCLUDING) {
                     config.removeExclusionPaths(paths);
+                }
             }
-
         };
         support.start(rp, "", ""); // NOI18N
     }
-
 }

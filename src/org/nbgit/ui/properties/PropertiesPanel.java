@@ -67,7 +67,7 @@ public class PropertiesPanel extends javax.swing.JPanel implements PreferenceCha
         return txtAreaValue;
     }
 
-    public void setPropertiesTable(PropertiesTable propertiesTable){
+    public void setPropertiesTable(PropertiesTable propertiesTable) {
         this.propertiesTable = propertiesTable;
     }
 
@@ -159,8 +159,6 @@ public class PropertiesPanel extends javax.swing.JPanel implements PreferenceCha
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -168,5 +166,4 @@ public class PropertiesPanel extends javax.swing.JPanel implements PreferenceCha
     public javax.swing.JPanel propsPanel;
     final javax.swing.JTextArea txtAreaValue = new javax.swing.JTextArea();
     // End of variables declaration//GEN-END:variables
-
 }

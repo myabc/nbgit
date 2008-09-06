@@ -59,7 +59,7 @@ class SearchCriteriaPanel extends javax.swing.JPanel {
     private final String url;
 
     /** Creates new form SearchCriteriaPanel */
-    public SearchCriteriaPanel(File [] roots) {
+    public SearchCriteriaPanel(File[] roots) {
         this.roots = roots;
         this.url = null;
         initComponents();
@@ -73,7 +73,7 @@ class SearchCriteriaPanel extends javax.swing.JPanel {
 
     public String getFrom() {
         String s = tfFrom.getText().trim();
-        if(s.length() == 0) {
+        if (s.length() == 0) {
             return null;
         }
         return s;
@@ -81,7 +81,7 @@ class SearchCriteriaPanel extends javax.swing.JPanel {
 
     public String getTo() {
         String s = tfTo.getText().trim();
-        if(s.length() == 0) {
+        if (s.length() == 0) {
             return null;
         }
         return s;
@@ -90,10 +90,10 @@ class SearchCriteriaPanel extends javax.swing.JPanel {
     void setForIncoming() {
         fromInfoLabel.setText(NbBundle.getMessage(SearchCriteriaPanel.class, "CTL_FromToOutOrIncomingHint"));
         toInfoLabel.setText(NbBundle.getMessage(SearchCriteriaPanel.class, "CTL_FromToOutOrIncomingHint"));
-        commitMessageLabel.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class,  "TT_IncomingCommitMessage"));
-        usernameLabel.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class,  "TT_IncomingUsername"));
-        fromLabel.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class,  "TT_IncomingFrom"));
-        toLabel.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class,  "TT_IncomingTo"));
+        commitMessageLabel.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class, "TT_IncomingCommitMessage"));
+        usernameLabel.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class, "TT_IncomingUsername"));
+        fromLabel.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class, "TT_IncomingFrom"));
+        toLabel.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class, "TT_IncomingTo"));
 
         tfFrom.setEnabled(false);
         fromLabel.setEnabled(false);
@@ -102,17 +102,19 @@ class SearchCriteriaPanel extends javax.swing.JPanel {
     void setForOut() {
         fromInfoLabel.setText(NbBundle.getMessage(SearchCriteriaPanel.class, "CTL_FromToOutOrIncomingHint"));
         toInfoLabel.setText(NbBundle.getMessage(SearchCriteriaPanel.class, "CTL_FromToOutOrIncomingHint"));
-        commitMessageLabel.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class,  "TT_OutCommitMessage"));
-        usernameLabel.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class,  "TT_OutUsername"));
-        fromLabel.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class,  "TT_OutFrom"));
-        toLabel.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class,  "TT_OutTo"));
+        commitMessageLabel.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class, "TT_OutCommitMessage"));
+        usernameLabel.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class, "TT_OutUsername"));
+        fromLabel.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class, "TT_OutFrom"));
+        toLabel.setToolTipText(NbBundle.getMessage(SearchHistoryPanel.class, "TT_OutTo"));
 
         tfFrom.setEnabled(false);
         fromLabel.setEnabled(false);
     }
 
     private Date parseDate(String s) {
-        if (s == null) return null;
+        if (s == null) {
+            return null;
+        }
         for (int i = 0; i < SearchExecutor.dateFormats.length; i++) {
             DateFormat dateformat = SearchExecutor.dateFormats[i];
             try {
@@ -135,22 +137,30 @@ class SearchCriteriaPanel extends javax.swing.JPanel {
     }
 
     public void setFrom(String from) {
-        if (from == null) from = "";  // NOI18N
+        if (from == null) {
+            from = "";  // NOI18N
+        }
         tfFrom.setText(from);
     }
 
     public void setTo(String to) {
-        if (to == null) to = "";  // NOI18N
+        if (to == null) {
+            to = "";  // NOI18N
+        }
         tfTo.setText(to);
     }
 
     public void setCommitMessage(String message) {
-        if (message == null) message = ""; // NOI18N
+        if (message == null) {
+            message = ""; // NOI18N
+        }
         tfCommitMessage.setText(message);
     }
 
     public void setUsername(String username) {
-        if (username == null) username = ""; // NOI18N
+        if (username == null) {
+            username = ""; // NOI18N
+        }
         tfUsername.setText(username);
     }
 
@@ -158,6 +168,7 @@ class SearchCriteriaPanel extends javax.swing.JPanel {
     public void addNotify() {
         super.addNotify();
         SwingUtilities.invokeLater(new Runnable() {
+
             public void run() {
                 tfCommitMessage.requestFocusInWindow();
             }
@@ -277,8 +288,6 @@ class SearchCriteriaPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 2, 0, 4);
         add(toInfoLabel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel commitMessageLabel;
     private javax.swing.JLabel fromInfoLabel;
@@ -291,5 +300,4 @@ class SearchCriteriaPanel extends javax.swing.JPanel {
     private javax.swing.JLabel toLabel;
     private javax.swing.JLabel usernameLabel;
     // End of variables declaration//GEN-END:variables
-
 }

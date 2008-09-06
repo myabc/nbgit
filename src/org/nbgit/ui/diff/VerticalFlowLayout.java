@@ -79,7 +79,7 @@ public class VerticalFlowLayout implements LayoutManager {
             Dimension dim = new Dimension(0, 0);
             int nmembers = target.getComponentCount();
 
-            for (int i = 0 ; i < nmembers ; i++) {
+            for (int i = 0; i < nmembers; i++) {
                 Component m = target.getComponent(i);
                 if (m.isVisible()) {
                     Dimension d = m.getPreferredSize();
@@ -99,7 +99,7 @@ public class VerticalFlowLayout implements LayoutManager {
             Dimension dim = new Dimension(0, 0);
             int nmembers = target.getComponentCount();
 
-            for (int i = 0 ; i < nmembers ; i++) {
+            for (int i = 0; i < nmembers; i++) {
                 Component m = target.getComponent(i);
                 if (m.isVisible()) {
                     Dimension d = m.getMinimumSize();
@@ -122,7 +122,7 @@ public class VerticalFlowLayout implements LayoutManager {
             int nmembers = target.getComponentCount();
             int x = insets.left, y = insets.top;
 
-            for (int i = 0 ; i < nmembers ; i++) {
+            for (int i = 0; i < nmembers; i++) {
                 Component m = target.getComponent(i);
                 if (m.isVisible()) {
                     Dimension d = m.getPreferredSize();
@@ -133,5 +133,4 @@ public class VerticalFlowLayout implements LayoutManager {
             }
         }
     }
-
 }

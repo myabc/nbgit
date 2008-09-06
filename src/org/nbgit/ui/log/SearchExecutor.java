@@ -89,8 +89,7 @@ class SearchExecutor implements Runnable {
     private boolean searchCanceled;
     private List<RepositoryRevision> results = new ArrayList<RepositoryRevision>();
 
-    public SearchExecutor(SearchHistoryPanel master)
-    {
+    public SearchExecutor(SearchHistoryPanel master) {
         this.master = master;
         criteria = master.getCriteria();
         filterUsername = criteria.getUsername() != null;
@@ -116,8 +115,7 @@ class SearchExecutor implements Runnable {
 
     }
 
-    public void run()
-    {
+    public void run() {
 
         final String fromRevision = criteria.getFrom();
         final String toRevision = criteria.getTo();
@@ -127,35 +125,31 @@ class SearchExecutor implements Runnable {
             RequestProcessor rp = Git.getInstance().getRequestProcessor(master.getRepositoryUrl());
             GitProgressSupport support = new GitProgressSupport() {
 
-                public void perform()
-                {
+                public void perform() {
                     OutputLogger logger = getLogger();
                     search(master.getRepositoryUrl(), null, fromRevision, toRevision, this, logger);
                 }
-
             };
             support.start(rp, master.getRepositoryUrl(), NbBundle.getMessage(SearchExecutor.class, "MSG_Search_Progress")); // NOI18N
-        } else
+        } else {
             for (Iterator i = workFiles.keySet().iterator(); i.hasNext();) {
                 final String rootUrl = (String) i.next();
                 final Set<File> files = workFiles.get(rootUrl);
                 RequestProcessor rp = Git.getInstance().getRequestProcessor(rootUrl);
                 GitProgressSupport support = new GitProgressSupport() {
 
-                    public void perform()
-                    {
+                    public void perform() {
                         OutputLogger logger = getLogger();
                         search(rootUrl, files, fromRevision, toRevision, this, logger);
                     }
-
                 };
                 support.start(rp, rootUrl, NbBundle.getMessage(SearchExecutor.class, "MSG_Search_Progress")); // NOI18N
             }
+        }
     }
 
     private void search(String rootUrl, Set<File> files, String fromRevision,
-        String toRevision, GitProgressSupport progressSupport, OutputLogger logger)
-    {
+            String toRevision, GitProgressSupport progressSupport, OutputLogger logger) {
         if (progressSupport.isCanceled()) {
             searchCanceled = true;
             return;
@@ -170,31 +164,33 @@ class SearchExecutor implements Runnable {
         } else {
          */
         walk = GitCommand.getLogMessages(rootUrl, files, fromRevision, toRevision,
-            master.isShowMerges(), logger);
+                master.isShowMerges(), logger);
         //}
-        if (walk != null)
+        if (walk != null) {
             appendResults(rootUrl, walk);
+        }
     }
 
-    private void setupRevFilter(RepositoryRevision.Walk walk)
-    {
+    private void setupRevFilter(RepositoryRevision.Walk walk) {
         RevFilter filter = walk.getRevFilter();
 
         if (filterUsername) {
             RevFilter author = AuthorRevFilter.create(criteria.getUsername());
 
-            if (filter == RevFilter.ALL)
+            if (filter == RevFilter.ALL) {
                 filter = author;
-            else
+            } else {
                 filter = AndRevFilter.create(filter, author);
+            }
         }
 
         if (filterMessage) {
             RevFilter message = MessageRevFilter.create(criteria.getCommitMessage());
-            if (filter == RevFilter.ALL)
+            if (filter == RevFilter.ALL) {
                 filter = message;
-            else
+            } else {
                 filter = AndRevFilter.create(filter, message);
+            }
         }
 
         walk.setRevFilter(filter);
@@ -206,8 +202,7 @@ class SearchExecutor implements Runnable {
      * @param rootUrl repository root URL
      * @param logMessages events in chronological order
      */
-    private synchronized void appendResults(String rootUrl, RepositoryRevision.Walk walk)
-    {
+    private synchronized void appendResults(String rootUrl, RepositoryRevision.Walk walk) {
         Map<String, String> historyPaths = new HashMap<String, String>();
         RevFilter filter = walk.getRevFilter();
 
@@ -220,14 +215,15 @@ class SearchExecutor implements Runnable {
                 if (event.getChangedPath().getAction() == 'A' && event.getChangedPath().getCopySrcPath() != null) {
                     // TBD: Need to handle Copy status
                     String existingMapping = historyPaths.get(event.getChangedPath().getPath());
-                    if (existingMapping == null)
+                    if (existingMapping == null) {
                         existingMapping = event.getChangedPath().getPath();
+                    }
                     historyPaths.put(event.getChangedPath().getCopySrcPath(), existingMapping);
                 }
                 String originalFilePath = event.getChangedPath().getPath();
                 for (String srcPath : historyPaths.keySet()) {
                     if (originalFilePath.startsWith(srcPath) &&
-                        (originalFilePath.length() == srcPath.length() || originalFilePath.charAt(srcPath.length()) == '/')) {
+                            (originalFilePath.length() == srcPath.length() || originalFilePath.charAt(srcPath.length()) == '/')) {
                         originalFilePath = historyPaths.get(srcPath) + originalFilePath.substring(srcPath.length());
                         break;
                     }
@@ -237,29 +233,25 @@ class SearchExecutor implements Runnable {
             }
             results.add(rev);
         }
-        if (results.isEmpty())
+        if (results.isEmpty()) {
             results = null;
-
+        }
         checkFinished();
     }
 
-    private boolean searchingUrl()
-    {
+    private boolean searchingUrl() {
         return master.getRepositoryUrl() != null;
     }
 
-    private void checkFinished()
-    {
+    private void checkFinished() {
         completedSearches++;
-        if (searchingUrl() && completedSearches >= 1 || workFiles.size() == completedSearches)
+        if (searchingUrl() && completedSearches >= 1 || workFiles.size() == completedSearches) {
             SwingUtilities.invokeLater(new Runnable() {
 
-                public void run()
-                {
+                public void run() {
                     master.setResults(results);
                 }
-
             });
+        }
     }
-
 }

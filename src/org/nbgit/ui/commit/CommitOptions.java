@@ -51,7 +51,6 @@ abstract class CommitOptions {
     public static final CommitOptions COMMIT = new Commit("CTL_CommitOption_Commit"); // NOI18N
     public static final CommitOptions COMMIT_REMOVE = new Commit("CTL_CommitOption_CommitRemove"); // NOI18N
     public static final CommitOptions EXCLUDE = new Commit("CTL_CommitOption_Exclude"); // NOI18N
-
     private final String bundleKey;
 
     public CommitOptions(String bundleKey) {

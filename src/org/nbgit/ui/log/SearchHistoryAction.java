@@ -62,52 +62,44 @@ public class SearchHistoryAction extends ContextAction {
     static final int DIRECTORY_ENABLED_STATUS = StatusInfo.STATUS_MANAGED & ~StatusInfo.STATUS_NOTVERSIONED_EXCLUDED & ~StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY;
     static final int FILE_ENABLED_STATUS = StatusInfo.STATUS_MANAGED & ~StatusInfo.STATUS_NOTVERSIONED_EXCLUDED & ~StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY;
 
-    public SearchHistoryAction(String name, VCSContext context)
-    {
+    public SearchHistoryAction(String name, VCSContext context) {
         super(name, context);
     }
 
-    protected String getBaseName(Node[] activatedNodes)
-    {
+    protected String getBaseName(Node[] activatedNodes) {
         return "CTL_MenuItem_SearchHistory"; // NOI18N
     }
 
-    protected int getFileEnabledStatus()
-    {
+    protected int getFileEnabledStatus() {
         return FILE_ENABLED_STATUS;
     }
 
-    protected int getDirectoryEnabledStatus()
-    {
+    protected int getDirectoryEnabledStatus() {
         return DIRECTORY_ENABLED_STATUS;
     }
 
-    protected boolean asynchronous()
-    {
+    protected boolean asynchronous() {
         return false;
     }
 
-    public void performAction(ActionEvent e)
-    {
+    public void performAction(ActionEvent e) {
         String title = NbBundle.getMessage(SearchHistoryAction.class, "CTL_SearchHistory_Title", Utils.getContextDisplayName(context)); // NOI18N
         openHistory(context, title);
     }
 
-    public static void openHistory(final VCSContext context, final String title)
-    {
+    public static void openHistory(final VCSContext context, final String title) {
         SwingUtilities.invokeLater(new Runnable() {
 
-            public void run()
-            {
-                if (context == null)
+            public void run() {
+                if (context == null) {
                     return;
+                }
                 SearchHistoryTopComponent tc = new SearchHistoryTopComponent(context);
                 tc.setDisplayName(title);
                 tc.open();
                 tc.requestActive();
                 tc.search(true);
             }
-
         });
     }
 
@@ -120,21 +112,19 @@ public class SearchHistoryAction extends ContextAction {
      * @param username user name to search for
      * @param date date of the change in question
      */
-    public static void openIncoming(final VCSContext context, final String title)
-    {
+    public static void openIncoming(final VCSContext context, final String title) {
         SwingUtilities.invokeLater(new Runnable() {
 
-            public void run()
-            {
-                if (context == null)
+            public void run() {
+                if (context == null) {
                     return;
+                }
                 SearchHistoryTopComponent tc = new SearchHistoryTopComponent(context);
                 tc.setDisplayName(title);
                 tc.open();
                 tc.requestActive();
                 tc.searchIncoming();
             }
-
         });
     }
 
@@ -147,21 +137,19 @@ public class SearchHistoryAction extends ContextAction {
      * @param username user name to search for
      * @param date date of the change in question
      */
-    public static void openOut(final VCSContext context, final String title)
-    {
+    public static void openOut(final VCSContext context, final String title) {
         SwingUtilities.invokeLater(new Runnable() {
 
-            public void run()
-            {
-                if (context == null)
+            public void run() {
+                if (context == null) {
                     return;
+                }
                 SearchHistoryTopComponent tc = new SearchHistoryTopComponent(context);
                 tc.setDisplayName(title);
                 tc.open();
                 tc.requestActive();
                 tc.searchOut();
             }
-
         });
     }
 
@@ -174,17 +162,16 @@ public class SearchHistoryAction extends ContextAction {
      * @param username user name to search for
      * @param rev the revision of the change in question
      */
-    public static void openSearch(String title, String commitMessage, String username, String rev)
-    {
+    public static void openSearch(String title, String commitMessage, String username, String rev) {
         openSearch(getDefaultContext(), title, commitMessage, username, rev);
     }
 
-    public static void openSearch(VCSContext context, String title, String commitMessage, String username, String from)
-    {
+    public static void openSearch(VCSContext context, String title, String commitMessage, String username, String from) {
         String to = from + "~20";
 
-        if (commitMessage != null && commitMessage.indexOf('\n') != -1)
+        if (commitMessage != null && commitMessage.indexOf('\n') != -1) {
             commitMessage = commitMessage.substring(0, commitMessage.indexOf('\n'));
+        }
         SearchHistoryTopComponent tc = new SearchHistoryTopComponent(context, commitMessage, username, from, to);
         String tcTitle = NbBundle.getMessage(SearchHistoryAction.class, "CTL_SearchHistory_Title", title); // NOI18N
         tc.setDisplayName(tcTitle);
@@ -193,8 +180,7 @@ public class SearchHistoryAction extends ContextAction {
         tc.search(false);
     }
 
-    private static VCSContext getDefaultContext()
-    {
+    private static VCSContext getDefaultContext() {
         Node[] nodes = TopComponent.getRegistry().getActivatedNodes();
 
         return nodes != null ? VCSContext.forNodes(nodes) : VCSContext.EMPTY;
@@ -207,8 +193,7 @@ public class SearchHistoryAction extends ContextAction {
      * @param localRoot local working copy root that corresponds to the repository URL
      * @param revision revision to search for
      */
-    public static void openSearch(String repositoryUrl, File localRoot, String revision)
-    {
+    public static void openSearch(String repositoryUrl, File localRoot, String revision) {
         SearchHistoryTopComponent tc = new SearchHistoryTopComponent(repositoryUrl, localRoot, revision);
         String tcTitle = NbBundle.getMessage(SearchHistoryAction.class, "CTL_SearchHistory_Title", repositoryUrl); // NOI18N
         tc.setDisplayName(tcTitle);
@@ -216,5 +201,4 @@ public class SearchHistoryAction extends ContextAction {
         tc.requestActive();
         tc.search(false);
     }
-
 }

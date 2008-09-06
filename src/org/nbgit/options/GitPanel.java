@@ -41,7 +41,6 @@
  */
 package org.nbgit.options;
 
-import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.nbgit.GitModuleConfig;
@@ -53,40 +52,33 @@ final class GitPanel extends javax.swing.JPanel {
     private final GitOptionsPanelController controller;
     private final DocumentListener listener;
 
-    GitPanel(GitOptionsPanelController controller)
-    {
+    GitPanel(GitOptionsPanelController controller) {
         this.controller = controller;
         this.listener = new DocumentListener() {
 
-            public void insertUpdate(DocumentEvent e)
-            {
+            public void insertUpdate(DocumentEvent e) {
                 nameChange();
             }
 
-            public void removeUpdate(DocumentEvent e)
-            {
+            public void removeUpdate(DocumentEvent e) {
                 nameChange();
             }
 
-            public void changedUpdate(DocumentEvent e)
-            {
+            public void changedUpdate(DocumentEvent e) {
                 nameChange();
             }
-
         };
         initComponents();
     }
 
     @Override
-    public void addNotify()
-    {
+    public void addNotify() {
         super.addNotify();
         emailTextField.getDocument().addDocumentListener(listener);
     }
 
     @Override
-    public void removeNotify()
-    {
+    public void removeNotify() {
         emailTextField.getDocument().removeDocumentListener(listener);
         super.removeNotify();
     }

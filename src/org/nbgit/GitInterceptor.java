@@ -69,71 +69,67 @@ public class GitInterceptor extends VCSInterceptor {
     private RequestProcessor.Task refreshTask;
     private static final RequestProcessor refresh = new RequestProcessor("GitRefresh", 1, true);
 
-    public GitInterceptor()
-    {
+    public GitInterceptor() {
         cache = Git.getInstance().getStatusCache();
         refreshTask = refresh.create(new RefreshTask());
     }
 
     @Override
-    public boolean beforeDelete(File file)
-    {
-        if (file == null)
+    public boolean beforeDelete(File file) {
+        if (file == null) {
             return true;
-        if (GitUtils.isPartOfGitMetadata(file))
-            return false;
-
-        // We track the deletion of top level directories
+        }
+        if (GitUtils.isPartOfGitMetadata(file)) {
+            return false;        // We track the deletion of top level directories
+        }
         if (file.isDirectory()) {
             for (File dir : dirsToDelete.keySet()) {
-                if (file.equals(dir.getParentFile()))
+                if (file.equals(dir.getParentFile())) {
                     dirsToDelete.remove(dir);
+                }
             }
-            if (GitIgnore.isSharable(file))
+            if (GitIgnore.isSharable(file)) {
                 dirsToDelete.put(file, file);
+            }
         }
         return true;
     }
 
     @Override
-    public void doDelete(File file) throws IOException
-    {
+    public void doDelete(File file) throws IOException {
     }
 
     @Override
-    public void afterDelete(final File file)
-    {
+    public void afterDelete(final File file) {
         Utils.post(new Runnable() {
 
-            public void run()
-            {
+            public void run() {
                 fileDeletedImpl(file);
             }
-
         });
     }
 
-    private void fileDeletedImpl(final File file)
-    {
-        if (file == null || !file.exists())
+    private void fileDeletedImpl(final File file) {
+        if (file == null || !file.exists()) {
             return;
-
+        }
         Git git = Git.getInstance();
         final File root = git.getTopmostManagedParent(file);
         RequestProcessor rp = null;
-        if (root != null)
+        if (root != null) {
             rp = git.getRequestProcessor(root.getAbsolutePath());
-
+        }
         if (file.isDirectory()) {
             file.delete();
-            if (!dirsToDelete.remove(file, file))
+            if (!dirsToDelete.remove(file, file)) {
                 return;
-            if (root == null)
+            }
+            if (root == null) {
                 return;
+            }
             GitProgressSupport support = new GitProgressSupport() {
 
-                public void perform()
-                {
+                public void perform() {
                     GitCommand.doRemove(root, file, this.getLogger());
                     // We need to cache the status of all deleted files
                     Map<File, StatusInfo> interestingFiles = GitCommand.getInterestingStatus(root, file);
@@ -141,110 +137,106 @@ public class GitInterceptor extends VCSInterceptor {
                         Collection<File> files = interestingFiles.keySet();
 
                         Map<File, Map<File, StatusInfo>> interestingDirs =
-                            GitUtils.getInterestingDirs(interestingFiles, files);
+                                GitUtils.getInterestingDirs(interestingFiles, files);
 
                         for (File tmpFile : files) {
-                            if (this.isCanceled())
+                            if (this.isCanceled()) {
                                 return;
+                            }
                             StatusInfo fi = interestingFiles.get(tmpFile);
 
                             cache.refreshFileStatus(tmpFile, fi,
-                                interestingDirs.get(tmpFile.isDirectory() ? tmpFile : tmpFile.getParentFile()), true);
+                                    interestingDirs.get(tmpFile.isDirectory() ? tmpFile : tmpFile.getParentFile()), true);
                         }
                     }
                 }
-
             };
 
             support.start(rp, root.getAbsolutePath(),
-                org.openide.util.NbBundle.getMessage(GitInterceptor.class, "MSG_Remove_Progress")); // NOI18N
+                    org.openide.util.NbBundle.getMessage(GitInterceptor.class, "MSG_Remove_Progress")); // NOI18N
         } else {
             // If we are deleting a parent directory of this file
             // skip the call to git remove as we will do it for the directory
             file.delete();
-            if (root == null)
+            if (root == null) {
                 return;
+            }
             for (File dir : dirsToDelete.keySet()) {
                 File tmpFile = file.getParentFile();
                 while (tmpFile != null) {
-                    if (tmpFile.equals(dir))
+                    if (tmpFile.equals(dir)) {
                         return;
+                    }
                     tmpFile = tmpFile.getParentFile();
                 }
             }
             GitProgressSupport support = new GitProgressSupport() {
 
-                public void perform()
-                {
+                public void perform() {
                     GitCommand.doRemove(root, file, this.getLogger());
                     cache.refresh(file, StatusCache.REPOSITORY_STATUS_UNKNOWN);
                 }
-
             };
             support.start(rp, root.getAbsolutePath(),
-                org.openide.util.NbBundle.getMessage(GitInterceptor.class, "MSG_Remove_Progress")); // NOI18N
+                    org.openide.util.NbBundle.getMessage(GitInterceptor.class, "MSG_Remove_Progress")); // NOI18N
         }
     }
 
     @Override
-    public boolean beforeMove(File from, File to)
-    {
-        if (from == null || to == null || to.exists())
+    public boolean beforeMove(File from, File to) {
+        if (from == null || to == null || to.exists()) {
             return true;
-
+        }
         Git git = Git.getInstance();
-        if (git.isManaged(from))
+        if (git.isManaged(from)) {
             return git.isManaged(to);
+        }
         return super.beforeMove(from, to);
     }
 
     @Override
-    public void doMove(final File from, final File to) throws IOException
-    {
-        if (from == null || to == null || to.exists())
+    public void doMove(final File from, final File to) throws IOException {
+        if (from == null || to == null || to.exists()) {
             return;
-
+        }
         if (SwingUtilities.isEventDispatchThread()) {
 
             Git.LOG.log(Level.INFO, "Warning: launching external process in AWT", new Exception().fillInStackTrace()); // NOI18N
             final Throwable innerT[] = new Throwable[1];
             Runnable outOfAwt = new Runnable() {
 
-                public void run()
-                {
+                public void run() {
                     try {
                         gitMoveImplementation(from, to);
                     } catch (Throwable t) {
                         innerT[0] = t;
                     }
                 }
-
             };
 
             Git.getInstance().getRequestProcessor().post(outOfAwt).waitFinished();
-            if (innerT[0] != null)
-                if (innerT[0] instanceof IOException)
+            if (innerT[0] != null) {
+                if (innerT[0] instanceof IOException) {
                     throw (IOException) innerT[0];
-                else if (innerT[0] instanceof RuntimeException)
+                } else if (innerT[0] instanceof RuntimeException) {
                     throw (RuntimeException) innerT[0];
-                else if (innerT[0] instanceof Error)
+                } else if (innerT[0] instanceof Error) {
                     throw (Error) innerT[0];
-                else
-                    throw new IllegalStateException("Unexpected exception class: " + innerT[0]);
-
-        // end of hack
-
-        } else
+                } else {
+                    throw new IllegalStateException("Unexpected exception class: " + innerT[0]);                // end of hack
+                }
+            }
+        } else {
             gitMoveImplementation(from, to);
+        }
     }
 
-    private void gitMoveImplementation(final File srcFile, final File dstFile) throws IOException
-    {
+    private void gitMoveImplementation(final File srcFile, final File dstFile) throws IOException {
         final Git git = Git.getInstance();
         final File root = git.getTopmostManagedParent(srcFile);
-        if (root == null)
+        if (root == null) {
             return;
-
+        }
         RequestProcessor rp = git.getRequestProcessor(root.getAbsolutePath());
 
         Git.LOG.log(Level.FINE, "gitMoveImplementation(): File: {0} {1}", new Object[]{srcFile, dstFile}); // NOI18N
@@ -252,8 +244,7 @@ public class GitInterceptor extends VCSInterceptor {
         srcFile.renameTo(dstFile);
         Runnable moveImpl = new Runnable() {
 
-            public void run()
-            {
+            public void run() {
                 OutputLogger logger = OutputLogger.getLogger(root.getAbsolutePath());
                 try {
                     if (dstFile.isDirectory()) {
@@ -263,176 +254,160 @@ public class GitInterceptor extends VCSInterceptor {
                     int status = GitCommand.getSingleStatus(root, srcFile).getStatus();
                     Git.LOG.log(Level.FINE, "gitMoveImplementation(): Status: {0} {1}", new Object[]{srcFile, status}); // NOI18N
                     if (status == StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY ||
-                        status == StatusInfo.STATUS_NOTVERSIONED_EXCLUDED) {
+                            status == StatusInfo.STATUS_NOTVERSIONED_EXCLUDED) {
                     } else if (status == StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY) {
                         GitCommand.doRemove(root, srcFile, logger);
                         GitCommand.doAdd(root, dstFile, logger);
-                    } else
+                    } else {
                         GitCommand.doRenameAfter(root, srcFile, dstFile, logger);
+                    }
                 } catch (Exception e) {
                     Git.LOG.log(Level.FINE, "Git failed to rename: File: {0} {1}", new Object[]{srcFile.getAbsolutePath(), dstFile.getAbsolutePath()}); // NOI18N
                 } finally {
                     logger.closeLog();
                 }
             }
-
         };
 
         rp.post(moveImpl);
     }
 
     @Override
-    public void afterMove(final File from, final File to)
-    {
+    public void afterMove(final File from, final File to) {
         Utils.post(new Runnable() {
 
-            public void run()
-            {
+            public void run() {
                 fileMovedImpl(from, to);
             }
-
         });
     }
 
-    private void fileMovedImpl(final File from, final File to)
-    {
-        if (from == null || to == null || !to.exists())
+    private void fileMovedImpl(final File from, final File to) {
+        if (from == null || to == null || !to.exists()) {
             return;
-        if (to.isDirectory())
+        }
+        if (to.isDirectory()) {
             return;
+        }
         Git git = Git.getInstance();
         final File root = git.getTopmostManagedParent(from);
-        if (root == null)
+        if (root == null) {
             return;
-
+        }
         RequestProcessor rp = git.getRequestProcessor(root.getAbsolutePath());
 
         GitProgressSupport supportCreate = new GitProgressSupport() {
 
-            public void perform()
-            {
+            public void perform() {
                 cache.refresh(from, StatusCache.REPOSITORY_STATUS_UNKNOWN);
                 cache.refresh(to, StatusCache.REPOSITORY_STATUS_UNKNOWN);
             }
-
         };
 
         supportCreate.start(rp, root.getAbsolutePath(),
-            org.openide.util.NbBundle.getMessage(GitInterceptor.class, "MSG_Move_Progress")); // NOI18N
+                org.openide.util.NbBundle.getMessage(GitInterceptor.class, "MSG_Move_Progress")); // NOI18N
     }
 
     @Override
-    public boolean beforeCreate(File file, boolean isDirectory)
-    {
+    public boolean beforeCreate(File file, boolean isDirectory) {
         return super.beforeCreate(file, isDirectory);
     }
 
     @Override
-    public void doCreate(File file, boolean isDirectory) throws IOException
-    {
+    public void doCreate(File file, boolean isDirectory) throws IOException {
         super.doCreate(file, isDirectory);
     }
 
     @Override
-    public void afterCreate(final File file)
-    {
+    public void afterCreate(final File file) {
         Utils.post(new Runnable() {
 
-            public void run()
-            {
+            public void run() {
                 fileCreatedImpl(file);
             }
-
         });
     }
 
-    private void fileCreatedImpl(final File file)
-    {
-        if (file.isDirectory())
+    private void fileCreatedImpl(final File file) {
+        if (file.isDirectory()) {
             return;
+        }
         Git git = Git.getInstance();
         final File root = git.getTopmostManagedParent(file);
-        if (root == null)
+        if (root == null) {
             return;
-
+        }
         RequestProcessor rp = git.getRequestProcessor(root.getAbsolutePath());
 
         GitProgressSupport supportCreate = new GitProgressSupport() {
 
-            public void perform()
-            {
+            public void perform() {
                 reScheduleRefresh(file);
             }
-
         };
 
         supportCreate.start(rp, root.getAbsolutePath(),
-            org.openide.util.NbBundle.getMessage(GitInterceptor.class, "MSG_Create_Progress")); // NOI18N
+                org.openide.util.NbBundle.getMessage(GitInterceptor.class, "MSG_Create_Progress")); // NOI18N
     }
 
     @Override
-    public void afterChange(final File file)
-    {
+    public void afterChange(final File file) {
         Utils.post(new Runnable() {
 
-            public void run()
-            {
+            public void run() {
                 fileChangedImpl(file);
             }
-
         });
     }
 
-    private void fileChangedImpl(final File file)
-    {
-        if (file.isDirectory())
+    private void fileChangedImpl(final File file) {
+        if (file.isDirectory()) {
             return;
+        }
         Git git = Git.getInstance();
         final File root = git.getTopmostManagedParent(file);
-        if (root == null)
+        if (root == null) {
             return;
-
+        }
         RequestProcessor rp = git.getRequestProcessor(root.getAbsolutePath());
 
         GitProgressSupport supportCreate = new GitProgressSupport() {
 
-            public void perform()
-            {
+            public void perform() {
                 Git.LOG.log(Level.FINE, "fileChangedImpl(): File: {0}", file); // NOI18N
                 reScheduleRefresh(file);
             }
-
         };
 
         supportCreate.start(rp, root.getAbsolutePath(),
-            org.openide.util.NbBundle.getMessage(GitInterceptor.class, "MSG_Change_Progress")); // NOI18N
+                org.openide.util.NbBundle.getMessage(GitInterceptor.class, "MSG_Change_Progress")); // NOI18N
     }
 
-    private void reScheduleRefresh(File fileToRefresh)
-    {
+    private void reScheduleRefresh(File fileToRefresh) {
         // There is no point in refreshing the cache for ignored files.
-        if (GitIgnore.isIgnored(fileToRefresh, false))
+        if (GitIgnore.isIgnored(fileToRefresh, false)) {
             return;
-        if (!filesToRefresh.contains(fileToRefresh))
-            if (!filesToRefresh.offer(fileToRefresh))
+        }
+        if (!filesToRefresh.contains(fileToRefresh)) {
+            if (!filesToRefresh.offer(fileToRefresh)) {
                 Git.LOG.log(Level.FINE, "reScheduleRefresh failed to add to filesToRefresh queue {0}", fileToRefresh);
+            }
+        }
         refreshTask.schedule(1000);
     }
 
     private class RefreshTask implements Runnable {
 
-        public void run()
-        {
+        public void run() {
             Thread.interrupted();
             File fileToRefresh = filesToRefresh.poll();
             if (fileToRefresh != null) {
                 cache.refresh(fileToRefresh, StatusCache.REPOSITORY_STATUS_UNKNOWN);
                 fileToRefresh = filesToRefresh.peek();
-                if (fileToRefresh != null)
+                if (fileToRefresh != null) {
                     refreshTask.schedule(0);
+                }
             }
         }
-
     }
-
 }

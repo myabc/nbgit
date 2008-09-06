@@ -54,15 +54,12 @@ import org.openide.util.NbBundle;
  */
 public class LogAction extends ContextAction {
 
-    public LogAction(String name, VCSContext context)
-    {
+    public LogAction(String name, VCSContext context) {
         super(name, context);
     }
 
-    public void performAction(ActionEvent e)
-    {
+    public void performAction(ActionEvent e) {
         SearchHistoryAction.openHistory(context,
-            NbBundle.getMessage(LogAction.class, "MSG_Log_TabTitle", org.netbeans.modules.versioning.util.Utils.getContextDisplayName(context)));
+                NbBundle.getMessage(LogAction.class, "MSG_Log_TabTitle", org.netbeans.modules.versioning.util.Utils.getContextDisplayName(context)));
     }
-
 }

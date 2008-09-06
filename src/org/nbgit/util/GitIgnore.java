@@ -64,10 +64,17 @@ import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
+/**
+ * Provides support for .gitignore files.
+ * 
+ * To keep the querying interface fast, a cache of patterns are maintained.
+ */
 public class GitIgnore {
 
     private GitIgnore() {
-    }    // IGNORE SUPPORT GIT: following file patterns are added to {Git repos}/.gitignore and Git will ignore any files
+    }
+
+    // IGNORE SUPPORT GIT: following file patterns are added to {Git repos}/.gitignore and Git will ignore any files
     // that match these patterns, reporting "I"status for them // NOI18N
     //private static final String [] GIT_IGNORE_FILES = { ".orig", "\\.orig\\..*$", "\\.chg\\..*$", ".rej", "\\.conflict\\~$"}; // NOI18N
     private static final String[] GIT_IGNORE_FILES = {".orig"};
@@ -101,15 +108,22 @@ public class GitIgnore {
         return patterns;
     }
 
+    /**
+     * Check if a file should can be shared between projects as defined by
+     * NetBeans SharabilityQuery interface.
+     *
+     * @param file to check
+     * @return true, if the file can be shared.
+     */
     public static boolean isSharable(File file) {
         return SharabilityQuery.getSharability(file) != SharabilityQuery.NOT_SHARABLE;
     }
 
     /**
-     * isIgnored - checks to see if this is a file Git should ignore
+     * Checks to see if a file is ignored.
      *
-     * @param File file to check
-     * @return boolean true - ignore, false - not ignored
+     * @param file to check
+     * @return true if the file is ignored
      */
     public static boolean isIgnored(File file) {
         return isIgnored(file, true);
@@ -157,13 +171,13 @@ public class GitIgnore {
     }
 
     /**
-     * createIgnored - creates .gitignore file in the repository in which
-     * the given file belongs. This .ignore file ensures Git will ignore
-     * the files specified in GIT_IGNORE_FILES list
+     * Create a .gitignore file in the repository in which the given
+     * file belongs. The .gitignore file will contain the ignore
+     * patterns specified by {@link #GIT_IGNORE_FILES}.
      *
      * @param path to repository to place .gitignore file
      */
-    public static void createIgnored(File path) {
+    public static void createIgnored(File path, String ignorePatterns) {
         if (path == null) {
             return;
         }

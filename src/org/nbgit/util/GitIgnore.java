@@ -9,7 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -278,43 +277,6 @@ public class GitIgnore {
         }
     }
 
-    private static Boolean ignoreContainsSyntax(File directory) throws IOException {
-        File gitIgnore = new File(directory, FILENAME_GITIGNORE);
-        Boolean val = false;
-
-        if (!gitIgnore.canRead()) {
-            return val;
-        }
-        String s;
-        BufferedReader r = null;
-        try {
-            r = new BufferedReader(new FileReader(gitIgnore));
-            while ((s = r.readLine()) != null) {
-                String line = s.trim();
-                int indexOfHash = line.indexOf("#");
-                if (indexOfHash != -1) {
-                    if (indexOfHash == 0) {
-                        continue;
-                    }
-                    line = line.substring(0, indexOfHash - 1);
-                }
-                String[] array = line.split(" ");
-                if (array[0].equals("syntax:")) {
-                    val = true;
-                    break;
-                }
-            }
-        } finally {
-            if (r != null) {
-                try {
-                    r.close();
-                } catch (IOException e) {
-                }
-            }
-        }
-        return val;
-    }
-
     private static Set<String> readIgnoreEntries(File directory) throws IOException {
         File gitIgnore = new File(directory, FILENAME_GITIGNORE);
 
@@ -338,11 +300,7 @@ public class GitIgnore {
                     }
                     line = line.substring(0, indexOfHash - 1);
                 }
-                String[] array = line.split(" ");
-                if (array[0].equals("syntax:")) {
-                    continue;
-                }
-                entries.addAll(Arrays.asList(array));
+                entries.add(line);
             }
         } finally {
             if (r != null) {
@@ -399,10 +357,6 @@ public class GitIgnore {
      * @param files an array of Files to be added
      */
     public static void addIgnored(File directory, File[] files) throws IOException {
-        if (ignoreContainsSyntax(directory)) {
-            GitUtils.warningDialog(GitUtils.class, "MSG_UNABLE_TO_IGNORE_TITLE", "MSG_UNABLE_TO_IGNORE");
-            return;
-        }
         Set<String> entries = readIgnoreEntries(directory);
         for (File file : files) {
             String patterntoIgnore = computePatternToIgnore(directory, file);
@@ -419,10 +373,6 @@ public class GitIgnore {
      * @param files an array of Files to be removed
      */
     public static void removeIgnored(File directory, File[] files) throws IOException {
-        if (ignoreContainsSyntax(directory)) {
-            GitUtils.warningDialog(GitUtils.class, "MSG_UNABLE_TO_UNIGNORE_TITLE", "MSG_UNABLE_TO_UNIGNORE");
-            return;
-        }
         Set entries = readIgnoreEntries(directory);
         for (File file : files) {
             String patterntoIgnore = computePatternToIgnore(directory, file);

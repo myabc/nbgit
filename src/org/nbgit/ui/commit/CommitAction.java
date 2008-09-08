@@ -91,6 +91,7 @@ import org.openide.util.RequestProcessor;
 public class CommitAction extends ContextAction {
 
     static final String RECENT_COMMIT_MESSAGES = "recentCommitMessage"; // NOI18N
+    static final String SIGN_OFF_MESSAGE = "signOffMessage"; // NOI18N
 
     public CommitAction(String name, VCSContext context) {
         super(name, context);
@@ -177,9 +178,9 @@ public class CommitAction extends ContextAction {
         Properties props = GitModuleConfig.getDefault().getProperties(repository);
         String signOff = props.getProperty("nbgit.signoff");
         if (signOff.equals("yes") || signOff.equals("true") || signOff.equals("1")) {
-            panel.messageTextArea.append("\nSigned-off-by: ");
-            panel.messageTextArea.append(props.getProperty("user.name") + " <");
-            panel.messageTextArea.append(props.getProperty("user.email") + ">");
+            signOff = "Signed-off-by: " +props.getProperty("user.name")
+                    + " <" + props.getProperty("user.email") + ">";
+            panel.putClientProperty(SIGN_OFF_MESSAGE, signOff);
         }
 
         GitFileNode[] nodes;

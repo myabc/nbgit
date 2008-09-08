@@ -98,6 +98,18 @@ public class CommitPanel extends javax.swing.JPanel implements PreferenceChangeL
         if (messages.size() > 0) {
             messageTextArea.setText(messages.get(0));
         }
+
+        Object signOffProp = getClientProperty(CommitAction.SIGN_OFF_MESSAGE);
+        if (signOffProp != null && signOffProp instanceof String) {
+            String signOff = (String) signOffProp;
+            String message = messageTextArea.getText();
+            if (!message.contains(signOff)) {
+                if (!message.endsWith("\n"))
+                    messageTextArea.append("\n");
+                messageTextArea.append("\n" + signOff);
+            }
+        }
+
         messageTextArea.selectAll();
     }
 

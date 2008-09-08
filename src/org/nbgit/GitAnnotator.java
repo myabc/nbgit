@@ -54,6 +54,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import javax.swing.Action;
 import org.nbgit.ui.commit.CommitAction;
+import org.nbgit.ui.custom.CustomMenu;
 import org.nbgit.ui.diff.DiffAction;
 import org.nbgit.ui.init.InitAction;
 import org.nbgit.ui.log.LogAction;
@@ -299,6 +300,8 @@ public class GitAnnotator extends VCSAnnotator {
             actions.add(tempIA);
             }
              * */
+            actions.add(null);
+            actions.add(new CustomMenu(ctx, true));
             actions.add(null);
             actions.add(new PropertiesAction(loc.getString("CTL_PopupMenuItem_Properties"), ctx)); // NOI18N
         } else if (noneVersioned) {

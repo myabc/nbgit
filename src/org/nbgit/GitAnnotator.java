@@ -60,8 +60,6 @@ import org.nbgit.ui.init.InitAction;
 import org.nbgit.ui.log.LogAction;
 import org.nbgit.ui.properties.PropertiesAction;
 import org.nbgit.ui.status.StatusAction;
-import org.nbgit.ui.update.ConflictResolvedAction;
-import org.nbgit.ui.update.ResolveConflictsAction;
 import org.nbgit.ui.update.RevertModificationsAction;
 import org.nbgit.ui.update.UpdateAction;
 import org.nbgit.util.HtmlFormatter;
@@ -292,8 +290,8 @@ public class GitAnnotator extends VCSAnnotator {
             actions.add(new StripAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Strip"), ctx)); // NOI18N
             actions.add(new BackoutAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Backout"), ctx)); // NOI18N
             actions.add(new RollbackAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Rollback"), ctx)); // NOI18N
-             * */
             actions.add(new ResolveConflictsAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Resolve"), ctx)); // NOI18N
+             * */
         /*
             if (!onlyProjects && !onlyFolders) {
             IgnoreAction tempIA = new IgnoreAction(loc.getString("CTL_PopupMenuItem_Ignore"), ctx); // NOI18N
@@ -347,19 +345,19 @@ public class GitAnnotator extends VCSAnnotator {
             actions.add(new StripAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Strip"), ctx)); // NOI18N
             actions.add(new BackoutAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Backout"), ctx)); // NOI18N
             actions.add(new RollbackAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_Rollback"), ctx)); // NOI18N
-             * */
             actions.add(new ResolveConflictsAction(NbBundle.getMessage(GitAnnotator.class,
                     "CTL_PopupMenuItem_Resolve"), ctx)); // NOI18N
             if (!onlyProjects && !onlyFolders) {
                 actions.add(new ConflictResolvedAction(NbBundle.getMessage(GitAnnotator.class,
                         "CTL_PopupMenuItem_MarkResolved"), ctx));
+            }
+             * */
             /*
             if (!onlyProjects && !onlyFolders) {
             IgnoreAction tempIA = new IgnoreAction(loc.getString("CTL_PopupMenuItem_Ignore"), ctx); // NOI18N
             actions.add(tempIA);
             }
              * */
-            }
             actions.add(null);
             actions.add(new PropertiesAction(loc.getString("CTL_PopupMenuItem_Properties"), ctx)); // NOI18N
         }

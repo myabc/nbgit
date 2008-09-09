@@ -135,12 +135,9 @@ public class GitProjectUtils {
                 res = getProjectName(prj);
             } catch (Exception ex) {
                 Git.LOG.log(Level.FINE, "getProjectName() file: {0} {1}", new Object[]{rootFileObj.getPath(), ex.toString()}); // NOI18N
-            } finally {
-                return res;
             }
-        } else {
-            return res;
         }
+        return res;
     }
 
     public static String getProjectName(final Project p) {

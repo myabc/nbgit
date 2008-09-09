@@ -47,7 +47,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -132,8 +131,7 @@ class SearchExecutor implements Runnable {
             };
             support.start(rp, master.getRepositoryUrl(), NbBundle.getMessage(SearchExecutor.class, "MSG_Search_Progress")); // NOI18N
         } else {
-            for (Iterator i = workFiles.keySet().iterator(); i.hasNext();) {
-                final String rootUrl = (String) i.next();
+            for (final String rootUrl : workFiles.keySet()) {
                 final Set<File> files = workFiles.get(rootUrl);
                 RequestProcessor rp = Git.getInstance().getRequestProcessor(rootUrl);
                 GitProgressSupport support = new GitProgressSupport() {

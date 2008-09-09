@@ -55,7 +55,6 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Set;
 import javax.swing.SwingUtilities;
 import org.netbeans.api.diff.Difference;
@@ -105,9 +104,8 @@ public class ResolveConflictsExecutor extends GitProgressSupport {
             FileObject fo = FileUtil.toFileObject(file);
             handleMergeFor(file, fo, fo.lock(), merge);
         } catch (FileAlreadyLockedException e) {
-            Set components = TopComponent.getRegistry().getOpened();
-            for (Iterator i = components.iterator(); i.hasNext();) {
-                TopComponent tc = (TopComponent) i.next();
+            Set<TopComponent> components = TopComponent.getRegistry().getOpened();
+            for (TopComponent tc : components) {
                 if (tc.getClientProperty(ResolveConflictsExecutor.class.getName()) != null) {
                     tc.requestActive();
                 }

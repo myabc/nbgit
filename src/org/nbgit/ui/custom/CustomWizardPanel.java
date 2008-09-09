@@ -37,7 +37,6 @@ package org.nbgit.ui.custom;
 
 import java.awt.Component;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -94,13 +93,13 @@ public class CustomWizardPanel implements WizardDescriptor.Panel<WizardDescripto
     }
 
     public final void fireChangeEvent() {
-        Iterator<ChangeListener> it;
+        HashSet<ChangeListener> copy;
         synchronized (listeners) {
-            it = new HashSet<ChangeListener>(listeners).iterator();
+            copy = new HashSet<ChangeListener>(listeners);
         }
         ChangeEvent ev = new ChangeEvent(this);
-        while (it.hasNext()) {
-            it.next().stateChanged(ev);
+        for (ChangeListener listener : copy) {
+            listener.stateChanged(ev);
         }
     }
 

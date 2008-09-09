@@ -141,15 +141,14 @@ public class StatusCache {
      */
     public File[] listFiles(VCSContext context, int includeStatus) {
         Set<File> set = new HashSet<File>();
-        Map allFiles = cacheProvider.getAllModifiedValues();
+        Map<File, StatusInfo> allFiles = cacheProvider.getAllModifiedValues();
         if (allFiles == null) {
             Git.LOG.log(Level.FINE, "StatusCache: listFiles(): allFiles == null"); // NOI18N
             return new File[0];
         }
 
-        for (Iterator i = allFiles.keySet().iterator(); i.hasNext();) {
-            File file = (File) i.next();
-            StatusInfo info = (StatusInfo) allFiles.get(file);
+        for (File file : allFiles.keySet()) {
+            StatusInfo info = allFiles.get(file);
             if ((info.getStatus() & includeStatus) == 0) {
                 continue;
             }
@@ -167,11 +166,9 @@ public class StatusCache {
             }
         }
         if (context.getExclusions().size() > 0) {
-            for (Iterator i = context.getExclusions().iterator(); i.hasNext();) {
-                File excluded = (File) i.next();
-                for (Iterator j = set.iterator(); j.hasNext();) {
-                    File file = (File) j.next();
-                    if (Utils.isAncestorOrEqual(excluded, file)) {
+            for (File excluded : context.getExclusions()) {
+                for (Iterator<File> j = set.iterator(); j.hasNext();) {
+                    if (Utils.isAncestorOrEqual(excluded, j.next())) {
                         j.remove();
                     }
                 }
@@ -438,8 +435,7 @@ public class StatusCache {
         assert files.containsKey(dir) == false;
         turbo.writeEntry(dir, FILE_STATUS_MAP, files);
         if (interestingFiles == null) {
-            for (Iterator i = files.keySet().iterator(); i.hasNext();) {
-                File file = (File) i.next();
+            for (File file : files.keySet()) {
                 StatusInfo info = files.get(file);
                 if ((info.getStatus() & (StatusInfo.STATUS_LOCAL_CHANGE | StatusInfo.STATUS_NOTVERSIONED_EXCLUDED)) != 0) {
                     fireFileStatusChanged(file, null, info);

@@ -115,10 +115,9 @@ class DiskMapTurboProvider implements TurboProvider {
                         int pathLen = dis.readInt();
                         dis.readInt();
                         String path = readChars(dis, pathLen);
-                        Map value = readValue(dis, path);
-                        for (Iterator j = value.keySet().iterator(); j.hasNext();) {
-                            File f = (File) j.next();
-                            StatusInfo info = (StatusInfo) value.get(f);
+                        Map<File, StatusInfo> value = readValue(dis, path);
+                        for (File f : value.keySet()) {
+                            StatusInfo info = value.get(f);
                             if ((info.getStatus() & DiskMapTurboProvider.STATUS_VALUABLE) != 0) {
                                 cachedValues.put(f, info);
                             }

@@ -48,7 +48,6 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -186,8 +185,7 @@ public class CommitAction extends ContextAction {
         GitFileNode[] nodes;
         ArrayList<GitFileNode> nodesList = new ArrayList<GitFileNode>(fileList.size());
 
-        for (Iterator<File> it = fileList.iterator(); it.hasNext();) {
-            File file = it.next();
+        for (File file : fileList) {
             GitFileNode node = new GitFileNode(file);
             nodesList.add(node);
         }
@@ -336,15 +334,13 @@ public class CommitAction extends ContextAction {
         List<File> addCandidates = new ArrayList<File>();
         List<File> deleteCandidates = new ArrayList<File>();
         List<File> commitCandidates = new ArrayList<File>();
-        Iterator<GitFileNode> it = commitFiles.keySet().iterator();
 
         List<String> excPaths = new ArrayList<String>();
         List<String> incPaths = new ArrayList<String>();
-        while (it.hasNext()) {
+        for (GitFileNode node : commitFiles.keySet()) {
             if (support.isCanceled()) {
                 return;
             }
-            GitFileNode node = it.next();
             CommitOptions option = commitFiles.get(node);
             if (option != CommitOptions.EXCLUDE) {
                 int status = cache.getStatus(node.getFile()).getStatus();

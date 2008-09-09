@@ -46,7 +46,6 @@ import java.awt.Image;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -161,8 +160,7 @@ public class GitAnnotator extends VCSAnnotator {
             return null;
         }
         boolean isVersioned = false;
-        for (Iterator i = context.getRootFiles().iterator(); i.hasNext();) {
-            File file = (File) i.next();
+        for (File file : context.getRootFiles()) {
             // There is an assumption here that annotateName was already
             // called and StatusCache.getStatus was scheduled if
             // StatusCache.getCachedStatus returned null.
@@ -180,19 +178,16 @@ public class GitAnnotator extends VCSAnnotator {
 
         Map<File, StatusInfo> map = cache.getAllModifiedFiles();
         Map<File, StatusInfo> modifiedFiles = new HashMap<File, StatusInfo>();
-        for (Iterator i = map.keySet().iterator(); i.hasNext();) {
-            File file = (File) i.next();
+        for (File file : map.keySet()) {
             StatusInfo info = map.get(file);
             if ((info.getStatus() & StatusInfo.STATUS_LOCAL_CHANGE) != 0) {
                 modifiedFiles.put(file, info);
             }
         }
 
-        for (Iterator i = context.getRootFiles().iterator(); i.hasNext();) {
-            File file = (File) i.next();
+        for (File file : context.getRootFiles()) {
             if (VersioningSupport.isFlat(file)) {
-                for (Iterator j = modifiedFiles.keySet().iterator(); j.hasNext();) {
-                    File mf = (File) j.next();
+                for (File mf : modifiedFiles.keySet()) {
                     if (mf.getParentFile().equals(file)) {
                         StatusInfo info = modifiedFiles.get(mf);
                         if (info.isDirectory()) {
@@ -208,8 +203,7 @@ public class GitAnnotator extends VCSAnnotator {
                     }
                 }
             } else {
-                for (Iterator j = modifiedFiles.keySet().iterator(); j.hasNext();) {
-                    File mf = (File) j.next();
+                for (File mf : modifiedFiles.keySet()) {
                     if (Utils.isAncestorOrEqual(file, mf)) {
                         StatusInfo info = modifiedFiles.get(mf);
                         int status = info.getStatus();

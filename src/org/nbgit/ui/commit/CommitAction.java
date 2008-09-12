@@ -235,8 +235,13 @@ public class CommitAction extends ContextAction {
         if (dd.getValue() == commitButton) {
 
             final Map<GitFileNode, CommitOptions> commitFiles = data.getCommitFiles();
-            final String message = panel.messageTextArea.getText();
-            org.netbeans.modules.versioning.util.Utils.insert(GitModuleConfig.getDefault().getPreferences(), RECENT_COMMIT_MESSAGES, message, 20);
+            String origMessage = panel.messageTextArea.getText();
+            String stripSpace = props.getProperty("nbgit.stripspace");
+            if (stripSpace.equals("yes") || stripSpace.equals("true") || stripSpace.equals("1")) {
+                origMessage = stripSpace(origMessage);
+            }
+            final String message = origMessage;
+            org.netbeans.modules.versioning.util.Utils.insert(GitModuleConfig.getDefault().getPreferences(), RECENT_COMMIT_MESSAGES, origMessage, 20);
             RequestProcessor rp = Git.getInstance().getRequestProcessor(repository.getAbsolutePath());
             GitProgressSupport support = new GitProgressSupport() {
 
@@ -407,5 +412,38 @@ public class CommitAction extends ContextAction {
             logger.outputInRed(NbBundle.getMessage(CommitAction.class, "MSG_COMMIT_DONE")); // NOI18N
             logger.output(""); // NOI18N
         }
+    }
+
+    static String stripSpace(String message) {
+        StringBuilder builder = new StringBuilder();
+        String[] lines = message.split("\n");
+        String sep = "\n";
+        int i = 0;
+
+        for (String line : lines) {
+            int j = line.length();
+
+            while (j > 0) {
+                if (!Character.isWhitespace(line.charAt(j - 1))) {
+                    break;
+                }
+                j--;
+            }
+
+            if (j > 0) {
+                if (builder.length() > 0) {
+                    builder.append(sep);
+                }
+                builder.append(line, 0, j);
+                builder.append("\n");
+                sep = "";
+            } else if (sep.isEmpty()) {
+                sep = "\n";
+            } else {
+                continue;
+            }
+        }
+
+        return builder.toString();
     }
 }

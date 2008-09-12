@@ -203,6 +203,11 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
+            <test-dependencies>
+                <test-type>
+                    <name>unit</name>
+                </test-type>
+            </test-dependencies>
             <public-packages/>
             <class-path-extension>
                 <runtime-relative-path>ext/org-spearce-jgit.jar</runtime-relative-path>

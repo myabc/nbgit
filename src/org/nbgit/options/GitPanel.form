@@ -77,8 +77,8 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="statusLabels" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jPanel1" min="-2" pref="61" max="-2" attributes="0"/>
-                      <EmptySpace pref="74" max="32767" attributes="0"/>
+                      <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="72" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -111,8 +111,8 @@
                           <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="emailTextField" alignment="0" pref="467" max="32767" attributes="2"/>
-                              <Component id="userNameTextField" alignment="0" pref="467" max="32767" attributes="2"/>
+                              <Component id="emailTextField" alignment="0" pref="516" max="32767" attributes="2"/>
+                              <Component id="userNameTextField" alignment="0" pref="516" max="32767" attributes="2"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -207,7 +207,7 @@
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
-                          <Component id="annotationTextField" pref="330" max="32767" attributes="0"/>
+                          <Component id="annotationTextField" pref="403" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="addButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -285,9 +285,13 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="signOffCommits" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="302" max="32767" attributes="0"/>
+                      <Group type="102" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="signOffCommits" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="stripSpaceBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace pref="326" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -295,7 +299,9 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="signOffCommits" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="stripSpaceBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="15" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -304,6 +310,11 @@
                 <Component class="javax.swing.JCheckBox" name="signOffCommits">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Insert Signed-off-by line in commit messages"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="stripSpaceBox">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Strip space from commit message"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -342,14 +353,14 @@
                               <Component id="exportFilenameBrowseButton" min="-2" max="-2" attributes="1"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="218" max="32767" attributes="0"/>
+                      <EmptySpace pref="245" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace pref="140" max="32767" attributes="0"/>
+                      <EmptySpace pref="155" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="exportFilenameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="exportFilenameBrowseButton" alignment="3" min="-2" max="-2" attributes="0"/>

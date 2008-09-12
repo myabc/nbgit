@@ -76,6 +76,7 @@ public class GitModuleConfig {
     public static final String KEY_BACKUP_ON_REVERTMODS = "backupOnRevert";                               // NOI18N
     public static final String KEY_SHOW_HITORY_MERGES = "showHistoryMerges";                               // NOI18N
     public static final String KEY_SIGN_OFF_COMMITS = "signOffCommits"; // NOI18N
+    public static final String KEY_STRIP_SPACE = "stripSpace"; // NOI18N
     private static final String RECENT_URL = "repository.recentURL";                                        // NOI18N
     private static final String SHOW_CLONE_COMPLETED = "cloneCompleted.showCloneCompleted";        // NOI18N
     private static final String SET_MAIN_PROJECT = "cloneCompleted.setMainProject";        // NOI18N
@@ -179,6 +180,14 @@ public class GitModuleConfig {
 
     public void setSignOffComits(boolean signOff) {
         getPreferences().putBoolean(KEY_SIGN_OFF_COMMITS, signOff);
+    }
+
+    public boolean getStripSpace() {
+        return getPreferences().getBoolean(KEY_STRIP_SPACE, false);
+    }
+
+    public void setStripSpace(boolean signOff) {
+        getPreferences().putBoolean(KEY_STRIP_SPACE, signOff);
     }
 
     public boolean getShowHistoryMerges() {
@@ -298,6 +307,15 @@ public class GitModuleConfig {
             signOff = getSignOffCommits() ? "yes" : "no";
         }
         props.setProperty("nbgit.signoff", signOff); // NOI18N
+
+        String stripSpace = null;
+        if (config != null) {
+            stripSpace = config.getString("nbgit", null, "stripspace");
+        }
+        if (stripSpace == null) {
+            stripSpace = getStripSpace() ? "yes" : "no";
+        }
+        props.setProperty("nbgit.stripspace", stripSpace); // NOI18N
 
         return props;
     }

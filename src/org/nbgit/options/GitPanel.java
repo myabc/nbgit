@@ -102,6 +102,7 @@ final class GitPanel extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         signOffCommits = new javax.swing.JCheckBox();
+        stripSpaceBox = new javax.swing.JCheckBox();
         fileOptionsPanel = new javax.swing.JPanel();
         exportFilename = new javax.swing.JLabel();
         backupOnRevertModifications = new javax.swing.JCheckBox();
@@ -206,19 +207,26 @@ final class GitPanel extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(signOffCommits, "Insert Signed-off-by line in commit messages");
 
+        org.openide.awt.Mnemonics.setLocalizedText(stripSpaceBox, "Strip space from commit message");
+
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
-                .add(signOffCommits)
-                .addContainerGap(338, Short.MAX_VALUE))
+                .addContainerGap()
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(signOffCommits)
+                    .add(stripSpaceBox))
+                .addContainerGap(326, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
                 .add(signOffCommits)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(stripSpaceBox)
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         org.jdesktop.layout.GroupLayout generalOptionsPanelLayout = new org.jdesktop.layout.GroupLayout(generalOptionsPanel);
@@ -241,8 +249,8 @@ final class GitPanel extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(statusLabels, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 61, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(105, Short.MAX_VALUE))
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(78, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(GitPanel.class, "BasicSettingsTab.Title"), generalOptionsPanel); // NOI18N
@@ -340,6 +348,7 @@ private void annotationTextFieldActionPerformed(java.awt.event.ActionEvent evt) 
         exportFilenameTextField.setText(GitModuleConfig.getDefault().getExportFilename());
         annotationTextField.setText(GitModuleConfig.getDefault().getAnnotationFormat());
         signOffCommits.setSelected(GitModuleConfig.getDefault().getSignOffCommits());
+        stripSpaceBox.setSelected(GitModuleConfig.getDefault().getStripSpace());
         backupOnRevertModifications.setSelected(GitModuleConfig.getDefault().getBackupOnRevertModifications());
     }
 
@@ -357,6 +366,7 @@ private void annotationTextFieldActionPerformed(java.awt.event.ActionEvent evt) 
         GitModuleConfig.getDefault().setExportFilename(exportFilenameTextField.getText());
         GitModuleConfig.getDefault().setAnnotationFormat(annotationTextField.getText());
         GitModuleConfig.getDefault().setSignOffComits(signOffCommits.isSelected());
+        GitModuleConfig.getDefault().setStripSpace(stripSpaceBox.isSelected());
         GitModuleConfig.getDefault().setBackupOnRevertModifications(backupOnRevertModifications.isSelected());
         if (HtmlFormatter.isRevisionInAnnotationFormat(annotationTextField.getText()))
             GitUtils.warningDialog(GitPanel.class,
@@ -396,6 +406,7 @@ private void annotationTextFieldActionPerformed(java.awt.event.ActionEvent evt) 
     private javax.swing.JLabel logoLabel;
     private javax.swing.JCheckBox signOffCommits;
     private javax.swing.JPanel statusLabels;
+    private javax.swing.JCheckBox stripSpaceBox;
     private javax.swing.JPanel userInformation;
     private javax.swing.JLabel userNameLabel;
     private javax.swing.JTextField userNameTextField;

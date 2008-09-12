@@ -169,6 +169,11 @@ public class GitProperties implements ListSelectionListener {
                             config.setString("nbgit", null, "signoff", value);
                             save = true;
                         }
+
+                        if (name.equals("nbgit.stripspace")) {
+                            config.setString("nbgit", null, "stripspace", value);
+                            save = true;
+                        }
                     }
 
                     //GitRepositoryContextCache.resetPullDefault();

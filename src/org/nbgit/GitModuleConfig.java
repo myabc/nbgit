@@ -274,6 +274,14 @@ public class GitModuleConfig {
         return true;
     }
 
+    private String getBoolean(String value) {
+        if (value.equalsIgnoreCase("yes") || value.equalsIgnoreCase("true") ||
+            value.equals("1") || value.isEmpty()) {
+            return "yes";
+        }
+        return "no";
+    }
+
     public Properties getProperties(File file) {
         Properties props = new Properties();
         Repository repo = Git.getInstance().getRepository(file);
@@ -306,7 +314,7 @@ public class GitModuleConfig {
         if (signOff == null) {
             signOff = getSignOffCommits() ? "yes" : "no";
         }
-        props.setProperty("nbgit.signoff", signOff); // NOI18N
+        props.setProperty("nbgit.signoff", getBoolean(signOff)); // NOI18N
 
         String stripSpace = null;
         if (config != null) {
@@ -315,7 +323,7 @@ public class GitModuleConfig {
         if (stripSpace == null) {
             stripSpace = getStripSpace() ? "yes" : "no";
         }
-        props.setProperty("nbgit.stripspace", stripSpace); // NOI18N
+        props.setProperty("nbgit.stripspace", getBoolean(stripSpace)); // NOI18N
 
         return props;
     }

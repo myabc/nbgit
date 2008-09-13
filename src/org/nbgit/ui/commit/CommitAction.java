@@ -176,7 +176,7 @@ public class CommitAction extends ContextAction {
 
         Properties props = GitModuleConfig.getDefault().getProperties(repository);
         String signOff = props.getProperty("nbgit.signoff");
-        if (signOff.equals("yes") || signOff.equals("true") || signOff.equals("1")) {
+        if (signOff.equals("yes")) {
             signOff = "Signed-off-by: " +props.getProperty("user.name")
                     + " <" + props.getProperty("user.email") + ">";
             panel.putClientProperty(SIGN_OFF_MESSAGE, signOff);
@@ -237,7 +237,7 @@ public class CommitAction extends ContextAction {
             final Map<GitFileNode, CommitOptions> commitFiles = data.getCommitFiles();
             String origMessage = panel.messageTextArea.getText();
             String stripSpace = props.getProperty("nbgit.stripspace");
-            if (stripSpace.equals("yes") || stripSpace.equals("true") || stripSpace.equals("1")) {
+            if (stripSpace.equals("yes")) {
                 origMessage = stripSpace(origMessage);
             }
             final String message = origMessage;

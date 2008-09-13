@@ -54,7 +54,7 @@ public class StripSpaceTest {
     }
 
     @Test
-    public void consequtiveEmptyLines() {
+    public void consecutiveEmptyLines() {
         assertEquals("a\n\nb\nc\n", CommitAction.stripSpace("\n\n\na\n\n\n\nb\nc \t \n"));
         assertEquals("a\n\nbc\n", CommitAction.stripSpace("a \n\n\n\n\nbc \t \n\n\n\n\n"));
     }

@@ -87,7 +87,7 @@ public class CustomActionBuilder {
     }
 
     public void setPath(String path) {
-        if (path == null || path.isEmpty()) {
+        if (path == null || path.length() == 0) {
             this.path = null;
         } else {
             this.path = new File(path);
@@ -119,7 +119,8 @@ public class CustomActionBuilder {
     }
 
     public boolean isValid() {
-        return name != null && !name.isEmpty() && path != null && path.isFile() && path.canExecute();
+        return name != null && name.length() != 0 &&
+               path != null && path.isFile() && path.canExecute();
     }
 
     public boolean isRepoSpecific() {

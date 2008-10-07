@@ -437,7 +437,7 @@ public class CommitAction extends ContextAction {
                 builder.append(line, 0, j);
                 builder.append("\n");
                 sep = "";
-            } else if (sep.isEmpty()) {
+            } else if (sep.length() == 0) {
                 sep = "\n";
             } else {
                 continue;

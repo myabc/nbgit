@@ -276,7 +276,7 @@ public class GitModuleConfig {
 
     private String getBoolean(String value) {
         if (value.equalsIgnoreCase("yes") || value.equalsIgnoreCase("true") ||
-            value.equals("1") || value.isEmpty()) {
+            value.equals("1") || value.length() == 0) {
             return "yes";
         }
         return "no";

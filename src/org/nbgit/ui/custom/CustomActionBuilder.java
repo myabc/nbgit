@@ -37,6 +37,7 @@ package org.nbgit.ui.custom;
 
 import java.io.File;
 import org.netbeans.modules.versioning.spi.VCSContext;
+import org.spearce.jgit.util.FS;
 
 public class CustomActionBuilder {
 
@@ -118,9 +119,14 @@ public class CustomActionBuilder {
         this.showDirty = showDirty;
     }
 
+    private boolean canExecute(File file)
+    {
+        return !FS.INSTANCE.supportsExecute() || FS.INSTANCE.canExecute(file);
+    }
+
     public boolean isValid() {
         return name != null && name.length() != 0 &&
-               path != null && path.isFile() && path.canExecute();
+               path != null && path.isFile() && canExecute(path);
     }
 
     public boolean isRepoSpecific() {

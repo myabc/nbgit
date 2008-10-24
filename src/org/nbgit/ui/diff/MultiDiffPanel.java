@@ -73,6 +73,7 @@ import org.nbgit.StatusInfo;
 import org.nbgit.StatusCache;
 import org.nbgit.Git;
 import org.nbgit.GitProgressSupport;
+import org.nbgit.task.StatusTask;
 import org.nbgit.ui.commit.CommitAction;
 import org.nbgit.ui.status.StatusAction;
 import org.nbgit.ui.update.UpdateAction;
@@ -400,10 +401,10 @@ class MultiDiffPanel extends javax.swing.JPanel implements ActionListener, DiffS
 
         LifecycleManager.getDefault().saveAll();
         RequestProcessor rp = Git.getInstance().getRequestProcessor();
-        executeStatusSupport = new GitProgressSupport() {
+        executeStatusSupport = new StatusTask(context) {
 
-            public void perform() {
-                StatusAction.executeStatus(context, this);
+            @Override
+            public void performAfter() {
                 SwingUtilities.invokeLater(new Runnable() {
 
                     public void run() {

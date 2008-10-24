@@ -49,23 +49,18 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileFilter;
 import org.nbgit.Git;
 import org.nbgit.GitAnnotator;
 import org.nbgit.GitModuleConfig;
 import org.nbgit.util.HtmlFormatter;
-import org.netbeans.modules.versioning.util.AccessibleJFileChooser;
 import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
-import org.openide.filesystems.FileUtil;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -78,7 +73,6 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
 
     public GitOptionsPanelController() {
         panel = new GitPanel(this);
-        panel.exportFilenameBrowseButton.addActionListener(this);
 
         String tooltip = NbBundle.getMessage(GitPanel.class, "GitPanel.annotationTextField.toolTipText", GitAnnotator.LABELS); // NOI18N
 
@@ -132,16 +126,9 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
     }
 
     public void actionPerformed(ActionEvent evt) {
-        if (evt.getSource() == panel.exportFilenameBrowseButton) {
-            onExportFilenameBrowseClick();
-        } else if (evt.getSource() == panel.addButton) {
+        if (evt.getSource() == panel.addButton) {
             onAddClick();
         }
-    }
-
-    private File getExportFile() {
-        String execPath = panel.exportFilenameTextField.getText();
-        return FileUtil.normalizeFile(new File(execPath));
     }
 
     private Boolean validateFields() {
@@ -154,23 +141,6 @@ final class GitOptionsPanelController extends OptionsPanelController implements 
             return false;
         }
         return true;
-    }
-
-    private void onExportFilenameBrowseClick() {
-        File oldFile = getExportFile();
-        JFileChooser fileChooser = new AccessibleJFileChooser(NbBundle.getMessage(GitOptionsPanelController.class, "ACSD_ExportBrowseFolder"), oldFile);   // NOI18N
-        fileChooser.setDialogTitle(NbBundle.getMessage(GitOptionsPanelController.class, "ExportBrowse_title"));                                            // NOI18N
-        fileChooser.setMultiSelectionEnabled(false);
-        FileFilter[] old = fileChooser.getChoosableFileFilters();
-        for (int i = 0; i < old.length; i++) {
-            FileFilter fileFilter = old[i];
-            fileChooser.removeChoosableFileFilter(fileFilter);
-        }
-        fileChooser.showDialog(panel, NbBundle.getMessage(GitOptionsPanelController.class, "OK_Button"));                                            // NOI18N
-        File f = fileChooser.getSelectedFile();
-        if (f != null) {
-            panel.exportFilenameTextField.setText(f.getAbsolutePath());
-        }
     }
 
     private GitPanel getPanel() {

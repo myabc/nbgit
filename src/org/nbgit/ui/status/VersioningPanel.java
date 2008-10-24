@@ -314,10 +314,10 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
             if (branch == null) {
                 branch = Constants.HEAD;
             }
-            return new String[]{
-                        branch,
-                        id != null ? id.toString() : null
-                    };
+            return new String[] {
+                branch,
+                id != null ? id.name() : null
+            };
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }

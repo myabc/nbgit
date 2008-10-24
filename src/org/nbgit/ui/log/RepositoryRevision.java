@@ -187,7 +187,7 @@ public class RepositoryRevision extends RevCommit {
     }
 
     public String getRevision() {
-        return getId().toString();
+        return getId().name();
     }
 
     public Date getDate() {

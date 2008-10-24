@@ -271,7 +271,7 @@ public class HtmlFormatter {
                     walk.markStart(start);
 
                     for (RevCommit commit : walk) {
-                        revisionString = commit.getId().toString();
+                        revisionString = commit.getId().name();
                         break;
                     }
                     walk.dispose();
@@ -279,7 +279,7 @@ public class HtmlFormatter {
                 } catch (IOException ex) {
                     NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
                     DialogDisplayer.getDefault().notifyLater(e);
-                }            //String stickyString = SvnUtils.getCopy(file);
+                }
             }
         }
         String stickyString = null;

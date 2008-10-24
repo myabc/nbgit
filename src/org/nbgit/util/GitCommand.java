@@ -420,7 +420,7 @@ public class GitCommand {
             }
 
             for (RevCommit rev : walk) {
-                revs.add(new String[]{rev.getShortMessage(), rev.getId().toString()});
+                revs.add(new String[]{rev.getShortMessage(), rev.getId().name()});
                 if (--limit <= 0) {
                     break;
                 }

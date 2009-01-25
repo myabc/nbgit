@@ -68,6 +68,7 @@ import org.netbeans.modules.versioning.spi.VCSContext;
 import org.netbeans.modules.versioning.spi.VersioningSupport;
 import org.netbeans.modules.versioning.util.Utils;
 import org.openide.nodes.Node;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
@@ -195,8 +196,8 @@ public class GitAnnotator extends VCSAnnotator {
                         }
                         int status = info.getStatus();
                         if (status == StatusInfo.STATUS_VERSIONED_CONFLICT) {
-                            Image badge = Utilities.loadImage("org/nbgit/resources/icons/conflicts-badge.png", true);  // NOI18N
-                            return Utilities.mergeImages(icon, badge, 16, 9);
+                            Image badge = ImageUtilities.loadImage("org/nbgit/resources/icons/conflicts-badge.png", true);  // NOI18N
+                            return ImageUtilities.mergeImages(icon, badge, 16, 9);
                         }
                         modified = true;
                         allExcluded &= isExcludedFromCommit(mf.getAbsolutePath());
@@ -211,8 +212,8 @@ public class GitAnnotator extends VCSAnnotator {
                             continue;
                         }
                         if (status == StatusInfo.STATUS_VERSIONED_CONFLICT) {
-                            Image badge = Utilities.loadImage("org/nbgit/resources/icons/conflicts-badge.png", true); // NOI18N
-                            return Utilities.mergeImages(icon, badge, 16, 9);
+                            Image badge = ImageUtilities.loadImage("org/nbgit/resources/icons/conflicts-badge.png", true); // NOI18N
+                            return ImageUtilities.mergeImages(icon, badge, 16, 9);
                         }
                         modified = true;
                         allExcluded &= isExcludedFromCommit(mf.getAbsolutePath());
@@ -222,8 +223,8 @@ public class GitAnnotator extends VCSAnnotator {
         }
 
         if (modified && !allExcluded) {
-            Image badge = Utilities.loadImage("org/nbgit/resources/icons/modified-badge.png", true); // NOI18N
-            return Utilities.mergeImages(icon, badge, 16, 9);
+            Image badge = ImageUtilities.loadImage("org/nbgit/resources/icons/modified-badge.png", true); // NOI18N
+            return ImageUtilities.mergeImages(icon, badge, 16, 9);
         } else {
             return null;
         }

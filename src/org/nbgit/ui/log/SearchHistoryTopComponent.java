@@ -60,7 +60,7 @@ public class SearchHistoryTopComponent extends TopComponent implements DiffSetup
     private SearchCriteriaPanel scp;
 
     public SearchHistoryTopComponent() {
-        setIcon(org.openide.util.Utilities.loadImage("org/nbgit/resources/icons/gitvcs-icon.png"));  // NOI18N
+        setIcon(org.openide.util.ImageUtilities.loadImage("org/nbgit/resources/icons/gitvcs-icon.png"));  // NOI18N
         getAccessibleContext().setAccessibleName(NbBundle.getMessage(SearchHistoryTopComponent.class, "ACSN_SearchHistoryT_Top_Component")); // NOI18N
         getAccessibleContext().setAccessibleDescription(NbBundle.getMessage(SearchHistoryTopComponent.class, "ACSD_SearchHistoryT_Top_Component")); // NOI18N
     }

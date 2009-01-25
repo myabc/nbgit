@@ -75,7 +75,7 @@ public class GitVersioningTopComponent extends TopComponent {
         putClientProperty("SlidingName", NbBundle.getMessage(GitVersioningTopComponent.class, "CTL_Versioning_TopComponent_Title")); //NOI18N
 
         setName(NbBundle.getMessage(GitVersioningTopComponent.class, "CTL_Versioning_TopComponent_Title")); // NOI18N
-        setIcon(org.openide.util.Utilities.loadImage("org/nbgit/resources/icons/gitvcs-icon.png"));  // NOI18N
+        setIcon(org.openide.util.ImageUtilities.loadImage("org/nbgit/resources/icons/gitvcs-icon.png"));  // NOI18N
         setLayout(new BorderLayout());
         getAccessibleContext().setAccessibleDescription(NbBundle.getMessage(GitVersioningTopComponent.class, "CTL_Versioning_TopComponent_Title")); // NOI18N
         syncPanel = new VersioningPanel(this);

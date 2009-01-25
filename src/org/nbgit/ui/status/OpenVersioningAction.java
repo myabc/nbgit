@@ -44,8 +44,8 @@ package org.nbgit.ui.status;
 import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
 import org.openide.util.HelpCtx;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
 
 /**
  * Open the Git view. It focuses recently opened view unless it's not
@@ -58,7 +58,7 @@ public class OpenVersioningAction extends ShowAllChangesAction {
 
     public OpenVersioningAction() {
         putValue("noIconInMenu", Boolean.FALSE); // NOI18N
-        setIcon(new ImageIcon(Utilities.loadImage("org/nbgit/resources/icons/versioning-view.png"))); // NOI18N
+        setIcon(new ImageIcon(ImageUtilities.loadImage("org/nbgit/resources/icons/versioning-view.png"))); // NOI18N
     }
 
     @Override

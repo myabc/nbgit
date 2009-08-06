@@ -39,21 +39,24 @@ public abstract class PathPattern {
 
     protected final String pattern;
     private final boolean exclude;
-    private final boolean matchFileName;
+    protected final boolean matchFileName;
     private final boolean matchDir;
 
     public static PathPattern create(String pattern) {
-        if (hasNoWildcards(pattern)) {
+        if (hasNoWildcards(pattern, 0, pattern.length())) {
             return new NoWildcardPathPattern(pattern);
         } else {
             return new WildcardPathPattern(pattern);
         }
     }
 
-    private static boolean hasNoWildcards(String pattern) {
-        for (int i = 0; i < pattern.length(); i++) {
-            char c = pattern.charAt(i);
-            if (c == '*' || c == '[' || c == '?' || c == '\\') {
+    public static boolean isWildcard(char c) {
+        return c == '*' || c == '[' || c == '?' || c == '\\';
+    }
+
+    private static boolean hasNoWildcards(String pattern, int from, int to) {
+        for (int i = from; i < to; i++) {
+            if (isWildcard(pattern.charAt(i))) {
                 return false;
             }
         }
@@ -117,8 +120,8 @@ public abstract class PathPattern {
         StringBuilder builder = new StringBuilder();
         builder.append(exclude ? "EX" : "IN").append("CLUDE(");
         builder.append(pattern);
-        if (matchFileName) {
-            builder.append(", /");
+        if (!matchFileName) {
+            builder.append(", path");
         }
         if (matchDir) {
             builder.append(", dirs");
@@ -134,10 +137,10 @@ public abstract class PathPattern {
 
         @Override
         protected boolean matchesFileName(String path) {
-            if (path.length() < pattern.length())
+            if (path.length() > pattern.length() &&
+                    path.charAt(path.length() - pattern.length() - 1) != '/') {
                 return false;
-            if (path.charAt(path.length() - pattern.length()) != '/')
-                return false;
+            }
             return path.endsWith(pattern);
         }
 
@@ -150,15 +153,42 @@ public abstract class PathPattern {
 
     private static class WildcardPathPattern extends PathPattern {
 
-        private WildcardPathPattern(String pattern) {
-            super(pattern);
+        private final int regionFrom, regionLength;
+
+        private WildcardPathPattern(String patternString) {
+            super(patternString);
+            int from = 0, to = 0;
+            if (matchFileName) {
+                if (pattern.startsWith("*")) {
+                    from = 1;
+                    to = pattern.length();
+                } else if (pattern.endsWith("*")) {
+                    from = 0;
+                    to = pattern.length() - 1;
+                }
+                if (hasNoWildcards(pattern, from, to)) {
+                    this.regionFrom = from;
+                    this.regionLength = to - from;
+                    return;
+                }
+            }
+            this.regionFrom = 0;
+            this.regionLength = 0;
         }
 
         @Override
         protected boolean matchesFileName(String path) {
             int from = path.lastIndexOf('/') + 1;
-            return from > 0 && from < path.length() &&
-                    FnMatch.fnmatch(pattern, path.substring(from));
+            if (from >= path.length()) {
+                return false;
+            }
+            if (regionLength > 0) {
+                int offset = regionFrom > 0
+                        ? path.length() - regionLength : from;
+                return offset >= from &&
+                        path.regionMatches(offset, pattern, regionFrom, regionLength);
+            }
+            return FnMatch.fnmatch(pattern, path, from);
         }
 
         @Override

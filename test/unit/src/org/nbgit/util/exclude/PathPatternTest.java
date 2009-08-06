@@ -39,30 +39,84 @@ import junit.framework.TestCase;
 
 public class PathPatternTest extends TestCase {
 
+    private static final String[] patternsForModuleC = {
+        "module.c",
+        "*.c",
+        "module.*",
+        "*.?"
+    };
+
+    public void testNoWildCard() {
+        for (int i = 1; i < 256; i++) {
+            String string = String.valueOf(Character.toChars(i));
+            if (PathPattern.isWildcard(string.charAt(0)) ||
+                    string.startsWith("!") ||
+                    string.startsWith("/") ||
+                    string.length() == 0) {
+                continue;
+            }
+            pattern(string).
+                    matchesFile(string).
+                    matchesDir(string);
+            pattern(string + "/").
+                    doesNotMatchFile(string).
+                    matchesDir(string);
+        }
+    }
+
+    public void testSingleGlob() {
+        for (int i = 0; i < 256; i++) {
+            char c = Character.toChars(0)[0];
+            String string = String.valueOf(c);
+            pattern(string).
+                    matchesFile(string).
+                    matchesDir(string);
+            pattern(string + "/").
+                    doesNotMatchFile(string).
+                    matchesDir(string);
+        }
+    }
+
     public void testPatternsWithNoSlashes() {
+        for (String pattern : patternsForModuleC) {
+            pattern(pattern).from("/.gitignore").
+                    matchesFile("module.c").
+                    matchesFile("path/to/nested/module.c");
+        }
+        pattern("File.java").
+                doesNotMatchFile("aFile.java").
+                doesNotMatchFile("path/to/nested/someFile.java");
         pattern("*.java").
-                matchesFile("File.java").
-                matchesFile("path/to/nested/File.java");
+                doesNotMatchFile("File.javaX").
+                doesNotMatchFile("path/to/nested/File.javaX");
+        pattern("tmp.*").
+                doesNotMatchFile("mytmp.file").
+                doesNotMatchFile("path/to/nested/tmp2.javac");
         pattern("[?]").matchesFile("?");
         pattern("[*]").matchesFile("*");
         pattern(" a ").matchesFile(" a ");
         pattern(" ? file with * spaces ").matchesFile(" a file with many spaces ");
     }
 
-    public void testPatternsFromRoot() {
-        pattern("/*.java").
-                matchesFile("File.java").
-                doesNotMatchFile("nested/File.java");
+    public void testMatchFromRoot() {
+        for (String pattern : patternsForModuleC) {
+            pattern("/" + pattern).from("/.gitignore").
+                    matchesFile("module.c").
+                    doesNotMatchFile("subdir/module.c");
+        }
+        for (String pattern : patternsForModuleC) {
+            pattern("/" + pattern).from("/dir/.gitignore").
+                    matchesFile("dir/module.c").
+                    doesNotMatchFile("nested/dir/module.c").
+                    doesNotMatchFile("dir/subdir/module.c");
+        }
+        pattern("/sha1*.?").
+                matchesFile("sha1sum.c").
+                matchesFile("sha1.c").
+                doesNotMatchFile("mozilla/sha1.c");
         pattern("/*.?").
                 matchesFile("sha1sum.c").
-                doesNotMatchFile("mozilla/sha1.a");
-    }
-
-    public void testMatchFromSubRoot() {
-        pattern("/*.java").from("/dir/.gitignore").
-                matchesFile("dir/File.java").
-                doesNotMatchFile("different/dir/File.java").
-                doesNotMatchFile("dir/subdir/File.java");
+                doesNotMatchFile("mozilla/sha1.c");
     }
 
     public void testMatchSubPath() {
@@ -122,22 +176,25 @@ public class PathPatternTest extends TestCase {
         }
 
         private TestBuilder matchesDir(String filePath) {
-            assertTrue(pattern.matches(filePath, true, relativePatternDir));
-            return this;
+            return match(true, filePath, true);
         }
 
         private TestBuilder doesNotMatchDir(String filePath) {
-            assertFalse(pattern.matches(filePath, true, relativePatternDir));
-            return this;
+            return match(false, filePath, true);
         }
 
         private TestBuilder matchesFile(String filePath) {
-            assertTrue(pattern.matches(filePath, false, relativePatternDir));
-            return this;
+            return match(true, filePath, false);
         }
 
         private TestBuilder doesNotMatchFile(String filePath) {
-            assertFalse(pattern.matches(filePath, false, relativePatternDir));
+            return match(false, filePath, false);
+        }
+
+        private TestBuilder match(boolean expected, String filePath, boolean isDir) {
+            if (expected != pattern.matches(filePath, isDir, relativePatternDir)) {
+                fail(pattern + " does not match: " + filePath);
+            }
             return this;
         }
     }

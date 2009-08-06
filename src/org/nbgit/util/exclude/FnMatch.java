@@ -65,8 +65,12 @@ public class FnMatch {
         return match(pattern, 0, string, stringPos, EnumSet.of(flag));
     }
 
+    public static boolean fnmatch(String pattern, String string, int stringPos) {
+        return match(pattern, 0, string, stringPos, EnumSet.noneOf(Flag.class));
+    }
+
     public static boolean fnmatch(String pattern, String string) {
-        return match(pattern, 0, string, 0, EnumSet.noneOf(Flag.class));
+        return fnmatch(pattern, string, 0);
     }
 
     private static boolean match(String pattern, int patternPos,

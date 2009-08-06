@@ -66,9 +66,15 @@ public class PathPatternTest extends TestCase {
     }
 
     public void testMatchSubPath() {
+        pattern("path/to/File.java").
+                matchesFile("path/to/File.java").
+                doesNotMatchFile("nested/path/to/File.java");
         pattern("path/to/*.java").
                 matchesFile("path/to/File.java").
                 doesNotMatchFile("path/to/nested/File.java");
+        pattern("/to/File.java").
+                matchesFile("to/File.java").
+                doesNotMatchFile("path/to/File.java");
         pattern("/to/*.java").
                 matchesFile("to/File.java").
                 doesNotMatchFile("to/nested/File.java");

@@ -35,15 +35,29 @@
  */
 package org.nbgit.util.exclude;
 
-public class PathPattern {
+public abstract class PathPattern {
 
-    private final String pattern;
+    protected final String pattern;
     private final boolean exclude;
     private final boolean matchFileName;
     private final boolean matchDir;
 
     public static PathPattern create(String pattern) {
-        return new PathPattern(pattern);
+        if (hasNoWildcards(pattern)) {
+            return new NoWildcardPathPattern(pattern);
+        } else {
+            return new WildcardPathPattern(pattern);
+        }
+    }
+
+    private static boolean hasNoWildcards(String pattern) {
+        for (int i = 0; i < pattern.length(); i++) {
+            char c = pattern.charAt(i);
+            if (c == '*' || c == '[' || c == '?' || c == '\\') {
+                return false;
+            }
+        }
+        return true;
     }
 
     private PathPattern(String pattern) {
@@ -94,15 +108,9 @@ public class PathPattern {
         return matches(path.substring(0, end), true, basePath);
     }
 
-    private boolean matchesFileName(String path) {
-        int from = path.lastIndexOf('/') + 1;
-        return from > 0 && from < path.length() &&
-                FnMatch.fnmatch(pattern, path.substring(from));
-    }
+    protected abstract boolean matchesFileName(String path);
 
-    private boolean matchesPathName(String path, String basePath) {
-        return FnMatch.fnmatch(pattern, path, basePath.length(), FnMatch.Flag.PATHNAME);
-    }
+    protected abstract boolean matchesPathName(String path, String basePath);
 
     @Override
     public String toString() {
@@ -116,5 +124,46 @@ public class PathPattern {
             builder.append(", dirs");
         }
         return builder.append(")").toString();
+    }
+
+    private static class NoWildcardPathPattern extends PathPattern {
+
+        private NoWildcardPathPattern(String pattern) {
+            super(pattern);
+        }
+
+        @Override
+        protected boolean matchesFileName(String path) {
+            if (path.length() < pattern.length())
+                return false;
+            if (path.charAt(path.length() - pattern.length()) != '/')
+                return false;
+            return path.endsWith(pattern);
+        }
+
+        @Override
+        protected boolean matchesPathName(String path, String basePath) {
+            return path.length() - basePath.length() == pattern.length() &&
+                    path.startsWith(pattern, basePath.length());
+        }
+    }
+
+    private static class WildcardPathPattern extends PathPattern {
+
+        private WildcardPathPattern(String pattern) {
+            super(pattern);
+        }
+
+        @Override
+        protected boolean matchesFileName(String path) {
+            int from = path.lastIndexOf('/') + 1;
+            return from > 0 && from < path.length() &&
+                    FnMatch.fnmatch(pattern, path.substring(from));
+        }
+
+        @Override
+        protected boolean matchesPathName(String path, String basePath) {
+            return FnMatch.fnmatch(pattern, path, basePath.length(), FnMatch.Flag.PATHNAME);
+        }
     }
 }

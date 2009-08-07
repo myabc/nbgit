@@ -47,7 +47,7 @@ package org.nbgit.ui.properties;
  */
 public class GitPropertiesNode {
 
-    private String name;
+    private final String name;
     private String value;
 
     /** Creates a new instance of GitPropertiesNode */
@@ -79,13 +79,11 @@ public class GitPropertiesNode {
             return true;
         }
         if (o instanceof GitPropertiesNode) {
-            if (name.equals(((GitPropertiesNode) o).getName()) && value.equals(((GitPropertiesNode) o).getValue())) {
+            GitPropertiesNode node = (GitPropertiesNode) o;
+            if (name.equals(node.getName()) && value.equals(node.getValue())) {
                 return true;
-            } else {
-                return false;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 }

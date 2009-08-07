@@ -3,4 +3,4 @@ OpenIDE-Module: org.nbgit
 OpenIDE-Module-Layer: org/nbgit/resources/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/nbgit/Bundle.properties
 OpenIDE-Module-Requires: org.netbeans.api.javahelp.Help
-OpenIDE-Module-Specification-Version: 0.1
+OpenIDE-Module-Specification-Version: 0.2

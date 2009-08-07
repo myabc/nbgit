@@ -2,6 +2,7 @@
 <!DOCTYPE index PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Index Version 2.0//EN" "http://java.sun.com/products/javahelp/index_2_0.dtd">
 <index version="2.0">
  <indexitem text="About Git" target="org.nbgit.docs.about"/>
+ <indexitem text="Options" target="org.nbgit.docs.options"/>
  <indexitem text="Release notes" target="org.nbgit.docs.news"/>
  <indexitem text="Issues" target="org.nbgit.docs.issues"/>
  <indexitem text="Bug reporting" target="org.nbgit.docs.issues"/>

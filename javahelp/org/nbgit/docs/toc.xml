@@ -3,6 +3,7 @@
 <toc version="2.0">
  <tocitem text="Git">
   <tocitem text="About Git" target="org.nbgit.docs.about"/>
+  <tocitem text="Options" target="org.nbgit.docs.options"/>
   <tocitem text="Release Notes" target="org.nbgit.docs.news"/>
   <tocitem text="Issues and Bug Reporting" target="org.nbgit.docs.issues"/>
   <tocitem text="Credits and Legal Notes" target="org.nbgit.docs.credits"/>

@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+ <head>
+  <title>Release Notes</title>
+  <link rel="stylesheet" href="nbdocs:/org/netbeans/modules/usersguide/ide.css" type="text/css">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ </head>
+ <body>
+  <h1>Options</h1>
+
+  <p>Below, the various options that control how git works are described. All the options are configurable via either the Tools > Options dialog (referred to as the options dialog) or the Git > Properties dialog (referred to as the properties dialog). The options dialog is generally where default values can be set, and the properties dialog allows repository-specific values to be configured. Repository-specific values are stored in each repositoriy's configuration file (.git/config).</p>
+
+  <h3>User Identity</h3>
+
+  <p>All users should take the time to tell git what user identity should be used when committing. The user identity consists of:</p>
+  <ul>
+      <li>Full Name, e.g. Random J. Developer</li>
+      <li>Email Address, e.g. user@example.org</li>
+  </ul>
+  <p>From these options the user identity will become Random J. Developer &lt;user@example.org&gt;.</p>
+
+  <p>The name and email address can be set via both the options and properties dialogs. For repository configuration git options: user.name and user.email are used.</p>
+
+  <h3>Commit Options</h3>
+
+  <p>Some open-source projects require that developers sign off on their patches as a way of showing good faith. If you contribute to such a project, the option to automatically append a Signed-off-by line can be of assistance. The line is inserted if there are no previous commit messages. Values configure via the properties dialog are stored using the name nbgit.signoff.</p>
+
+  <p>One way to ensure that commit messages are clean and have a uniform format is to strip them of spaces at the end of line and removing consecutive empty lines. This can be done automatically if you enable it either in the module options or configure it via the properties dialog, using the nbgit.stripspace option.</p>
+
+  <h3>Update Options</h3>
+
+  <p>When reverting a file to a previous version, you can optionally choose to save the modified file using the prefix .orig. The default setting can be set in the options dialog and customized in the revert dialog.</p>
+
+  <h3>Custom Actions</h3>
+
+  <p>Custom actions are user defined commands that can be configured and run via the Git main menu. The general goal is to provide a temporary solution to some of the missing pieces of nbgit. Custom actions can be created using the wizard available via the Custom Actions &gt; New Action... item in the Git menu.</p>
+
+  <p>Each action definition consists of an action name, path to binary or script, arguments (which can contain replaceable tokens) and a handful of options controlling whether to show output or not. For example a use can define a "Gitk All Branches" action to run "gitk --all" in the repository root with no output shown.</p>
+
+  <p>Custom actions can be either repository-specific (in which case they are stored in .git/config) or global. Below is an example of how a repository-specific actions will appear:</p>
+  <pre>
+[nbgit "action0"]
+        name = Publish
+        path = /home/fonseca/bin/git
+        args = push github
+        showOutput = true
+        showDirty = true
+        workDirRoot = true</pre>
+ </body>
+</html>

@@ -39,7 +39,7 @@
  * Version 2 license, then the option applies only if the new code is
  * made subject to such option by the copyright holder.
  */
-package org.nbgit.util;
+package org.nbgit.util.exclude;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -50,11 +50,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 import java.util.logging.Level;
-import java.util.regex.Pattern;
 import org.nbgit.StatusCache;
 import org.nbgit.Git;
 import org.netbeans.api.project.ProjectManager;
@@ -62,15 +65,16 @@ import org.netbeans.api.queries.SharabilityQuery;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.spearce.jgit.lib.Repository;
 
 /**
  * Provides support for .gitignore files.
  * 
  * To keep the querying interface fast, a cache of patterns are maintained.
  */
-public class GitIgnore {
+public class Excludes {
 
-    private GitIgnore() {
+    private Excludes() {
     }
 
     // IGNORE SUPPORT GIT: following file patterns are added to {Git repos}/.gitignore and Git will ignore any files
@@ -83,7 +87,7 @@ public class GitIgnore {
     private static final String GIT_IGNORE_REJ_ANY_FILES = "\\.rej$"; // NOI18N
     private static final String GIT_IGNORE_CONFLICT_ANY_FILES = "\\.conflict\\~$"; // NOI18N
     private static final String FILENAME_GITIGNORE = ".gitignore"; // NOI18N
-    private static HashMap<String, Set<Pattern>> ignorePatterns;
+    private static HashMap<String, List<PathPattern>> ignorePatterns;
 
     private static void resetIgnorePatterns(File file) {
         if (ignorePatterns == null) {
@@ -93,16 +97,16 @@ public class GitIgnore {
         ignorePatterns.remove(key);
     }
 
-    private static Set<Pattern> getIgnorePatterns(File file) {
+    private static List<PathPattern> getIgnorePatterns(File file) {
         if (ignorePatterns == null) {
-            ignorePatterns = new HashMap<String, Set<Pattern>>();
+            ignorePatterns = new HashMap<String, List<PathPattern>>();
         }
         String key = file.getAbsolutePath();
-        Set<Pattern> patterns = ignorePatterns.get(key);
+        List<PathPattern> patterns = ignorePatterns.get(key);
         if (patterns == null) {
-            patterns = new HashSet<Pattern>(5);
-            addIgnorePatterns(patterns, file);
-            ignorePatterns.put(key, patterns);
+            patterns = readIgnorePatterns(file);
+			if (!patterns.isEmpty())
+				ignorePatterns.put(key, patterns);
         }
         return patterns;
     }
@@ -130,16 +134,16 @@ public class GitIgnore {
 
     public static boolean isIgnored(File file, boolean checkSharability) {
         // FIXME Disabled for now.
+        /*
         if (true != false) {
             return false;
         }
+         */
         if (file == null) {
             return false;
         }
-        String path = file.getPath();
-        String name = file.getName();
-        File topFile = Git.getInstance().getTopmostManagedParent(file);
 
+        File topFile = Git.getInstance().getTopmostManagedParent(file);
         // We assume that the toplevel directory should not be ignored.
         if (topFile == null || topFile.equals(file)) {
             return false;        // We assume that the Project should not be ignored.
@@ -151,21 +155,58 @@ public class GitIgnore {
             }
         }
 
-        Set<Pattern> patterns = getIgnorePatterns(topFile);
+        Repository repo = Git.getInstance().getRepository(topFile);
+		File workDir = repo.getWorkDir();
+		String absoluteRootPath = workDir.getAbsolutePath();
+		String path = Repository.stripWorkDir(workDir, file);
+        PathPattern pattern;
+        for (File i = file.getParentFile();
+             i.getAbsolutePath().startsWith(absoluteRootPath);
+             i = i.getParentFile()) {
+            File ignoreFile = new File(i, FILENAME_GITIGNORE);
+            if (!ignoreFile.exists())
+                continue;
+            String relPath = stripWorkDir(workDir, i);
+            pattern = matchIgnorePatterns(path, file.isDirectory(), ignoreFile, relPath);
+            if (pattern != null)
+                return pattern.isExclude();
+		}
 
-        for (Pattern pattern : patterns) {
-            if (pattern.matcher(path).find()) {
-                return true;
-            }
+        File repoExcludeFile = new File(repo.getDirectory(), "info/exclude");
+        pattern = matchIgnorePatterns(path, file.isDirectory(), repoExcludeFile, "/");
+        if (pattern != null)
+            return pattern.isExclude();
+
+        String userExcludePath = repo.getConfig().getString("core", null, "excludesfile");
+        if (userExcludePath != null && userExcludePath.length() > 0) {
+            File excludeFile = new File(userExcludePath);
+            pattern = matchIgnorePatterns(path, file.isDirectory(), excludeFile, "/");
+            if (pattern != null)
+                return pattern.isExclude();
         }
 
-        if (FILENAME_GITIGNORE.equals(name)) {
-            return false;
-        }
         if (checkSharability && !isSharable(file)) {
             return true;
         }
         return false;
+    }
+
+    private static String stripWorkDir(File wd, File f) {
+        int skip = f.getPath().length() > wd.getPath().length() ? 1 : 0;
+		String relName = f.getPath().substring(wd.getPath().length() + skip);
+        if (File.separatorChar != '/')
+    		relName = relName.replace(File.separatorChar, '/');
+		return relName;
+	}
+
+    private static PathPattern matchIgnorePatterns(String path, boolean isDir,
+            File excludeFile, String relPath) {
+        for (PathPattern pattern : getIgnorePatterns(excludeFile)) {
+            if (pattern.matches(path, isDir, relPath)) {
+                return pattern;
+            }
+        }
+        return null;
     }
 
     /**
@@ -175,6 +216,7 @@ public class GitIgnore {
      *
      * @param path to repository to place .gitignore file
      */
+    /*
     public static void createIgnored(File path, String ignorePatterns) {
         if (path == null) {
             return;
@@ -306,50 +348,39 @@ public class GitIgnore {
             }
         }
     }
+     */
 
-    private static void addIgnorePatterns(Set<Pattern> patterns, File file) {
+    private static List<PathPattern> readIgnorePatterns(File gitIgnore) {
+		Vector<PathPattern> patterns = new Vector<PathPattern>(5);
         Set<String> shPatterns;
         try {
-            shPatterns = readIgnoreEntries(file);
+            shPatterns = readIgnoreEntries(gitIgnore);
         } catch (IOException e) {
             // ignore invalid entries
-            return;
+            return patterns;
         }
         for (String shPattern : shPatterns) {
-            if ("!".equals(shPattern)) { // NOI18N
-                patterns.clear();
-            } else {
-                try {
-                    patterns.add(Pattern.compile(shPattern));
-                } catch (Exception e) {
-                    // unsupported pattern
-                }
-            }
+			PathPattern pattern = PathPattern.create(shPattern);
+			if (pattern.isExclude())
+				patterns.add(pattern);
+			else
+				patterns.add(0, pattern);
         }
+		return patterns;
     }
 
-    private static Set<String> readIgnoreEntries(File directory) throws IOException {
-        File gitIgnore = new File(directory, FILENAME_GITIGNORE);
-
+    private static Set<String> readIgnoreEntries(File gitIgnore) throws IOException {
         Set<String> entries = new HashSet<String>(5);
         if (!gitIgnore.canRead()) {
             return entries;
         }
-        String s;
+        String line;
         BufferedReader r = null;
         try {
             r = new BufferedReader(new FileReader(gitIgnore));
-            while ((s = r.readLine()) != null) {
-                String line = s.trim();
-                if (line.length() == 0) {
+            while ((line = r.readLine()) != null) {
+                if (line.length() == 0 || line.charAt(0) == '#') {
                     continue;
-                }
-                int indexOfHash = line.indexOf("#");
-                if (indexOfHash != -1) {
-                    if (indexOfHash == 0) {
-                        continue;
-                    }
-                    line = line.substring(0, indexOfHash - 1);
                 }
                 entries.add(line);
             }
@@ -364,6 +395,7 @@ public class GitIgnore {
         return entries;
     }
 
+    /*
     private static String computePatternToIgnore(File directory, File file) {
         String name = file.getAbsolutePath().substring(directory.getAbsolutePath().length() + 1);
         return name.replace(' ', '?').replace(File.separatorChar, '/');
@@ -399,6 +431,7 @@ public class GitIgnore {
             resetIgnorePatterns(directory);
         }
     }
+     */
 
     /**
      * addIgnored - Add the specified files to the .gitignore file in the
@@ -407,6 +440,7 @@ public class GitIgnore {
      * @param directory for repository for .gitignore file
      * @param files an array of Files to be added
      */
+    /*
     public static void addIgnored(File directory, File[] files) throws IOException {
         Set<String> entries = readIgnoreEntries(directory);
         for (File file : files) {
@@ -415,6 +449,7 @@ public class GitIgnore {
         }
         writeIgnoreEntries(directory, entries);
     }
+    */
 
     /**
      * removeIgnored - Remove the specified files from the .gitignore file in
@@ -423,6 +458,7 @@ public class GitIgnore {
      * @param directory for repository for .gitignore file
      * @param files an array of Files to be removed
      */
+    /*
     public static void removeIgnored(File directory, File[] files) throws IOException {
         Set<String> entries = readIgnoreEntries(directory);
         for (File file : files) {
@@ -431,4 +467,5 @@ public class GitIgnore {
         }
         writeIgnoreEntries(directory, entries);
     }
+    */
 }

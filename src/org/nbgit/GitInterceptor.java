@@ -50,7 +50,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import javax.swing.SwingUtilities;
 import org.nbgit.util.GitCommand;
-import org.nbgit.util.GitIgnore;
+import org.nbgit.util.exclude.Excludes;
 import org.nbgit.util.GitUtils;
 import org.netbeans.modules.versioning.spi.VCSInterceptor;
 import org.netbeans.modules.versioning.util.Utils;
@@ -88,7 +88,7 @@ public class GitInterceptor extends VCSInterceptor {
                     dirsToDelete.remove(dir);
                 }
             }
-            if (GitIgnore.isSharable(file)) {
+            if (Excludes.isSharable(file)) {
                 dirsToDelete.put(file, file);
             }
         }
@@ -385,7 +385,7 @@ public class GitInterceptor extends VCSInterceptor {
 
     private void reScheduleRefresh(File fileToRefresh) {
         // There is no point in refreshing the cache for ignored files.
-        if (GitIgnore.isIgnored(fileToRefresh, false)) {
+        if (Excludes.isIgnored(fileToRefresh, false)) {
             return;
         }
         if (!filesToRefresh.contains(fileToRefresh)) {

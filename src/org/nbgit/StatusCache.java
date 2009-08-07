@@ -55,7 +55,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.nbgit.util.GitCommand;
-import org.nbgit.util.GitIgnore;
+import org.nbgit.util.exclude.Excludes;
 import org.netbeans.modules.turbo.CustomProviders;
 import org.netbeans.modules.turbo.Turbo;
 import org.netbeans.modules.versioning.spi.VCSContext;
@@ -388,14 +388,14 @@ public class StatusCache {
             return FILE_STATUS_UNKNOWN; // Avoiding returning NOT_MANAGED dir or file
         }
         if (file.isDirectory()) {
-            if (GitIgnore.isIgnored(file)) {
+            if (Excludes.isIgnored(file)) {
                 return FILE_STATUS_EXCLUDED_DIRECTORY;
             } else {
                 return FILE_STATUS_UPTODATE_DIRECTORY;
             }
         }
         if (callStatus == false) {
-            if (GitIgnore.isIgnored(file)) {
+            if (Excludes.isIgnored(file)) {
                 return FILE_STATUS_EXCLUDED;
             }
             return null;
@@ -465,7 +465,7 @@ public class StatusCache {
         StatusInfo current = files.get(file);
         if (StatusInfo.equivalent(fi, current)) {
             if (StatusInfo.equivalent(FILE_STATUS_NEWLOCALLY, fi)) {
-                if (GitIgnore.isIgnored(file)) {
+                if (Excludes.isIgnored(file)) {
                     Git.LOG.log(Level.FINE, "refreshFileStatus() file: {0} was LocallyNew but is NotSharable", file.getAbsolutePath()); // NOI18N
                     fi = FILE_STATUS_EXCLUDED;
                 } else {
@@ -480,7 +480,7 @@ public class StatusCache {
                 Git.LOG.log(Level.FINE, "refreshFileStatus() file: {0} was LocallyNew but is Excluded", file.getAbsolutePath()); // NOI18N
                 return;
             } else if (current == null) {
-                if (GitIgnore.isIgnored(file)) {
+                if (Excludes.isIgnored(file)) {
                     Git.LOG.log(Level.FINE, "refreshFileStatus() file: {0} was LocallyNew but current is null and is not NotSharable", file.getAbsolutePath()); // NOI18N
                     fi = FILE_STATUS_EXCLUDED;
                 }
@@ -673,7 +673,7 @@ public class StatusCache {
             return folderFiles;
         }
 
-        if (GitIgnore.isIgnored(dir)) {
+        if (Excludes.isIgnored(dir)) {
             for (File file : files) {
                 if (GitUtils.isPartOfGitMetadata(file)) {
                     continue;
@@ -766,7 +766,7 @@ public class StatusCache {
     }
 
     private boolean excludeFile(File file) {
-        return git.isAdministrative(file) || GitIgnore.isIgnored(file);
+        return git.isAdministrative(file) || Excludes.isIgnored(file);
     }
 
     private static final class NotManagedMap extends AbstractMap<File, StatusInfo> {

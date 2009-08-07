@@ -52,6 +52,7 @@ import org.netbeans.api.project.Project;
 import org.nbgit.Git;
 import org.nbgit.GitProgressSupport;
 import org.nbgit.OutputLogger;
+import org.nbgit.task.StatusTask;
 import org.nbgit.ui.ContextAction;
 import org.nbgit.util.exclude.Excludes;
 import org.nbgit.util.GitProjectUtils;
@@ -190,8 +191,6 @@ public class InitAction extends ContextAction {
                             "MSG_CREATE_INIT", prjName, root)); // NOI18N
 
                     repo.create();
-                    git.versionedFilesChanged();
-                    git.refreshAllAnnotations();
                 } catch (IOException ex) {
                     NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
                     DialogDisplayer.getDefault().notifyLater(e);
@@ -241,6 +240,20 @@ public class InitAction extends ContextAction {
 
         supportAdd.start(rp, root.getAbsolutePath(),
                 org.openide.util.NbBundle.getMessage(InitAction.class, "MSG_Create_Add_Progress")); // NOI18N
+
+        GitProgressSupport supportStatus = new StatusTask(context) {
+
+            @Override
+            public void performAfter() {
+                git.versionedFilesChanged();
+                git.refreshAllAnnotations();
+            }
+
+        };
+
+        supportStatus.start(rp, root.getAbsolutePath(),
+                NbBundle.getMessage(InitAction.class, "MSG_Create_Status_Progress")); // NOI18N
+
     }
 
     private List<File> getFileList(Repository repo, File rootFile) throws IOException {

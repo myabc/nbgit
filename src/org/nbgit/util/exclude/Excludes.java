@@ -77,8 +77,9 @@ public class Excludes {
         List<PathPattern> patterns = ignorePatterns.get(key);
         if (patterns == null) {
             patterns = readIgnorePatterns(file);
-			if (!patterns.isEmpty())
-				ignorePatterns.put(key, patterns);
+            if (!patterns.isEmpty()) {
+                ignorePatterns.put(key, patterns);
+            }
         }
         return patterns;
     }
@@ -122,33 +123,37 @@ public class Excludes {
         }
 
         Repository repo = Git.getInstance().getRepository(topFile);
-		File workDir = repo.getWorkDir();
-		String absoluteRootPath = workDir.getAbsolutePath();
-		String path = Repository.stripWorkDir(workDir, file);
+        File workDir = repo.getWorkDir();
+        String absoluteRootPath = workDir.getAbsolutePath();
+        String path = Repository.stripWorkDir(workDir, file);
         PathPattern pattern;
         for (File i = file.getParentFile();
-             i.getAbsolutePath().startsWith(absoluteRootPath);
-             i = i.getParentFile()) {
+                i.getAbsolutePath().startsWith(absoluteRootPath);
+                i = i.getParentFile()) {
             File ignoreFile = new File(i, FILENAME_GITIGNORE);
-            if (!ignoreFile.exists())
+            if (!ignoreFile.exists()) {
                 continue;
+            }
             String relPath = stripWorkDir(workDir, i);
             pattern = matchIgnorePatterns(path, file.isDirectory(), ignoreFile, relPath);
-            if (pattern != null)
+            if (pattern != null) {
                 return pattern.isExclude();
-		}
+            }
+        }
 
         File repoExcludeFile = new File(repo.getDirectory(), "info/exclude");
         pattern = matchIgnorePatterns(path, file.isDirectory(), repoExcludeFile, "/");
-        if (pattern != null)
+        if (pattern != null) {
             return pattern.isExclude();
+        }
 
         String userExcludePath = repo.getConfig().getString("core", null, "excludesfile");
         if (userExcludePath != null && userExcludePath.length() > 0) {
             File excludeFile = new File(userExcludePath);
             pattern = matchIgnorePatterns(path, file.isDirectory(), excludeFile, "/");
-            if (pattern != null)
+            if (pattern != null) {
                 return pattern.isExclude();
+            }
         }
 
         if (checkSharability && !isSharable(file)) {
@@ -159,11 +164,12 @@ public class Excludes {
 
     private static String stripWorkDir(File wd, File f) {
         int skip = f.getPath().length() > wd.getPath().length() ? 1 : 0;
-		String relName = f.getPath().substring(wd.getPath().length() + skip);
-        if (File.separatorChar != '/')
-    		relName = relName.replace(File.separatorChar, '/');
-		return relName;
-	}
+        String relName = f.getPath().substring(wd.getPath().length() + skip);
+        if (File.separatorChar != '/') {
+            relName = relName.replace(File.separatorChar, '/');
+        }
+        return relName;
+    }
 
     private static PathPattern matchIgnorePatterns(String path, boolean isDir,
             File excludeFile, String relPath) {
@@ -176,7 +182,7 @@ public class Excludes {
     }
 
     private static List<PathPattern> readIgnorePatterns(File gitIgnore) {
-		Vector<PathPattern> patterns = new Vector<PathPattern>(5);
+        Vector<PathPattern> patterns = new Vector<PathPattern>(5);
         Set<String> shPatterns;
         try {
             shPatterns = readIgnoreEntries(gitIgnore);
@@ -185,13 +191,14 @@ public class Excludes {
             return patterns;
         }
         for (String shPattern : shPatterns) {
-			PathPattern pattern = PathPattern.create(shPattern);
-			if (pattern.isExclude())
-				patterns.add(pattern);
-			else
-				patterns.add(0, pattern);
+            PathPattern pattern = PathPattern.create(shPattern);
+            if (pattern.isExclude()) {
+                patterns.add(pattern);
+            } else {
+                patterns.add(0, pattern);
+            }
         }
-		return patterns;
+        return patterns;
     }
 
     private static Set<String> readIgnoreEntries(File gitIgnore) throws IOException {
@@ -219,5 +226,4 @@ public class Excludes {
         }
         return entries;
     }
-
 }

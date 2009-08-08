@@ -63,5 +63,6 @@ p.title {
 }
 
 #header p.title { font-size: 3em; line-height: 1; margin-bottom: 0.5em; }
+#header img { float: left; margin-right: 10px; }
 
 /* EOF */

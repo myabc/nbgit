@@ -77,7 +77,7 @@ public class GitModuleConfig {
     public static final String KEY_ANNOTATION_FORMAT = "annotationFormat"; // NOI18N
     public static final String SAVE_PASSWORD = "savePassword"; // NOI18N
     public static final String KEY_BACKUP_ON_REVERTMODS = "backupOnRevert"; // NOI18N
-    public static final String KEY_SHOW_HITORY_MERGES = "showHistoryMerges"; // NOI18N
+    public static final String KEY_SHOW_HISTORY_MERGES = "showHistoryMerges"; // NOI18N
     public static final String KEY_SIGN_OFF_COMMITS = "signOffCommits"; // NOI18N
     public static final String KEY_STRIP_SPACE = "stripSpace"; // NOI18N
     public static final String TEXT_ANNOTATIONS_FORMAT_DEFAULT = "{DEFAULT}"; // NOI18N
@@ -147,7 +147,7 @@ public class GitModuleConfig {
         return getPreferences().getBoolean(KEY_SIGN_OFF_COMMITS, false);
     }
 
-    public void setSignOffComits(boolean signOff) {
+    public void setSignOffCommits(boolean signOff) {
         getPreferences().putBoolean(KEY_SIGN_OFF_COMMITS, signOff);
     }
 
@@ -160,11 +160,11 @@ public class GitModuleConfig {
     }
 
     public boolean getShowHistoryMerges() {
-        return getPreferences().getBoolean(KEY_SHOW_HITORY_MERGES, true);
+        return getPreferences().getBoolean(KEY_SHOW_HISTORY_MERGES, true);
     }
 
     public void setShowHistoryMerges(boolean bShowMerges) {
-        getPreferences().putBoolean(KEY_SHOW_HITORY_MERGES, bShowMerges);
+        getPreferences().putBoolean(KEY_SHOW_HISTORY_MERGES, bShowMerges);
     }
 
     /**

@@ -312,7 +312,7 @@ private void annotationTextFieldActionPerformed(java.awt.event.ActionEvent evt) 
         GitModuleConfig.getDefault().setEmail(emailTextField.getText());
         GitModuleConfig.getDefault().setUserName(userNameTextField.getText());
         GitModuleConfig.getDefault().setAnnotationFormat(annotationTextField.getText());
-        GitModuleConfig.getDefault().setSignOffComits(signOffCommits.isSelected());
+        GitModuleConfig.getDefault().setSignOffCommits(signOffCommits.isSelected());
         GitModuleConfig.getDefault().setStripSpace(stripSpaceBox.isSelected());
         GitModuleConfig.getDefault().setBackupOnRevertModifications(backupOnRevertModifications.isSelected());
         if (HtmlFormatter.isRevisionInAnnotationFormat(annotationTextField.getText()))

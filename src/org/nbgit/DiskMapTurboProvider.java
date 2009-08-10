@@ -61,7 +61,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.netbeans.modules.turbo.TurboProvider;
 import org.openide.filesystems.FileUtil;
-import org.openide.filesystems.Repository;
 
 /**
  * Storage of file attributes with shortcut to retrieve all stored values.
@@ -350,12 +349,13 @@ class DiskMapTurboProvider implements TurboProvider {
 
     private void initCacheStore() {
         String userDir = System.getProperty("netbeans.user"); // NOI18N
+        File cacheRoot;
         if (userDir != null) {
-            cacheStore = new File(new File(new File (userDir, "var"), "cache"), DiskMapTurboProvider.CACHE_DIRECTORY); // NOI18N
+            cacheRoot = new File(new File(userDir, "var"), "cache"); // NOI18N
         } else {
-            File cachedir = FileUtil.toFile(Repository.getDefault().getDefaultFileSystem().getRoot());
-            cacheStore = new File(cachedir, DiskMapTurboProvider.CACHE_DIRECTORY); // NOI18N
+            cacheRoot = FileUtil.toFile(FileUtil.getConfigRoot());
         }
+        cacheStore = new File(cacheRoot, DiskMapTurboProvider.CACHE_DIRECTORY); // NOI18N
         cacheStore.mkdirs();
     }
 

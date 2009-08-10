@@ -209,7 +209,8 @@ public class FnMatch {
          * consistency with the regular expression syntax.
          * J.T. Conklin (conklin@ngai.kaleida.com)
          */
-        negate = pattern.charAt(patternPos) == '!' || pattern.charAt(patternPos) == '^';
+        c = pattern.charAt(patternPos);
+        negate = c == '!' || c == '^';
         if (negate) {
             ++patternPos;
         }

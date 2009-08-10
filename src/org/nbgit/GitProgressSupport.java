@@ -60,7 +60,6 @@ public abstract class GitProgressSupport implements Runnable, Cancellable {
     private volatile boolean canceled;
     private ProgressHandle progressHandle = null;
     private String displayName = ""; // NOI18N
-    private String originalDisplayName = ""; // NOI18N
     private OutputLogger logger;
     private String repositoryRoot;
     private RequestProcessor.Task task;
@@ -78,11 +77,6 @@ public abstract class GitProgressSupport implements Runnable, Cancellable {
             }
         });
         return task;
-    }
-
-    public void setRepositoryRoot(String repositoryRoot) {
-        this.repositoryRoot = repositoryRoot;
-        logger = null;
     }
 
     public void run() {
@@ -134,10 +128,6 @@ public abstract class GitProgressSupport implements Runnable, Cancellable {
     }
 
     public void setDisplayName(String displayName) {
-        if (originalDisplayName.equals("")) // NOI18N
-        {
-            originalDisplayName = displayName;
-        }
         this.displayName = displayName;
         setProgress();
     }

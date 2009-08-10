@@ -255,13 +255,10 @@ public class GitModuleConfig {
     }
 
     public Boolean isEmailValid(String email) {
-        if (email.equals(email)) {
+        if (email.equals(userEmail)) {
             return true;
         }
-        if (email.length() == 0) {
-            return false; // cannot be blank
-        }
-        return true;//GitMail.isEmailValid(email);
+        return email.indexOf("@") != -1;
     }
 
     public Boolean isUserNameValid(String name) {

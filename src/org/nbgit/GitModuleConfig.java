@@ -53,8 +53,11 @@ import org.netbeans.modules.versioning.util.TableSorter;
 import org.netbeans.modules.versioning.util.Utils;
 import org.openide.util.NbPreferences;
 import org.openide.util.Utilities;
+import org.spearce.jgit.lib.FileBasedConfig;
 import org.spearce.jgit.lib.Repository;
 import org.spearce.jgit.lib.RepositoryConfig;
+import org.spearce.jgit.lib.UserConfig;
+import org.spearce.jgit.util.SystemReader;
 
 /**
  * Stores Git module configuration.
@@ -90,31 +93,17 @@ public class GitModuleConfig {
     private static final GitModuleConfig INSTANCE = new GitModuleConfig();
     private static String userEmail;
     private static String userName;
-    
 
     static {
-        final RepositoryConfig config = RepositoryConfig.openUserConfig();
-        userEmail = config.getString("user", null, "email");
-        userName = config.getString("user", null, "name");
-
-        if (userName == null || userName.length() == 0) {
-            userName = System.getProperty("user.name"); // NOI18N
+        FileBasedConfig baseConfig = SystemReader.getInstance().openUserConfig();
+        try {
+            baseConfig.load();
+            UserConfig user = baseConfig.get(UserConfig.KEY);
+            userEmail = user.getAuthorEmail();
+            userName = user.getAuthorName();
+        } catch (Throwable error) {
+            userEmail = userName = "";
         }
-
-        if (userEmail == null || userEmail.length() == 0) {
-            userEmail = "";
-        // nothing
-        // TODO: does NetBeans provide this with product registration?
-        // if not, then get this information in setup wizard.
-        }
-
-    /* FIXME:
-     * Load user config to get email + name.
-     * If not found, load global config.
-     *
-    final RepositoryConfig sysConf = new RepositoryConfig(null, getGlobalConfigPath());
-     */
-
     }
 
     public static GitModuleConfig getDefault() {
@@ -271,56 +260,19 @@ public class GitModuleConfig {
         return true;
     }
 
-    private String getBoolean(String value) {
-        if (value.equalsIgnoreCase("yes") || value.equalsIgnoreCase("true") ||
-            value.equals("1") || value.length() == 0) {
-            return "yes";
-        }
-        return "no";
-    }
-
     public Properties getProperties(File file) {
         Properties props = new Properties();
         Repository repo = Git.getInstance().getRepository(file);
-        RepositoryConfig config = repo != null
-                ? repo.getConfig()
-                : RepositoryConfig.openUserConfig();
+        RepositoryConfig config = repo.getConfig();
 
-        String email = null;
-        if (config != null) {
-            email = config.getString("user", null, "email");
-        }
-        if (email == null || email.length() == 0) {
-            email = getEmail();
-        }
-        props.setProperty("user.email", email);
+        props.setProperty("user.email", config.getAuthorEmail()); // NOI18N
+        props.setProperty("user.name", config.getAuthorName()); // NOI18N
 
-        String name = null;
-        if (config != null) {
-            name = config.getString("user", null, "name");
-        }
-        if (name == null || name.length() == 0) {
-            name = getUserName();
-        }
-        props.setProperty("user.name", name); // NOI18N
+        boolean signOff = config.getBoolean("nbgit", "signoff", getSignOffCommits());
+        props.setProperty("nbgit.signoff", signOff ? "yes" : "no"); // NOI18N
 
-        String signOff = null;
-        if (config != null) {
-            signOff = config.getString("nbgit", null, "signoff");
-        }
-        if (signOff == null) {
-            signOff = getSignOffCommits() ? "yes" : "no";
-        }
-        props.setProperty("nbgit.signoff", getBoolean(signOff)); // NOI18N
-
-        String stripSpace = null;
-        if (config != null) {
-            stripSpace = config.getString("nbgit", null, "stripspace");
-        }
-        if (stripSpace == null) {
-            stripSpace = getStripSpace() ? "yes" : "no";
-        }
-        props.setProperty("nbgit.stripspace", getBoolean(stripSpace)); // NOI18N
+        boolean stripSpace = config.getBoolean("nbgit", "stripspace", getStripSpace());
+        props.setProperty("nbgit.stripspace", stripSpace ? "yes" : "no"); // NOI18N
 
         return props;
     }

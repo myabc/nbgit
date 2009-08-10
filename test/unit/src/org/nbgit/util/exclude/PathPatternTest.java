@@ -47,14 +47,8 @@ public class PathPatternTest extends TestCase {
     };
 
     public void testNoWildCard() {
-        for (int i = 1; i < 256; i++) {
-            String string = String.valueOf(Character.toChars(i));
-            if (PathPattern.isWildcard(string.charAt(0)) ||
-                    string.startsWith("!") ||
-                    string.startsWith("/") ||
-                    string.length() == 0) {
-                continue;
-            }
+        String reject = CharacterSequence.WILDCARD_CHARS + "!/";
+        for (String string : CharacterSequence.create(1, 256, reject)) {
             pattern(string).
                     matchesFile(string).
                     matchesDir(string);
@@ -65,9 +59,7 @@ public class PathPatternTest extends TestCase {
     }
 
     public void testSingleGlob() {
-        for (int i = 0; i < 256; i++) {
-            char c = Character.toChars(0)[0];
-            String string = String.valueOf(c);
+        for (String string : CharacterSequence.create(0, 256, "!/")) {
             pattern(string).
                     matchesFile(string).
                     matchesDir(string);

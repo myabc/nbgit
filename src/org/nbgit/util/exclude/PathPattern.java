@@ -50,7 +50,7 @@ public abstract class PathPattern {
         }
     }
 
-    public static boolean isWildcard(char c) {
+    private static boolean isWildcard(char c) {
         return c == '*' || c == '[' || c == '?' || c == '\\';
     }
 

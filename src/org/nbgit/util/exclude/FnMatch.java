@@ -198,6 +198,10 @@ public class FnMatch {
         boolean negate, ok;
         char c, c2;
 
+        if (patternPos >= pattern.length()) {
+            return RANGE_ERROR;
+        }
+
         /*
          * A bracket expression starting with an unquoted circumflex
          * character produces unspecified results (IEEE 1003.2-1992,

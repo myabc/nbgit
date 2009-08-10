@@ -46,6 +46,15 @@ public class FnMatchTest extends TestCase {
         assertNotMatches("ABc.123", "Abc.123");
     }
 
+    public void testEscapeNoFlags() {
+        assertMatches("\\[", "[");
+        assertMatches("\\#", "#");
+        assertMatches("\\?", "?");
+        assertNotMatches("\\?", "a");
+        assertMatches("\\*", "*");
+        assertNotMatches("\\*", "a");
+    }
+
     public void testSingleGlobNoFlags() {
         assertMatches("?.git", "a.git");
         assertMatches("?i?", "git");

@@ -118,7 +118,7 @@ public class GitCommand {
     }
 
     public static void doCat(File root, File base, File tempFile, String revision) {
-        OutputLogger logger = Git.getInstance().getLogger(root.getAbsolutePath());
+        OutputLogger logger = OutputLogger.getLogger(root.getAbsolutePath());
         try {
             Repository repo = Git.getInstance().getRepository(root);
             Commit commit = repo.mapCommit(revision);
@@ -473,7 +473,6 @@ public class GitCommand {
      */
     public static Map<File, StatusInfo> getAllStatus(File root, File dir) throws IOException {
         String relPath = getRelative(root, dir);
-        OutputLogger logger = Git.getInstance().getLogger(root.getAbsolutePath());
 
         Repository repo = Git.getInstance().getRepository(root);
         Map<File, StatusInfo> files = new HashMap<File, StatusInfo>();
@@ -611,7 +610,6 @@ public class GitCommand {
     }
 
     public static StatusInfo getSingleStatus(File root, File file) {
-        OutputLogger logger = Git.getInstance().getLogger(root.getAbsolutePath());
         Repository repo = Git.getInstance().getRepository(root);
         IndexDiff index;
 

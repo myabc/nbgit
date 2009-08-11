@@ -272,14 +272,4 @@ public class Git {
             processorsToUrl.remove(url);
         }
     }
-
-    /**
-     *
-     * @param repositoryRoot String of Git repository so that logger writes to correct output tab. Can be null
-     * in which case the logger will not print anything
-     * @return OutputLogger logger to write to
-     */
-    public OutputLogger getLogger(String repositoryRoot) {
-        return OutputLogger.getLogger(repositoryRoot);
-    }
 }

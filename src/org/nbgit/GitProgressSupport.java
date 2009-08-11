@@ -165,7 +165,7 @@ public abstract class GitProgressSupport implements Runnable, Cancellable {
 
     public OutputLogger getLogger() {
         if (logger == null) {
-            logger = Git.getInstance().getLogger(repositoryRoot);
+            logger = OutputLogger.getLogger(repositoryRoot);
         }
         return logger;
     }

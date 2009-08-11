@@ -479,7 +479,7 @@ public class GitUtils {
             return NbBundle.getMessage(SyncFileNode.class, "LBL_Location_NotInRepository");
         }
         String root = rootManagedFolder.getAbsolutePath();
-        if (shortPath.startsWith(root)) {
+        if (shortPath.startsWith(root) && shortPath.length() > root.length()) {
             return shortPath.substring(root.length() + 1);
         } else {
             return NbBundle.getMessage(SyncFileNode.class, "LBL_Location_NotInRepository");

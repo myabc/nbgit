@@ -101,6 +101,14 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
         jPanel2.setFloatable(false);
         jPanel2.putClientProperty("JToolBar.isRollover", Boolean.TRUE);  // NOI18N
         jPanel2.setLayout(new ToolbarLayout());
+        setButtonEnabled(false);
+    }
+
+    private void setButtonEnabled(boolean enable) {
+        btnCommit.setEnabled(enable);
+        btnDiff.setEnabled(enable);
+        btnRefresh.setEnabled(enable);
+        btnUpdate.setEnabled(enable);
     }
 
     public void preferenceChange(PreferenceChangeEvent evt) {
@@ -142,6 +150,11 @@ class VersioningPanel extends JPanel implements ExplorerManager.Provider, Prefer
      * @param ctx new context if the Versioning panel
      */
     void setContext(VCSContext ctx) {
+        if (ctx == null) {
+            setButtonEnabled(false);
+            return;
+        }
+        setButtonEnabled(true);
         context = ctx;
         reScheduleRefresh(0);
     }

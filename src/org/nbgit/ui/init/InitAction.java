@@ -52,6 +52,7 @@ import org.netbeans.api.project.Project;
 import org.nbgit.Git;
 import org.nbgit.GitProgressSupport;
 import org.nbgit.OutputLogger;
+import org.nbgit.client.IndexBuilder;
 import org.nbgit.task.StatusTask;
 import org.nbgit.ui.ContextAction;
 import org.nbgit.util.exclude.Excludes;
@@ -63,8 +64,6 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
-import org.spearce.jgit.lib.GitIndex;
-import org.spearce.jgit.lib.GitIndex.Entry;
 import org.spearce.jgit.lib.Repository;
 import org.spearce.jgit.treewalk.FileTreeIterator;
 import org.spearce.jgit.treewalk.TreeWalk;
@@ -205,13 +204,11 @@ public class InitAction extends ContextAction {
             public void perform() {
                 OutputLogger logger = getLogger();
                 try {
-                    GitIndex index = repo.getIndex();
+                    IndexBuilder index = IndexBuilder.create(repo);
                     int newFiles = 0;
 
                     for (File file : getFileList(repo, root)) {
-                        Entry entry = index.add(root, file);
-
-                        entry.setAssumeValid(false);
+                        index.add(file);
                         newFiles++;
 
                         if (newFiles < OutputLogger.MAX_LINES_TO_PRINT) {

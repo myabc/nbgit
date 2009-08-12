@@ -421,12 +421,8 @@ public class GitUtils {
         if (file.isDirectory()) {
             Map<File, StatusInfo> interestingFiles;
             interestingFiles = GitCommand.getInterestingStatus(repository, file);
-            if (!interestingFiles.isEmpty()) {
-                Collection<File> files = interestingFiles.keySet();
-                for (File aFile : files) {
-                    StatusInfo fi = interestingFiles.get(aFile);
-                    cache.refreshFileStatus(aFile, fi, null);
-                }
+            for (Map.Entry<File, StatusInfo> entry : interestingFiles.entrySet()) {
+                cache.refreshFileStatus(entry.getKey(), entry.getValue(), null);
             }
         }
     }

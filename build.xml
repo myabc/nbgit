@@ -5,13 +5,4 @@
 <project name="org.nbgit" default="netbeans" basedir=".">
     <description>Builds, tests, and runs the project org.nbgit.</description>
     <import file="nbproject/build-impl.xml"/>
-    <target name="netbeans-extra" depends="init">
-        <mkdir dir="${cluster}/modules/ext"/>
-        <copy todir="${cluster}/modules/ext">
-            <fileset dir="release/modules/ext">
-                <include name="com-jcraft-jsch.jar"/>
-                <include name="org-spearce-jgit.jar"/>
-            </fileset>
-        </copy>
-    </target>
 </project>

@@ -52,7 +52,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.nbgit.util.GitUtils;
-import org.netbeans.modules.versioning.spi.VCSContext;
 import org.netbeans.modules.versioning.spi.VersioningSupport;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;

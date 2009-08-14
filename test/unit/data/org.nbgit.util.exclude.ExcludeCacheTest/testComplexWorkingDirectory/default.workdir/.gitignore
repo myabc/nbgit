@@ -1,0 +1,5 @@
+build/
+misc/
+path/thr*
+*.txt
+!README.txt

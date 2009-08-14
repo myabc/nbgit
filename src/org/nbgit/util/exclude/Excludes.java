@@ -41,15 +41,8 @@
  */
 package org.nbgit.util.exclude;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
 import org.nbgit.Git;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.api.queries.SharabilityQuery;
@@ -66,23 +59,8 @@ public class Excludes {
     private Excludes() {
     }
 
-    private static final String FILENAME_GITIGNORE = ".gitignore"; // NOI18N
-    private static HashMap<String, List<PathPattern>> ignorePatterns;
-
-    private static List<PathPattern> getIgnorePatterns(File file) {
-        if (ignorePatterns == null) {
-            ignorePatterns = new HashMap<String, List<PathPattern>>();
-        }
-        String key = file.getAbsolutePath();
-        List<PathPattern> patterns = ignorePatterns.get(key);
-        if (patterns == null) {
-            patterns = readIgnorePatterns(file);
-            if (!patterns.isEmpty()) {
-                ignorePatterns.put(key, patterns);
-            }
-        }
-        return patterns;
-    }
+    private static final HashMap<Repository, ExcludeCache> cacheMap
+            = new HashMap<Repository, ExcludeCache>();
 
     /**
      * Check if a file should can be shared between projects as defined by
@@ -123,38 +101,9 @@ public class Excludes {
         }
 
         Repository repo = Git.getInstance().getRepository(topFile);
-        File workDir = repo.getWorkDir();
-        String absoluteRootPath = workDir.getAbsolutePath();
-        String path = Repository.stripWorkDir(workDir, file);
-        PathPattern pattern;
-        for (File i = file.getParentFile();
-                i.getAbsolutePath().startsWith(absoluteRootPath);
-                i = i.getParentFile()) {
-            File ignoreFile = new File(i, FILENAME_GITIGNORE);
-            if (!ignoreFile.exists()) {
-                continue;
-            }
-            String relPath = stripWorkDir(workDir, i);
-            pattern = matchIgnorePatterns(path, file.isDirectory(), ignoreFile, relPath);
-            if (pattern != null) {
-                return pattern.isExclude();
-            }
-        }
-
-        File repoExcludeFile = new File(repo.getDirectory(), "info/exclude");
-        pattern = matchIgnorePatterns(path, file.isDirectory(), repoExcludeFile, "/");
-        if (pattern != null) {
-            return pattern.isExclude();
-        }
-
-        String userExcludePath = repo.getConfig().getString("core", null, "excludesfile");
-        if (userExcludePath != null && userExcludePath.length() > 0) {
-            File excludeFile = new File(userExcludePath);
-            pattern = matchIgnorePatterns(path, file.isDirectory(), excludeFile, "/");
-            if (pattern != null) {
-                return pattern.isExclude();
-            }
-        }
+        ExcludeCache cache = getCache(repo);
+        if (cache.isExcluded(file))
+            return true;
 
         if (file.getName().equals(".gitignore") ||
             file.getName().equals(".gitattributes") ||
@@ -167,68 +116,13 @@ public class Excludes {
         return false;
     }
 
-    private static String stripWorkDir(File wd, File f) {
-        int skip = f.getPath().length() > wd.getPath().length() ? 1 : 0;
-        String relName = f.getPath().substring(wd.getPath().length() + skip);
-        if (File.separatorChar != '/') {
-            relName = relName.replace(File.separatorChar, '/');
-        }
-        return relName;
-    }
 
-    private static PathPattern matchIgnorePatterns(String path, boolean isDir,
-            File excludeFile, String relPath) {
-        for (PathPattern pattern : getIgnorePatterns(excludeFile)) {
-            if (pattern.matches(path, isDir, relPath)) {
-                return pattern;
-            }
+    private static ExcludeCache getCache(Repository repo) {
+        ExcludeCache cache = cacheMap.get(repo);
+        if (cache == null) {
+            cache = ExcludeCache.create(repo);
+            cacheMap.put(repo, cache);
         }
-        return null;
-    }
-
-    private static List<PathPattern> readIgnorePatterns(File gitIgnore) {
-        Vector<PathPattern> patterns = new Vector<PathPattern>(5);
-        Set<String> shPatterns;
-        try {
-            shPatterns = readIgnoreEntries(gitIgnore);
-        } catch (IOException e) {
-            // ignore invalid entries
-            return patterns;
-        }
-        for (String shPattern : shPatterns) {
-            PathPattern pattern = PathPattern.create(shPattern);
-            if (pattern.isExclude()) {
-                patterns.add(pattern);
-            } else {
-                patterns.add(0, pattern);
-            }
-        }
-        return patterns;
-    }
-
-    private static Set<String> readIgnoreEntries(File gitIgnore) throws IOException {
-        Set<String> entries = new HashSet<String>(5);
-        if (!gitIgnore.canRead()) {
-            return entries;
-        }
-        String line;
-        BufferedReader r = null;
-        try {
-            r = new BufferedReader(new FileReader(gitIgnore));
-            while ((line = r.readLine()) != null) {
-                if (line.length() == 0 || line.charAt(0) == '#') {
-                    continue;
-                }
-                entries.add(line);
-            }
-        } finally {
-            if (r != null) {
-                try {
-                    r.close();
-                } catch (IOException e) {
-                }
-            }
-        }
-        return entries;
+        return cache;
     }
 }

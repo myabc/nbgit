@@ -156,6 +156,11 @@ public class Excludes {
             }
         }
 
+        if (file.getName().equals(".gitignore") ||
+            file.getName().equals(".gitattributes") ||
+            file.getName().equals(".gitmodules"))
+            return false;
+
         if (checkSharability && !isSharable(file)) {
             return true;
         }

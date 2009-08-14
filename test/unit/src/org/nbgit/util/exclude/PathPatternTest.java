@@ -155,11 +155,13 @@ public class PathPatternTest extends TestCase {
 
         private TestBuilder from(String excludeOrigin) {
             assertTrue(excludeOrigin.startsWith("/"));
-            StringBuilder builder = new StringBuilder(excludeOrigin).deleteCharAt(0);
+            StringBuilder builder = new StringBuilder(excludeOrigin);
             if (excludeOrigin.equals("/.git/info/exclude")) {
                 builder.setLength(0);
             } else if (excludeOrigin.endsWith("/.gitignore")) {
-                builder.setLength(builder.lastIndexOf("/") + 1);
+                builder.setLength(builder.lastIndexOf("/"));
+                if (builder.length() > 0)
+                    builder.deleteCharAt(0);
             } else {
                 fail("Unknown exclude origin: " + excludeOrigin);
             }

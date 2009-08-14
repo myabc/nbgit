@@ -146,8 +146,9 @@ public abstract class PathPattern {
 
         @Override
         protected boolean matchesPathName(String path, String basePath) {
-            return path.length() - basePath.length() == pattern.length() &&
-                    path.startsWith(pattern, basePath.length());
+            int baseLength = basePath.length() > 0 ? basePath.length() + 1 : 0;
+            return path.length() - baseLength == pattern.length() &&
+                    path.startsWith(pattern, baseLength);
         }
     }
 
@@ -193,7 +194,8 @@ public abstract class PathPattern {
 
         @Override
         protected boolean matchesPathName(String path, String basePath) {
-            return FnMatch.fnmatch(pattern, path, basePath.length(), FnMatch.Flag.PATHNAME);
+            int baseLength = basePath.length() > 0 ? basePath.length() + 1 : 0;
+            return FnMatch.fnmatch(pattern, path, baseLength, FnMatch.Flag.PATHNAME);
         }
     }
 }

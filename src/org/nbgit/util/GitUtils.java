@@ -55,7 +55,12 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import org.jdesktop.layout.LayoutStyle;
 import org.nbgit.Git;
 import org.nbgit.GitRepository;
 import org.nbgit.StatusCache;
@@ -176,6 +181,19 @@ public class GitUtils {
                 NbBundle.getMessage(bundleLocation, warning),
                 NbBundle.getMessage(bundleLocation, title),
                 JOptionPane.WARNING_MESSAGE);
+    }
+
+    public static JComponent addContainerBorder(JComponent comp) {
+        final LayoutStyle layoutStyle = LayoutStyle.getSharedInstance();
+
+        JPanel panel = new JPanel();
+        panel.add(comp);
+        panel.setBorder(BorderFactory.createEmptyBorder(
+                layoutStyle.getContainerGap(comp, SwingConstants.NORTH, null),
+                layoutStyle.getContainerGap(comp, SwingConstants.WEST, null),
+                layoutStyle.getContainerGap(comp, SwingConstants.SOUTH, null),
+                layoutStyle.getContainerGap(comp, SwingConstants.EAST, null)));
+        return panel;
     }
 
     /**

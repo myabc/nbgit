@@ -52,6 +52,8 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import javax.swing.Action;
+import org.nbgit.ui.clone.CloneAction;
+import org.nbgit.ui.clone.CloneExternalAction;
 import org.nbgit.ui.commit.CommitAction;
 import org.nbgit.ui.custom.CustomMenu;
 import org.nbgit.ui.diff.DiffAction;
@@ -254,12 +256,14 @@ public class GitAnnotator extends VCSAnnotator {
             actions.add(new ExportDiffAction(loc.getString("CTL_PopupMenuItem_ExportDiff"), ctx)); // NOI18N
             actions.add(new ApplyDiffAction(loc.getString("CTL_PopupMenuItem_ImportDiff"), ctx)); // NOI18N
             actions.add(null);
+            */
             if (root != null) {
             actions.add(new CloneAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_CloneLocal",  // NOI18N
             root.getName()), ctx));
             }
             actions.add(new CloneExternalAction(loc.getString("CTL_PopupMenuItem_CloneOther"), ctx));     // NOI18N
             actions.add(null);
+            /*
             actions.add(new FetchAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_FetchLocal"), ctx)); // NOI18N
             actions.add(new PushAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_PushLocal"), ctx)); // NOI18N
             actions.add(new PushOtherAction(loc.getString("CTL_PopupMenuItem_PushOther"), ctx)); // NOI18N

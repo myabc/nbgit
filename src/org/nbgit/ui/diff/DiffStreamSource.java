@@ -212,8 +212,9 @@ public class DiffStreamSource extends StreamSource {
                 Set<File> allFiles = Utils.getAllDataObjectFiles(baseFile);
                 for (File file : allFiles) {
                     boolean isBase = file.equals(baseFile);
+                    File rf = null;
                     try {
-                        File rf = GitUtils.getFileRevision(file, revision);
+                        rf = GitUtils.getFileRevision(file, revision);
                         if (rf == null) {
                             remoteFile = null;
                             return;
@@ -230,6 +231,9 @@ public class DiffStreamSource extends StreamSource {
                             throw e;
                         // we cannot check out peer file so the dataobject will not be constructed properly
                         }
+                    } finally {
+                        if (rf != null && rf != file)
+                            rf.delete();
                     }
                 }
             }

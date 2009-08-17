@@ -433,12 +433,16 @@ class SummaryView implements MouseListener, ComponentListener, MouseMotionListen
         File file = event.getFile();
         File parent = file.getParentFile();
         parent.mkdirs();
+        File oldFile = null;
         try {
-            File oldFile = GitUtils.getFileRevision(event.getFile(), event.getLogInfoHeader().getRevision());
+            oldFile = GitUtils.getFileRevision(file, event.getLogInfoHeader().getRevision());
             file.delete();
             FileUtil.copyFile(FileUtil.toFileObject(oldFile), FileUtil.toFileObject(parent), file.getName(), "");
         } catch (IOException e) {
             ErrorManager.getDefault().notify(e);
+        } finally {
+            if (oldFile != null && oldFile != file)
+                oldFile.delete();
         }
     }
 

@@ -128,14 +128,14 @@ public class PathPatternTest extends TestCase {
 
     public void testMatchDirectory() {
         pattern("path/").
-                matchesFile("path/to/File.java").
-                matchesDir("path/to").
                 matchesDir("path").
+                matchesDir("subdir/path").
+                doesNotMatchFile("path/to/File.java").
                 doesNotMatchFile("path");
         pattern("path/subdir/").
-                matchesFile("path/subdir/File.java").
                 matchesDir("path/subdir").
                 doesNotMatchDir("path").
+                doesNotMatchFile("path/subdir/File.java").
                 doesNotMatchFile("some/path/subdir/File.java");
     }
 

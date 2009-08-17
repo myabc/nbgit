@@ -89,7 +89,7 @@ public abstract class PathPattern {
 
     public boolean matches(String path, boolean isDirectory, String basePath) {
         if (matchDir && !isDirectory) {
-            return matchesParentDirectory(path, basePath);
+            return false;
         }
         if (matchFileName && matchesFileName(path)) {
             return true;
@@ -97,18 +97,8 @@ public abstract class PathPattern {
         if (basePath.length() > 0 && !path.startsWith(basePath)) {
             return false;
         }
-        if (matchesPathName(path, basePath)) {
-            return true;
-        }
-        return matchesParentDirectory(path, basePath);
-    }
 
-    private boolean matchesParentDirectory(String path, String basePath) {
-        int end = path.lastIndexOf('/');
-        if (end == -1 || end <= basePath.length()) {
-            return false;
-        }
-        return matches(path.substring(0, end), true, basePath);
+        return matchesPathName(path, basePath);
     }
 
     protected abstract boolean matchesFileName(String path);

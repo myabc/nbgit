@@ -51,7 +51,7 @@ import org.spearce.jgit.lib.Repository;
 
 /**
  * Provides support for .gitignore files.
- * 
+ *
  * To keep the querying interface fast, a cache of patterns are maintained.
  */
 public class Excludes {

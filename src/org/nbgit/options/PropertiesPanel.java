@@ -217,4 +217,3 @@ public class PropertiesPanel extends javax.swing.JPanel implements PreferenceCha
     final javax.swing.JTextArea txtAreaValue = new javax.swing.JTextArea();
     // End of variables declaration//GEN-END:variables
 }
-

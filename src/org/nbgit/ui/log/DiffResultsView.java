@@ -386,4 +386,3 @@ class DiffResultsView implements AncestorListener, PropertyChangeListener, DiffS
         return diffView;
     }
 }
-

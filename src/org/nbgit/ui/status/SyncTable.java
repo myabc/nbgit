@@ -78,7 +78,7 @@ class SyncTable implements MouseListener, ListSelectionListener, AncestorListene
      * Defines labels for Versioning view table columns.
      */
     private static final Map<String, String[]> columnLabels = new HashMap<String, String[]>(4);
-    
+
 
     {
         ResourceBundle loc = NbBundle.getBundle(SyncTable.class);
@@ -327,7 +327,7 @@ class SyncTable implements MouseListener, ListSelectionListener, AncestorListene
 
         /*
         menu.add(new JSeparator());
-        
+
         item = menu.add(new ConflictResolvedAction(loc.getString("CTL_PopupMenuItem_MarkResolved"), context)); // NOI18N
         Mnemonics.setLocalizedText(item, item.getText());
         menu.add(new JSeparator());
@@ -370,9 +370,9 @@ class SyncTable implements MouseListener, ListSelectionListener, AncestorListene
         /*
         item = menu.add(new SystemActionBridge(SystemAction.get(SearchHistoryAction.class), actionString("CTL_PopupMenuItem_SearchHistory"))); // NOI18N
         Mnemonics.setLocalizedText(item, item.getText());
-        
+
         menu.add(new JSeparator());
-        
+
         //        item = menu.add(new SystemActionBridge(SystemAction.get(ResolveConflictsAction.class), actionString("CTL_PopupMenuItem_ResolveConflicts"))); // NOI18N
         //        Mnemonics.setLocalizedText(item, item.getText());
         /*

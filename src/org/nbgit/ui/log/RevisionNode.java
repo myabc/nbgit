@@ -265,7 +265,7 @@ class RevisionNode extends AbstractNode {
     private static class RevisionPropertyEditor extends PropertyEditorSupport {
 
         private static final JLabel renderer = new JLabel();
-        
+
 
         static {
             renderer.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));

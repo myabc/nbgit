@@ -96,7 +96,7 @@ class DiffFileTable implements MouseListener, ListSelectionListener, AncestorLis
      * Defines labels for Diff view table columns.
      */
     private static final Map<String, String[]> columnLabels = new HashMap<String, String[]>(4);
-    
+
 
     {
         ResourceBundle loc = NbBundle.getBundle(DiffFileTable.class);

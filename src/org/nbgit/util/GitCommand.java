@@ -649,4 +649,3 @@ public class GitCommand {
         return info;
     }
 }
-

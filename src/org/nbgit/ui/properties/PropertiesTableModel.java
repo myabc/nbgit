@@ -59,7 +59,7 @@ public class PropertiesTableModel extends AbstractTableModel {
     private GitPropertiesNode[] nodes;
     private String[] columns;
     private static final Map<String, String[]> columnLabels = new HashMap<String, String[]>(2);
-    
+
 
     {
         ResourceBundle loc = NbBundle.getBundle(PropertiesTableModel.class);

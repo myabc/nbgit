@@ -314,7 +314,7 @@ public class GitAnnotator extends VCSAnnotator {
             if (root != null)
             actions.add(new CloneAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_CloneLocal", // NOI18N
             root.getName()), ctx));
-            
+
             actions.add(null);
             actions.add(new FetchAction(NbBundle.getMessage(GitAnnotator.class,
             "CTL_PopupMenuItem_FetchLocal"), ctx)); // NOI18N

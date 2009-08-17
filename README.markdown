@@ -41,7 +41,7 @@ the plugin by "running" the project.
 Getting the Source
 ------------------
 
-Performing a git clone on either of the following repositories will get you 
+Performing a git clone on either of the following repositories will get you
 the latest source:
 
     git clone git://github.com/myabc/nbgit.git
@@ -64,4 +64,3 @@ Support
 
  * **nbgit**: <http://nbgit.org/>
  * **nbgit Mailing List**: <http://groups.google.com/group/nbgit>
- 

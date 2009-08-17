@@ -148,7 +148,7 @@ public class GitExtProperties implements ActionListener, DocumentListener {
                     Properties props = GitModuleConfig.getDefault().getProperties(root, "extensions"); // NOI18N
                     GitPropertiesNode[] gitProps = new GitPropertiesNode[props.size()];
                     int i = 0;
-                    
+
                     for (Enumeration e = props.propertyNames(); e.hasMoreElements();) {
                     String name = (String) e.nextElement();
                     String tmp = props.getProperty(name);

@@ -76,12 +76,14 @@ public class RevertModificationsAction extends ContextAction {
     }
 
     public static void revert(final VCSContext ctx) {
-        final File[] files = ctx.getRootFiles().toArray(new File[ctx.getRootFiles().size()]);
         final File repository = GitUtils.getRootFile(ctx);
         if (repository == null) {
             return;
         }
         String rev = null;
+
+        StatusCache cache = Git.getInstance().getStatusCache();
+        final File[] files = cache.listFiles(ctx, StatusInfo.STATUS_REVERTIBLE_CHANGE);
 
         final RevertModifications revertModifications = new RevertModifications(repository, files);
         if (!revertModifications.showDialog()) {

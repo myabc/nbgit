@@ -36,15 +36,13 @@
 package org.nbgit.util.exclude;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
+import org.nbgit.util.MonitoredFileMap;
 import org.spearce.jgit.lib.Repository;
 
 class ExcludeCache {
 
-    private final Map<String, PathPatternList> map = new HashMap<String, PathPatternList>();
+    private final MonitoredFileMap<PathPatternList> map = MonitoredFileMap.create();
     private final Repository repo;
 
     public static ExcludeCache create(Repository repository) {
@@ -143,12 +141,12 @@ class ExcludeCache {
     }
 
     private PathPatternList getPatternList(File file, String basePath) {
-        PathPatternList list = map.get(file.getPath());
+        PathPatternList list = map.get(file);
         if (list == null) {
             list = ExcludeUtils.readExcludeFile(file, basePath);
             if (list == null)
                 return null;
-            map.put(file.getPath(), list);
+            map.put(file, list);
         }
         return list;
     }
@@ -163,5 +161,4 @@ class ExcludeCache {
         builder.append("]");
         return builder.toString();
     }
-
 }

@@ -52,6 +52,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import javax.swing.Action;
+import org.nbgit.ui.browser.BrowserAction;
 import org.nbgit.ui.clone.CloneAction;
 import org.nbgit.ui.clone.CloneExternalAction;
 import org.nbgit.ui.commit.CommitAction;
@@ -73,7 +74,6 @@ import org.openide.nodes.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
-import org.openide.util.Utilities;
 
 /**
  * Responsible for coloring file labels and file icons in the IDE and providing
@@ -276,6 +276,7 @@ public class GitAnnotator extends VCSAnnotator {
             tempA = new AnnotateAction(loc.getString("CTL_PopupMenuItem_HideAnnotations"), ctx);
             actions.add(tempA);
              */
+            actions.add(new BrowserAction(loc.getString("CTL_PopupMenuItem_Browser"), ctx)); // NOI18N
             actions.add(new LogAction(loc.getString("CTL_PopupMenuItem_Log"), ctx)); // NOI18N
         /*
             actions.add(new IncomingAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_ShowIncoming"), ctx)); // NOI18N
@@ -331,6 +332,7 @@ public class GitAnnotator extends VCSAnnotator {
             actions.add(tempA);
             }
              */
+            actions.add(new BrowserAction(loc.getString("CTL_PopupMenuItem_Browser"), ctx)); // NOI18N
             actions.add(new LogAction(loc.getString("CTL_PopupMenuItem_Log"), ctx)); // NOI18N
         /*
             actions.add(new IncomingAction(NbBundle.getMessage(GitAnnotator.class, "CTL_PopupMenuItem_ShowIncoming"), ctx)); // NOI18N

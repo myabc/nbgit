@@ -41,7 +41,7 @@ Version 2 license, then the option applies only if the new code is
 made subject to such option by the copyright holder.
 -->
 <?xml-stylesheet type="text/xml" href="http://openide.netbeans.org/fs/filesystem.xsl"?>
-<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
 <filesystem>
     <folder name="Actions">
         <folder name="Git">
@@ -72,9 +72,13 @@ made subject to such option by the copyright holder.
 
     <folder name="Windows2">
         <folder name="Components">
+            <file name="BrowserTopComponent.settings" url="BrowserTopComponentSettings.xml"/>
             <file name="gitversioning.settings" url="settings.xml"/>
         </folder>
         <folder name="Modes">
+            <folder name="editor">
+                <file name="BrowserTopComponent.wstcref" url="BrowserTopComponentWstcref.xml"/>
+            </folder>
             <folder name="output">
                 <file name="gitversioning.wstcref" url="wstcref.xml">
                     <attr name="position" intvalue="625"/>

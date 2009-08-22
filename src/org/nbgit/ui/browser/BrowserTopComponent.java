@@ -35,23 +35,12 @@
  */
 package org.nbgit.ui.browser;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionListener;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.util.ImageUtilities;
-import org.spearce.jgit.lib.ObjectId;
-import org.spearce.jgit.lib.PersonIdent;
-import org.spearce.jgit.lib.Repository;
-import org.spearce.jgit.revplot.PlotWalk;
-import org.spearce.jgit.revwalk.RevCommit;
-import org.spearce.jgit.revwalk.RevObject;
-import org.spearce.jgit.revwalk.RevSort;
 
 /**
  * Repository browser top component.
@@ -60,79 +49,38 @@ public final class BrowserTopComponent extends TopComponent {
 
     private static final String ICON_PATH = "org/nbgit/resources/icons/gitvcs-icon.png"; // NOI18N
     private static final String PREFERRED_ID = "BrowserTopComponent"; // NOI18N
-    private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public BrowserTopComponent() {
+    public BrowserTopComponent(BrowserModel model) {
         initComponents();
         setName(_("CTL_BrowserTopComponent")); // NOI18N
         setToolTipText(_("HINT_BrowserTopComponent")); // NOI18N
         setIcon(ImageUtilities.loadImage(ICON_PATH, true));
-        setupComponents();
-    }
+        model.setCommitList(commitGraphPane.getCommitList());
+        textArea.setDocument(model.getDocument());
+        textArea.getDocument().addDocumentListener(new DocumentListener() {
 
-    private void setupComponents() {
-        graphScrollPane.setViewportView(commitGraphPane);
-        commitGraphPane.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-
-            public void valueChanged(ListSelectionEvent event) {
-                ListSelectionModel model = (ListSelectionModel) event.getSource();
-                for (int i = event.getFirstIndex(); i <= event.getLastIndex(); i++) {
-                    if (model.isSelectedIndex(i)) {
-                        selected(i);
-                    }
-                }
+            public void updateId(DocumentEvent e) {
+                String id = e.getDocument().getProperty(BrowserModel.CONTENT_ID).toString();
+                idField.setText(id);
+                idField.setCaretPosition(0);
             }
 
-            private String formatIdent(PersonIdent ident) {
-                return ident.getName() + " <" + ident.getEmailAddress() + "> " + // NOI18N
-                        dateFormat.format(ident.getWhen()) + " " + // NOI18N
-                        ident.getTimeZone().getDisplayName();
+            public void insertUpdate(DocumentEvent e) {
+                updateId(e);
             }
 
-            private void selected(int i) {
-                RevObject obj = commitGraphPane.getCommitList().get(i);
-                idField.setText(obj.name());
-                if (obj instanceof RevCommit) {
-                    StringBuilder str = new StringBuilder();
-                    RevCommit commit = (RevCommit) obj;
-                    str.append(_("Author", formatIdent(commit.getAuthorIdent()))). // NOI18N
-                            append("\n"); // NOI18N
-                    str.append(_("Committer", formatIdent(commit.getCommitterIdent()))). // NOI18N
-                            append("\n"); // NOI18N
-                    for (RevCommit parent : commit.getParents()) {
-                        str.append(_("Parent", parent.name(), parent.getShortMessage())). // NOI18N
-                                append("\n"); // NOI18N
-                    }
-                    str.append("\n"); // NOI18N
-                    str.append(commit.getFullMessage());
-                    textArea.setText(str.toString());
-                }
+            public void removeUpdate(DocumentEvent e) {
+                updateId(e);
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                updateId(e);
             }
         });
     }
 
-    public void show(final Repository repo, final String revision) {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            public void run() {
-                PlotWalk walk = null;
-                try {
-                    ObjectId start = repo.resolve(revision);
-                    walk = new PlotWalk(repo);
-                    walk.sort(RevSort.BOUNDARY, true);
-                    walk.markStart(walk.parseCommit(start));
-                    commitGraphPane.getCommitList().source(walk);
-                    commitGraphPane.getCommitList().fillTo(Integer.MAX_VALUE);
-                } catch (Throwable error) {
-                    Exceptions.printStackTrace(error);
-                    textArea.setText(error.getMessage());
-                } finally {
-                    if (walk != null) {
-                        walk.dispose();
-                    }
-                }
-            }
-        });
+    public void addListSelectionListener(ListSelectionListener listener) {
+        commitGraphPane.getSelectionModel().addListSelectionListener(listener);
     }
 
     @Override
@@ -174,15 +122,11 @@ public final class BrowserTopComponent extends TopComponent {
         org.openide.awt.Mnemonics.setLocalizedText(idLabel, org.openide.util.NbBundle.getMessage(BrowserTopComponent.class, "BrowserTopComponent.idLabel.text")); // NOI18N
         toolBar.add(idLabel);
 
+        idField.setColumns(20);
         idField.setEditable(false);
-        idField.setText(org.openide.util.NbBundle.getMessage(BrowserTopComponent.class, "BrowserTopComponent.idField.text")); // NOI18N
-        idField.setToolTipText(org.openide.util.NbBundle.getMessage(BrowserTopComponent.class, "BrowserTopComponent.idField.toolTipText")); // NOI18N
-        idField.setPreferredSize(new java.awt.Dimension(120, 24));
         toolBar.add(idField);
 
-        textArea.setColumns(20);
         textArea.setEditable(false);
-        textArea.setRows(5);
         textScrollPane.setViewportView(textArea);
 
         org.jdesktop.layout.GroupLayout textPanelLayout = new org.jdesktop.layout.GroupLayout(textPanel);

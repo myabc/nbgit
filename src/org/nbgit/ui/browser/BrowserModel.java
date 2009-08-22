@@ -35,46 +35,39 @@
  */
 package org.nbgit.ui.browser;
 
-import java.awt.event.ActionEvent;
-import java.io.File;
-import javax.swing.SwingUtilities;
-import org.nbgit.Git;
-import org.nbgit.ui.ContextAction;
-import org.netbeans.modules.versioning.spi.VCSContext;
-import org.netbeans.modules.versioning.util.Utils;
-import org.openide.util.NbBundle;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.PlainDocument;
+import javax.swing.text.SimpleAttributeSet;
+import org.spearce.jgit.revwalk.RevCommitList;
 
-/**
- * Open the repository browser.
- */
-public class BrowserAction extends ContextAction {
+public class BrowserModel {
 
-    public BrowserAction(String name, VCSContext context) {
-        super(name, context);
+    public static final String CONTENT_ID = "ID";
+    private final Document document = new PlainDocument();
+    private RevCommitList commitList;
+
+    public Document getDocument() {
+        return document;
     }
 
-    public void performAction(ActionEvent e) {
-        final String title = NbBundle.getMessage(BrowserAction.class,
-                "MSG_Browser_TabTitle",
-                Utils.getContextDisplayName(context));
+    public void setContentId(String id) {
+        document.putProperty(CONTENT_ID, id);
+    }
 
-        SwingUtilities.invokeLater(new Runnable() {
+    public void setContent(String str) {
+        try {
+            document.remove(0, document.getLength());
+            document.insertString(0, str, SimpleAttributeSet.EMPTY);
+        } catch (BadLocationException ex) {
+        }
+    }
 
-            public void run() {
-                if (context == null) {
-                    return;
-                }
+    public RevCommitList getCommitList() {
+        return commitList;
+    }
 
-                File[] roots = context.getRootFiles().toArray(new File[0]);
-                BrowserModel model = new BrowserModel();
-                BrowserTopComponent view = new BrowserTopComponent(model);
-                view.setDisplayName(title);
-                view.open();
-                view.requestActive();
-
-                BrowserController controller = new BrowserController(view, model);
-                controller.show(Git.getInstance().getRepository(roots[0]), "HEAD");
-            }
-        });
+    public void setCommitList(RevCommitList commitList) {
+        this.commitList = commitList;
     }
 }

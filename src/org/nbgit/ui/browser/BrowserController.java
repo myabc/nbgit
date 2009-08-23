@@ -35,12 +35,11 @@
  */
 package org.nbgit.ui.browser;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import org.openide.util.NbBundle;
 import org.spearce.jgit.lib.ObjectId;
 import org.spearce.jgit.lib.PersonIdent;
@@ -53,14 +52,14 @@ import org.spearce.jgit.revwalk.RevSort;
 /**
  * Control behavior of a repository browser.
  */
-public class BrowserController implements ListSelectionListener {
+public class BrowserController implements PropertyChangeListener {
 
     private final static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private final BrowserModel model;
 
     public BrowserController(BrowserTopComponent browser, BrowserModel model) {
         this.model = model;
-        browser.addListSelectionListener(this);
+        browser.addPropertyChangeListener(this);
     }
 
     public void show(final Repository repo, final String revision) {
@@ -87,16 +86,15 @@ public class BrowserController implements ListSelectionListener {
         });
     }
 
-    public void valueChanged(ListSelectionEvent event) {
-        ListSelectionModel listModel = (ListSelectionModel) event.getSource();
-        for (int i = event.getFirstIndex(); i <= event.getLastIndex(); i++) {
-            if (listModel.isSelectedIndex(i)) {
-                RevObject object = model.getCommitList().get(i);
-                model.setContentId(object.name());
-                if (object instanceof RevCommit) {
-                    model.setContent(toString((RevCommit) object));
-                }
-            }
+    public void propertyChange(PropertyChangeEvent event) {
+        switch (BrowserProperty.valueOfOrUnknown(event.getPropertyName())) {
+        case COMMIT_INDEX:
+            int commitIndex = Integer.valueOf(event.getNewValue().toString());
+            RevObject object = model.getCommitList().get(commitIndex);
+            model.setContentId(object.name());
+            if (object instanceof RevCommit)
+                model.setContent(toString((RevCommit) object));
+            break;
         }
     }
 

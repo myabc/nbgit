@@ -35,8 +35,10 @@
  */
 package org.nbgit.ui.browser;
 
+import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -49,6 +51,7 @@ public final class BrowserTopComponent extends TopComponent {
 
     private static final String ICON_PATH = "org/nbgit/resources/icons/gitvcs-icon.png"; // NOI18N
     private static final String PREFERRED_ID = "BrowserTopComponent"; // NOI18N
+    private int commitIndex = -1;
 
     public BrowserTopComponent(BrowserModel model) {
         initComponents();
@@ -57,7 +60,7 @@ public final class BrowserTopComponent extends TopComponent {
         setIcon(ImageUtilities.loadImage(ICON_PATH, true));
         model.setCommitList(commitGraphPane.getCommitList());
         textArea.setDocument(model.getDocument());
-        textArea.getDocument().addDocumentListener(new DocumentListener() {
+        model.getDocument().addDocumentListener(new DocumentListener() {
 
             public void updateId(DocumentEvent e) {
                 String id = e.getDocument().getProperty(BrowserModel.CONTENT_ID).toString();
@@ -77,10 +80,20 @@ public final class BrowserTopComponent extends TopComponent {
                 updateId(e);
             }
         });
-    }
+        commitGraphPane.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
-    public void addListSelectionListener(ListSelectionListener listener) {
-        commitGraphPane.getSelectionModel().addListSelectionListener(listener);
+            public void valueChanged(ListSelectionEvent event) {
+                ListSelectionModel listModel = (ListSelectionModel) event.getSource();
+                for (int i = event.getFirstIndex(); i <= event.getLastIndex(); i++) {
+                    if (!listModel.isSelectedIndex(i))
+                        continue;
+                    firePropertyChange(BrowserProperty.COMMIT_INDEX, commitIndex, i);
+                    commitIndex = i;
+                    break;
+                }
+            }
+
+        });
     }
 
     @Override
@@ -91,6 +104,10 @@ public final class BrowserTopComponent extends TopComponent {
     @Override
     protected String preferredID() {
         return PREFERRED_ID;
+    }
+
+    private void firePropertyChange(BrowserProperty property, Object oldValue, Object newValue) {
+        super.firePropertyChange(property.name(), oldValue, newValue);
     }
 
     private static String _(String id, Object... args) {

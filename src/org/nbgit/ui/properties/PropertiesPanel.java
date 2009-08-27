@@ -46,7 +46,6 @@ import java.util.prefs.PreferenceChangeListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import org.nbgit.GitModuleConfig;
-import org.netbeans.modules.versioning.util.ListenersSupport;
 
 /**
  *
@@ -54,9 +53,7 @@ import org.netbeans.modules.versioning.util.ListenersSupport;
  */
 public class PropertiesPanel extends javax.swing.JPanel implements PreferenceChangeListener, TableModelListener {
 
-    private static final Object EVENT_SETTINGS_CHANGED = new Object();
     private PropertiesTable propertiesTable;
-    private ListenersSupport listenerSupport = new ListenersSupport(this);
 
     /** Creates new form PropertiesPanel */
     public PropertiesPanel() {
@@ -76,7 +73,6 @@ public class PropertiesPanel extends javax.swing.JPanel implements PreferenceCha
         super.addNotify();
         GitModuleConfig.getDefault().getPreferences().addPreferenceChangeListener(this);
         propertiesTable.getTableModel().addTableModelListener(this);
-        listenerSupport.fireVersioningEvent(EVENT_SETTINGS_CHANGED);
         txtAreaValue.selectAll();
     }
 
@@ -90,12 +86,10 @@ public class PropertiesPanel extends javax.swing.JPanel implements PreferenceCha
     public void preferenceChange(PreferenceChangeEvent evt) {
         if (evt.getKey().startsWith(GitModuleConfig.PROP_COMMIT_EXCLUSIONS)) {
             propertiesTable.dataChanged();
-            listenerSupport.fireVersioningEvent(EVENT_SETTINGS_CHANGED);
         }
     }
 
     public void tableChanged(TableModelEvent e) {
-        listenerSupport.fireVersioningEvent(EVENT_SETTINGS_CHANGED);
     }
 
     /** This method is called from within the constructor to

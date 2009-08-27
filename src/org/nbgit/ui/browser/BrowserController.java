@@ -43,7 +43,6 @@ import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
 import org.spearce.jgit.lib.ObjectId;
 import org.spearce.jgit.lib.PersonIdent;
-import org.spearce.jgit.lib.Repository;
 import org.spearce.jgit.revplot.PlotWalk;
 import org.spearce.jgit.revwalk.RevCommit;
 import org.spearce.jgit.revwalk.RevObject;
@@ -62,16 +61,19 @@ public class BrowserController implements PropertyChangeListener {
         browser.addPropertyChangeListener(this);
     }
 
-    public void show(final Repository repo, final String revision) {
+    public void show(final String revision) {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
                 model.getCommitList().clear();
                 PlotWalk walk = null;
                 try {
-                    ObjectId start = repo.resolve(revision);
-                    walk = new PlotWalk(repo);
+                    ObjectId start = model.getRepository().resolve(revision);
+                    walk = new PlotWalk(model.getRepository());
                     walk.sort(RevSort.BOUNDARY, true);
+                    if (model.hasPaths()) {
+                        walk.setTreeFilter(model.createPathFilter());
+                    }
                     walk.markStart(walk.parseCommit(start));
                     model.getCommitList().source(walk);
                     model.getCommitList().fillTo(Integer.MAX_VALUE);

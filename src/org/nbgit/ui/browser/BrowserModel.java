@@ -35,17 +35,54 @@
  */
 package org.nbgit.ui.browser;
 
+import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 import javax.swing.text.SimpleAttributeSet;
+import org.nbgit.Git;
+import org.spearce.jgit.lib.Repository;
 import org.spearce.jgit.revwalk.RevCommitList;
+import org.spearce.jgit.treewalk.filter.PathFilterGroup;
+import org.spearce.jgit.treewalk.filter.TreeFilter;
 
 public class BrowserModel {
 
     public static final String CONTENT_ID = "ID";
     private final Document document = new PlainDocument();
+    private final Repository repository;
+    private final Set<String> paths = new HashSet<String>();
+
     private RevCommitList commitList;
+
+    public BrowserModel(Set<File> fileSet) {
+        File[] files = fileSet.toArray(new File[fileSet.size()]);
+        File root = Git.getInstance().getTopmostManagedParent(files[0]);
+        repository = Git.getInstance().getRepository(root);
+        for (File file : files) {
+            file = file.getAbsoluteFile();
+            // If the work directory root is included disable path limiting.
+            if (file.getPath().length() == root.getPath().length()) {
+                paths.clear();
+                break;
+            }
+            paths.add(Repository.stripWorkDir(root, file));
+        }
+    }
+
+    public Repository getRepository() {
+        return repository;
+    }
+
+    public boolean hasPaths() {
+        return !paths.isEmpty();
+    }
+
+    public TreeFilter createPathFilter() {
+        return PathFilterGroup.createFromStrings(paths);
+    }
 
     public Document getDocument() {
         return document;

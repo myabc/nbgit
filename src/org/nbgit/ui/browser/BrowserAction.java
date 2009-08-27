@@ -65,15 +65,14 @@ public class BrowserAction extends ContextAction {
                     return;
                 }
 
-                File[] roots = context.getRootFiles().toArray(new File[0]);
-                BrowserModel model = new BrowserModel();
+                BrowserModel model = new BrowserModel(context.getRootFiles());
                 BrowserTopComponent view = new BrowserTopComponent(model);
                 view.setDisplayName(title);
                 view.open();
                 view.requestActive();
 
                 BrowserController controller = new BrowserController(view, model);
-                controller.show(Git.getInstance().getRepository(roots[0]), "HEAD");
+                controller.show("HEAD");
             }
         });
     }

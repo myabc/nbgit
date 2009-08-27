@@ -45,15 +45,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
-import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.nbgit.Git;
 import org.nbgit.GitModuleConfig;
 import org.nbgit.GitProgressSupport;
+import org.nbgit.util.GitUtils;
 import org.openide.util.Exceptions;
-import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.spearce.jgit.lib.Repository;
 import org.spearce.jgit.lib.RepositoryConfig;
@@ -153,10 +152,9 @@ public class GitProperties implements ListSelectionListener {
 
                         if (name.equals("user.email")) {
                             if (!GitModuleConfig.getDefault().isEmailValid(value)) {
-                                JOptionPane.showMessageDialog(null,
-                                        NbBundle.getMessage(GitProperties.class, "MSG_WARN_EMAIL_TEXT"), // NOI18N
-                                        NbBundle.getMessage(GitProperties.class, "MSG_WARN_EMAIL_TITLE"), // NOI18N
-                                        JOptionPane.WARNING_MESSAGE);
+                                GitUtils.warningDialog(GitProperties.class,
+                                                       "MSG_WARN_EMAIL_TEXT", // NOI18N
+                                                       "MSG_WARN_EMAIL_TITLE"); // NOI18N
                                 return;
                             }
                             config.setString("user", null, "email", value);

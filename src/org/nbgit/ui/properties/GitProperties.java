@@ -41,11 +41,11 @@
  */
 package org.nbgit.ui.properties;
 
-import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -53,6 +53,7 @@ import org.nbgit.Git;
 import org.nbgit.GitModuleConfig;
 import org.nbgit.GitProgressSupport;
 import org.openide.util.Exceptions;
+import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.spearce.jgit.lib.Repository;
 import org.spearce.jgit.lib.RepositoryConfig;
@@ -63,15 +64,10 @@ import org.spearce.jgit.lib.RepositoryConfig;
  */
 public class GitProperties implements ListSelectionListener {
 
-    public static final String GITPROPNAME_USER_EMAIL = "email"; // NOI18N
-    public static final String GITPROPNAME_USER_NAME = "name"; // NOI18N
-    public static final String GITPROPNAME_DEFAULT_PULL = "default-pull"; // NOI18N
     private PropertiesPanel panel;
     private File root;
     private PropertiesTable propTable;
     private GitProgressSupport support;
-    private File loadedValueFile;
-    private Font fontTextArea;
 
     /** Creates a new instance of GitProperties */
     public GitProperties(PropertiesPanel panel, PropertiesTable propTable, File root) {
@@ -142,11 +138,6 @@ public class GitProperties implements ListSelectionListener {
                     }
                     RepositoryConfig config = repo.getConfig();
                     boolean save = false;
-                    /*
-                    GitModuleConfig.getDefault().clearProperties(root, "paths"); // NOI18N
-                    GitModuleConfig.getDefault().removeProperty(root, "user", GITPROPNAME_USER_EMAIL); // NOI18N
-                    GitModuleConfig.getDefault().removeProperty(root, "user", GITPROPNAME_USER_NAME); // NOI18N
-                     */
                     GitPropertiesNode[] gitPropertiesNodes = propTable.getNodes();
                     for (int i = 0; i < gitPropertiesNodes.length; i++) {
                         String name = gitPropertiesNodes[i].getName();
@@ -161,6 +152,13 @@ public class GitProperties implements ListSelectionListener {
                         }
 
                         if (name.equals("user.email")) {
+                            if (!GitModuleConfig.getDefault().isEmailValid(value)) {
+                                JOptionPane.showMessageDialog(null,
+                                        NbBundle.getMessage(GitProperties.class, "MSG_WARN_EMAIL_TEXT"), // NOI18N
+                                        NbBundle.getMessage(GitProperties.class, "MSG_WARN_EMAIL_TITLE"), // NOI18N
+                                        JOptionPane.WARNING_MESSAGE);
+                                return;
+                            }
                             config.setString("user", null, "email", value);
                             save = true;
                         }
@@ -176,10 +174,9 @@ public class GitProperties implements ListSelectionListener {
                         }
                     }
 
-                    //GitRepositoryContextCache.resetPullDefault();
-                    //GitRepositoryContextCache.resetPushDefault();
                     try {
-                        config.save();
+                        if (save)
+                            config.save();
                     } catch (IOException ex) {
                         Exceptions.printStackTrace(ex);
                     }

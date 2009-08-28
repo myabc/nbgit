@@ -53,6 +53,11 @@ public class CloneExternalAction extends ContextAction {
     }
 
     @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
     protected void performAction(ActionEvent event) {
         CloneWizardAction wiz = CloneWizardAction.getInstance();
         wiz.performAction();

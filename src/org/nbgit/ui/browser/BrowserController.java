@@ -41,7 +41,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
-import org.spearce.jgit.lib.ObjectId;
+import org.spearce.jgit.lib.Ref;
 import org.spearce.jgit.lib.PersonIdent;
 import org.spearce.jgit.revplot.PlotWalk;
 import org.spearce.jgit.revwalk.RevCommit;
@@ -61,20 +61,20 @@ public class BrowserController implements PropertyChangeListener {
         browser.addPropertyChangeListener(this);
     }
 
-    public void show(final String revision) {
+    public void show() {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
                 model.getCommitList().clear();
                 PlotWalk walk = null;
                 try {
-                    ObjectId start = model.getRepository().resolve(revision);
                     walk = new PlotWalk(model.getRepository());
                     walk.sort(RevSort.BOUNDARY, true);
                     if (model.hasPaths()) {
                         walk.setTreeFilter(model.createPathFilter());
                     }
-                    walk.markStart(walk.parseCommit(start));
+                    for (Ref ref : model.getReferences())
+                        walk.markStart(walk.parseCommit(ref.getObjectId()));
                     model.getCommitList().source(walk);
                     model.getCommitList().fillTo(Integer.MAX_VALUE);
                 } catch (Throwable error) {

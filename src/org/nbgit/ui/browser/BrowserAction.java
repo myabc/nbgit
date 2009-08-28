@@ -36,13 +36,12 @@
 package org.nbgit.ui.browser;
 
 import java.awt.event.ActionEvent;
-import java.io.File;
 import javax.swing.SwingUtilities;
-import org.nbgit.Git;
 import org.nbgit.ui.ContextAction;
 import org.netbeans.modules.versioning.spi.VCSContext;
 import org.netbeans.modules.versioning.util.Utils;
 import org.openide.util.NbBundle;
+import org.spearce.jgit.lib.Constants;
 
 /**
  * Open the repository browser.
@@ -65,14 +64,14 @@ public class BrowserAction extends ContextAction {
                     return;
                 }
 
-                BrowserModel model = new BrowserModel(context.getRootFiles());
+                BrowserModel model = new BrowserModel(context.getRootFiles(), Constants.HEAD);
                 BrowserTopComponent view = new BrowserTopComponent(model);
                 view.setDisplayName(title);
                 view.open();
                 view.requestActive();
 
                 BrowserController controller = new BrowserController(view, model);
-                controller.show("HEAD");
+                controller.show();
             }
         });
     }

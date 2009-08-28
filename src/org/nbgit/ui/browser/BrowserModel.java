@@ -43,6 +43,7 @@ import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 import javax.swing.text.SimpleAttributeSet;
 import org.nbgit.Git;
+import org.spearce.jgit.lib.Ref;
 import org.spearce.jgit.lib.Repository;
 import org.spearce.jgit.revwalk.RevCommitList;
 import org.spearce.jgit.treewalk.filter.PathFilterGroup;
@@ -56,8 +57,9 @@ public class BrowserModel {
     private final Set<String> paths = new HashSet<String>();
 
     private RevCommitList commitList;
+    private final String[] ids;
 
-    public BrowserModel(Set<File> fileSet) {
+    public BrowserModel(Set<File> fileSet, String... ids) {
         File[] files = fileSet.toArray(new File[fileSet.size()]);
         File root = Git.getInstance().getTopmostManagedParent(files[0]);
         repository = Git.getInstance().getRepository(root);
@@ -70,6 +72,7 @@ public class BrowserModel {
             }
             paths.add(Repository.stripWorkDir(root, file));
         }
+        this.ids = ids;
     }
 
     public Repository getRepository() {
@@ -100,6 +103,16 @@ public class BrowserModel {
         }
     }
 
+    public Set<Ref> getReferences() {
+        Set<Ref> refs = new HashSet<Ref>();
+        for (String id : ids) {
+            refs.add(repository.getAllRefs().get(id));
+        }
+        if (refs.isEmpty())
+            refs.addAll(repository.getAllRefs().values());
+        return refs;
+    }
+
     public RevCommitList getCommitList() {
         return commitList;
     }
@@ -107,4 +120,5 @@ public class BrowserModel {
     public void setCommitList(RevCommitList commitList) {
         this.commitList = commitList;
     }
+
 }

@@ -46,7 +46,7 @@ made subject to such option by the copyright holder.
           "http://www.netbeans.org/dtds/tc-ref2_0.dtd">
 
 <tc-ref version="2.0">
-    <module name="org.nbgit/1"/>
+    <module name="org.nbgit"/>
     <tc-id id="gitversioning" />
     <state opened="false" />
 </tc-ref>

@@ -76,9 +76,6 @@ made subject to such option by the copyright holder.
             <file name="gitversioning.settings" url="settings.xml"/>
         </folder>
         <folder name="Modes">
-            <folder name="editor">
-                <file name="BrowserTopComponent.wstcref" url="BrowserTopComponentWstcref.xml"/>
-            </folder>
             <folder name="output">
                 <file name="gitversioning.wstcref" url="wstcref.xml">
                     <attr name="position" intvalue="625"/>

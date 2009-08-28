@@ -36,6 +36,7 @@
 package org.nbgit.ui.browser;
 
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -65,7 +66,7 @@ public final class BrowserTopComponent extends TopComponent {
             public void updateId(DocumentEvent e) {
                 String id = e.getDocument().getProperty(BrowserModel.CONTENT_ID).toString();
                 idField.setText(id);
-                idField.setCaretPosition(0);
+                scrollTextToStart();
             }
 
             public void insertUpdate(DocumentEvent e) {
@@ -91,6 +92,17 @@ public final class BrowserTopComponent extends TopComponent {
                     commitIndex = i;
                     break;
                 }
+            }
+
+        });
+    }
+
+    private void scrollTextToStart() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                idField.setCaretPosition(0);
+                textArea.setCaretPosition(0);
             }
 
         });

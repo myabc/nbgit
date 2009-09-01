@@ -75,11 +75,27 @@ empty_files() {
 	done
 }
 
+index() {
+	cat | git update-index --index-info
+}
+
 add() {
 	cd "$REPO"
 	for file in $@; do
 		git add "$file"
 	done
+}
+
+remove() {
+	cd "$REPO"
+	for file in $@; do
+		git rm "$file"
+	done
+}
+
+move() {
+	cd "$REPO"
+	git mv "$1" "$2"
 }
 
 goldenfile() {

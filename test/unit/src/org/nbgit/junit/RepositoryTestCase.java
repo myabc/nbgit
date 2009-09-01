@@ -40,6 +40,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import org.netbeans.junit.NbTestCase;
 import org.spearce.jgit.lib.FileBasedConfig;
 import org.spearce.jgit.lib.Repository;
@@ -77,6 +79,13 @@ public class RepositoryTestCase extends NbTestCase {
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
+    }
+
+    protected Collection<File> toFiles(File base, String... paths) {
+        Collection<File> files = new ArrayList<File>(paths.length);
+        for (int i = 0; i < paths.length; i++)
+            files.add(toFile(base, paths[i]));
+        return files;
     }
 
     /**

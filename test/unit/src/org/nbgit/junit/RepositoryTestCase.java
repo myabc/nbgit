@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import org.netbeans.junit.NbTestCase;
 import org.spearce.jgit.lib.FileBasedConfig;
 import org.spearce.jgit.lib.Repository;
@@ -122,22 +123,20 @@ public class RepositoryTestCase extends NbTestCase {
                 copyFile(file, fileDst);
             }
         } else {
-            //File dst = new File(dstDir, src.getName());
-            FileInputStream in = new FileInputStream(src);
-            try {
-                FileOutputStream out = new FileOutputStream(dst);
-                try {
-                    byte[] buf = new byte[4096];
-                    int r;
-                    while ((r = in.read(buf)) > 0) {
-                        out.write(buf, 0, r);
-                    }
-                } finally {
-                    out.close();
-                }
-            } finally {
-                in.close();
+            copyStream(new FileInputStream(src), dst);
+        }
+    }
+
+    private void copyStream(InputStream in, File dst) throws IOException {
+        FileOutputStream out = new FileOutputStream(dst);
+        try {
+            byte[] buf = new byte[4096];
+            int r;
+            while ((r = in.read(buf)) > 0) {
+                out.write(buf, 0, r);
             }
+        } finally {
+            out.close();
         }
     }
 

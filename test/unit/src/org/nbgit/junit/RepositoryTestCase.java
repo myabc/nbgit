@@ -81,11 +81,11 @@ public class RepositoryTestCase extends NbTestCase {
     protected boolean copyRepositoryFiles(String name, Repository repo) throws IOException {
         File repoGitDir = new File(dataDir, name + ".git");
         File repoWorkDir = new File(dataDir, name + ".workdir");
-        if (!repoGitDir.exists() || !repoWorkDir.exists())
-            return false;
-        copyFile(repoGitDir, repo.getDirectory());
-        copyFile(repoWorkDir, repo.getWorkDir());
-        return true;
+        if (repoGitDir.exists())
+            copyFile(repoGitDir, repo.getDirectory());
+        if (repoWorkDir.exists())
+            copyFile(repoWorkDir, repo.getWorkDir());
+        return repoGitDir.exists() || repoWorkDir.exists();
     }
 
     protected void copyFile(File src, File dst) throws IOException {

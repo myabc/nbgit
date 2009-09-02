@@ -35,7 +35,6 @@
  */
 package org.nbgit.util.exclude;
 
-import java.io.File;
 import org.nbgit.junit.RepositoryTestCase;
 
 public class ExcludeCacheTest extends RepositoryTestCase {
@@ -100,16 +99,13 @@ public class ExcludeCacheTest extends RepositoryTestCase {
     }
 
     private void assertExcluded(String path) {
-        if (!cache.isExcluded(toFile(path)))
+        if (!cache.isExcluded(toWorkDirFile(path)))
             fail("path is not excluded: " + path);
     }
 
     private void assertIncluded(String path) {
-        if (cache.isExcluded(toFile(path)))
+        if (cache.isExcluded(toWorkDirFile(path)))
             fail("path is not included: " + path);
     }
 
-    private File toFile(String path) {
-        return new File(workDir, path.replace('/', File.separatorChar));
-    }
 }

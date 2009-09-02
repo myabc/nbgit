@@ -78,6 +78,32 @@ public class RepositoryTestCase extends NbTestCase {
         super.tearDown();
     }
 
+    /**
+     * Build an abstract File from a base file and a relative path, e.g.:
+     * <pre>
+     *  toFile(repository.getWorkDir(), "a/b")
+     * </pre>.
+     */
+    protected File toFile(File base, String path) {
+        return new File(base, path.replace('/', File.separatorChar));
+    }
+
+    /**
+     * Build an abstract File using workDir as the base.
+     * @see RepositoryTestCase#toFile(java.io.File, java.lang.String)
+     */
+    protected File toWorkDirFile(String path) {
+        return toFile(workDir, path);
+    }
+
+    /**
+     * Build an abstract File using gitDir as the base.
+     * @see RepositoryTestCase#toFile(java.io.File, java.lang.String)
+     */
+    protected File toGitDirFile(String path) {
+        return toFile(gitDir, path);
+    }
+
     protected boolean copyRepositoryFiles(String name, Repository repo) throws IOException {
         File repoGitDir = new File(dataDir, name + ".git");
         File repoWorkDir = new File(dataDir, name + ".workdir");

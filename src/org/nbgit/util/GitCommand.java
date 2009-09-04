@@ -372,10 +372,6 @@ public class GitCommand {
 
     }
 
-    public static void doRenameAfter(File root, File srcFile, File dstFile, OutputLogger logger) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
     public static List<String[]> getRevisions(File root, int limit) {
         return getRevisionsForFile(root, null, limit);
     }

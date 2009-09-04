@@ -247,10 +247,8 @@ public class GitInterceptor extends VCSInterceptor {
             public void run() {
                 OutputLogger logger = OutputLogger.getLogger(root.getAbsolutePath());
                 try {
-                    if (dstFile.isDirectory()) {
-                        GitCommand.doRenameAfter(root, srcFile, dstFile, logger);
-                        return;
-                    }
+                    if (dstFile.isDirectory())
+                        throw new IllegalStateException("Rename of directory " + dstFile);
                     int status = GitCommand.getSingleStatus(root, srcFile).getStatus();
                     Git.LOG.log(Level.FINE, "gitMoveImplementation(): Status: {0} {1}", new Object[]{srcFile, status}); // NOI18N
                     if (status == StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY ||
@@ -258,7 +256,7 @@ public class GitInterceptor extends VCSInterceptor {
                     } else if (status == StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY) {
                         GitCommand.doMove(root, srcFile, dstFile, logger);
                     } else {
-                        GitCommand.doRenameAfter(root, srcFile, dstFile, logger);
+                        throw new IllegalStateException("Rename with status " + status);
                     }
                 } catch (Exception e) {
                     Git.LOG.log(Level.FINE, "Git failed to rename: File: {0} {1}", new Object[]{srcFile.getAbsolutePath(), dstFile.getAbsolutePath()}); // NOI18N

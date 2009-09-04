@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.nbgit.Git;
+import org.nbgit.client.IndexBuilder;
 import org.nbgit.ui.log.RepositoryRevision;
 import org.netbeans.api.queries.SharabilityQuery;
 import org.openide.util.Exceptions;
@@ -83,16 +84,9 @@ public class GitCommand {
 
     static public void doAdd(File root, List<File> addCandidates, OutputLogger logger) {
         try {
-            Repository repo = Git.getInstance().getRepository(root);
-            GitIndex index = repo.getIndex();
-
-            for (File dstFile : addCandidates) {
-                Entry entry = index.add(root, dstFile);
-                entry.setAssumeValid(false);
-            }
-
-            index.write();
-
+            IndexBuilder.create(root).
+                    addAll(addCandidates).
+                    write();
         } catch (Exception ex) {
             logger.output(ex.getMessage());
         }
@@ -100,14 +94,10 @@ public class GitCommand {
 
     public static void doMove(File root, File srcFile, File dstFile, OutputLogger logger) {
         try {
-            Repository repo = Git.getInstance().getRepository(root);
-            GitIndex index = repo.getIndex();
-            Entry entry = index.add(root, dstFile);
-
-            entry.setAssumeValid(false);
-            index.remove(root, srcFile);
-            index.write();
-
+            IndexBuilder.create(root).
+                    delete(srcFile).
+                    add(dstFile).
+                    write();
         } catch (Exception ex) {
             logger.output(ex.getMessage());
         }
@@ -339,19 +329,9 @@ public class GitCommand {
 
     public static void doRemove(File root, List<File> deleteCandidates, OutputLogger logger) {
         try {
-            Repository repo = Git.getInstance().getRepository(root);
-            GitIndex index = repo.getIndex();
-            boolean dirty = false;
-
-            for (File srcFile : deleteCandidates) {
-                if (index.remove(root, srcFile)) {
-                    dirty = true;
-                }
-            }
-
-            if (dirty) {
-                index.write();
-            }
+            IndexBuilder.create(root).
+                    deleteAll(deleteCandidates).
+                    write();
         } catch (Exception ex) {
             logger.output(ex.getMessage());
         }
@@ -360,12 +340,9 @@ public class GitCommand {
 
     public static void doRemove(File root, File srcFile, OutputLogger logger) {
         try {
-            Repository repo = Git.getInstance().getRepository(root);
-            GitIndex index = repo.getIndex();
-
-            if (index.remove(root, srcFile)) {
-                index.write();
-            }
+            IndexBuilder.create(root).
+                    delete(srcFile).
+                    write();
         } catch (Exception ex) {
             logger.output(ex.getMessage());
         }

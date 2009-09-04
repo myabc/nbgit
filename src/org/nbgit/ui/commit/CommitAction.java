@@ -381,15 +381,10 @@ public class CommitAction extends ContextAction {
 
             try {
                 IndexBuilder.create(repository).
+                        log(logger).
                         addAll(addCandidates).
                         deleteAll(deleteCandidates).
                         write();
-                for (File f : addCandidates) {
-                    logger.output("git add " + f.getName()); //NOI18N
-                }
-                for (File f : deleteCandidates) {
-                    logger.output("git delete " + f.getName()); //NOI18N
-                }
             } catch (Exception ex) {
                 logger.output(ex.getMessage());
             }

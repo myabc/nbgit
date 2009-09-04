@@ -204,25 +204,15 @@ public class InitAction extends ContextAction {
             public void perform() {
                 OutputLogger logger = getLogger();
                 try {
-                    IndexBuilder index = IndexBuilder.create(repo);
-                    int newFiles = 0;
-
-                    for (File file : getFileList(repo, root)) {
-                        index.add(file);
-                        newFiles++;
-
-                        if (newFiles < OutputLogger.MAX_LINES_TO_PRINT) {
-                            logger.output("\t" + file.getAbsolutePath()); // NOI18N
-                        }
-                    }
+                    List<File> files = getFileList(repo, root);
+                    IndexBuilder.create(repo).
+                            log(logger).
+                            addAll(files).
+                            write();
 
                     logger.output(
                             NbBundle.getMessage(InitAction.class,
-                            "MSG_CREATE_ADD", newFiles, root.getAbsolutePath())); // NOI18N
-
-                    if (newFiles > 0) {
-                        index.write();
-                    }
+                            "MSG_CREATE_ADD", files.size(), root.getAbsolutePath())); // NOI18N
                     logger.output(""); // NOI18N
                     logger.outputInRed(NbBundle.getMessage(InitAction.class, "MSG_CREATE_DONE_WARNING")); // NOI18N
                 } catch (IOException ex) {

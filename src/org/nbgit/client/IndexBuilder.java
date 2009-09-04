@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import org.nbgit.Git;
+import org.nbgit.OutputLogger;
 import org.spearce.jgit.lib.GitIndex;
 import org.spearce.jgit.lib.Repository;
 
@@ -48,9 +49,13 @@ import org.spearce.jgit.lib.Repository;
  */
 public class IndexBuilder {
 
+    private static String ADDING = "A"; // NOI18N
+    private static String DELETING = "D"; // NOI18N
+    private static String MOVING = "R"; // NOI18N
     private final Repository repository;
     private final HashSet<File> delete = new HashSet<File>();
     private final HashSet<File> add = new HashSet<File>();
+    private OutputLogger logger;
 
     private IndexBuilder(Repository repository) {
         this.repository = repository;
@@ -66,6 +71,7 @@ public class IndexBuilder {
     }
 
     public IndexBuilder add(File file) {
+        log(ADDING, file);
         add.add(file);
         return this;
     }
@@ -77,12 +83,14 @@ public class IndexBuilder {
     }
 
     public IndexBuilder move(File src, File dst) {
+        log(MOVING, src, dst);
         add.add(dst);
         delete.add(src);
         return this;
     }
 
     public IndexBuilder delete(File file) {
+        log(DELETING, file);
         delete.add(file);
         return this;
     }
@@ -104,6 +112,25 @@ public class IndexBuilder {
         index.write();
         add.clear();
         delete.clear();
+    }
+
+    public IndexBuilder log(OutputLogger logger) {
+        this.logger = logger;
+        return this;
+    }
+
+    private void log(String string, File... files) {
+        if (logger != null && files.length > 0 &&
+            (add.size() + delete.size()) < OutputLogger.MAX_LINES_TO_PRINT) {
+            string += " " + toPath(files[0]); //NOI18N
+            if (files.length > 1)
+                string += " -> " + toPath(files[1]); //NOI18N
+            logger.output(string);
+        }
+    }
+
+    private String toPath(File file) {
+        return Repository.stripWorkDir(repository.getWorkDir(), file);
     }
 
 }

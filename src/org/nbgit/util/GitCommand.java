@@ -177,10 +177,6 @@ public class GitCommand {
         }
     }
 
-    public static List<String> doUpdateAll(File root, boolean doForcedUpdate, String revStr) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
     public static RepositoryRevision.Walk getLogMessages(String rootPath, Set<File> files, String fromRevision, String toRevision, boolean showMerges, OutputLogger logger) {
         File root = new File(rootPath);
         Repository repo = Git.getInstance().getRepository(root);
@@ -219,10 +215,6 @@ public class GitCommand {
         }
 
         return walk;
-    }
-
-    public static boolean isNoUpdates(String get) {
-        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     private static String buildReflogMessage(String commitMessage) {

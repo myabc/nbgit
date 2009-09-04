@@ -52,7 +52,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.nbgit.Git;
-import org.nbgit.client.IndexBuilder;
 import org.nbgit.ui.log.RepositoryRevision;
 import org.netbeans.api.queries.SharabilityQuery;
 import org.openide.util.Exceptions;
@@ -81,17 +80,6 @@ import org.spearce.jgit.treewalk.filter.PathFilterGroup;
  *
  */
 public class GitCommand {
-
-    public static void doMove(File root, File srcFile, File dstFile, OutputLogger logger) {
-        try {
-            IndexBuilder.create(root).
-                    delete(srcFile).
-                    add(dstFile).
-                    write();
-        } catch (Exception ex) {
-            logger.output(ex.getMessage());
-        }
-    }
 
     public static void doCat(File root, File base, File tempFile, String revision) {
         OutputLogger logger = OutputLogger.getLogger(root.getAbsolutePath());
@@ -315,17 +303,6 @@ public class GitCommand {
                 logger.output("Failed to update " + ru.getName() + " to commit " + commit.getCommitId() + ".");
             }
         }
-    }
-
-    public static void doRemove(File root, File srcFile, OutputLogger logger) {
-        try {
-            IndexBuilder.create(root).
-                    delete(srcFile).
-                    write();
-        } catch (Exception ex) {
-            logger.output(ex.getMessage());
-        }
-
     }
 
     public static List<String[]> getRevisions(File root, int limit) {

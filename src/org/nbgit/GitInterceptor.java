@@ -49,6 +49,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import javax.swing.SwingUtilities;
+import org.nbgit.client.IndexBuilder;
 import org.nbgit.util.GitCommand;
 import org.nbgit.util.exclude.Excludes;
 import org.nbgit.util.GitUtils;
@@ -130,7 +131,7 @@ public class GitInterceptor extends VCSInterceptor {
             GitProgressSupport support = new GitProgressSupport() {
 
                 public void perform() {
-                    GitCommand.doRemove(root, file, this.getLogger());
+                    remove();
                     // We need to cache the status of all deleted files
                     Map<File, StatusInfo> interestingFiles = GitCommand.getInterestingStatus(root, file);
                     if (!interestingFiles.isEmpty()) {
@@ -150,6 +151,15 @@ public class GitInterceptor extends VCSInterceptor {
                         }
                     }
                 }
+
+                private void remove() {
+                    try {
+                        IndexBuilder.create(root).delete(file).write();
+                    } catch (Exception ex) {
+                        getLogger().output(ex.getMessage());
+                    }
+                }
+
             };
 
             support.start(rp, root.getAbsolutePath(),
@@ -173,9 +183,14 @@ public class GitInterceptor extends VCSInterceptor {
             GitProgressSupport support = new GitProgressSupport() {
 
                 public void perform() {
-                    GitCommand.doRemove(root, file, this.getLogger());
-                    cache.refresh(file, StatusCache.REPOSITORY_STATUS_UNKNOWN);
+                    try {
+                        IndexBuilder.create(root).delete(file).write();
+                        cache.refresh(file, StatusCache.REPOSITORY_STATUS_UNKNOWN);
+                    } catch (Exception ex) {
+                        getLogger().output(ex.getMessage());
+                    }
                 }
+
             };
             support.start(rp, root.getAbsolutePath(),
                     org.openide.util.NbBundle.getMessage(GitInterceptor.class, "MSG_Remove_Progress")); // NOI18N
@@ -254,11 +269,14 @@ public class GitInterceptor extends VCSInterceptor {
                     if (status == StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY ||
                             status == StatusInfo.STATUS_NOTVERSIONED_EXCLUDED) {
                     } else if (status == StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY) {
-                        GitCommand.doMove(root, srcFile, dstFile, logger);
+                        IndexBuilder.create(root).
+                                move(srcFile, dstFile).
+                                write();
                     } else {
                         throw new IllegalStateException("Rename with status " + status);
                     }
                 } catch (Exception e) {
+                    logger.output(e.getMessage());
                     Git.LOG.log(Level.FINE, "Git failed to rename: File: {0} {1}", new Object[]{srcFile.getAbsolutePath(), dstFile.getAbsolutePath()}); // NOI18N
                 } finally {
                     logger.closeLog();

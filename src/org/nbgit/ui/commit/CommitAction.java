@@ -64,6 +64,7 @@ import org.nbgit.Git;
 import org.nbgit.GitModuleConfig;
 import org.nbgit.GitProgressSupport;
 import org.nbgit.OutputLogger;
+import org.nbgit.client.IndexBuilder;
 import org.nbgit.ui.GitFileNode;
 import org.nbgit.ui.ContextAction;
 import org.nbgit.util.GitCommand;
@@ -377,17 +378,20 @@ public class CommitAction extends ContextAction {
                     NbBundle.getMessage(CommitAction.class,
                     "MSG_COMMIT_TITLE_SEP")); // NOI18N
             logger.output(message); // NOI18N
-            if (addCandidates.size() > 0) {
-                GitCommand.doAdd(repository, addCandidates, logger);
+
+            try {
+                IndexBuilder.create(repository).
+                        addAll(addCandidates).
+                        deleteAll(deleteCandidates).
+                        write();
                 for (File f : addCandidates) {
                     logger.output("git add " + f.getName()); //NOI18N
                 }
-            }
-            if (deleteCandidates.size() > 0) {
-                GitCommand.doRemove(repository, deleteCandidates, logger);
                 for (File f : deleteCandidates) {
                     logger.output("git delete " + f.getName()); //NOI18N
                 }
+            } catch (Exception ex) {
+                logger.output(ex.getMessage());
             }
 
             GitCommand.doCommit(repository, commitCandidates, message, logger);

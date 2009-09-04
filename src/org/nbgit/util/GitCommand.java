@@ -82,16 +82,6 @@ import org.spearce.jgit.treewalk.filter.PathFilterGroup;
  */
 public class GitCommand {
 
-    static public void doAdd(File root, List<File> addCandidates, OutputLogger logger) {
-        try {
-            IndexBuilder.create(root).
-                    addAll(addCandidates).
-                    write();
-        } catch (Exception ex) {
-            logger.output(ex.getMessage());
-        }
-    }
-
     public static void doMove(File root, File srcFile, File dstFile, OutputLogger logger) {
         try {
             IndexBuilder.create(root).
@@ -325,17 +315,6 @@ public class GitCommand {
                 logger.output("Failed to update " + ru.getName() + " to commit " + commit.getCommitId() + ".");
             }
         }
-    }
-
-    public static void doRemove(File root, List<File> deleteCandidates, OutputLogger logger) {
-        try {
-            IndexBuilder.create(root).
-                    deleteAll(deleteCandidates).
-                    write();
-        } catch (Exception ex) {
-            logger.output(ex.getMessage());
-        }
-
     }
 
     public static void doRemove(File root, File srcFile, OutputLogger logger) {

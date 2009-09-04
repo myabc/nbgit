@@ -81,11 +81,6 @@ import org.spearce.jgit.treewalk.filter.PathFilterGroup;
  */
 public class GitCommand {
 
-    public static void deleteConflictFile(String absolutePath) {
-        // boolean success = (new File(path + GIT_STR_CONFLICT_EXT)).delete();
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
     static public void doAdd(File root, List<File> addCandidates, OutputLogger logger) {
         try {
             Repository repo = Git.getInstance().getRepository(root);

@@ -48,7 +48,6 @@ import org.nbgit.StatusCache;
 import org.nbgit.Git;
 import org.nbgit.GitProgressSupport;
 import org.nbgit.ui.ContextAction;
-import org.nbgit.util.GitCommand;
 import org.nbgit.util.GitUtils;
 import org.netbeans.modules.versioning.spi.VCSContext;
 import org.openide.util.NbBundle;
@@ -117,11 +116,17 @@ public class ConflictResolvedAction extends ContextAction {
         }
         StatusCache cache = Git.getInstance().getStatusCache();
 
-        GitCommand.deleteConflictFile(file.getAbsolutePath());
+        deleteConflictFile(file.getAbsolutePath());
         cache.refresh(file, StatusCache.REPOSITORY_STATUS_UNKNOWN);
     }
 
     public static void resolved(File file) {
         perform(file);
     }
+
+    public static void deleteConflictFile(String absolutePath) {
+        // boolean success = (new File(path + GIT_STR_CONFLICT_EXT)).delete();
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
 }

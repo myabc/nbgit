@@ -98,13 +98,14 @@ public class GitCommand {
         }
     }
 
-    public static void doAdd(File root, File dstFile, OutputLogger logger) {
+    public static void doMove(File root, File srcFile, File dstFile, OutputLogger logger) {
         try {
             Repository repo = Git.getInstance().getRepository(root);
             GitIndex index = repo.getIndex();
             Entry entry = index.add(root, dstFile);
 
             entry.setAssumeValid(false);
+            index.remove(root, srcFile);
             index.write();
 
         } catch (Exception ex) {

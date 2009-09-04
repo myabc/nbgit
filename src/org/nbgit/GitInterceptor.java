@@ -256,8 +256,7 @@ public class GitInterceptor extends VCSInterceptor {
                     if (status == StatusInfo.STATUS_NOTVERSIONED_NEWLOCALLY ||
                             status == StatusInfo.STATUS_NOTVERSIONED_EXCLUDED) {
                     } else if (status == StatusInfo.STATUS_VERSIONED_ADDEDLOCALLY) {
-                        GitCommand.doRemove(root, srcFile, logger);
-                        GitCommand.doAdd(root, dstFile, logger);
+                        GitCommand.doMove(root, srcFile, dstFile, logger);
                     } else {
                         GitCommand.doRenameAfter(root, srcFile, dstFile, logger);
                     }

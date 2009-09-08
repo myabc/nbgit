@@ -36,6 +36,8 @@
 package org.nbgit.util.exclude;
 
 import org.nbgit.junit.RepositoryTestCase;
+import org.spearce.jgit.treewalk.FileTreeIterator;
+import org.spearce.jgit.treewalk.TreeWalk;
 
 public class ExcludeCacheTest extends RepositoryTestCase {
 
@@ -52,60 +54,21 @@ public class ExcludeCacheTest extends RepositoryTestCase {
     }
 
     public void testEmptyCache() {
-        assertIncluded("README");
+        assertFalse(cache.isExcluded(toWorkDirFile("README")));
     }
 
-    public void testComplexWorkingDirectory() {
-        String[] included = {
-            "#comment",
-            ".gitignore",
-            ".gitmodules",
-            ".hidden",
-            "README.txt",
-            "all-ignored-but-gitignore/.gitignore",
-            "build.xml",
-            "docs/.gitattributes",
-            "docs/.gitignore",
-            "docs/NOT-IGNORED.txt",
-            "manifest.mf",
-            "nbproject/build-impl.xml",
-            "nbproject/genfiles.properties",
-            "nbproject/private/private.properties",
-            "nbproject/project.properties",
-            "nbproject/project.xml",
-            "path/.gitignore",
-            "path/also/to/other.file",
-            "path/to/file",
-            "src/org/example/File.java",
-            "test/org/example/FileTest.java",
-        };
-        String[] excluded = {
-            "IGNORED.txt",
-            "all-ignored/.gitignore",
-            "build/classes/org/example/File.class",
-            "build/test/unit/classes/org/example/FileTest.class",
-            "misc/.gitignore",
-            "misc/a",
-            "misc/b",
-            "misc/c",
-            "path/three/a",
-            "path/to/other.file",
-            "random.pdf",
-        };
-        for (String include : included)
-            assertIncluded(include);
-        for (String exclude : excluded)
-            assertExcluded(exclude);
-    }
+    public void testComplexWorkingDirectory() throws Exception {
+        TreeWalk walk = new TreeWalk(repository);
+        walk.reset();
+        walk.addTree(new FileTreeIterator(workDir));
+        walk.setRecursive(true);
+        while (walk.next()) {
+            String path = walk.getPathString();
+            if (!cache.isExcluded(toWorkDirFile(path)))
+                ref(path);
+        }
 
-    private void assertExcluded(String path) {
-        if (!cache.isExcluded(toWorkDirFile(path)))
-            fail("path is not excluded: " + path);
-    }
-
-    private void assertIncluded(String path) {
-        if (cache.isExcluded(toWorkDirFile(path)))
-            fail("path is not included: " + path);
+        compareReferenceFiles();
     }
 
 }

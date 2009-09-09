@@ -43,7 +43,6 @@ package org.nbgit.util;
 import org.nbgit.OutputLogger;
 import org.nbgit.StatusInfo;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -62,7 +61,6 @@ import org.spearce.jgit.lib.GitIndex;
 import org.spearce.jgit.lib.GitIndex.Entry;
 import org.spearce.jgit.lib.IndexDiff;
 import org.spearce.jgit.lib.ObjectId;
-import org.spearce.jgit.lib.ObjectLoader;
 import org.spearce.jgit.lib.ObjectWriter;
 import org.spearce.jgit.lib.PersonIdent;
 import org.spearce.jgit.lib.RefUpdate;
@@ -83,37 +81,15 @@ import org.spearce.jgit.treewalk.filter.PathFilterGroup;
 public class GitCommand {
 
     public static void doCat(File root, File base, File tempFile, String revision) {
-        OutputLogger logger = OutputLogger.getLogger(root.getAbsolutePath());
         try {
-            Repository repo = Git.getInstance().getRepository(root);
-            Commit commit = repo.mapCommit(revision);
-
-            if (commit == null) {
-                logger.output("Revision " + revision + " not found");
-                return;
-            }
-
-            String relative = toGitPath(getRelative(root, base));
-
-            ObjectId[] ids = {commit.getTree().getId()};
-            TreeWalk walk = TreeWalk.forPath(repo, relative, ids);
-
-            ObjectId blobId = walk.getObjectId(0);
-
-            ObjectLoader blob = repo.openBlob(blobId);
-            if (blob == null) {
-                logger.output("Failed to open blob " + blobId);
-                return;
-            }
-
-            FileOutputStream out = new FileOutputStream(tempFile);
-            out.write(blob.getCachedBytes());
-
-            out.close();
-
+            CheckoutBuilder.create(root).
+                    revision(revision).
+                    file(base, tempFile).
+                    checkout();
         } catch (Exception ex) {
-            // FIXME: Do unload, delete, ... here
+            OutputLogger logger = OutputLogger.getLogger(root.getAbsolutePath());
             logger.output(ex.getMessage());
+            logger.closeLog();
         }
     }
 
@@ -345,11 +321,6 @@ public class GitCommand {
             return "";
         }
         return dir.replace(root + File.separator, "");
-    }
-
-    private static String toGitPath(String path) {
-        return File.separatorChar == '/'
-                ? path : path.replace(File.separator, "/");
     }
 
     private static void put(Set<String> set, String relPath,

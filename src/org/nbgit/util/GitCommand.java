@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.nbgit.Git;
+import org.nbgit.client.CheckoutBuilder;
 import org.nbgit.ui.log.RepositoryRevision;
 import org.netbeans.api.queries.SharabilityQuery;
 import org.openide.util.Exceptions;
@@ -117,26 +118,12 @@ public class GitCommand {
     }
 
     public static void doRevert(File root, List<File> files, String revStr, boolean doBackup, OutputLogger logger) {
-        Repository repo = Git.getInstance().getRepository(root);
-
         try {
-            GitIndex index = new GitIndex(repo);
-            Tree tree = repo.mapTree(revStr);
-            index.readTree(tree);
-
-            for (File file : files) {
-                String path = getRelative(root, file);
-                Entry entry = index.getEntry(path);
-
-                if (entry == null) {
-                    continue;
-                }
-                if (doBackup) {
-                    file.renameTo(new File(file.getAbsolutePath() + ".orig"));
-                }
-                index.checkoutEntry(root, entry);
-            }
-
+            CheckoutBuilder.create(root).
+                    backup(doBackup).
+                    revision(revStr).
+                    files(files).
+                    checkout();
         } catch (IOException ex) {
         }
     }

@@ -93,17 +93,6 @@ public class GitCommand {
         }
     }
 
-    public static void doRevert(File root, List<File> files, String revStr, boolean doBackup, OutputLogger logger) {
-        try {
-            CheckoutBuilder.create(root).
-                    backup(doBackup).
-                    revision(revStr).
-                    files(files).
-                    checkout();
-        } catch (IOException ex) {
-        }
-    }
-
     public static RepositoryRevision.Walk getLogMessages(String rootPath, Set<File> files, String fromRevision, String toRevision, boolean showMerges, OutputLogger logger) {
         File root = new File(rootPath);
         Repository repo = Git.getInstance().getRepository(root);

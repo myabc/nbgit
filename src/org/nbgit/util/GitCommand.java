@@ -51,7 +51,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.nbgit.Git;
-import org.nbgit.client.CheckoutBuilder;
 import org.nbgit.ui.log.RepositoryRevision;
 import org.netbeans.api.queries.SharabilityQuery;
 import org.openide.util.Exceptions;
@@ -79,19 +78,6 @@ import org.spearce.jgit.treewalk.filter.PathFilterGroup;
  *
  */
 public class GitCommand {
-
-    public static void doCat(File root, File base, File tempFile, String revision) {
-        try {
-            CheckoutBuilder.create(root).
-                    revision(revision).
-                    file(base, tempFile).
-                    checkout();
-        } catch (Exception ex) {
-            OutputLogger logger = OutputLogger.getLogger(root.getAbsolutePath());
-            logger.output(ex.getMessage());
-            logger.closeLog();
-        }
-    }
 
     public static RepositoryRevision.Walk getLogMessages(String rootPath, Set<File> files, String fromRevision, String toRevision, boolean showMerges, OutputLogger logger) {
         File root = new File(rootPath);

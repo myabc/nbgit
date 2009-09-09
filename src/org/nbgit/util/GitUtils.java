@@ -66,6 +66,7 @@ import org.nbgit.GitRepository;
 import org.nbgit.StatusCache;
 import org.nbgit.GitModuleConfig;
 import org.nbgit.StatusInfo;
+import org.nbgit.client.CheckoutBuilder;
 import org.nbgit.ui.status.SyncFileNode;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
@@ -618,7 +619,10 @@ public class GitUtils {
         File tempFile = File.createTempFile("tmp", "-" + base.getName()); //NOI18N
         File repository = Git.getInstance().getTopmostManagedParent(base);
 
-        GitCommand.doCat(repository, base, tempFile, revision);
+        CheckoutBuilder.create(repository).
+                revision(revision).
+                file(base, tempFile).
+                checkout();
         if (tempFile.length() == 0) {
             return null;
         }

@@ -78,7 +78,7 @@ public class OutputLogger {
         log = IOProvider.getDefault().getIO(repositoryRootString, false);
     }
 
-    private OutputLogger() {
+    protected OutputLogger() {
     }
 
     public void closeLog() {

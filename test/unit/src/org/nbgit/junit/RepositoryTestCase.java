@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import org.nbgit.OutputLogger;
 import org.netbeans.junit.NbTestCase;
 import org.spearce.jgit.lib.FileBasedConfig;
 import org.spearce.jgit.lib.Repository;
@@ -54,6 +55,8 @@ public class RepositoryTestCase extends NbTestCase {
 
     private final File dataRoot = new File(getDataDir(), getClass().getCanonicalName());
     protected Repository repository;
+    protected OutputLogger logger;
+    protected ArrayList<String> loggerMessages;
     protected File dataDir;
     protected File gitDir;
     protected File workDir;
@@ -72,6 +75,8 @@ public class RepositoryTestCase extends NbTestCase {
         gitDir = new File(workDir, ".git");
         repository = new Repository(gitDir);
         repository.create();
+        loggerMessages = new ArrayList<String>();
+        logger = MockOutputLogger.create(loggerMessages);
 
         copyRepositoryFiles("default", repository);
     }

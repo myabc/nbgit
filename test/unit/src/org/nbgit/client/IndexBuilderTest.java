@@ -35,7 +35,6 @@
  */
 package org.nbgit.client;
 
-import java.io.IOException;
 import org.nbgit.junit.RepositoryTestCase;
 import org.spearce.jgit.dircache.DirCache;
 import org.spearce.jgit.dircache.DirCacheEntry;
@@ -107,7 +106,23 @@ public class IndexBuilderTest extends RepositoryTestCase {
         compareIndexFiles();
     }
 
-    private void compareIndexFiles() throws IOException {
+    public void testLog() throws Exception {
+        String[] expectedMessages = {
+            "A add",
+            "D delete",
+            "R from -> to"
+        };
+        IndexBuilder.create(repository).
+                log(logger).
+                add(toWorkDirFile("add")).
+                delete(toWorkDirFile("delete")).
+                move(toWorkDirFile("from"), toWorkDirFile("to"));
+        assertEquals(expectedMessages.length, loggerMessages.size());
+        for (int i = 0; i < expectedMessages.length; i++)
+            assertEquals(expectedMessages[i], loggerMessages.get(i));
+    }
+
+    private void compareIndexFiles() throws Exception {
         refDirCache(DirCache.read(repository));
         compareReferenceFiles();
     }

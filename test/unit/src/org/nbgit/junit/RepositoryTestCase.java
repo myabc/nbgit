@@ -119,14 +119,17 @@ public class RepositoryTestCase extends NbTestCase {
         return toFile(gitDir, path);
     }
 
-    protected boolean copyRepositoryFiles(String name, Repository repo) throws IOException {
-        File repoGitDir = new File(dataDir, name + ".git");
-        File repoWorkDir = new File(dataDir, name + ".workdir");
-        if (repoGitDir.exists())
-            copyFile(repoGitDir, repo.getDirectory());
-        if (repoWorkDir.exists())
-            copyFile(repoWorkDir, repo.getWorkDir());
-        return repoGitDir.exists() || repoWorkDir.exists();
+    protected void copyRepositoryFiles(String name, Repository repo) throws IOException {
+        copyDataFile(dataRoot, name + ".git", repo.getDirectory());
+        copyDataFile(dataRoot, name + ".workdir", repo.getWorkDir());
+        copyDataFile(dataDir, name + ".git", repo.getDirectory());
+        copyDataFile(dataDir, name + ".workdir", repo.getWorkDir());
+    }
+
+    protected void copyDataFile(File dir, String name, File dst) throws IOException {
+        File src = new File(dir, name);
+        if (src.exists())
+            copyFile(src, dst);
     }
 
     protected void copyFile(File src, File dst) throws IOException {

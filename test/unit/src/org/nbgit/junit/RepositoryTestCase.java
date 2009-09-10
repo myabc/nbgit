@@ -44,6 +44,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.nbgit.OutputLogger;
 import org.netbeans.junit.NbTestCase;
+import org.spearce.jgit.dircache.DirCache;
+import org.spearce.jgit.dircache.DirCacheEntry;
 import org.spearce.jgit.lib.FileBasedConfig;
 import org.spearce.jgit.lib.Repository;
 import org.spearce.jgit.util.SystemReader;
@@ -117,6 +119,25 @@ public class RepositoryTestCase extends NbTestCase {
      */
     protected File toGitDirFile(String path) {
         return toFile(gitDir, path);
+    }
+
+    protected void compareIndexFiles() throws Exception {
+        refDirCache(DirCache.read(repository));
+        compareReferenceFiles();
+    }
+
+    private void refDirCache(DirCache index) {
+        for (int i = 0; i < index.getEntryCount(); i++)
+            refDirCacheEntry(index.getEntry(i));
+    }
+
+    private void refDirCacheEntry(DirCacheEntry entry) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(entry.getFileMode().toString()).
+                append(" ").append(entry.getObjectId().name()).
+                append(" ").append(entry.getStage()).
+                append("\t").append(entry.getPathString());
+        ref(builder.toString());
     }
 
     protected void copyRepositoryFiles(String name, Repository repo) throws IOException {

@@ -36,8 +36,6 @@
 package org.nbgit.client;
 
 import org.nbgit.junit.RepositoryTestCase;
-import org.spearce.jgit.dircache.DirCache;
-import org.spearce.jgit.dircache.DirCacheEntry;
 
 public class IndexBuilderTest extends RepositoryTestCase {
 
@@ -120,25 +118,6 @@ public class IndexBuilderTest extends RepositoryTestCase {
         assertEquals(expectedMessages.length, loggerMessages.size());
         for (int i = 0; i < expectedMessages.length; i++)
             assertEquals(expectedMessages[i], loggerMessages.get(i));
-    }
-
-    private void compareIndexFiles() throws Exception {
-        refDirCache(DirCache.read(repository));
-        compareReferenceFiles();
-    }
-
-    private void refDirCache(DirCache index) {
-        for (int i = 0; i < index.getEntryCount(); i++)
-            refDirCacheEntry(index.getEntry(i));
-    }
-
-    private void refDirCacheEntry(DirCacheEntry entry) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(entry.getFileMode().toString()).
-                append(" ").append(entry.getObjectId().name()).
-                append(" ").append(entry.getStage()).
-                append("\t").append(entry.getPathString());
-        ref(builder.toString());
     }
 
 }

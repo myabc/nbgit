@@ -36,6 +36,7 @@
 package org.nbgit.client;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
@@ -66,19 +67,23 @@ public class IndexBuilder extends ClientBuilder {
         return create(toRepository(workDir));
     }
 
-    public IndexBuilder add(File file) {
+    public IndexBuilder add(File file) throws FileNotFoundException {
+        if (!file.exists())
+            throw new FileNotFoundException(file.getPath());
         log(ADDING, file);
         add.add(file);
         return this;
     }
 
-    public IndexBuilder addAll(Collection<File> files) {
+    public IndexBuilder addAll(Collection<File> files) throws FileNotFoundException {
         for (File file : files)
             add(file);
         return this;
     }
 
-    public IndexBuilder move(File src, File dst) {
+    public IndexBuilder move(File src, File dst) throws FileNotFoundException {
+        if (!dst.exists())
+            throw new FileNotFoundException(dst.getPath());
         log(MOVING, src, dst);
         add.add(dst);
         delete.add(src);

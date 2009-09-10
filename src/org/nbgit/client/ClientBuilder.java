@@ -39,11 +39,13 @@ import java.io.File;
 import org.nbgit.Git;
 import org.nbgit.OutputLogger;
 import org.spearce.jgit.lib.Repository;
+import org.spearce.jgit.util.FS;
 
 public class ClientBuilder {
 
     protected final Repository repository;
     protected OutputLogger logger;
+    private Boolean trustFileMode;
     private int loggedLines;
 
     protected ClientBuilder(Repository repository) {
@@ -73,4 +75,22 @@ public class ClientBuilder {
     protected static Repository toRepository(File workDir) {
         return Git.getInstance().getRepository(workDir);
     }
+
+    protected boolean isExecutable(File file) {
+        return trustFileMode() && FS.INSTANCE.canExecute(file);
+    }
+
+    protected boolean setExecutable(File file, boolean executable) {
+        return trustFileMode() && FS.INSTANCE.setExecute(file, executable);
+    }
+
+    private boolean trustFileMode() {
+        if (trustFileMode == null) {
+            boolean supported = FS.INSTANCE.supportsExecute();
+            boolean configured = repository.getConfig().getBoolean("core", null, "filemode", true);
+            trustFileMode = supported && configured;
+        }
+        return trustFileMode.booleanValue();
+    }
+
 }

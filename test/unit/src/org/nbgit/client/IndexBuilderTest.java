@@ -35,6 +35,7 @@
  */
 package org.nbgit.client;
 
+import java.io.FileNotFoundException;
 import org.nbgit.junit.RepositoryTestCase;
 
 public class IndexBuilderTest extends RepositoryTestCase {
@@ -57,6 +58,27 @@ public class IndexBuilderTest extends RepositoryTestCase {
     public void testAdd() throws Exception {
         IndexBuilder.create(repository).
                 add(toWorkDirFile("d")).
+                write();
+        compareIndexFiles();
+    }
+
+    public void testAddModified() throws Exception {
+        IndexBuilder.create(repository).
+                add(toWorkDirFile("d")).
+                write();
+        compareIndexFiles();
+    }
+
+    public void testAddSupportsExecutable() throws Exception {
+        IndexBuilder.create(repository).
+                add(toWorkDirFile("d.exe")).
+                write();
+        compareIndexFiles();
+    }
+
+    public void testAddModifiedSupportsExecutable() throws Exception {
+        IndexBuilder.create(repository).
+                add(toWorkDirFile("d.exe")).
                 write();
         compareIndexFiles();
     }
@@ -104,12 +126,23 @@ public class IndexBuilderTest extends RepositoryTestCase {
         compareIndexFiles();
     }
 
+    public void testMoveSupportsExecutable() throws Exception {
+        toWorkDirFile("b/e/f").renameTo(toWorkDirFile("f.exe"));
+        setExecutable(toWorkDirFile("f.exe"), true);
+        IndexBuilder.create(repository).
+                move(toWorkDirFile("b/e/f"), toWorkDirFile("f.exe")).
+                write();
+        compareIndexFiles();
+    }
+
     public void testLog() throws Exception {
         String[] expectedMessages = {
             "A add",
             "D delete",
             "R from -> to"
         };
+        toWorkDirFile("add").createNewFile();
+        toWorkDirFile("to").createNewFile();
         IndexBuilder.create(repository).
                 log(logger).
                 add(toWorkDirFile("add")).
@@ -118,6 +151,36 @@ public class IndexBuilderTest extends RepositoryTestCase {
         assertEquals(expectedMessages.length, loggerMessages.size());
         for (int i = 0; i < expectedMessages.length; i++)
             assertEquals(expectedMessages[i], loggerMessages.get(i));
+    }
+
+    public void testAddNonExisting() throws Exception {
+        try {
+            IndexBuilder.create(repository).
+                    add(toWorkDirFile("fail"));
+            fail("No exception thrown");
+        } catch (FileNotFoundException error) {
+            assertEquals(toWorkDirFile("fail").getPath(), error.getMessage());
+        }
+    }
+
+    public void testAddAllNonExisting() throws Exception {
+        try {
+            IndexBuilder.create(repository).
+                    addAll(toFiles(workDir, "fail/1", "fail/2"));
+            fail("No exception thrown");
+        } catch (FileNotFoundException error) {
+            assertEquals(toWorkDirFile("fail/1").getPath(), error.getMessage());
+        }
+    }
+
+    public void testMoveDestinationNonExisting() throws Exception {
+        try {
+            IndexBuilder.create(repository).
+                    move(toWorkDirFile("a"), toWorkDirFile("fail"));
+            fail("No exception thrown");
+        } catch (FileNotFoundException error) {
+            assertEquals(toWorkDirFile("fail").getPath(), error.getMessage());
+        }
     }
 
 }

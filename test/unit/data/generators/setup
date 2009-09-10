@@ -59,6 +59,12 @@ describe() {
 	create_repository "default"
 }
 
+set_executable() {
+	for file in $@; do
+		chmod u+x "$REPO/$file"
+	done
+}
+
 file() {
 	mkdirpath "$REPO/$1"
 	cat > "$REPO/$1"
@@ -67,6 +73,13 @@ file() {
 files() {
 	for file in $@; do
 		echo "$file" | file "$file"
+	done
+}
+
+exefiles() {
+	for file in $@; do
+		echo "$file" | file "$file"
+		chmod u+x "$REPO/$file"
 	done
 }
 

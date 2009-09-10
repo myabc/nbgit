@@ -43,19 +43,29 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.nbgit.OutputLogger;
+import org.netbeans.junit.Filter;
 import org.netbeans.junit.NbTestCase;
 import org.spearce.jgit.dircache.DirCache;
 import org.spearce.jgit.dircache.DirCacheEntry;
 import org.spearce.jgit.lib.FileBasedConfig;
 import org.spearce.jgit.lib.Repository;
+import org.spearce.jgit.util.FS;
 import org.spearce.jgit.util.SystemReader;
 
 /**
  * Base test case for testing with repositories.
+ *
+ * By default test with names ending in SupportsExecutable is omitted when
+ * supportExecutable() returns false, in short when the filesystem does not
+ * support the executable file mode. Also, files ending in .exe is set
+ * executable when copied from the test data directory to make it easy to
+ * restore this information which is lost when NetBeans copies files from
+ * test/unit/data to build/test/unit/data.
  */
 public class RepositoryTestCase extends NbTestCase {
 
     private final File dataRoot = new File(getDataDir(), getClass().getCanonicalName());
+    private ArrayList<Filter.IncludeExclude> excludes = new ArrayList<Filter.IncludeExclude>();
     protected Repository repository;
     protected OutputLogger logger;
     protected ArrayList<String> loggerMessages;
@@ -65,6 +75,7 @@ public class RepositoryTestCase extends NbTestCase {
 
     public RepositoryTestCase(String name) {
         super(name);
+        excludeTestIf(!supportExecutable(), "No executable file mode", "*SupportsExecutable");
     }
 
     @Override
@@ -121,6 +132,28 @@ public class RepositoryTestCase extends NbTestCase {
         return toFile(gitDir, path);
     }
 
+    protected boolean supportExecutable() {
+        return FS.INSTANCE.supportsExecute();
+    }
+
+    protected boolean isExecutable(File file) {
+        return FS.INSTANCE.canExecute(file);
+    }
+
+    protected boolean setExecutable(File file, boolean executable) {
+        return FS.INSTANCE.setExecute(file, executable);
+    }
+
+    protected void excludeTestIf(boolean condition, String reason, String... tests) {
+        if (!condition)
+            return;
+        for (String test : tests)
+            excludes.add(new Filter.IncludeExclude(test, reason));
+        Filter filter = new Filter();
+        filter.setExcludes(excludes.toArray(new Filter.IncludeExclude[excludes.size()]));
+        setFilter(filter);
+    }
+
     protected void compareIndexFiles() throws Exception {
         refDirCache(DirCache.read(repository));
         compareReferenceFiles();
@@ -162,6 +195,9 @@ public class RepositoryTestCase extends NbTestCase {
             }
         } else {
             copyStream(new FileInputStream(src), dst);
+            // Hack to set the execute bit, lost when NetBeans copies the files.
+            if (isExecutable(src) || src.getName().endsWith(".exe"))
+                setExecutable(dst, true);
         }
     }
 

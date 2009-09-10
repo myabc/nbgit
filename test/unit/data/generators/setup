@@ -13,6 +13,7 @@ DATADIR="$(cd "$(dirname "$0")/.." && pwd)"
 BUILDDIR="$(cd "$(dirname "$0")/../../../.." && pwd)/build/org-nbgit-testdata/$CLASSNAME"
 GOLDENFILESDIR="$BUILDDIR/goldenfiles/$CLASSDIR"
 DATAFILESDIR="$BUILDDIR/data/$CLASSNAME"
+GIT="$(git --exec-path)/git"
 
 TEST=
 REPO=
@@ -75,27 +76,33 @@ empty_files() {
 	done
 }
 
+time_tick () {
+	# from git/t/test-lib.sh
+	if test -z "${test_tick+set}"
+        then
+                test_tick=1112911993
+        else
+                test_tick=$(($test_tick + 60))
+        fi
+        GIT_COMMITTER_DATE="$test_tick -0700"
+        GIT_AUTHOR_DATE="$test_tick -0700"
+        export GIT_COMMITTER_DATE GIT_AUTHOR_DATE
+}
+
+git() {
+	case "$1" in
+	commit|merge)
+		time_tick
+		;;
+	gc)
+		cd "$REPO" && "$GIT" gc --aggressive --prune --quiet
+		return
+	esac
+	cd "$REPO" && "$GIT" "$@"
+}
+
 index() {
 	cat | git update-index --index-info
-}
-
-add() {
-	cd "$REPO"
-	for file in $@; do
-		git add "$file"
-	done
-}
-
-remove() {
-	cd "$REPO"
-	for file in $@; do
-		git rm "$file"
-	done
-}
-
-move() {
-	cd "$REPO"
-	git mv "$1" "$2"
 }
 
 goldenfile() {

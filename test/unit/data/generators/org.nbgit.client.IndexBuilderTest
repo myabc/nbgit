@@ -28,7 +28,7 @@ EOF
 	files d
 	testfiles .git/index d
 
-	add d
+	git add d
 	goldendata "$(git ls-files -s)"
 
 end
@@ -43,7 +43,7 @@ EOF
 	files d b/e/f g/h
 	testfiles .git/index d b/e/f g/h
 
-	add b/e/f d g/h
+	git add b/e/f d g/h
 	goldendata "$(git ls-files -s)"
 
 end
@@ -53,7 +53,7 @@ describe testAddAllUnordered
 	files 1 2 3
 	testfiles 1 2 3
 
-	add 2 3 1
+	git add 2 3 1
 	goldendata "$(git ls-files -s)"
 
 end
@@ -69,7 +69,7 @@ EOF
 
 	testfiles .git/index
 
-	remove b/e/f
+	git rm b/e/f
 	goldendata "$(git ls-files -s)"
 
 end
@@ -85,7 +85,7 @@ EOF
 
 	testfiles .git/index
 
-	remove a b/e/f d
+	git rm a b/e/f d
 	goldendata "$(git ls-files -s)"
 
 end
@@ -101,7 +101,7 @@ EOF
 
 	testfiles .git/index
 
-	remove b/c b/e/f d
+	git rm b/c b/e/f d
 	goldendata "$(git ls-files -s)"
 
 end
@@ -115,7 +115,7 @@ EOF
 	files b/e/f
 	testfiles .git/index b/e/f
 
-	move b/e/f f
+	git mv b/e/f f
 	goldendata "$(git ls-files -s)"
 
 end

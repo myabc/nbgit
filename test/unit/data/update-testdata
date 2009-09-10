@@ -1,16 +1,17 @@
-#!/bin/sh -e
+#!/bin/sh
 #
 # Run all test data generator scripts.
 # Copyright 2009 Jonas Fonseca <fonseca@diku.dk>
 # Licensed under the GPLv2 or later
 
+generators="$(dirname "$0")/generators/"
 verbose=
 tests=org.nbgit.*
 
 HELP="$(basename "$0") [-h] [-v|--verbose] [test-pattern]"
 
 match_tests() {
-	for match in generators/*"$1"*; do
+	for match in "$generators/"*"$1"*; do
 		test -x "$match" && basename "$match"
 	done
 }
@@ -31,7 +32,7 @@ while test $# != 0; do
 	esac
 done
 
-cd "$(dirname "$0")/generators/"
+cd "$generators/"
 
 for script in $tests; do
 	echo "updating $script"

@@ -49,6 +49,7 @@ import org.spearce.jgit.lib.Repository;
 public class IndexBuilder extends ClientBuilder {
 
     private static String ADDING = "A %s"; // NOI18N
+    private static String UPDATING = "M %s"; // NOI18N
     private static String DELETING = "D %s"; // NOI18N
     private static String MOVING = "R %s -> %s"; // NOI18N
     private final GitIndex index;
@@ -67,7 +68,8 @@ public class IndexBuilder extends ClientBuilder {
     }
 
     public IndexBuilder add(File file) throws IOException {
-        log(ADDING, file);
+        String action = index.getEntry(toPath(file)) == null ? ADDING : UPDATING;
+        log(action, file);
         GitIndex.Entry entry = index.add(repository.getWorkDir(), file);
         entry.setAssumeValid(false);
         return this;

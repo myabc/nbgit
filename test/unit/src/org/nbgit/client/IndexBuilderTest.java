@@ -139,6 +139,7 @@ public class IndexBuilderTest extends RepositoryTestCase {
     public void testLog() throws Exception {
         String[] expectedMessages = {
             "A add",
+            "M modified",
             "D delete",
             "R from -> to"
         };
@@ -147,6 +148,7 @@ public class IndexBuilderTest extends RepositoryTestCase {
         IndexBuilder.create(repository).
                 log(logger).
                 add(toWorkDirFile("add")).
+                add(toWorkDirFile("modified")).
                 delete(toWorkDirFile("delete")).
                 move(toWorkDirFile("from"), toWorkDirFile("to"));
         assertEquals(expectedMessages.length, loggerMessages.size());

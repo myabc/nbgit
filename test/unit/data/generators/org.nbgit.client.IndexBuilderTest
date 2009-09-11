@@ -173,3 +173,14 @@ EOF
 	goldendata "$(git ls-files -s)"
 
 end
+
+describe testLog
+
+	index <<EOF
+100644 d2d902de084b7dbc96a762bd05bfc80f9b096a97 0	modified
+EOF
+
+	files modified
+	testfiles .git/index modified
+
+end

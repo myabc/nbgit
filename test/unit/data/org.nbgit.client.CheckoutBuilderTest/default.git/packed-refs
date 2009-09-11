@@ -1,5 +1,5 @@
 # pack-refs with: peeled 
-9367cf721777635387dfed6dc0bf76b71c15768e refs/heads/A
-cd9361ee64d5f507353417961e986dbe301ee212 refs/heads/B
-35a7ee4b2140612016177e6f5de0b9de1f34dcfb refs/heads/C
-35a7ee4b2140612016177e6f5de0b9de1f34dcfb refs/heads/master
+ee75a1def24b6cd4ad9202e9e476a679a9b7928c refs/heads/A
+e12c802f69699859056bd55c82a25afc78b5af17 refs/heads/B
+fbecfcad815f0af6a3bd7807c2060eca7ed8608a refs/heads/C
+fbecfcad815f0af6a3bd7807c2060eca7ed8608a refs/heads/master

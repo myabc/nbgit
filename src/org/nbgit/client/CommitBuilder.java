@@ -148,7 +148,7 @@ public class CommitBuilder extends ClientBuilder {
         doCommit(repository, index.writeTree(), personIdent, message, logger);
     }
 
-    private static String buildReflogMessage(String commitMessage) {
+    private String buildReflogMessage(String commitMessage) {
         String firstLine = commitMessage;
         int newlineIndex = commitMessage.indexOf("\n");
 
@@ -158,7 +158,7 @@ public class CommitBuilder extends ClientBuilder {
         return "\tcommit: " + firstLine;
     }
 
-    private static void doCommit(Repository repo, ObjectId treeId, PersonIdent personIdent, String message, OutputLogger logger) throws IOException {
+    private void doCommit(Repository repo, ObjectId treeId, PersonIdent personIdent, String message, OutputLogger logger) throws IOException {
             final RefUpdate ru = repo.updateRef(Constants.HEAD);
             ObjectId[] parentIds;
             if (ru.getOldObjectId() != null) {

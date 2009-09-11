@@ -36,12 +36,11 @@
 package org.nbgit.client;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashSet;
 import org.nbgit.OutputLogger;
 import org.spearce.jgit.lib.GitIndex;
+import org.spearce.jgit.lib.ObjectId;
 import org.spearce.jgit.lib.Repository;
 
 /**
@@ -52,47 +51,47 @@ public class IndexBuilder extends ClientBuilder {
     private static String ADDING = "A %s"; // NOI18N
     private static String DELETING = "D %s"; // NOI18N
     private static String MOVING = "R %s -> %s"; // NOI18N
-    private final HashSet<File> delete = new HashSet<File>();
-    private final HashSet<File> add = new HashSet<File>();
+    private final GitIndex index;
 
-    private IndexBuilder(Repository repository) {
+    private IndexBuilder(Repository repository, GitIndex index) {
         super(repository);
+        this.index = index;
     }
 
     public static IndexBuilder create(Repository repository) throws IOException {
-        return new IndexBuilder(repository);
+        return new IndexBuilder(repository, repository.getIndex());
     }
 
     public static IndexBuilder create(File workDir) throws IOException {
         return create(toRepository(workDir));
     }
 
-    public IndexBuilder add(File file) throws FileNotFoundException {
-        if (!file.exists())
-            throw new FileNotFoundException(file.getPath());
+    public IndexBuilder add(File file) throws IOException {
         log(ADDING, file);
-        add.add(file);
+        GitIndex.Entry entry = index.add(repository.getWorkDir(), file);
+        entry.setAssumeValid(false);
         return this;
     }
 
-    public IndexBuilder addAll(Collection<File> files) throws FileNotFoundException {
+    public IndexBuilder addAll(Collection<File> files) throws IOException {
         for (File file : files)
             add(file);
         return this;
     }
 
-    public IndexBuilder move(File src, File dst) throws FileNotFoundException {
-        if (!dst.exists())
-            throw new FileNotFoundException(dst.getPath());
+    public IndexBuilder move(File src, File dst) throws IOException {
         log(MOVING, src, dst);
-        add.add(dst);
-        delete.add(src);
+        index.remove(repository.getWorkDir(), src);
+        index.add(repository.getWorkDir(), dst);
         return this;
     }
 
     public IndexBuilder delete(File file) {
         log(DELETING, file);
-        delete.add(file);
+        try {
+        index.remove(repository.getWorkDir(), file);
+        } catch (IOException willNeverHappen) {
+        }
         return this;
     }
 
@@ -103,13 +102,6 @@ public class IndexBuilder extends ClientBuilder {
     }
 
     public void write() throws IOException {
-        GitIndex index = repository.getIndex();
-        for (File file : add) {
-            GitIndex.Entry entry = index.add(repository.getWorkDir(), file);
-            entry.setAssumeValid(false);
-        }
-        for (File file : delete)
-            index.remove(repository.getWorkDir(), file);
         index.write();
     }
 

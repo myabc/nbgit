@@ -36,6 +36,7 @@
 package org.nbgit.client;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import org.nbgit.junit.RepositoryTestCase;
 
 public class IndexBuilderTest extends RepositoryTestCase {
@@ -158,8 +159,8 @@ public class IndexBuilderTest extends RepositoryTestCase {
             IndexBuilder.create(repository).
                     add(toWorkDirFile("fail"));
             fail("No exception thrown");
-        } catch (FileNotFoundException error) {
-            assertEquals(toWorkDirFile("fail").getPath(), error.getMessage());
+        } catch (IOException error) {
+            assertErrorPath(error, "fail");
         }
     }
 
@@ -168,8 +169,8 @@ public class IndexBuilderTest extends RepositoryTestCase {
             IndexBuilder.create(repository).
                     addAll(toFiles(workDir, "fail/1", "fail/2"));
             fail("No exception thrown");
-        } catch (FileNotFoundException error) {
-            assertEquals(toWorkDirFile("fail/1").getPath(), error.getMessage());
+        } catch (IOException error) {
+            assertErrorPath(error, "fail/1");
         }
     }
 
@@ -178,9 +179,13 @@ public class IndexBuilderTest extends RepositoryTestCase {
             IndexBuilder.create(repository).
                     move(toWorkDirFile("a"), toWorkDirFile("fail"));
             fail("No exception thrown");
-        } catch (FileNotFoundException error) {
-            assertEquals(toWorkDirFile("fail").getPath(), error.getMessage());
+        } catch (IOException error) {
+            assertErrorPath(error, "fail");
         }
+    }
+
+    private void assertErrorPath(IOException error, String path) {
+        assertTrue(error.getMessage().startsWith(toWorkDirFile(path).getPath()));
     }
 
 }

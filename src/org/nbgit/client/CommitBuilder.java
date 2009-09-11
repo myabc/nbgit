@@ -145,7 +145,16 @@ public class CommitBuilder extends ClientBuilder {
      */
     public void write() throws IOException {
         index.write();
-        doCommit(index.writeTree());
+        final RefUpdate ru = repository.updateRef(Constants.HEAD);
+        ObjectId[] parentIds;
+        if (ru.getOldObjectId() != null)
+            parentIds = new ObjectId[]{ru.getOldObjectId()};
+        else
+            parentIds = new ObjectId[0];
+
+        ObjectId id = writeCommit(index.writeTree(), parentIds);
+        if (!updateRef(ru, id))
+            logger.output("Failed to update " + ru.getName() + " to commit " + id + ".");
     }
 
     private ObjectId writeCommit(ObjectId treeId, ObjectId[] parentIds) throws IOException {
@@ -177,21 +186,6 @@ public class CommitBuilder extends ClientBuilder {
             firstLine = message.substring(0, newlineIndex);
         }
         return "\tcommit: " + firstLine;
-    }
-
-    private void doCommit(ObjectId treeId) throws IOException {
-            final RefUpdate ru = repository.updateRef(Constants.HEAD);
-            ObjectId[] parentIds;
-            if (ru.getOldObjectId() != null) {
-                parentIds = new ObjectId[]{ru.getOldObjectId()};
-            } else {
-                parentIds = new ObjectId[0];
-            }
-            ObjectId id = writeCommit(treeId, parentIds);
-
-            if (!updateRef(ru, id)) {
-                logger.output("Failed to update " + ru.getName() + " to commit " + id + ".");
-            }
     }
 
 }

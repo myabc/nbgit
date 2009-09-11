@@ -107,6 +107,10 @@ public class IndexBuilder extends ClientBuilder {
         index.write();
     }
 
+    public ObjectId writeTree() throws IOException {
+        return index.writeTree();
+    }
+
     public IndexBuilder log(OutputLogger logger) {
         return log(IndexBuilder.class, logger);
     }

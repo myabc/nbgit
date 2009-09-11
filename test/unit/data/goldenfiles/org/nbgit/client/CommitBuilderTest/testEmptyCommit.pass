@@ -1,0 +1,7 @@
+commit 48b5024086877c5b96f79bbc95e46c2251a5de46
+tree 4b825dc642cb6eb9a060e54bf8d69288fbee4904
+parent 7359f9ce4160f15df9d2925c574113e945cc1287
+author A. U. Thor <author@example.org> 1112911993 -0700
+committer A. U. Thor <author@example.org> 1112911993 -0700
+
+    testEmptyCommit

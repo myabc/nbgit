@@ -198,7 +198,10 @@ public class GitCommand {
             PersonIdent personIdent = new PersonIdent(repo);
 
             writeTreeWithSubTrees(tree);
+            doCommit(repo, tree.getTreeId(), personIdent, message, logger);
+    }
 
+    public static void doCommit(Repository repo, ObjectId treeId, PersonIdent personIdent, String message, OutputLogger logger) throws IOException {
             final RefUpdate ru = repo.updateRef(Constants.HEAD);
             ObjectId[] parentIds;
             if (ru.getOldObjectId() != null) {
@@ -207,7 +210,7 @@ public class GitCommand {
                 parentIds = new ObjectId[0];
             }
             Commit commit = new Commit(repo, parentIds);
-            commit.setTree(tree);
+            commit.setTreeId(treeId);
             message = message.replaceAll("\r", "\n");
 
             commit.setMessage(message);
@@ -486,4 +489,5 @@ public class GitCommand {
 
         return info;
     }
+
 }

@@ -64,11 +64,15 @@ import org.spearce.jgit.util.SystemReader;
  */
 public class RepositoryTestCase extends NbTestCase {
 
+    private final long TIME_INITIAL = 1112911993L;
+    private final int TIME_INCREMENT = 60;
+    private final int TIME_ZONE = -7 * 60;
     private final File dataRoot = new File(getDataDir(), getClass().getCanonicalName());
     private ArrayList<Filter.IncludeExclude> excludes = new ArrayList<Filter.IncludeExclude>();
     protected Repository repository;
     protected OutputLogger logger;
     protected ArrayList<String> loggerMessages;
+    protected long time;
     protected File dataDir;
     protected File gitDir;
     protected File workDir;
@@ -90,13 +94,29 @@ public class RepositoryTestCase extends NbTestCase {
         repository.create();
         loggerMessages = new ArrayList<String>();
         logger = MockOutputLogger.create(loggerMessages);
+        time = TIME_INITIAL;
 
         copyRepositoryFiles("default", repository);
+        repository.refreshFromDisk();
+        repository.getConfig().load();
     }
 
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
+    }
+
+    protected int getTimeZone() {
+        return TIME_ZONE;
+    }
+
+    protected long getTime() {
+        return time * 1000;
+    }
+
+    protected long timeTick() {
+        time += TIME_INCREMENT;
+        return getTime();
     }
 
     protected Collection<File> toFiles(File base, String... paths) {

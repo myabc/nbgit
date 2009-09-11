@@ -37,11 +37,14 @@ package org.nbgit.client;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import org.nbgit.OutputLogger;
-import org.nbgit.util.GitCommand;
+import org.spearce.jgit.lib.Commit;
+import org.spearce.jgit.lib.Constants;
+import org.spearce.jgit.lib.ObjectId;
+import org.spearce.jgit.lib.ObjectWriter;
 import org.spearce.jgit.lib.PersonIdent;
+import org.spearce.jgit.lib.RefUpdate;
 import org.spearce.jgit.lib.Repository;
 
 /**
@@ -142,7 +145,50 @@ public class CommitBuilder extends ClientBuilder {
      */
     public void write() throws IOException {
         index.write();
-        GitCommand.doCommit(repository, index.writeTree(), personIdent, message, logger);
+        doCommit(repository, index.writeTree(), personIdent, message, logger);
+    }
+
+    private static String buildReflogMessage(String commitMessage) {
+        String firstLine = commitMessage;
+        int newlineIndex = commitMessage.indexOf("\n");
+
+        if (newlineIndex > 0) {
+            firstLine = commitMessage.substring(0, newlineIndex);
+        }
+        return "\tcommit: " + firstLine;
+    }
+
+    private static void doCommit(Repository repo, ObjectId treeId, PersonIdent personIdent, String message, OutputLogger logger) throws IOException {
+            final RefUpdate ru = repo.updateRef(Constants.HEAD);
+            ObjectId[] parentIds;
+            if (ru.getOldObjectId() != null) {
+                parentIds = new ObjectId[]{ru.getOldObjectId()};
+            } else {
+                parentIds = new ObjectId[0];
+            }
+            Commit commit = new Commit(repo, parentIds);
+            commit.setTreeId(treeId);
+            message = message.replaceAll("\r", "\n");
+
+            commit.setMessage(message);
+            commit.setAuthor(personIdent);
+            commit.setCommitter(personIdent);
+
+            ObjectWriter writer = new ObjectWriter(repo);
+            commit.setCommitId(writer.writeCommit(commit));
+
+            ru.setNewObjectId(commit.getCommitId());
+            ru.setRefLogMessage(buildReflogMessage(message), false);
+            ru.update();
+            boolean ok;
+            if (ru.getOldObjectId() != null) {
+                ok = ru.getResult() == RefUpdate.Result.FAST_FORWARD;
+            } else {
+                ok = ru.getResult() == RefUpdate.Result.NEW;
+            }
+            if (!ok) {
+                logger.output("Failed to update " + ru.getName() + " to commit " + commit.getCommitId() + ".");
+            }
     }
 
 }

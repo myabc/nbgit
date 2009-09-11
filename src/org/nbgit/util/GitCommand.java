@@ -44,7 +44,6 @@ import org.nbgit.OutputLogger;
 import org.nbgit.StatusInfo;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,18 +53,11 @@ import org.nbgit.Git;
 import org.nbgit.ui.log.RepositoryRevision;
 import org.netbeans.api.queries.SharabilityQuery;
 import org.openide.util.Exceptions;
-import org.spearce.jgit.lib.Commit;
 import org.spearce.jgit.lib.Constants;
-import org.spearce.jgit.lib.GitIndex;
 import org.spearce.jgit.lib.GitIndex.Entry;
 import org.spearce.jgit.lib.IndexDiff;
 import org.spearce.jgit.lib.ObjectId;
-import org.spearce.jgit.lib.ObjectWriter;
-import org.spearce.jgit.lib.PersonIdent;
-import org.spearce.jgit.lib.RefUpdate;
 import org.spearce.jgit.lib.Repository;
-import org.spearce.jgit.lib.Tree;
-import org.spearce.jgit.lib.TreeEntry;
 import org.spearce.jgit.revwalk.RevCommit;
 import org.spearce.jgit.revwalk.RevWalk;
 import org.spearce.jgit.revwalk.filter.RevFilter;
@@ -117,49 +109,6 @@ public class GitCommand {
         }
 
         return walk;
-    }
-
-    private static String buildReflogMessage(String commitMessage) {
-        String firstLine = commitMessage;
-        int newlineIndex = commitMessage.indexOf("\n");
-
-        if (newlineIndex > 0) {
-            firstLine = commitMessage.substring(0, newlineIndex);
-        }
-        return "\tcommit: " + firstLine;
-    }
-
-    public static void doCommit(Repository repo, ObjectId treeId, PersonIdent personIdent, String message, OutputLogger logger) throws IOException {
-            final RefUpdate ru = repo.updateRef(Constants.HEAD);
-            ObjectId[] parentIds;
-            if (ru.getOldObjectId() != null) {
-                parentIds = new ObjectId[]{ru.getOldObjectId()};
-            } else {
-                parentIds = new ObjectId[0];
-            }
-            Commit commit = new Commit(repo, parentIds);
-            commit.setTreeId(treeId);
-            message = message.replaceAll("\r", "\n");
-
-            commit.setMessage(message);
-            commit.setAuthor(personIdent);
-            commit.setCommitter(personIdent);
-
-            ObjectWriter writer = new ObjectWriter(repo);
-            commit.setCommitId(writer.writeCommit(commit));
-
-            ru.setNewObjectId(commit.getCommitId());
-            ru.setRefLogMessage(buildReflogMessage(message), false);
-            ru.update();
-            boolean ok;
-            if (ru.getOldObjectId() != null) {
-                ok = ru.getResult() == RefUpdate.Result.FAST_FORWARD;
-            } else {
-                ok = ru.getResult() == RefUpdate.Result.NEW;
-            }
-            if (!ok) {
-                logger.output("Failed to update " + ru.getName() + " to commit " + commit.getCommitId() + ".");
-            }
     }
 
     public static List<String[]> getRevisions(File root, int limit) {

@@ -148,6 +148,18 @@ public class CommitBuilder extends ClientBuilder {
         doCommit(index.writeTree());
     }
 
+    private ObjectId writeCommit(ObjectId treeId, ObjectId[] parentIds) throws IOException {
+        Commit commit = new Commit(repository, parentIds);
+
+        commit.setTreeId(treeId);
+        commit.setMessage(message.replaceAll("\r", "\n"));
+        commit.setAuthor(personIdent);
+        commit.setCommitter(personIdent);
+
+        ObjectWriter writer = new ObjectWriter(repository);
+        return writer.writeCommit(commit);
+    }
+
     private boolean updateRef(RefUpdate ru, ObjectId id) throws IOException {
         ru.setNewObjectId(id);
         ru.setRefLogMessage(buildReflogMessage(), false);
@@ -175,16 +187,7 @@ public class CommitBuilder extends ClientBuilder {
             } else {
                 parentIds = new ObjectId[0];
             }
-            Commit commit = new Commit(repository, parentIds);
-            commit.setTreeId(treeId);
-            message = message.replaceAll("\r", "\n");
-
-            commit.setMessage(message);
-            commit.setAuthor(personIdent);
-            commit.setCommitter(personIdent);
-
-            ObjectWriter writer = new ObjectWriter(repository);
-            ObjectId id = writer.writeCommit(commit);
+            ObjectId id = writeCommit(treeId, parentIds);
 
             if (!updateRef(ru, id)) {
                 logger.output("Failed to update " + ru.getName() + " to commit " + id + ".");

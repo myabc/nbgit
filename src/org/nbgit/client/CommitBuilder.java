@@ -145,10 +145,10 @@ public class CommitBuilder extends ClientBuilder {
      */
     public void write() throws IOException {
         index.write();
-        doCommit(repository, index.writeTree(), personIdent, message, logger);
+        doCommit(index.writeTree());
     }
 
-    private String buildReflogMessage(String message) {
+    private String buildReflogMessage() {
         String firstLine = message;
         int newlineIndex = message.indexOf("\n");
 
@@ -158,7 +158,7 @@ public class CommitBuilder extends ClientBuilder {
         return "\tcommit: " + firstLine;
     }
 
-    private void doCommit(Repository repository, ObjectId treeId, PersonIdent personIdent, String message, OutputLogger logger) throws IOException {
+    private void doCommit(ObjectId treeId) throws IOException {
             final RefUpdate ru = repository.updateRef(Constants.HEAD);
             ObjectId[] parentIds;
             if (ru.getOldObjectId() != null) {
@@ -178,7 +178,7 @@ public class CommitBuilder extends ClientBuilder {
             commit.setCommitId(writer.writeCommit(commit));
 
             ru.setNewObjectId(commit.getCommitId());
-            ru.setRefLogMessage(buildReflogMessage(message), false);
+            ru.setRefLogMessage(buildReflogMessage(), false);
             ru.update();
             boolean ok;
             if (ru.getOldObjectId() != null) {

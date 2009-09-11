@@ -148,6 +148,15 @@ public class CommitBuilder extends ClientBuilder {
         doCommit(index.writeTree());
     }
 
+    private boolean updateRef(RefUpdate ru, ObjectId id) throws IOException {
+        ru.setNewObjectId(id);
+        ru.setRefLogMessage(buildReflogMessage(), false);
+        ru.update();
+        return ru.getOldObjectId() != null
+                ? ru.getResult() == RefUpdate.Result.FAST_FORWARD
+                : ru.getResult() == RefUpdate.Result.NEW;
+    }
+
     private String buildReflogMessage() {
         String firstLine = message;
         int newlineIndex = message.indexOf("\n");
@@ -175,19 +184,10 @@ public class CommitBuilder extends ClientBuilder {
             commit.setCommitter(personIdent);
 
             ObjectWriter writer = new ObjectWriter(repository);
-            commit.setCommitId(writer.writeCommit(commit));
+            ObjectId id = writer.writeCommit(commit);
 
-            ru.setNewObjectId(commit.getCommitId());
-            ru.setRefLogMessage(buildReflogMessage(), false);
-            ru.update();
-            boolean ok;
-            if (ru.getOldObjectId() != null) {
-                ok = ru.getResult() == RefUpdate.Result.FAST_FORWARD;
-            } else {
-                ok = ru.getResult() == RefUpdate.Result.NEW;
-            }
-            if (!ok) {
-                logger.output("Failed to update " + ru.getName() + " to commit " + commit.getCommitId() + ".");
+            if (!updateRef(ru, id)) {
+                logger.output("Failed to update " + ru.getName() + " to commit " + id + ".");
             }
     }
 

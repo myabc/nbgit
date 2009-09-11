@@ -129,22 +129,14 @@ public class GitCommand {
         return "\tcommit: " + firstLine;
     }
 
-    private static void prepareTrees(File root, List<File> selectedItems,
-            HashMap<Repository, Tree> treeMap)
+    private static Tree prepareTree(File root, List<File> selectedItems)
             throws IOException, UnsupportedEncodingException {
         Repository repo = Git.getInstance().getRepository(root);
+        Tree projTree = repo.mapTree("HEAD");
+        if (projTree == null)
+            projTree = new Tree(repo);
 
         for (File file : selectedItems) {
-            Tree projTree = treeMap.get(repo);
-            if (projTree == null) {
-                projTree = repo.mapTree("HEAD");
-                if (projTree == null) {
-                    projTree = new Tree(repo);
-                }
-                treeMap.put(repo, projTree);
-                System.out.println("Orig tree id: " + projTree.getId());
-            }
-
             GitIndex index = repo.getIndex();
             String repoRelativePath = getRelative(root, file);
             String string = repoRelativePath;
@@ -177,6 +169,8 @@ public class GitCommand {
                 System.out.println("New member id for " + repoRelativePath + ": " + newMember.getId() + " idx id: " + idxEntry.getObjectId());
             }
         }
+
+        return projTree;
     }
 
     private static void writeTreeWithSubTrees(Tree tree) throws IOException {
@@ -198,13 +192,8 @@ public class GitCommand {
     }
 
     public static void doCommit(File root, List<File> commitCandidates, String message, OutputLogger logger) throws IOException {
-        HashMap<Repository, Tree> treeMap = new HashMap<Repository, Tree>();
+        Tree tree = prepareTree(root, commitCandidates);
 
-        prepareTrees(root, commitCandidates, treeMap);
-
-        for (java.util.Map.Entry<Repository, Tree> entry : treeMap.entrySet()) {
-
-            Tree tree = entry.getValue();
             Repository repo = tree.getRepository();
             PersonIdent personIdent = new PersonIdent(repo);
 
@@ -240,7 +229,6 @@ public class GitCommand {
             if (!ok) {
                 logger.output("Failed to update " + ru.getName() + " to commit " + commit.getCommitId() + ".");
             }
-        }
     }
 
     public static List<String[]> getRevisions(File root, int limit) {

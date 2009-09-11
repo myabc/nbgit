@@ -148,25 +148,25 @@ public class CommitBuilder extends ClientBuilder {
         doCommit(repository, index.writeTree(), personIdent, message, logger);
     }
 
-    private String buildReflogMessage(String commitMessage) {
-        String firstLine = commitMessage;
-        int newlineIndex = commitMessage.indexOf("\n");
+    private String buildReflogMessage(String message) {
+        String firstLine = message;
+        int newlineIndex = message.indexOf("\n");
 
         if (newlineIndex > 0) {
-            firstLine = commitMessage.substring(0, newlineIndex);
+            firstLine = message.substring(0, newlineIndex);
         }
         return "\tcommit: " + firstLine;
     }
 
-    private void doCommit(Repository repo, ObjectId treeId, PersonIdent personIdent, String message, OutputLogger logger) throws IOException {
-            final RefUpdate ru = repo.updateRef(Constants.HEAD);
+    private void doCommit(Repository repository, ObjectId treeId, PersonIdent personIdent, String message, OutputLogger logger) throws IOException {
+            final RefUpdate ru = repository.updateRef(Constants.HEAD);
             ObjectId[] parentIds;
             if (ru.getOldObjectId() != null) {
                 parentIds = new ObjectId[]{ru.getOldObjectId()};
             } else {
                 parentIds = new ObjectId[0];
             }
-            Commit commit = new Commit(repo, parentIds);
+            Commit commit = new Commit(repository, parentIds);
             commit.setTreeId(treeId);
             message = message.replaceAll("\r", "\n");
 
@@ -174,7 +174,7 @@ public class CommitBuilder extends ClientBuilder {
             commit.setAuthor(personIdent);
             commit.setCommitter(personIdent);
 
-            ObjectWriter writer = new ObjectWriter(repo);
+            ObjectWriter writer = new ObjectWriter(repository);
             commit.setCommitId(writer.writeCommit(commit));
 
             ru.setNewObjectId(commit.getCommitId());

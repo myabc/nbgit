@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.spearce.jgit.lib.FileMode;
 import org.spearce.jgit.lib.GitIndex;
+import org.spearce.jgit.lib.ObjectId;
 import org.spearce.jgit.lib.Repository;
 import org.spearce.jgit.lib.Tree;
 
@@ -171,7 +172,7 @@ public class CheckoutBuilder extends ClientBuilder {
             File file = mapping.getValue();
             if (backup)
                 backupFile(file);
-            checkoutEntry(entry, file);
+            checkoutEntry(entry.getObjectId(), entry.getModeBits(), file);
         }
     }
 
@@ -191,19 +192,19 @@ public class CheckoutBuilder extends ClientBuilder {
     /*
      * Code originally from GitIndex.
      */
-    private void checkoutEntry(GitIndex.Entry e, File file) throws IOException {
+    private void checkoutEntry(ObjectId blobId, int modeBits, File file) throws IOException {
         file.delete();
         file.getParentFile().mkdirs();
 
         FileChannel channel = new FileOutputStream(file).getChannel();
         try {
-    	    byte[] bytes = repository.openBlob(e.getObjectId()).getBytes();
+    	    byte[] bytes = repository.openBlob(blobId).getBytes();
 	    ByteBuffer buffer = ByteBuffer.wrap(bytes);
 	    if (channel.write(buffer) != bytes.length)
     	        throw new IOException("Could not write file " + file);
         } finally {
             channel.close();
         }
-        setExecutable(file, FileMode.EXECUTABLE_FILE.equals(e.getModeBits()));
+        setExecutable(file, FileMode.EXECUTABLE_FILE.equals(modeBits));
     }
 }

@@ -91,7 +91,7 @@ public class IndexBuilder extends ClientBuilder {
     public IndexBuilder delete(File file) {
         log(DELETING, file);
         try {
-        index.remove(repository.getWorkDir(), file);
+            index.remove(repository.getWorkDir(), file);
         } catch (IOException willNeverHappen) {
         }
         return this;

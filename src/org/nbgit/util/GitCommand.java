@@ -53,8 +53,9 @@ import org.nbgit.Git;
 import org.nbgit.ui.log.RepositoryRevision;
 import org.netbeans.api.queries.SharabilityQuery;
 import org.openide.util.Exceptions;
+import org.spearce.jgit.dircache.DirCache;
+import org.spearce.jgit.dircache.DirCacheEntry;
 import org.spearce.jgit.lib.Constants;
-import org.spearce.jgit.lib.GitIndex.Entry;
 import org.spearce.jgit.lib.IndexDiff;
 import org.spearce.jgit.lib.ObjectId;
 import org.spearce.jgit.lib.Repository;
@@ -213,6 +214,7 @@ public class GitCommand {
 
             final FileTreeIterator workTree = new FileTreeIterator(repo.getWorkDir());
             final TreeWalk walk = new TreeWalk(repo);
+            DirCache cache = DirCache.read(repo);
 
             walk.reset(); // drop the first empty tree
             walk.setRecursive(true);
@@ -235,7 +237,7 @@ public class GitCommand {
                         index.getModified().contains(path)) {
                     continue;
                 }
-                Entry entry = repo.getIndex().getEntry(path);
+                DirCacheEntry entry = cache.getEntry(path);
                 File file = new File(root, path);
 
                 int status;
@@ -298,6 +300,8 @@ public class GitCommand {
             walk.setRecursive(true);
             walk.addTree(workTree);
 
+            DirCache cache = DirCache.read(repo);
+
             while (walk.next()) {
                 String path = walk.getPathString();
 
@@ -311,7 +315,7 @@ public class GitCommand {
                         index.getModified().contains(path)) {
                     continue;
                 }
-                Entry entry = repo.getIndex().getEntry(path);
+                DirCacheEntry entry = cache.getEntry(path);
                 if (entry != null) {
                     continue;
                 }

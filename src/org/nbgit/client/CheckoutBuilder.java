@@ -44,8 +44,9 @@ import java.nio.channels.FileChannel;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.spearce.jgit.dircache.DirCache;
+import org.spearce.jgit.dircache.DirCacheEntry;
 import org.spearce.jgit.lib.FileMode;
-import org.spearce.jgit.lib.GitIndex;
 import org.spearce.jgit.lib.ObjectId;
 import org.spearce.jgit.lib.Repository;
 import org.spearce.jgit.lib.Tree;
@@ -60,7 +61,7 @@ public class CheckoutBuilder extends ClientBuilder {
     private final HashMap<RevisionEntry, File> fileMappings = new HashMap<RevisionEntry, File>();
     private boolean backup;
     private Tree tree;
-    private GitIndex index;
+    private DirCache index;
 
     private CheckoutBuilder(Repository repository) {
         super(repository);
@@ -127,11 +128,11 @@ public class CheckoutBuilder extends ClientBuilder {
             }
         } else {
             if (index == null)
-                index = repository.getIndex();
-            GitIndex.Entry entry = index.getEntry(path);
+                index = DirCache.read(repository);
+            DirCacheEntry entry = index.getEntry(path);
             if (entry != null) {
                 blobId = entry.getObjectId();
-                modeBits = entry.getModeBits();
+                modeBits = entry.getRawMode();
             }
         }
         if (blobId == null)

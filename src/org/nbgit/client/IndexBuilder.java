@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.util.Collection;
 import org.nbgit.OutputLogger;
 import org.spearce.jgit.lib.GitIndex;
+import org.spearce.jgit.lib.GitIndex.Entry;
 import org.spearce.jgit.lib.ObjectId;
 import org.spearce.jgit.lib.Repository;
 
@@ -68,10 +69,10 @@ public class IndexBuilder extends ClientBuilder {
     }
 
     public IndexBuilder add(File file) throws IOException {
-        String action = index.getEntry(toPath(file)) == null ? ADDING : UPDATING;
+        GitIndex.Entry entry = index.getEntry(toPath(file));
+        String action = entry == null ? ADDING : UPDATING;
         log(action, file);
-        GitIndex.Entry entry = index.add(repository.getWorkDir(), file);
-        entry.setAssumeValid(false);
+        addOrUpdateEntry(entry, file);
         return this;
     }
 
@@ -83,17 +84,14 @@ public class IndexBuilder extends ClientBuilder {
 
     public IndexBuilder move(File src, File dst) throws IOException {
         log(MOVING, src, dst);
-        index.remove(repository.getWorkDir(), src);
-        index.add(repository.getWorkDir(), dst);
+        removeEntry(src);
+        addOrUpdateEntry(null, dst);
         return this;
     }
 
     public IndexBuilder delete(File file) {
         log(DELETING, file);
-        try {
-            index.remove(repository.getWorkDir(), file);
-        } catch (IOException willNeverHappen) {
-        }
+        removeEntry(file);
         return this;
     }
 
@@ -113,6 +111,21 @@ public class IndexBuilder extends ClientBuilder {
 
     public IndexBuilder log(OutputLogger logger) {
         return log(IndexBuilder.class, logger);
+    }
+
+    private void removeEntry(File file) {
+        try {
+            index.remove(repository.getWorkDir(), file);
+        } catch (IOException willNeverHappen) {
+        }
+    }
+
+    private void addOrUpdateEntry(GitIndex.Entry entry, File file) throws IOException {
+        if (entry == null)
+            entry = index.add(repository.getWorkDir(), file);
+        else
+            entry.update(file);
+        entry.setAssumeValid(false);
     }
 
 }

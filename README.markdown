@@ -33,10 +33,11 @@ They can be found in:
  - javahelp/org/nbgit/docs/news.html
  - javahelp/org/nbgit/docs/issues.html
 
-To install from source clone the repository and use File > Open Project to
-add it to your project list in Netbeans. Then right click on the new project
-and select "Install/Reload in Development IDE". You are advised to first test
-the plugin by "running" the project.
+To install from source you need to install the "NetBeans Plugin Development"
+plugin from the plugins menu. Afterwards clone the repository and use
+File > Open Project to add it to your project list in Netbeans. Then right
+click on the new project and select "Install/Reload in Development IDE". You
+are advised to first test the plugin by "running" the project.
 
 Getting the Source
 ------------------

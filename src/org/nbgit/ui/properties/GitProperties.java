@@ -54,8 +54,8 @@ import org.nbgit.GitProgressSupport;
 import org.nbgit.util.GitUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
-import org.spearce.jgit.lib.Repository;
-import org.spearce.jgit.lib.RepositoryConfig;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.RepositoryConfig;
 
 /**
  *

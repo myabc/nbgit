@@ -55,9 +55,9 @@ import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.windows.TopComponent;
-import org.spearce.jgit.lib.Constants;
-import org.spearce.jgit.lib.ObjectId;
-import org.spearce.jgit.lib.Repository;
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Repository;
 
 /**
  * The main class of the Synchronize view, shows and acts on set of file roots.

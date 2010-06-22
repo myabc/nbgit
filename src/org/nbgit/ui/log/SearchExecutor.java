@@ -57,11 +57,11 @@ import org.nbgit.OutputLogger;
 import org.nbgit.util.GitCommand;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
-import org.spearce.jgit.revwalk.RevCommit;
-import org.spearce.jgit.revwalk.filter.AndRevFilter;
-import org.spearce.jgit.revwalk.filter.AuthorRevFilter;
-import org.spearce.jgit.revwalk.filter.MessageRevFilter;
-import org.spearce.jgit.revwalk.filter.RevFilter;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.filter.AndRevFilter;
+import org.eclipse.jgit.revwalk.filter.AuthorRevFilter;
+import org.eclipse.jgit.revwalk.filter.MessageRevFilter;
+import org.eclipse.jgit.revwalk.filter.RevFilter;
 
 /**
  * Executes searches in Search History panel.

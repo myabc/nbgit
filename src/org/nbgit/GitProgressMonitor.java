@@ -38,7 +38,7 @@ package org.nbgit;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
-import org.spearce.jgit.lib.ProgressMonitor;
+import org.eclipse.jgit.lib.ProgressMonitor;
 
 /**
  *

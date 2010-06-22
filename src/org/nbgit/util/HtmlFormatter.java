@@ -53,12 +53,12 @@ import org.netbeans.modules.versioning.spi.VersioningSupport;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
-import org.spearce.jgit.lib.ObjectId;
-import org.spearce.jgit.lib.Repository;
-import org.spearce.jgit.revwalk.RevCommit;
-import org.spearce.jgit.revwalk.RevWalk;
-import org.spearce.jgit.treewalk.filter.PathFilter;
-import org.spearce.jgit.treewalk.filter.TreeFilter;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.treewalk.filter.PathFilter;
+import org.eclipse.jgit.treewalk.filter.TreeFilter;
 
 /**
  * Format annotations in HTML.

@@ -38,7 +38,7 @@ package org.nbgit.util.exclude;
 import java.io.File;
 import java.util.Vector;
 import org.nbgit.util.MonitoredFileMap;
-import org.spearce.jgit.lib.Repository;
+import org.eclipse.jgit.lib.Repository;
 
 class ExcludeCache {
 

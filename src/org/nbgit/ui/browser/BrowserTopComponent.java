@@ -41,6 +41,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import org.eclipse.jgit.awtui.CommitGraphPane;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.util.ImageUtilities;
@@ -189,7 +191,7 @@ public final class BrowserTopComponent extends TopComponent {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private final javax.swing.JSplitPane browserSplitPane = new javax.swing.JSplitPane();
-    private final org.spearce.jgit.awtui.CommitGraphPane commitGraphPane = new org.spearce.jgit.awtui.CommitGraphPane();
+    private final CommitGraphPane commitGraphPane = new CommitGraphPane();
     private final javax.swing.JScrollPane graphScrollPane = new javax.swing.JScrollPane();
     private final javax.swing.JTextField idField = new javax.swing.JTextField();
     private final javax.swing.JLabel idLabel = new javax.swing.JLabel();

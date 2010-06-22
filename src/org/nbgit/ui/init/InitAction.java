@@ -63,11 +63,11 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
-import org.spearce.jgit.lib.GitIndex;
-import org.spearce.jgit.lib.GitIndex.Entry;
-import org.spearce.jgit.lib.Repository;
-import org.spearce.jgit.treewalk.FileTreeIterator;
-import org.spearce.jgit.treewalk.TreeWalk;
+import org.eclipse.jgit.lib.GitIndex;
+import org.eclipse.jgit.lib.GitIndex.Entry;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.treewalk.FileTreeIterator;
+import org.eclipse.jgit.treewalk.TreeWalk;
 
 /**
  * Create action for Git:

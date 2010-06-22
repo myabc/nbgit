@@ -40,9 +40,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import org.netbeans.junit.NbTestCase;
-import org.spearce.jgit.lib.FileBasedConfig;
-import org.spearce.jgit.lib.Repository;
-import org.spearce.jgit.util.SystemReader;
+import org.eclipse.jgit.lib.FileBasedConfig;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.util.SystemReader;
 
 /**
  * Base test case for testing with repositories.

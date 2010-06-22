@@ -60,7 +60,7 @@ import org.openide.WizardDescriptor;
 import org.openide.awt.Mnemonics;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
-import org.spearce.jgit.transport.URIish;
+import org.eclipse.jgit.transport.URIish;
 import static org.openide.DialogDescriptor.DEFAULT_ALIGN;
 import static org.openide.NotifyDescriptor.CANCEL_OPTION;
 import static org.openide.NotifyDescriptor.CLOSED_OPTION;

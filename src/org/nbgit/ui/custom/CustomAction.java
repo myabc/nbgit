@@ -53,7 +53,7 @@ import org.nbgit.util.GitUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
-import org.spearce.jgit.lib.Repository;
+import org.eclipse.jgit.lib.Repository;
 
 /**
  * Custom action container.

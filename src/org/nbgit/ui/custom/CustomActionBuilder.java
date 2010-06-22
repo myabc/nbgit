@@ -37,7 +37,7 @@ package org.nbgit.ui.custom;
 
 import java.io.File;
 import org.netbeans.modules.versioning.spi.VCSContext;
-import org.spearce.jgit.util.FS;
+import org.eclipse.jgit.util.FS;
 
 public class CustomActionBuilder {
 

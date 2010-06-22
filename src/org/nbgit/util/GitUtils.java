@@ -82,7 +82,7 @@ import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
-import org.spearce.jgit.lib.Constants;
+import org.eclipse.jgit.lib.Constants;
 
 /**
  *

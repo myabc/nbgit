@@ -49,7 +49,7 @@ import org.netbeans.modules.versioning.spi.VCSContext;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
-import org.spearce.jgit.lib.Constants;
+import org.eclipse.jgit.lib.Constants;
 
 /**
  * @author Maros Sandor

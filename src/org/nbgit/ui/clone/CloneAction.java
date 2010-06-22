@@ -66,22 +66,22 @@ import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
-import org.spearce.jgit.errors.NotSupportedException;
-import org.spearce.jgit.errors.TransportException;
-import org.spearce.jgit.lib.Commit;
-import org.spearce.jgit.lib.Constants;
-import org.spearce.jgit.lib.GitIndex;
-import org.spearce.jgit.lib.Ref;
-import org.spearce.jgit.lib.RefUpdate;
-import org.spearce.jgit.lib.Repository;
-import org.spearce.jgit.lib.RepositoryConfig;
-import org.spearce.jgit.lib.Tree;
-import org.spearce.jgit.lib.WorkDirCheckout;
-import org.spearce.jgit.transport.FetchResult;
-import org.spearce.jgit.transport.RefSpec;
-import org.spearce.jgit.transport.RemoteConfig;
-import org.spearce.jgit.transport.Transport;
-import org.spearce.jgit.transport.URIish;
+import org.eclipse.jgit.errors.NotSupportedException;
+import org.eclipse.jgit.errors.TransportException;
+import org.eclipse.jgit.lib.Commit;
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.GitIndex;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.RefUpdate;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.RepositoryConfig;
+import org.eclipse.jgit.lib.Tree;
+import org.eclipse.jgit.lib.WorkDirCheckout;
+import org.eclipse.jgit.transport.FetchResult;
+import org.eclipse.jgit.transport.RefSpec;
+import org.eclipse.jgit.transport.RemoteConfig;
+import org.eclipse.jgit.transport.Transport;
+import org.eclipse.jgit.transport.URIish;
 
 public class CloneAction extends ContextAction {
 

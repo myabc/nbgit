@@ -97,7 +97,6 @@ public class RepositoryTestCase extends NbTestCase {
         time = TIME_INITIAL;
 
         copyRepositoryFiles("default", repository);
-        repository.refreshFromDisk();
         repository.getConfig().load();
     }
 

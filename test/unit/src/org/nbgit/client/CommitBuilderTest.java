@@ -73,7 +73,6 @@ public class CommitBuilderTest extends RepositoryTestCase {
 
     public void testInitialEmptyCommit() throws Exception {
         toGitDirFile("packed-refs").delete();
-        repository.refreshFromDisk();
         CommitBuilder.create(repository).
                 time(getTime(), getTimeZone()).
                 log(logger).
@@ -84,7 +83,6 @@ public class CommitBuilderTest extends RepositoryTestCase {
 
     public void testInitialNonEmptyCommit() throws Exception {
         toGitDirFile("packed-refs").delete();
-        repository.refreshFromDisk();
         CommitBuilder.create(repository).
                 time(getTime(), getTimeZone()).
                 log(logger).

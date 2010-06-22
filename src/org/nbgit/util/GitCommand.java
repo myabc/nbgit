@@ -478,7 +478,6 @@ public class GitCommand {
         Map<File, StatusInfo> files = new HashMap<File, StatusInfo>();
 
         try {
-            repo.refreshFromDisk();
             IndexDiff index = new IndexDiff(repo);
             index.diff();
 
@@ -558,7 +557,6 @@ public class GitCommand {
         Map<File, StatusInfo> files = new HashMap<File, StatusInfo>();
 
         try {
-            repo.refreshFromDisk();
             index = new IndexDiff(repo);
             index.diff();
 
@@ -623,7 +621,6 @@ public class GitCommand {
         String name = getRelative(root, file);
 
         try {
-            repo.refreshFromDisk();
             index = new IndexDiff(repo);
             index.diff();
         } catch (IOException ex) {

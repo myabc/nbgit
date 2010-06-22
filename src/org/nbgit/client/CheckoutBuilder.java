@@ -44,10 +44,10 @@ import java.nio.channels.FileChannel;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.spearce.jgit.lib.FileMode;
-import org.spearce.jgit.lib.GitIndex;
-import org.spearce.jgit.lib.Repository;
-import org.spearce.jgit.lib.Tree;
+import org.eclipse.jgit.lib.FileMode;
+import org.eclipse.jgit.lib.GitIndex;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.Tree;
 
 /**
  * Build a checkout of files from a revision.

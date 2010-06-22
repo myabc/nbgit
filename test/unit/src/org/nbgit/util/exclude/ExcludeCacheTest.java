@@ -36,8 +36,8 @@
 package org.nbgit.util.exclude;
 
 import org.nbgit.junit.RepositoryTestCase;
-import org.spearce.jgit.treewalk.FileTreeIterator;
-import org.spearce.jgit.treewalk.TreeWalk;
+import org.eclipse.jgit.treewalk.FileTreeIterator;
+import org.eclipse.jgit.treewalk.TreeWalk;
 
 public class ExcludeCacheTest extends RepositoryTestCase {
 

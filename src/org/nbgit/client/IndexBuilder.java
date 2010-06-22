@@ -39,9 +39,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import org.nbgit.OutputLogger;
-import org.spearce.jgit.lib.GitIndex;
-import org.spearce.jgit.lib.ObjectId;
-import org.spearce.jgit.lib.Repository;
+import org.eclipse.jgit.lib.GitIndex;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Repository;
 
 /**
  * Wrapper for JGit's index API.

@@ -50,7 +50,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="org.spearce.jgit.awtui.CommitGraphPane" name="commitGraphPane">
+            <Component class="org.eclipse.jgit.awtui.CommitGraphPane" name="commitGraphPane">
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
               </AuxValues>

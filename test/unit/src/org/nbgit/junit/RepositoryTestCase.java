@@ -142,5 +142,17 @@ public class RepositoryTestCase extends NbTestCase {
         public FileBasedConfig openUserConfig() {
             return new FileBasedConfig(userConfigFile);
         }
+
+        @Override
+        public long getCurrentTime() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public int getTimezone(long when) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
     }
 }

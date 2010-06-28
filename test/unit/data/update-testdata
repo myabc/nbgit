@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+# Run all test data generator scripts.
+# Copyright 2009 Jonas Fonseca <fonseca@diku.dk>
+# Licensed under the GPLv2 or later
+
+generators="$(dirname "$0")/generators/"
+verbose=
+tests=org.nbgit.*
+
+HELP="$(basename "$0") [-h] [-v|--verbose] [test-pattern]"
+
+match_tests() {
+	for match in "$generators/"*"$1"*; do
+		test -x "$match" && basename "$match"
+	done
+}
+
+while test $# != 0; do
+	arg="$1"; shift
+
+	case "$arg" in
+	-v|--verbose)
+		export NBGIT_VERBOSE=Yes
+		;;
+	*)
+		tests="$(match_tests "$arg")"
+		if test -z "$tests"; then
+			echo "$HELP"
+			exit 0
+		fi
+	esac
+done
+
+cd "$generators/"
+
+for script in $tests; do
+	echo "updating $script"
+	sh "$script"
+done

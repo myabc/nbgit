@@ -1,0 +1,9 @@
+commit 747dfa809e969a3225eb36801e30be4624987685
+tree aaff74984cccd156a469afa7d9ab10e4777beb24
+parent 7359f9ce4160f15df9d2925c574113e945cc1287
+author A. U. Thor <author@example.org> 1112911993 -0700
+committer A. U. Thor <author@example.org> 1112911993 -0700
+
+    testNonEmptyCommit
+
+100644 blob 78981922613b2afb6025042ff6bd878ac1994e85	a

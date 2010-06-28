@@ -1,0 +1,159 @@
+#!/bin/sh
+#
+# Generator setup script and utility library.
+# Copyright 2009 Jonas Fonseca <fonseca@diku.dk>
+# Licensed under the GPLv2 or later
+
+set -e
+test -n "$NBGIT_VERBOSE" && set -x
+
+TIME_INITIAL=1112911993
+TIME_INCREMENT=60
+CLASSNAME="$(basename $0)"
+CLASSDIR="$(echo "$CLASSNAME" | tr . /)"
+DATADIR="$(cd "$(dirname "$0")/.." && pwd)" 
+BUILDDIR="$(cd "$(dirname "$0")/../../../.." && pwd)/build/org-nbgit-testdata/$CLASSNAME"
+GOLDENFILESDIR="$BUILDDIR/goldenfiles/$CLASSDIR"
+DATAFILESDIR="$BUILDDIR/data/$CLASSNAME"
+GIT="$(git --exec-path)/git"
+
+TEST=
+REPO=
+TIME=
+TESTBUILDDIR=
+TESTGOLDENFILE=
+
+export GIT_AUTHOR_NAME="A. U. Thor"
+export GIT_AUTHOR_EMAIL="author@example.org"
+export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
+export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
+
+setup_build_environment() {
+	rm -rf "$BUILDDIR"
+	# Redirect stdout to log file
+	mkdir -p "$BUILDDIR"
+	exec 1>"$BUILDDIR/build.log"
+}
+
+create_repository() {
+	name="$1"
+	REPO="$TESTBUILDDIR/$name"
+	#rm -rf "$REPO"
+	mkdir -p "$REPO"
+	cd "$REPO"
+	export GIT_DIR="$REPO/.git"
+	export GIT_WORK_TREE="$REPO"
+	git init
+	git commit --allow-empty -m "$name"
+}
+
+mkdirpath() {
+	mkdir -p "$(dirname "$1")"
+}
+
+copy_file() {
+	src="$1"
+	dst="$2"
+	test -e "$dst" && rm -rf "$dst"
+	mkdirpath "$dst"
+	chmod -R u+w "$src"
+	cp -r "$src" "$dst"
+}
+
+describe() {
+	TEST="$1"
+	TESTBUILDDIR="$BUILDDIR/$TEST"
+	TESTDATADIR="$DATAFILESDIR/$TEST"
+	TIME=$(($TIME_INITIAL - $TIME_INCREMENT))
+	TESTGOLDENFILE=
+	create_repository "default"
+}
+
+set_executable() {
+	for file in $@; do
+		chmod u+x "$REPO/$file"
+	done
+}
+
+file() {
+	mkdirpath "$REPO/$1"
+	cat > "$REPO/$1"
+}
+
+files() {
+	for file in $@; do
+		echo "$file" | file "$file"
+	done
+}
+
+exefiles() {
+	for file in $@; do
+		echo "$file" | file "$file"
+		chmod u+x "$REPO/$file"
+	done
+}
+
+empty_files() {
+	for file in $@; do
+		printf "" | file "$file"
+	done
+}
+
+time_tick () {
+	export GIT_COMMITTER_DATE="$TIME -0700"
+	export GIT_AUTHOR_DATE="$TIME -0700"
+	TIME=$(($TIME + 60))
+}
+
+git() {
+	case "$1" in
+	commit|merge)
+		time_tick
+		;;
+	gc)
+		cd "$REPO" && "$GIT" gc --aggressive --prune --quiet
+		return
+	esac
+	cd "$REPO" && "$GIT" "$@"
+}
+
+index() {
+	cat | git update-index --index-info
+}
+
+goldenfile() {
+	TESTGOLDENFILE="$GOLDENFILESDIR/$TEST.pass"
+	copy_file "$REPO/$1" "$TESTGOLDENFILE"
+}
+
+goldendata() {
+	echo "$@" > "$REPO/.git/goldendata"
+	goldenfile .git/goldendata
+}
+
+testfiles() {
+	gitdir="$TESTDATADIR/$(basename "$REPO").git"
+	workdir="$TESTDATADIR/$(basename "$REPO").workdir"
+	for file in $@; do
+		case "$file" in
+		.git/*)
+			gitpath="$(expr "$file" : "\.git/\(.*\)")"
+			copy_file "$REPO/$file" "$gitdir/$gitpath"
+			;;
+		*)
+			copy_file "$REPO/$file" "$workdir/$file"
+			rm -rf "$workdir/$file/.git"
+		esac
+	done
+}
+
+end() {
+	if test -n "$TESTGOLDENFILE"; then
+		copy_file "$TESTGOLDENFILE" "$DATADIR/goldenfiles/$CLASSDIR/$TEST.pass"
+	fi
+	if test -e "$TESTDATADIR"; then
+		copy_file "$TESTDATADIR/" "$DATADIR/$CLASSNAME/$TEST"
+	fi
+}
+
+setup_build_environment

@@ -52,6 +52,7 @@ import org.netbeans.api.project.Project;
 import org.nbgit.Git;
 import org.nbgit.GitProgressSupport;
 import org.nbgit.OutputLogger;
+import org.nbgit.client.IndexBuilder;
 import org.nbgit.task.StatusTask;
 import org.nbgit.ui.ContextAction;
 import org.nbgit.util.exclude.Excludes;
@@ -205,27 +206,15 @@ public class InitAction extends ContextAction {
             public void perform() {
                 OutputLogger logger = getLogger();
                 try {
-                    GitIndex index = repo.getIndex();
-                    int newFiles = 0;
-
-                    for (File file : getFileList(repo, root)) {
-                        Entry entry = index.add(root, file);
-
-                        entry.setAssumeValid(false);
-                        newFiles++;
-
-                        if (newFiles < OutputLogger.MAX_LINES_TO_PRINT) {
-                            logger.output("\t" + file.getAbsolutePath()); // NOI18N
-                        }
-                    }
+                    List<File> files = getFileList(repo, root);
+                    IndexBuilder.create(repo).
+                            log(logger).
+                            addAll(files).
+                            write();
 
                     logger.output(
                             NbBundle.getMessage(InitAction.class,
-                            "MSG_CREATE_ADD", newFiles, root.getAbsolutePath())); // NOI18N
-
-                    if (newFiles > 0) {
-                        index.write();
-                    }
+                            "MSG_CREATE_ADD", files.size(), root.getAbsolutePath())); // NOI18N
                     logger.output(""); // NOI18N
                     logger.outputInRed(NbBundle.getMessage(InitAction.class, "MSG_CREATE_DONE_WARNING")); // NOI18N
                 } catch (IOException ex) {

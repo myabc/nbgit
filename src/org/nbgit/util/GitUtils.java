@@ -66,6 +66,7 @@ import org.nbgit.GitRepository;
 import org.nbgit.StatusCache;
 import org.nbgit.GitModuleConfig;
 import org.nbgit.StatusInfo;
+import org.nbgit.client.CheckoutBuilder;
 import org.nbgit.ui.status.SyncFileNode;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
@@ -421,12 +422,8 @@ public class GitUtils {
         if (file.isDirectory()) {
             Map<File, StatusInfo> interestingFiles;
             interestingFiles = GitCommand.getInterestingStatus(repository, file);
-            if (!interestingFiles.isEmpty()) {
-                Collection<File> files = interestingFiles.keySet();
-                for (File aFile : files) {
-                    StatusInfo fi = interestingFiles.get(aFile);
-                    cache.refreshFileStatus(aFile, fi, null);
-                }
+            for (Map.Entry<File, StatusInfo> entry : interestingFiles.entrySet()) {
+                cache.refreshFileStatus(entry.getKey(), entry.getValue(), null);
             }
         }
     }
@@ -622,7 +619,10 @@ public class GitUtils {
         File tempFile = File.createTempFile("tmp", "-" + base.getName()); //NOI18N
         File repository = Git.getInstance().getTopmostManagedParent(base);
 
-        GitCommand.doCat(repository, base, tempFile, revision);
+        CheckoutBuilder.create(repository).
+                revision(revision).
+                file(base, tempFile).
+                checkout();
         if (tempFile.length() == 0) {
             return null;
         }

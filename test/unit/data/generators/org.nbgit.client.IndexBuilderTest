@@ -1,0 +1,186 @@
+#!/bin/sh
+#
+# Copyright 2009 Jonas Fonseca <fonseca@diku.dk>
+# Licensed under the GPLv2 or later
+
+. "$(dirname "$0")"/setup
+
+describe testWriteUnmodified
+
+	index <<EOF
+100644 78981922613b2afb6025042ff6bd878ac1994e85 0	a
+100644 15d634ae919ab0d7c48cfb467d95c32121a5d22b 0	b/c
+100644 d2d902de084b7dbc96a762bd05bfc80f9b096a97 0	b/e/f
+100644 4bcfe98e640c8284511312660fb8709b0afa888e 0	d
+EOF
+
+	testfiles .git/index
+
+end
+
+describe testAdd
+
+	index <<EOF
+100644 78981922613b2afb6025042ff6bd878ac1994e85 0	a
+100644 15d634ae919ab0d7c48cfb467d95c32121a5d22b 0	b/c
+EOF
+
+	files d
+	testfiles .git/index d
+
+	git add d
+	goldendata "$(git ls-files -s)"
+
+end
+
+describe testAddModified
+
+	index <<EOF
+100644 78981922613b2afb6025042ff6bd878ac1994e85 0	d
+EOF
+
+	files d
+	testfiles .git/index d
+
+	git add d
+	goldendata "$(git ls-files -s)"
+
+end
+
+describe testAddSupportsExecutable
+
+	exefiles d.exe
+	testfiles d.exe
+
+	git add d.exe
+	goldendata "$(git ls-files -s)"
+
+end
+
+describe testAddModifiedSupportsExecutable
+
+	index <<EOF
+100644 78981922613b2afb6025042ff6bd878ac1994e85 0	d.exe
+EOF
+
+	exefiles d.exe
+	testfiles .git/index d.exe
+
+	git add d.exe
+	goldendata "$(git ls-files -s)"
+
+end
+
+describe testAddAll
+
+	index <<EOF
+100644 78981922613b2afb6025042ff6bd878ac1994e85 0	a
+100644 15d634ae919ab0d7c48cfb467d95c32121a5d22b 0	b/c
+EOF
+
+	files d b/e/f g/h
+	testfiles .git/index d b/e/f g/h
+
+	git add b/e/f d g/h
+	goldendata "$(git ls-files -s)"
+
+end
+
+describe testAddAllUnordered
+
+	files 1 2 3
+	testfiles 1 2 3
+
+	git add 2 3 1
+	goldendata "$(git ls-files -s)"
+
+end
+
+describe testDelete
+
+	index <<EOF
+100644 78981922613b2afb6025042ff6bd878ac1994e85 0	a
+100644 15d634ae919ab0d7c48cfb467d95c32121a5d22b 0	b/c
+100644 d2d902de084b7dbc96a762bd05bfc80f9b096a97 0	b/e/f
+100644 4bcfe98e640c8284511312660fb8709b0afa888e 0	d
+EOF
+
+	testfiles .git/index
+
+	git rm b/e/f
+	goldendata "$(git ls-files -s)"
+
+end
+
+describe testDeleteAll
+
+	index <<EOF
+100644 78981922613b2afb6025042ff6bd878ac1994e85 0	a
+100644 15d634ae919ab0d7c48cfb467d95c32121a5d22b 0	b/c
+100644 d2d902de084b7dbc96a762bd05bfc80f9b096a97 0	b/e/f
+100644 4bcfe98e640c8284511312660fb8709b0afa888e 0	d
+EOF
+
+	testfiles .git/index
+
+	git rm a b/e/f d
+	goldendata "$(git ls-files -s)"
+
+end
+
+describe testDeleteAllUnordered
+
+	index <<EOF
+100644 78981922613b2afb6025042ff6bd878ac1994e85 0	a
+100644 15d634ae919ab0d7c48cfb467d95c32121a5d22b 0	b/c
+100644 d2d902de084b7dbc96a762bd05bfc80f9b096a97 0	b/e/f
+100644 4bcfe98e640c8284511312660fb8709b0afa888e 0	d
+EOF
+
+	testfiles .git/index
+
+	git rm b/c b/e/f d
+	goldendata "$(git ls-files -s)"
+
+end
+
+describe testMove
+
+	index <<EOF
+100644 d2d902de084b7dbc96a762bd05bfc80f9b096a97 0	b/e/f
+EOF
+
+	files b/e/f
+	testfiles .git/index b/e/f
+
+	git mv b/e/f f
+	goldendata "$(git ls-files -s)"
+
+end
+
+describe testMoveSupportsExecutable
+
+	index <<EOF
+100644 d2d902de084b7dbc96a762bd05bfc80f9b096a97 0	b/e/f
+EOF
+
+	files b/e/f
+	testfiles .git/index b/e/f
+
+	git mv b/e/f f.exe
+	set_executable f.exe
+	git add f.exe
+	goldendata "$(git ls-files -s)"
+
+end
+
+describe testLog
+
+	index <<EOF
+100644 d2d902de084b7dbc96a762bd05bfc80f9b096a97 0	modified
+EOF
+
+	files modified
+	testfiles .git/index modified
+
+end

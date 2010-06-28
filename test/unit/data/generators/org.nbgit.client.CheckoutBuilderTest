@@ -1,0 +1,62 @@
+#!/bin/sh
+#
+# Copyright 2009 Jonas Fonseca <fonseca@diku.dk>
+# Licensed under the GPLv2 or later
+
+. "$(dirname "$0")"/setup
+
+describe
+
+	files a d
+	exefiles b/c
+	git add a b/c d
+	git commit -m "add files"
+	git branch A
+
+	set_executable a
+	git add a
+	git commit -m "make a executable"
+	git branch B
+
+	files e
+	git add e
+	git commit -m "add e"
+	git branch C
+
+	git gc
+
+	testfiles .git/objects/pack .git/packed-refs
+
+end
+
+describe testFileSamePath
+
+	files a
+	goldenfile a
+
+end
+
+describe testFileOtherPath
+
+	files a
+	goldenfile a
+
+end
+
+
+describe testFileOtherPath
+
+	files a
+	goldenfile a
+
+end
+
+describe testFiles
+
+	files a d
+	exefiles b/c
+	git add a b/c d
+
+	goldendata "$(git ls-files -s)"
+
+end

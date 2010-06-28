@@ -51,7 +51,7 @@ import org.nbgit.StatusCache;
 import org.nbgit.Git;
 import org.nbgit.GitProgressSupport;
 import org.nbgit.OutputLogger;
-import org.nbgit.util.GitCommand;
+import org.nbgit.client.CheckoutBuilder;
 import org.nbgit.util.GitUtils;
 import org.nbgit.ui.ContextAction;
 import org.netbeans.modules.versioning.spi.VCSContext;
@@ -150,7 +150,7 @@ public class RevertModificationsAction extends ContextAction {
         }
         logger.output(""); // NOI18N
 
-        GitCommand.doRevert(repository, revertFiles, revStr, doBackup, logger);
+        revert(repository, revertFiles, revStr, doBackup, logger);
         StatusCache cache = Git.getInstance().getStatusCache();
         File[] conflictFiles = cache.listFiles(revertFiles.toArray(new File[0]), StatusInfo.STATUS_VERSIONED_CONFLICT);
         if (conflictFiles.length != 0) {
@@ -173,6 +173,17 @@ public class RevertModificationsAction extends ContextAction {
                 "MSG_REVERT_DONE")); // NOI18N
         logger.outputInRed(""); // NOI18N
 
+    }
+
+    public static void revert(File root, List<File> files, String revStr, boolean doBackup, OutputLogger logger) {
+        try {
+            CheckoutBuilder.create(root).
+                    backup(doBackup).
+                    revision(revStr).
+                    files(files).
+                    checkout();
+        } catch (Throwable ex) {
+        }
     }
 
     @Override

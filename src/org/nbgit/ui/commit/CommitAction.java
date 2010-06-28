@@ -64,9 +64,9 @@ import org.nbgit.Git;
 import org.nbgit.GitModuleConfig;
 import org.nbgit.GitProgressSupport;
 import org.nbgit.OutputLogger;
+import org.nbgit.client.CommitBuilder;
 import org.nbgit.ui.GitFileNode;
 import org.nbgit.ui.ContextAction;
-import org.nbgit.util.GitCommand;
 import org.nbgit.util.GitProjectUtils;
 import org.nbgit.util.GitUtils;
 import org.netbeans.modules.versioning.spi.VCSContext;
@@ -338,7 +338,7 @@ public class CommitAction extends ContextAction {
         final File repository = GitUtils.getRootFile(ctx);
         List<File> addCandidates = new ArrayList<File>();
         List<File> deleteCandidates = new ArrayList<File>();
-        List<File> commitCandidates = new ArrayList<File>();
+        int commitCandidates = 0;
 
         List<String> excPaths = new ArrayList<String>();
         List<String> incPaths = new ArrayList<String>();
@@ -353,8 +353,10 @@ public class CommitAction extends ContextAction {
                     addCandidates.add(node.getFile());
                 } else if ((status & StatusInfo.STATUS_VERSIONED_DELETEDLOCALLY) != 0) {
                     deleteCandidates.add(node.getFile());
+                } else {
+                    addCandidates.add(node.getFile());
                 }
-                commitCandidates.add(node.getFile());
+                commitCandidates++;
                 incPaths.add(node.getFile().getAbsolutePath());
             } else {
                 excPaths.add(node.getFile().getAbsolutePath());
@@ -377,32 +379,22 @@ public class CommitAction extends ContextAction {
                     NbBundle.getMessage(CommitAction.class,
                     "MSG_COMMIT_TITLE_SEP")); // NOI18N
             logger.output(message); // NOI18N
-            if (addCandidates.size() > 0) {
-                GitCommand.doAdd(repository, addCandidates, logger);
-                for (File f : addCandidates) {
-                    logger.output("git add " + f.getName()); //NOI18N
-                }
-            }
-            if (deleteCandidates.size() > 0) {
-                GitCommand.doRemove(repository, deleteCandidates, logger);
-                for (File f : deleteCandidates) {
-                    logger.output("git delete " + f.getName()); //NOI18N
-                }
-            }
 
-            GitCommand.doCommit(repository, commitCandidates, message, logger);
+            CommitBuilder.create(repository).
+                    log(logger).
+                    addAll(addCandidates).
+                    deleteAll(deleteCandidates).
+                    message(message).
+                    write();
 
-            if (commitCandidates.size() == 1) {
+            if (commitCandidates == 1) {
                 logger.output(
                         NbBundle.getMessage(CommitAction.class,
-                        "MSG_COMMIT_INIT_SEP_ONE", commitCandidates.size(), prjName));
+                        "MSG_COMMIT_INIT_SEP_ONE", commitCandidates, prjName));
             } else {
                 logger.output(
                         NbBundle.getMessage(CommitAction.class,
-                        "MSG_COMMIT_INIT_SEP", commitCandidates.size(), prjName));
-            }
-            for (File f : commitCandidates) {
-                logger.output("\t" + f.getAbsolutePath()); // NOI18N
+                        "MSG_COMMIT_INIT_SEP", commitCandidates, prjName));
             }
         } catch (Exception ex) {
             NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);

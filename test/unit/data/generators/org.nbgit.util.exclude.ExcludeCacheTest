@@ -1,0 +1,75 @@
+#!/bin/sh
+#
+# Copyright 2009 Jonas Fonseca <fonseca@diku.dk>
+# Licensed under the GPLv2 or later
+
+. "$(dirname "$0")"/setup
+
+describe testComplexWorkingDirectory
+
+	file .git/info/exclude <<EOF
+#comment
+*.pdf
+EOF
+
+	file .gitignore <<EOF
+build/
+misc/
+path/thr*
+*.txt
+!README.txt
+EOF
+
+	file all-ignored/.gitignore <<EOF
+*
+EOF
+
+	file all-ignored-but-gitignore/.gitignore <<EOF
+*
+!.gitignore
+EOF
+
+	file docs/.gitignore <<EOF
+!*.txt
+EOF
+
+	file misc/.gitignore <<EOF
+!b
+EOF
+
+	file path/.gitignore <<EOF
+to/other.file
+EOF
+
+	empty_files \
+		'#comment' \
+		.gitmodules \
+		.hidden \
+		IGNORED.txt \
+		README.txt \
+		build.xml \
+		build/classes/org/example/File.class \
+		build/test/unit/classes/org/example/FileTest.class \
+		docs/.gitattributes \
+		docs/NOT-IGNORED.txt \
+		manifest.mf \
+		misc/a \
+		misc/b \
+		misc/c \
+		nbproject/build-impl.xml \
+		nbproject/genfiles.properties \
+		nbproject/private/private.properties \
+		nbproject/project.properties \
+		nbproject/project.xml \
+		path/also/to/other.file \
+		path/three/a \
+		path/to/file \
+		path/to/other.file \
+		random.pdf \
+		src/org/example/File.java \
+		test/org/example/FileTest.java
+
+	goldendata "$(git ls-files --exclude-standard -o)"
+	testfiles .git/info/exclude .
+
+end

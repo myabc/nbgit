@@ -47,7 +47,6 @@ import java.util.List;
 import org.nbgit.Git;
 import org.nbgit.GitProgressSupport;
 import org.nbgit.OutputLogger;
-import org.nbgit.util.GitCommand;
 import org.nbgit.util.GitUtils;
 import org.nbgit.ui.ContextAction;
 import org.netbeans.modules.versioning.spi.VCSContext;
@@ -104,10 +103,10 @@ public class UpdateAction extends ContextAction {
                 logger.output(
                         NbBundle.getMessage(UpdateAction.class,
                         "MSG_UPDATE_INFO_SEP", revStr, root.getAbsolutePath())); // NOI18N
-                List<String> list = GitCommand.doUpdateAll(root, doForcedUpdate, revStr);
+                List<String> list = updateAll(root, doForcedUpdate, revStr);
 
                 if (list != null && !list.isEmpty()) {
-                    bNoUpdates = GitCommand.isNoUpdates(list.get(0));
+                    bNoUpdates = isNoUpdates(list.get(0));
                     //logger.clearOutput();
                     logger.output(list);
                     logger.output(""); // NOI18N
@@ -131,4 +130,13 @@ public class UpdateAction extends ContextAction {
         };
         support.start(rp, repository, org.openide.util.NbBundle.getMessage(UpdateAction.class, "MSG_Update_Progress")); // NOI18N
     }
+
+    public static List<String> updateAll(File root, boolean doForcedUpdate, String revStr) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public static boolean isNoUpdates(String get) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
 }

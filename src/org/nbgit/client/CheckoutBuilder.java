@@ -192,19 +192,19 @@ public class CheckoutBuilder extends ClientBuilder {
      * Code originally from GitIndex.
      */
     private void checkoutEntry(GitIndex.Entry e, File file) throws IOException {
-		file.delete();
-		file.getParentFile().mkdirs();
+  file.delete();
+  file.getParentFile().mkdirs();
 
         FileChannel channel = new FileOutputStream(file).getChannel();
         try {
-    		byte[] bytes = repository.openBlob(e.getObjectId()).getBytes();
-    		ByteBuffer buffer = ByteBuffer.wrap(bytes);
-    		if (channel.write(buffer) != bytes.length)
-    			throw new IOException("Could not write file " + file);
+      byte[] bytes = repository.openBlob(e.getObjectId()).getBytes();
+      ByteBuffer buffer = ByteBuffer.wrap(bytes);
+      if (channel.write(buffer) != bytes.length)
+       throw new IOException("Could not write file " + file);
         } finally {
-    		channel.close();
+      channel.close();
         }
         setExecutable(file, FileMode.EXECUTABLE_FILE.equals(e.getModeBits()));
-	}
+ }
 
 }

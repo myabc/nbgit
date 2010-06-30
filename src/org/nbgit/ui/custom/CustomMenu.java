@@ -49,8 +49,8 @@ import org.nbgit.ui.custom.CustomActionBuilder.Option;
 import org.nbgit.util.GitUtils;
 import org.netbeans.modules.versioning.spi.VCSContext;
 import org.openide.util.NbBundle;
-import org.spearce.jgit.lib.Repository;
-import org.spearce.jgit.lib.RepositoryConfig;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.RepositoryConfig;
 
 /**
  * Menu for custom actions.

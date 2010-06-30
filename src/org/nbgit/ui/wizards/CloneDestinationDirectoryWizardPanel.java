@@ -53,7 +53,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.openide.WizardDescriptor;
 import org.openide.util.HelpCtx;
-import org.spearce.jgit.transport.URIish;
+import org.eclipse.jgit.transport.URIish;
 
 public class CloneDestinationDirectoryWizardPanel implements WizardDescriptor.Panel, DocumentListener {
 

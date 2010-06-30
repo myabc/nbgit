@@ -47,7 +47,7 @@ import org.nbgit.Git;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.api.queries.SharabilityQuery;
 import org.openide.filesystems.FileUtil;
-import org.spearce.jgit.lib.Repository;
+import org.eclipse.jgit.lib.Repository;
 
 /**
  * Provides support for .gitignore files.

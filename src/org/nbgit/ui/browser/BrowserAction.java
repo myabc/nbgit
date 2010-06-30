@@ -41,7 +41,7 @@ import org.nbgit.ui.ContextAction;
 import org.netbeans.modules.versioning.spi.VCSContext;
 import org.netbeans.modules.versioning.util.Utils;
 import org.openide.util.NbBundle;
-import org.spearce.jgit.lib.Constants;
+import org.eclipse.jgit.lib.Constants;
 
 /**
  * Open the repository browser.

@@ -43,11 +43,11 @@ import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 import javax.swing.text.SimpleAttributeSet;
 import org.nbgit.Git;
-import org.spearce.jgit.lib.Ref;
-import org.spearce.jgit.lib.Repository;
-import org.spearce.jgit.revwalk.RevCommitList;
-import org.spearce.jgit.treewalk.filter.PathFilterGroup;
-import org.spearce.jgit.treewalk.filter.TreeFilter;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommitList;
+import org.eclipse.jgit.treewalk.filter.PathFilterGroup;
+import org.eclipse.jgit.treewalk.filter.TreeFilter;
 
 public class BrowserModel {
 

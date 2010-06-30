@@ -51,7 +51,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.TaskListener;
-import org.spearce.jgit.transport.URIish;
+import org.eclipse.jgit.transport.URIish;
 
 /**
  *

@@ -35,7 +35,7 @@
  */
 package org.nbgit.client;
 
-import org.spearce.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectId;
 
 public class RevisionEntry {
 

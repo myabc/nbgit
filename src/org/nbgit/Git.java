@@ -56,7 +56,8 @@ import org.netbeans.modules.versioning.spi.VersioningSupport;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.RequestProcessor;
-import org.spearce.jgit.lib.Repository;
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.Repository;
 
 /**
  * Main entry point for Git functionality, use getInstance() to get the Git object.
@@ -100,7 +101,7 @@ public class Git {
         Repository repo = repos.get(root);
 
         if (repo == null) {
-            final File gitDir = new File(root, GitRepository.GIT_DIR);
+            final File gitDir = new File(root, Constants.DOT_GIT);
             try {
                 repo = new Repository(gitDir);
                 repos.put(root, repo);

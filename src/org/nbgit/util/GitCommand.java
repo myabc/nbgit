@@ -53,19 +53,28 @@ import org.nbgit.Git;
 import org.nbgit.ui.log.RepositoryRevision;
 import org.netbeans.api.queries.SharabilityQuery;
 import org.openide.util.Exceptions;
-import org.spearce.jgit.dircache.DirCache;
-import org.spearce.jgit.dircache.DirCacheEntry;
-import org.spearce.jgit.lib.Constants;
-import org.spearce.jgit.lib.IndexDiff;
-import org.spearce.jgit.lib.ObjectId;
-import org.spearce.jgit.lib.Repository;
-import org.spearce.jgit.revwalk.RevCommit;
-import org.spearce.jgit.revwalk.RevWalk;
-import org.spearce.jgit.revwalk.filter.RevFilter;
-import org.spearce.jgit.treewalk.FileTreeIterator;
-import org.spearce.jgit.treewalk.TreeWalk;
-import org.spearce.jgit.treewalk.filter.PathFilter;
-import org.spearce.jgit.treewalk.filter.PathFilterGroup;
+import org.eclipse.jgit.dircache.DirCache;
+import org.eclipse.jgit.dircache.DirCacheEntry;
+import org.eclipse.jgit.lib.Commit;
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.GitIndex.Entry;
+import org.eclipse.jgit.lib.GitIndex;
+import org.eclipse.jgit.lib.IndexDiff;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectLoader;
+import org.eclipse.jgit.lib.ObjectWriter;
+import org.eclipse.jgit.lib.PersonIdent;
+import org.eclipse.jgit.lib.RefUpdate;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.Tree;
+import org.eclipse.jgit.lib.TreeEntry;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.revwalk.filter.RevFilter;
+import org.eclipse.jgit.treewalk.FileTreeIterator;
+import org.eclipse.jgit.treewalk.TreeWalk;
+import org.eclipse.jgit.treewalk.filter.PathFilter;
+import org.eclipse.jgit.treewalk.filter.PathFilterGroup;
 
 /**
  *
@@ -197,7 +206,6 @@ public class GitCommand {
         Map<File, StatusInfo> files = new HashMap<File, StatusInfo>();
 
         try {
-            repo.refreshFromDisk();
             IndexDiff index = new IndexDiff(repo);
             index.diff();
 
@@ -278,7 +286,6 @@ public class GitCommand {
         Map<File, StatusInfo> files = new HashMap<File, StatusInfo>();
 
         try {
-            repo.refreshFromDisk();
             index = new IndexDiff(repo);
             index.diff();
 
@@ -345,7 +352,6 @@ public class GitCommand {
         String name = getRelative(root, file);
 
         try {
-            repo.refreshFromDisk();
             index = new IndexDiff(repo);
             index.diff();
         } catch (IOException ex) {

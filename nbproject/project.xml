@@ -25,6 +25,15 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.netbeans.libs.jsch</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <release-version>1</release-version>
+                        <specification-version>1.12.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.netbeans.modules.diff</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -47,8 +56,8 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <release-version>1</release-version>
-                        <specification-version>1.29.2.8.2</specification-version>
+                        <release-version>2</release-version>
+                        <specification-version>2.2.10</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -195,6 +204,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.openide.util.lookup</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>8.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.openide.windows</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -219,12 +236,12 @@
             </test-dependencies>
             <public-packages/>
             <class-path-extension>
-                <runtime-relative-path>ext/org-spearce-jgit.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/org-spearce-jgit.jar</binary-origin>
+                <runtime-relative-path>ext/org.eclipse.jgit-0.8.4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/org.eclipse.jgit-0.8.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/com-jcraft-jsch.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/com-jcraft-jsch.jar</binary-origin>
+                <runtime-relative-path>ext/org.eclipse.jgit.ui-0.8.4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/org.eclipse.jgit.ui-0.8.4.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>

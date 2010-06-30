@@ -45,12 +45,12 @@ import java.util.Collection;
 import org.nbgit.OutputLogger;
 import org.netbeans.junit.Filter;
 import org.netbeans.junit.NbTestCase;
-import org.spearce.jgit.dircache.DirCache;
-import org.spearce.jgit.dircache.DirCacheEntry;
-import org.spearce.jgit.lib.FileBasedConfig;
-import org.spearce.jgit.lib.Repository;
-import org.spearce.jgit.util.FS;
-import org.spearce.jgit.util.SystemReader;
+import org.eclipse.jgit.dircache.DirCache;
+import org.eclipse.jgit.dircache.DirCacheEntry;
+import org.eclipse.jgit.lib.FileBasedConfig;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.util.FS;
+import org.eclipse.jgit.util.SystemReader;
 
 /**
  * Base test case for testing with repositories.
@@ -97,7 +97,6 @@ public class RepositoryTestCase extends NbTestCase {
         time = TIME_INITIAL;
 
         copyRepositoryFiles("default", repository);
-        repository.refreshFromDisk();
         repository.getConfig().load();
     }
 
@@ -260,6 +259,18 @@ public class RepositoryTestCase extends NbTestCase {
         @Override
         public FileBasedConfig openUserConfig() {
             return new FileBasedConfig(userConfigFile);
+        }
+
+        @Override
+        public long getCurrentTime() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public int getTimezone(long when) {
+            // TODO Auto-generated method stub
+            return 0;
         }
     }
 }

@@ -36,10 +36,10 @@
 package org.nbgit.client;
 
 import org.nbgit.junit.RepositoryTestCase;
-import org.spearce.jgit.lib.Commit;
-import org.spearce.jgit.lib.ObjectId;
-import org.spearce.jgit.lib.Tree;
-import org.spearce.jgit.lib.TreeEntry;
+import org.eclipse.jgit.lib.Commit;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Tree;
+import org.eclipse.jgit.lib.TreeEntry;
 
 public class CommitBuilderTest extends RepositoryTestCase {
 
@@ -73,7 +73,6 @@ public class CommitBuilderTest extends RepositoryTestCase {
 
     public void testInitialEmptyCommit() throws Exception {
         toGitDirFile("packed-refs").delete();
-        repository.refreshFromDisk();
         CommitBuilder.create(repository).
                 time(getTime(), getTimeZone()).
                 log(logger).
@@ -84,7 +83,6 @@ public class CommitBuilderTest extends RepositoryTestCase {
 
     public void testInitialNonEmptyCommit() throws Exception {
         toGitDirFile("packed-refs").delete();
-        repository.refreshFromDisk();
         CommitBuilder.create(repository).
                 time(getTime(), getTimeZone()).
                 log(logger).

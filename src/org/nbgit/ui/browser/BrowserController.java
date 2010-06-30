@@ -41,12 +41,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
-import org.spearce.jgit.lib.Ref;
-import org.spearce.jgit.lib.PersonIdent;
-import org.spearce.jgit.revplot.PlotWalk;
-import org.spearce.jgit.revwalk.RevCommit;
-import org.spearce.jgit.revwalk.RevObject;
-import org.spearce.jgit.revwalk.RevSort;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.PersonIdent;
+import org.eclipse.jgit.revplot.PlotWalk;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevObject;
+import org.eclipse.jgit.revwalk.RevSort;
 
 /**
  * Control behavior of a repository browser.

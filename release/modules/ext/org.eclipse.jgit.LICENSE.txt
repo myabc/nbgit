@@ -1,4 +1,11 @@
 /*
+ * and other copyright owners as documented in the project's IP log.
+ *
+ * This program and the accompanying materials are made available
+ * under the terms of the Eclipse Distribution License v1.0 which
+ * accompanies this distribution, is reproduced below, and is
+ * available at http://www.eclipse.org/org/documents/edl-v10.php
+ *
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or
@@ -13,7 +20,7 @@
  *   disclaimer in the documentation and/or other materials provided
  *   with the distribution.
  *
- * - Neither the name of the Git Development Community nor the
+ * - Neither the name of the Eclipse Foundation, Inc. nor the
  *   names of its contributors may be used to endorse or promote
  *   products derived from this software without specific prior
  *   written permission.
@@ -32,3 +39,4 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+

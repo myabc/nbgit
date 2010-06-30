@@ -38,8 +38,8 @@ package org.nbgit.client;
 import java.io.File;
 import org.nbgit.Git;
 import org.nbgit.OutputLogger;
-import org.spearce.jgit.lib.Repository;
-import org.spearce.jgit.util.FS;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.util.FS;
 
 public class ClientBuilder {
 

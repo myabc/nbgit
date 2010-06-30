@@ -53,11 +53,11 @@ import org.netbeans.modules.versioning.util.TableSorter;
 import org.netbeans.modules.versioning.util.Utils;
 import org.openide.util.NbPreferences;
 import org.openide.util.Utilities;
-import org.spearce.jgit.lib.FileBasedConfig;
-import org.spearce.jgit.lib.Repository;
-import org.spearce.jgit.lib.RepositoryConfig;
-import org.spearce.jgit.lib.UserConfig;
-import org.spearce.jgit.util.SystemReader;
+import org.eclipse.jgit.lib.FileBasedConfig;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.RepositoryConfig;
+import org.eclipse.jgit.lib.UserConfig;
+import org.eclipse.jgit.util.SystemReader;
 
 /**
  * Stores Git module configuration.

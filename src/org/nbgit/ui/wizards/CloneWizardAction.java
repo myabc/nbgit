@@ -54,7 +54,7 @@ import org.openide.DialogDisplayer;
 import org.openide.WizardDescriptor;
 import org.openide.util.HelpCtx;
 import org.openide.util.actions.CallableSystemAction;
-import org.spearce.jgit.transport.URIish;
+import org.eclipse.jgit.transport.URIish;
 
 
 public class CloneWizardAction extends CallableSystemAction implements ChangeListener {

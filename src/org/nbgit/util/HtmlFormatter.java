@@ -277,8 +277,9 @@ public class HtmlFormatter {
                     walk.dispose();
 
                 } catch (IOException ex) {
-                    NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
-                    DialogDisplayer.getDefault().notifyLater(e);
+                    NotifyDescriptor notification =
+                        new NotifyDescriptor.Message(ex, NotifyDescriptor.ERROR_MESSAGE);
+                    DialogDisplayer.getDefault().notifyLater(notification);
                 }
             }
         }

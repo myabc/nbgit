@@ -46,10 +46,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import javax.swing.SwingUtilities;
 import org.nbgit.Git;
-import org.nbgit.GitModuleConfig;
 import org.nbgit.GitProgressMonitor;
 import org.nbgit.GitProgressSupport;
 import org.nbgit.OutputLogger;
@@ -59,8 +57,6 @@ import org.nbgit.util.GitUtils;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.modules.versioning.spi.VCSContext;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
@@ -74,7 +70,6 @@ import org.eclipse.jgit.lib.GitIndex;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.lib.RepositoryConfig;
 import org.eclipse.jgit.lib.Tree;
 import org.eclipse.jgit.lib.WorkDirCheckout;
 import org.eclipse.jgit.transport.FetchResult;
@@ -199,11 +194,9 @@ public class CloneAction extends ContextAction {
                     }
 
                 } catch (URISyntaxException usex) {
-                    NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(usex);
-                    DialogDisplayer.getDefault().notifyLater(e);
+                    notifyLater(usex);
                 } catch (IOException ex) {
-                    NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
-                    DialogDisplayer.getDefault().notifyLater(e);
+                    notifyLater(ex);
                 } finally {
                     if (!isLocalClone) {
                         logger.outputInRed(NbBundle.getMessage(CloneAction.class, "MSG_CLONE_DONE")); // NOI18N
@@ -233,8 +226,7 @@ public class CloneAction extends ContextAction {
                                 logger.outputInRed(NbBundle.getMessage(CloneAction.class, "MSG_EXTERNAL_CLONE_PRJ_NOT_FOUND_CANT_SETASMAIN")); // NOI18N
                             }
                         } catch (IOException ioe) {
-                            NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ioe);
-                            DialogDisplayer.getDefault().notifyLater(e);
+                            notifyLater(ioe);
                         } finally {
                             logger.outputInRed(NbBundle.getMessage(CloneAction.class, "MSG_CLONE_DONE")); // NOI18N
                             logger.output("");  // NOI18N

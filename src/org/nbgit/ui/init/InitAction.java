@@ -60,8 +60,6 @@ import org.nbgit.util.GitProjectUtils;
 import org.nbgit.util.GitUtils;
 import org.netbeans.api.queries.SharabilityQuery;
 import org.netbeans.modules.versioning.spi.VCSContext;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.eclipse.jgit.lib.Repository;
@@ -191,8 +189,7 @@ public class InitAction extends ContextAction {
 
                     repo.create();
                 } catch (IOException ex) {
-                    NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
-                    DialogDisplayer.getDefault().notifyLater(e);
+                    notifyLater(ex);
                 }
             }
         };
@@ -216,8 +213,7 @@ public class InitAction extends ContextAction {
                     logger.output(""); // NOI18N
                     logger.outputInRed(NbBundle.getMessage(InitAction.class, "MSG_CREATE_DONE_WARNING")); // NOI18N
                 } catch (IOException ex) {
-                    NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
-                    DialogDisplayer.getDefault().notifyLater(e);
+                    notifyLater(ex);
                 } finally {
                     logger.outputInRed(NbBundle.getMessage(InitAction.class, "MSG_CREATE_DONE")); // NOI18N
                     logger.output(""); // NOI18N

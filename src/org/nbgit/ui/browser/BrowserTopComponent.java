@@ -53,7 +53,7 @@ import org.openide.util.ImageUtilities;
 public final class BrowserTopComponent extends TopComponent {
 
     private static final String ICON_PATH = "org/nbgit/resources/icons/gitvcs-icon.png"; // NOI18N
-    private static final String PREFERRED_ID = "BrowserTopComponent"; // NOI18N
+    private static final String PREFERRED_ID = "org-nbgit-ui-browser"; // NOI18N
     private int commitIndex = -1;
 
     public BrowserTopComponent(BrowserModel model) {

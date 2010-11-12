@@ -53,19 +53,12 @@ import org.nbgit.Git;
 import org.nbgit.ui.log.RepositoryRevision;
 import org.netbeans.api.queries.SharabilityQuery;
 import org.openide.util.Exceptions;
-import org.eclipse.jgit.lib.Commit;
+import org.eclipse.jgit.dircache.DirCache;
+import org.eclipse.jgit.dircache.DirCacheEntry;
 import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.GitIndex;
-import org.eclipse.jgit.lib.GitIndex.Entry;
 import org.eclipse.jgit.lib.IndexDiff;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.ObjectLoader;
-import org.eclipse.jgit.lib.ObjectWriter;
-import org.eclipse.jgit.lib.PersonIdent;
-import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.lib.Tree;
-import org.eclipse.jgit.lib.TreeEntry;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.revwalk.filter.RevFilter;
@@ -220,6 +213,7 @@ public class GitCommand {
 
             final FileTreeIterator workTree = new FileTreeIterator(repo.getWorkDir());
             final TreeWalk walk = new TreeWalk(repo);
+            DirCache cache = DirCache.read(repo);
 
             walk.reset(); // drop the first empty tree
             walk.setRecursive(true);
@@ -242,7 +236,7 @@ public class GitCommand {
                         index.getModified().contains(path)) {
                     continue;
                 }
-                Entry entry = repo.getIndex().getEntry(path);
+                DirCacheEntry entry = cache.getEntry(path);
                 File file = new File(root, path);
 
                 int status;
@@ -304,6 +298,8 @@ public class GitCommand {
             walk.setRecursive(true);
             walk.addTree(workTree);
 
+            DirCache cache = DirCache.read(repo);
+
             while (walk.next()) {
                 String path = walk.getPathString();
 
@@ -317,7 +313,7 @@ public class GitCommand {
                         index.getModified().contains(path)) {
                     continue;
                 }
-                Entry entry = repo.getIndex().getEntry(path);
+                DirCacheEntry entry = cache.getEntry(path);
                 if (entry != null) {
                     continue;
                 }

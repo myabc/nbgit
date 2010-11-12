@@ -189,9 +189,11 @@ public class FnMatch {
     }
 
     private static boolean hasLeadingPeriod(String string, int stringPos, EnumSet<Flag> flags) {
-        return string.charAt(stringPos) == '.' && flags.contains(Flag.PERIOD) &&
-                (stringPos == 0 ||
-                (flags.contains(Flag.PATHNAME) && string.charAt(stringPos - 1) == '/'));
+        if (stringPos > string.length() - 1)
+            return false;
+        return (stringPos == 0
+            || (flags.contains(Flag.PATHNAME) && string.charAt(stringPos - 1) == '/'))
+            && string.charAt(stringPos) == '.' && flags.contains(Flag.PERIOD);
     }
 
     private static int matchRange(String pattern, int patternPos, char test, EnumSet<Flag> flags) {

@@ -46,7 +46,9 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.nbgit.util.GitUtils;
 import org.netbeans.modules.versioning.spi.VCSContext;
+import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
+import org.openide.NotifyDescriptor;
 
 /**
  * Base for all context-sensitive Git actions.
@@ -78,6 +80,12 @@ public abstract class ContextAction extends AbstractAction {
         // The same (global save) logic is in CVS, no complaint
         LifecycleManager.getDefault().saveAll();
         performAction(event);
+    }
+
+    protected static void notifyLater(Exception exception) {
+        NotifyDescriptor e =
+            new NotifyDescriptor.Message(exception, NotifyDescriptor.ERROR_MESSAGE);
+        DialogDisplayer.getDefault().notifyLater(e);
     }
 
     protected abstract void performAction(ActionEvent event);

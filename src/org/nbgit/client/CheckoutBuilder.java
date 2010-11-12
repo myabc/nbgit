@@ -44,10 +44,14 @@ import java.nio.channels.FileChannel;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.jgit.dircache.DirCache;
+import org.eclipse.jgit.dircache.DirCacheEntry;
 import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.GitIndex;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.Tree;
+import org.eclipse.jgit.lib.TreeEntry;
 
 /**
  * Build a checkout of files from a revision.
@@ -55,9 +59,10 @@ import org.eclipse.jgit.lib.Tree;
 public class CheckoutBuilder extends ClientBuilder {
 
     private static final String BACKUP_EXT = ".orig";
-    private final HashMap<String, File> fileMappings = new HashMap<String, File>();
+    private final HashMap<RevisionEntry, File> fileMappings = new HashMap<RevisionEntry, File>();
     private boolean backup;
     private Tree tree;
+    private DirCache index;
 
     private CheckoutBuilder(Repository repository) {
         super(repository);
@@ -107,16 +112,33 @@ public class CheckoutBuilder extends ClientBuilder {
      * @param file to be checked out.
      * @param destination where the file should be checked out.
      * @return the builder.
-     * @throws FileNotFoundException if revision has been specified and file
-     *  is not found in the revision's snapshot.
+     * @throws FileNotFoundException if the file cannot be resolved.
      * @throws IOException if checking of file existance fails.
      */
     public CheckoutBuilder file(File file, File destination)
             throws IOException, FileNotFoundException {
         String path = toPath(file);
-        if (tree != null && !tree.existsBlob(path))
+        ObjectId blobId = null;
+        int modeBits = 0;
+
+        if (tree != null) {
+            TreeEntry entry = tree.findBlobMember(path);
+            if (entry != null) {
+                blobId = entry.getId();
+                modeBits = entry.getMode().getBits();
+            }
+        } else {
+            if (index == null)
+                index = DirCache.read(repository);
+            DirCacheEntry entry = index.getEntry(path);
+            if (entry != null) {
+                blobId = entry.getObjectId();
+                modeBits = entry.getRawMode();
+            }
+        }
+        if (blobId == null)
             throw new FileNotFoundException(path);
-        fileMappings.put(path, destination);
+        fileMappings.put(RevisionEntry.create(path, blobId, modeBits), destination);
         return this;
     }
 
@@ -127,8 +149,7 @@ public class CheckoutBuilder extends ClientBuilder {
      *
      * @param files to be checked out.
      * @return the builder.
-     * @throws FileNotFoundException if revision has been specified and file
-     *  is not found in the revision's snapshot.
+     * @throws FileNotFoundException if the file cannot be resolved.
      * @throws IOException if checking of file existance fails.
      */
     public CheckoutBuilder files(Collection<File> files)
@@ -157,21 +178,12 @@ public class CheckoutBuilder extends ClientBuilder {
      * @throws IOException if the checkout fails.
      */
     public void checkout() throws IOException {
-        GitIndex index = new GitIndex(repository);
-
-        if (tree != null)
-            index.readTree(tree);
-
-        for (Map.Entry<String, File> mapping : fileMappings.entrySet()) {
-            GitIndex.Entry entry = index.getEntry(mapping.getKey());
-
-            if (entry == null)
-                continue;
-
+        for (Map.Entry<RevisionEntry, File> mapping : fileMappings.entrySet()) {
+            RevisionEntry entry = mapping.getKey();
             File file = mapping.getValue();
             if (backup)
                 backupFile(file);
-            checkoutEntry(entry, file);
+            checkoutEntry(entry.getObjectId(), entry.getModeBits(), file);
         }
     }
 

@@ -183,7 +183,8 @@ public class CheckoutBuilder extends ClientBuilder {
             File file = mapping.getValue();
             if (backup)
                 backupFile(file);
-            checkoutEntry(entry.getObjectId(), entry.getModeBits(), file);
+            // checkoutEntry(entry.getObjectId(), entry.getModeBits(), file);
+            checkoutEntry(entry, file);
         }
     }
 
@@ -203,7 +204,8 @@ public class CheckoutBuilder extends ClientBuilder {
     /*
      * Code originally from GitIndex.
      */
-    private void checkoutEntry(GitIndex.Entry e, File file) throws IOException {
+    //private void checkoutEntry(GitIndex.Entry e, File file) throws IOException {
+    private void checkoutEntry(RevisionEntry e, File file) throws IOException {
   file.delete();
   file.getParentFile().mkdirs();
 
